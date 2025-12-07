@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from models.recipe import Recipe, RecipeCreate, RecipeReject
 from models.region import Region, RegionCreate
 from models.country import Country, CountryCreate
+from models.user import User, UserCreate, UserLogin, Token, SavedRecipe
 
 # Import services
 from services.recipe_generator import recipe_generator
@@ -21,6 +22,9 @@ from services.scaling_engine import scaling_engine
 from services.substitution_engine import substitution_engine
 from services.translation_engine import translation_engine
 from services.locale_service import locale_service
+
+# Import auth utilities
+from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
