@@ -8,7 +8,7 @@ const AboutPage = () => {
                 <div className="max-w-4xl mx-auto text-center">
                     <ChefHat className="h-16 w-16 mx-auto text-[#6A1F2E] mb-6" />
                     <h1 className="mb-4 text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        About Sous Chef Linguini
+                        About Sous Chef Linguine
                     </h1>
                     <div className="gold-divider"></div>
                 </div>
