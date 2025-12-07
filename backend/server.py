@@ -49,6 +49,166 @@ logger = logging.getLogger(__name__)
 
 # ============== RECIPE ROUTES ==============
 
+@api_router.get("/recipes/search")
+async def search_recipes(
+    q: str,
+    locale: Optional[str] = "en-US",
+    auto_generate: bool = True
+):
+    """Search for recipes with on-demand generation.
+    
+    If recipe doesn't exist and auto_generate=True, it will be generated automatically.
+    """
+    try:
+        # Search in database first
+        search_query = {
+            "$or": [
+                {"title_original": {"$regex": q, "$options": "i"}},
+                {"title_translated.en": {"$regex": q, "$options": "i"}},
+                {"title_translated.it": {"$regex": q, "$options": "i"}},
+                {"title_translated.es": {"$regex": q, "$options": "i"}},
+                {"title_translated.fr": {"$regex": q, "$options": "i"}}
+            ],
+            "status": "published"
+        }
+        
+        recipe = await db.recipes.find_one(search_query, {"_id": 0})
+        
+        if recipe:
+            # Recipe found - update search analytics
+            await db.recipe_analytics.update_one(
+                {"recipe_slug": recipe["slug"]},
+                {
+                    "$inc": {"search_count": 1},
+                    "$set": {
+                        "last_searched_at": datetime.now(timezone.utc).isoformat(),
+                        "last_locale_used": locale
+                    },
+                    "$push": {
+                        "search_history": {
+                            "query": q,
+                            "locale": locale,
+                            "timestamp": datetime.now(timezone.utc).isoformat()
+                        }
+                    }
+                },
+                upsert=True
+            )
+            
+            logger.info(f"Recipe found for query '{q}': {recipe['slug']}")
+            adapted_recipe = translation_engine.get_locale_content(recipe, locale)
+            return {
+                "found": True,
+                "generated": False,
+                "recipe": adapted_recipe
+            }
+        
+        # Recipe not found - generate if enabled
+        if not auto_generate:
+            return {
+                "found": False,
+                "generated": False,
+                "message": f"No recipe found for '{q}'"
+            }
+        
+        logger.info(f"Recipe not found for '{q}' - generating on-demand")
+        
+        # Determine country and region from query (simplified logic)
+        # In production, this could use NLP or a mapping table
+        country, region = _infer_country_region(q)
+        
+        # Generate recipe using AI
+        recipe_data = await recipe_generator.generate_recipe(
+            dish_name=q,
+            country=country,
+            region=region
+        )
+        
+        # Validate authenticity
+        is_valid, rejection_reason, validation_report = authenticity_engine.validate_recipe(recipe_data)
+        
+        if not is_valid:
+            logger.warning(f"Generated recipe for '{q}' failed validation: {rejection_reason}")
+            recipe_data['status'] = 'rejected'
+            recipe_data['rejection_reason'] = rejection_reason
+            await db.recipes.insert_one(recipe_data)
+            
+            raise HTTPException(
+                status_code=400,
+                detail=f"Recipe generation failed validation: {rejection_reason}"
+            )
+        
+        # Save to database
+        recipe_data['status'] = 'published'
+        await db.recipes.insert_one(recipe_data)
+        
+        # Initialize analytics
+        await db.recipe_analytics.insert_one({
+            "recipe_slug": recipe_data["slug"],
+            "search_count": 1,
+            "last_searched_at": datetime.now(timezone.utc).isoformat(),
+            "last_locale_used": locale,
+            "search_history": [{
+                "query": q,
+                "locale": locale,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }],
+            "generated_on_demand": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        logger.info(f"Recipe generated and saved for '{q}': {recipe_data['slug']}")
+        
+        # Adapt to locale
+        adapted_recipe = translation_engine.get_locale_content(recipe_data, locale)
+        
+        return {
+            "found": False,
+            "generated": True,
+            "recipe": adapted_recipe,
+            "message": f"Recipe for '{q}' generated successfully!"
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Search error for '{q}': {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+def _infer_country_region(dish_name: str) -> tuple:
+    """Infer country and region from dish name.
+    
+    This is a simplified version. In production, use NLP or a comprehensive mapping.
+    """
+    dish_lower = dish_name.lower()
+    
+    # Italian dishes
+    if any(word in dish_lower for word in ['pasta', 'pizza', 'risotto', 'carbonara', 'amatriciana', 'parmigiana', 'tiramisu', 'osso']):
+        return ("Italy", "Mediterranean")
+    
+    # Japanese dishes
+    if any(word in dish_lower for word in ['sushi', 'ramen', 'tempura', 'teriyaki', 'miso', 'udon', 'soba']):
+        return ("Japan", "East Asia")
+    
+    # Mexican dishes
+    if any(word in dish_lower for word in ['taco', 'burrito', 'enchilada', 'mole', 'pozole', 'tamale', 'quesadilla']):
+        return ("Mexico", "Latin America")
+    
+    # French dishes
+    if any(word in dish_lower for word in ['coq au vin', 'bouillabaisse', 'ratatouille', 'quiche', 'croissant', 'cassoulet']):
+        return ("France", "Mediterranean")
+    
+    # Swedish dishes
+    if any(word in dish_lower for word in ['köttbullar', 'gravlax', 'semla', 'kanelbulle', 'surströmming']):
+        return ("Sweden", "Nordic")
+    
+    # Spanish dishes
+    if any(word in dish_lower for word in ['paella', 'gazpacho', 'tortilla', 'tapas', 'churro']):
+        return ("Spain", "Mediterranean")
+    
+    # Default to Italy if unknown
+    return ("Italy", "Mediterranean")
+
 @api_router.get("/recipes")
 async def get_recipes(
     page: int = Query(1, ge=1),
