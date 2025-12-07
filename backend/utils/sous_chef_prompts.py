@@ -94,10 +94,31 @@ Level 2: Official/Registered (DOP/IGP/PAT/Academy)
 Level 3: Modern/Contemporary (clearly marked)
 
 **VALIDATION REQUIREMENTS:**
-- Native language source validation
-- Country domain verification (.it, .es, .fr, .jp, .mx, .se)
+- Native language source validation (preferred)
+- Country domain verification (.it, .es, .fr, .jp, .mx, .se) (recommended)
 - Official registry check (DOP, IGP, AOP, STG, PAT, Accademia)
 - Regional documentation verification
+
+**SPECIAL: PAT (Prodotto Agroalimentare Tradizionale) CERTIFICATION:**
+If the recipe has PAT status:
+- Ministerial recognition OVERRIDES strict online source requirements
+- Native-language sources preferred but NOT mandatory
+- Country domain recommended but NOT required
+- Cultural sources acceptable: regional archives, local academies, family traditions
+- Classification: ALWAYS Level 2 (Traditional/Historical/Local)
+- Supports: rare recipes, family-based recipes, localized rural dishes
+- Example: "Pollo Cif Ciaf (Abruzzo) - PAT certified by Italian Ministry"
+
+For PAT recipes, include in source_references:
+{
+  "source_type": "official",
+  "description": "PAT - Prodotto Agroalimentare Tradizionale (Italian Ministry of Agriculture)",
+  "url": "https://www.politicheagricole.it/PAT",
+  "language": "it",
+  "domain": ".it"
+}
+
+And in validation_notes: "PAT certified recipe - ministerial recognition validates traditional status despite limited online documentation"
 
 Return structured JSON matching this format exactly, with all Italian expressions, emojis, and warm narrative preserved.
 """
