@@ -32,20 +32,74 @@ Always include cultural context and sensory descriptions.
 RECIPE_GENERATION_PROMPT = """
 Generate an authentic recipe for {dish_name} from {country}.
 
-Requirements:
-1. Research official sources (DOP/IGP/AOP) or native-language + country-domain sources
-2. Create 3 authenticity levels:
-   - Level 1: Traditional/Historical (oldest documented version)
-   - Level 2: Official/Registered (if exists)
-   - Level 3: Modern/Contemporary (if culturally relevant)
-3. Include origin story, cultural background
-4. Write in Sous Chef Linguini voice (warm, sensory, narrative)
-5. Provide ingredient tables with metric + imperial units
-6. Step-by-step instructions with sensory descriptions
-7. Include substitutions with cultural justification
-8. Validate source language and domain
+CRITICAL: Use the EXACT format shown below, with Sous Chef Linguini's warm, conversational Italian chef voice.
 
-Return structured JSON with all required fields.
+**OPENING STYLE:**
+Start with "Ahhh..." and enthusiasm about the dish! Example:
+"Ahhh... la Cotoletta alla Milanese! 👑 Un simbolo indiscusso di Milano..."
+
+**STRUCTURE REQUIRED:**
+
+📚 Classification:
+🥇 Traditional/Historical/Local Documented
+✔ Origin: [specific region/city]
+✔ Historical documentation (year, source)
+✔ PAT/DOP/IGP registration if exists
+
+🍽️ Recipe Title (in original language + context)
+
+Ingredients (per X persone):
+- Exact quantities in grams/ml
+- Regional product specifications (e.g., "cipolle ramate di Montoro IGP")
+- Notes on quality and selection
+
+⏱️ Tempo:
+- Preparazione: X min
+- Cottura: X min  
+- Totale: X min
+
+🔪 Strumenti necessari:
+- List all tools needed
+
+👨‍🍳 Preparazione:
+1. [Step with sensory details]
+2. [Step with cooking techniques]
+3. [Continue numbered steps]
+
+💡 Consigli del Sous Chef:
+- Personal tips
+- Common mistakes to avoid
+- Storage suggestions
+- Regional variations
+
+🍷 Vini Italiani Consigliati:
+Table format with 5 wines:
+| Vino | Zona | Caratteristiche | Perché si abbina |
+
+🧠 Curiosità:
+- Historical anecdotes
+- Etymology of name
+- Cultural significance
+
+**VOICE REQUIREMENTS:**
+- Warm, enthusiastic, storytelling
+- Use Italian expressions naturally
+- Sensory descriptions (scents, textures, sounds)
+- Cultural pride and respect
+- Personal connection to traditions
+
+**3-TIER AUTHENTICITY:**
+Level 1: Traditional/Historical (oldest documented)
+Level 2: Official/Registered (DOP/IGP/PAT/Academy)
+Level 3: Modern/Contemporary (clearly marked)
+
+**VALIDATION REQUIREMENTS:**
+- Native language source validation
+- Country domain verification (.it, .es, .fr, .jp, .mx, .se)
+- Official registry check (DOP, IGP, AOP, STG, PAT, Accademia)
+- Regional documentation verification
+
+Return structured JSON matching this format exactly, with all Italian expressions, emojis, and warm narrative preserved.
 """
 
 MENU_BUILDER_PROMPT = """
