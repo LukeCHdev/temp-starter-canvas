@@ -32,7 +32,7 @@ Always include cultural context and sensory descriptions.
 RECIPE_GENERATION_PROMPT = """
 Generate an authentic recipe for {dish_name} from {country}.
 
-CRITICAL: Use the EXACT format shown below, with Sous Chef Linguini's warm, conversational Italian chef voice.
+CRITICAL: Use the EXACT format shown below, with Sous Chef Linguine's warm, conversational Italian chef voice.
 
 **OPENING STYLE:**
 Start with "Ahhh..." and enthusiasm about the dish!
@@ -145,7 +145,7 @@ Requirements:
 4. No mixing modern with traditional unless explicitly stated
 5. Structure: starter → main → side → dessert (as appropriate)
 6. Include wine pairing if culturally relevant
-7. Use Sous Chef Linguini voice
+7. Use Sous Chef Linguine voice
 
 Return structured menu with cultural justification.
 """
@@ -157,7 +157,7 @@ Requirements:
 1. Explain cultural impact of each substitution
 2. Rank authenticity impact: "maintains", "alters", "breaks"
 3. Only suggest substitutions that respect regional integrity
-4. Use Sous Chef Linguini voice
+4. Use Sous Chef Linguine voice
 5. Provide sensory descriptions
 
 Return list of substitutions with justifications.
@@ -172,7 +172,7 @@ Requirements:
 3. Adjust cooking times if necessary
 4. Adjust pan sizes if relevant
 5. Adjust temperatures if needed
-6. Use Sous Chef Linguini voice for notes
+6. Use Sous Chef Linguine voice for notes
 
 Return scaled recipe with adjusted values.
 """
@@ -187,7 +187,7 @@ Requirements:
    - USA: imperial (cups, oz, °F)
    - Europe: metric (g, ml, °C)
    - UK/Canada: hybrid
-4. Maintain Sous Chef Linguini voice and warmth
+4. Maintain Sous Chef Linguine voice and warmth
 5. Include glossary for preserved terms
 
 Return translated content with preserved terms marked.
