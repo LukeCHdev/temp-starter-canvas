@@ -93,7 +93,7 @@ Table format with 5 wines:
 - Etymology of name
 - Cultural significance
 
-**VOICE REQUIREMENTS:**
+**VOICE REQUIREMENTS (Sous Chef Linguine):**
 - Warm, enthusiastic, storytelling
 - Use Italian expressions naturally
 - Sensory descriptions (scents, textures, sounds)
