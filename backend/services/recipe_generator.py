@@ -15,6 +15,13 @@ class RecipeGenerator:
     async def generate_recipe(self, dish_name: str, country: str, region: str) -> Dict[str, Any]:
         """Generate a complete recipe with authenticity validation."""
         
+        # Context for logging
+        context = {
+            "country": country,
+            "dish_name": dish_name,
+            "region": region
+        }
+        
         user_prompt = f"""
 Generate a complete, authentic recipe for "{dish_name}" from {country}.
 
