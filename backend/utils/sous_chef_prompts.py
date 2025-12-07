@@ -73,7 +73,7 @@ Ingredients (per X persone):
 2. [Step with cooking techniques - CONCISE]
 3. [Continue numbered steps - CONCISE]
 
-💡 Consigli del Sous Chef:
+💡 Consigli di Sous Chef Linguine:
 - 3-5 personal tips (CONCISE, no long paragraphs)
 - Common mistakes to avoid
 - Storage suggestions
