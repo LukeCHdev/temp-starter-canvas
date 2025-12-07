@@ -659,6 +659,242 @@ async def get_favorites(current_user: str = Security(get_current_user)):
         logger.error(f"Get favorites error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============== RATINGS & REVIEWS ROUTES ==============
+
+@api_router.post("/recipes/{recipe_slug}/rate")
+async def rate_recipe(recipe_slug: str, rating_create: RatingCreate, current_user: str = Security(get_current_user)):
+    """Rate a recipe (1-5 stars)."""
+    try:
+        # Check if recipe exists
+        recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Check if user already rated
+        existing = await db.ratings.find_one({"recipe_slug": recipe_slug, "user_email": current_user})
+        
+        rating_doc = {
+            "recipe_slug": recipe_slug,
+            "user_email": current_user,
+            "rating": rating_create.rating,
+            "comment": rating_create.comment,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        if existing:
+            # Update existing rating
+            await db.ratings.update_one(
+                {"recipe_slug": recipe_slug, "user_email": current_user},
+                {"$set": rating_doc}
+            )
+            message = "Rating updated"
+        else:
+            # Create new rating
+            rating_doc["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.ratings.insert_one(rating_doc)
+            message = "Rating added"
+        
+        # Calculate new average
+        ratings = await db.ratings.find({"recipe_slug": recipe_slug}).to_list(1000)
+        avg_rating = sum(r["rating"] for r in ratings) / len(ratings)
+        
+        # Update recipe stats
+        await db.recipes.update_one(
+            {"slug": recipe_slug},
+            {
+                "$set": {
+                    "average_rating": round(avg_rating, 2),
+                    "ratings_count": len(ratings)
+                }
+            }
+        )
+        
+        return {
+            "message": message,
+            "average_rating": round(avg_rating, 2),
+            "ratings_count": len(ratings)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Rating error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/recipes/{recipe_slug}/ratings")
+async def get_recipe_ratings(recipe_slug: str):
+    """Get all ratings for a recipe."""
+    ratings = await db.ratings.find(
+        {"recipe_slug": recipe_slug},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return {"ratings": ratings}
+
+@api_router.post("/recipes/{recipe_slug}/comment")
+async def add_comment(recipe_slug: str, comment_create: CommentCreate, current_user: str = Security(get_current_user)):
+    """Add a comment to a recipe."""
+    try:
+        # Check if recipe exists
+        recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        comment_doc = {
+            "recipe_slug": recipe_slug,
+            "user_email": current_user,
+            "comment_text": comment_create.comment_text,
+            "parent_comment_id": comment_create.parent_comment_id,
+            "upvotes": 0,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.comments.insert_one(comment_doc)
+        
+        # Update recipe comment count
+        comment_count = await db.comments.count_documents({"recipe_slug": recipe_slug, "parent_comment_id": None})
+        await db.recipes.update_one(
+            {"slug": recipe_slug},
+            {"$set": {"comments_count": comment_count}}
+        )
+        
+        return {"message": "Comment added", "comment_count": comment_count}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Comment error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/recipes/{recipe_slug}/comments")
+async def get_recipe_comments(recipe_slug: str):
+    """Get all comments for a recipe."""
+    comments = await db.comments.find(
+        {"recipe_slug": recipe_slug},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return {"comments": comments}
+
+@api_router.post("/recipes/{recipe_slug}/verify")
+async def verify_recipe(recipe_slug: str, verified: bool, notes: Optional[str] = None, current_user: str = Security(get_current_user)):
+    """Mark recipe as verified by user (community verification)."""
+    try:
+        # Check if recipe exists
+        recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Check if user already verified
+        existing = await db.verifications.find_one({"recipe_slug": recipe_slug, "user_email": current_user})
+        
+        verification_doc = {
+            "recipe_slug": recipe_slug,
+            "user_email": current_user,
+            "verified": verified,
+            "notes": notes,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        if existing:
+            await db.verifications.update_one(
+                {"recipe_slug": recipe_slug, "user_email": current_user},
+                {"$set": verification_doc}
+            )
+        else:
+            await db.verifications.insert_one(verification_doc)
+        
+        # Count verifications
+        verifications = await db.verifications.count_documents({"recipe_slug": recipe_slug, "verified": True})
+        
+        # Assign badge
+        badge = None
+        if verifications >= 50:
+            badge = "Highly Authentic"
+        elif verifications >= 20:
+            badge = "Verified by Community"
+        
+        # Update recipe
+        await db.recipes.update_one(
+            {"slug": recipe_slug},
+            {
+                "$set": {
+                    "verifications_count": verifications,
+                    "community_badge": badge
+                }
+            }
+        )
+        
+        return {
+            "message": "Verification recorded",
+            "verifications_count": verifications,
+            "community_badge": badge
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Verification error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/comments/{comment_id}/upvote")
+async def upvote_comment(comment_id: str, current_user: str = Security(get_current_user)):
+    """Upvote a comment."""
+    result = await db.comments.update_one(
+        {"_id": comment_id},
+        {"$inc": {"upvotes": 1}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    return {"message": "Comment upvoted"}
+
+# ============== TRENDING & DISCOVERY ROUTES ==============
+
+@api_router.get("/recipes/trending")
+async def get_trending_recipes(limit: int = 10):
+    """Get trending recipes based on recent activity."""
+    # Trending = high search_count + recent views + favorites
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("search_count", -1),
+        ("favorites_count", -1),
+        ("average_rating", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/recipes/recently-generated")
+async def get_recently_generated(limit: int = 10):
+    """Get most recently generated recipes."""
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/recipes/most-loved")
+async def get_most_loved(limit: int = 10, region: Optional[str] = None):
+    """Get most loved recipes (by ratings and favorites)."""
+    query = {"status": "published"}
+    if region:
+        query["region"] = region
+    
+    recipes = await db.recipes.find(
+        query,
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
 # ============== ROOT ROUTE ==============
 
 @api_router.get("/")
