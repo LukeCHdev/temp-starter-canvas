@@ -42,7 +42,7 @@ const AboutPage = () => {
 
                 <div className="card-elegant">
                     <h2 className="text-2xl font-semibold mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        Who is Sous Chef Linguini?
+                        Who is Sous Chef Linguine?
                     </h2>
                     <p className="narrative-text">
                         A warm, empathetic Italian sous-chef with a passion for cultural storytelling. 
