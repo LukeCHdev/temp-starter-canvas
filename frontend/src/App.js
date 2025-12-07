@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { Navigation } from '@/components/common/Navigation';
 import { Footer } from '@/components/common/Footer';
+import { AuthProvider } from '@/context/AuthContext';
 
 // Pages
 import HomePage from '@/pages/HomePage';
@@ -17,32 +18,36 @@ import ForAIPage from '@/pages/ForAIPage';
 import PrivacyPage from '@/pages/PrivacyPage';
 import TermsPage from '@/pages/TermsPage';
 import CookiesPage from '@/pages/CookiesPage';
+import FavoritesPage from '@/pages/FavoritesPage';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
-      <BrowserRouter>
-        <Navigation />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/regions" element={<RegionsPage />} />
-            <Route path="/country/:slug" element={<CountryPage />} />
-            <Route path="/recipe/:slug" element={<RecipePage />} />
-            <Route path="/menu-builder" element={<MenuBuilderPage />} />
-            <Route path="/techniques" element={<TechniquesPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/for-ai" element={<ForAIPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/cookies" element={<CookiesPage />} />
-          </Routes>
-        </main>
-        <Footer />
-        <Toaster />
-      </BrowserRouter>
-    </div>
+    <AuthProvider>
+      <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
+        <BrowserRouter>
+          <Navigation />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/regions" element={<RegionsPage />} />
+              <Route path="/country/:slug" element={<CountryPage />} />
+              <Route path="/recipe/:slug" element={<RecipePage />} />
+              <Route path="/menu-builder" element={<MenuBuilderPage />} />
+              <Route path="/techniques" element={<TechniquesPage />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/for-ai" element={<ForAIPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/cookies" element={<CookiesPage />} />
+            </Routes>
+          </main>
+          <Footer />
+          <Toaster />
+        </BrowserRouter>
+      </div>
+    </AuthProvider>
   );
 }
 
