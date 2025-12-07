@@ -23,11 +23,12 @@ import FavoritesPage from '@/pages/FavoritesPage';
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
-        <BrowserRouter>
-          <Navigation />
-          <main className="flex-1">
+    <LanguageProvider>
+      <AuthProvider>
+        <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
+          <BrowserRouter>
+            <Navigation />
+            <main className="flex-1">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/regions" element={<RegionsPage />} />
