@@ -13,6 +13,7 @@ from models.recipe import Recipe, RecipeCreate, RecipeReject
 from models.region import Region, RegionCreate
 from models.country import Country, CountryCreate
 from models.user import User, UserCreate, UserLogin, Token, SavedRecipe
+from models.rating import Rating, RatingCreate, Comment, CommentCreate, RecipeVerification
 
 # Import services
 from services.recipe_generator import recipe_generator
