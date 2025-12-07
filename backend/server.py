@@ -663,7 +663,7 @@ async def get_favorites(current_user: str = Security(get_current_user)):
 @api_router.get("/")
 async def root():
     return {
-        "message": "Sous Chef Linguini API",
+        "message": "Sous Chef Linguine API",
         "version": "1.0.0",
         "status": "running"
     }
