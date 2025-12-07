@@ -20,4 +20,30 @@ import CookiesPage from '@/pages/CookiesPage';
 
 function App() {
   return (
-    <div className=\"min-h-screen flex flex-col bg-[#FAF7F0]\" data-testid=\"app-container\">\n      <BrowserRouter>\n        <Navigation />\n        <main className=\"flex-1\">\n          <Routes>\n            <Route path=\"/\" element={<HomePage />} />\n            <Route path=\"/regions\" element={<RegionsPage />} />\n            <Route path=\"/country/:slug\" element={<CountryPage />} />\n            <Route path=\"/recipe/:slug\" element={<RecipePage />} />\n            <Route path=\"/menu-builder\" element={<MenuBuilderPage />} />\n            <Route path=\"/techniques\" element={<TechniquesPage />} />\n            <Route path=\"/about\" element={<AboutPage />} />\n            <Route path=\"/contact\" element={<ContactPage />} />\n            <Route path=\"/for-ai\" element={<ForAIPage />} />\n            <Route path=\"/privacy\" element={<PrivacyPage />} />\n            <Route path=\"/terms\" element={<TermsPage />} />\n            <Route path=\"/cookies\" element={<CookiesPage />} />\n          </Routes>\n        </main>\n        <Footer />\n        <Toaster />\n      </BrowserRouter>\n    </div>\n  );\n}\n\nexport default App;
+    <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
+      <BrowserRouter>
+        <Navigation />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/regions" element={<RegionsPage />} />
+            <Route path="/country/:slug" element={<CountryPage />} />
+            <Route path="/recipe/:slug" element={<RecipePage />} />
+            <Route path="/menu-builder" element={<MenuBuilderPage />} />
+            <Route path="/techniques" element={<TechniquesPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/for-ai" element={<ForAIPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/cookies" element={<CookiesPage />} />
+          </Routes>
+        </main>
+        <Footer />
+        <Toaster />
+      </BrowserRouter>
+    </div>
+  );
+}
+
+export default App;
