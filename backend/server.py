@@ -439,15 +439,60 @@ async def suggest_substitutions(
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/ai/scale")
-async def scale_recipe(recipe_slug: str, target_servings: int):
-    """Scale a recipe to target servings."""
+async def scale_recipe(
+    recipe_slug: str,
+    target_servings: int,
+    food_type: Optional[str] = "meat",
+    cooking_method: Optional[str] = None
+):
+    """Scale a recipe to target servings with adaptive cooking time calculation."""
     try:
         recipe = await db.recipes.find_one({"slug": recipe_slug}, {"_id": 0})
         
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
         
+        # Import adaptive cooking engine
+        from services.adaptive_cooking import adaptive_cooking_engine
+        
+        # Basic scaling (quantities)
         scaled_recipe = scaling_engine.scale_recipe(recipe, target_servings)
+        
+        # Calculate adaptive cooking times
+        base_servings = recipe.get('scaling_info', {}).get('base_servings', 4)
+        
+        # Assume average serving weight (this could be more sophisticated)
+        base_weight = base_servings * 0.25  # 250g per serving
+        target_weight = target_servings * 0.25
+        
+        # Add adaptive cooking notes
+        adaptive_notes = []
+        for level in scaled_recipe.get('authenticity_levels', []):
+            for step in level.get('method', []):
+                if step.get('timing'):
+                    # Extract base time (simplified)
+                    import re
+                    time_match = re.search(r'(\d+)', step['timing'])
+                    if time_match:
+                        base_time = int(time_match.group(1))
+                        
+                        adaptive_result = adaptive_cooking_engine.calculate_cooking_time(
+                            food_type=food_type,
+                            base_weight=base_weight,
+                            target_weight=target_weight,
+                            base_time=base_time,
+                            cooking_method=cooking_method
+                        )
+                        
+                        adaptive_notes.append({
+                            'step': step['step_number'],
+                            'original_time': base_time,
+                            'adapted_time': adaptive_result['adapted_time_minutes'],
+                            'notes': adaptive_result['notes'],
+                            'temperature_note': adaptive_result['temperature_note']
+                        })
+        
+        scaled_recipe['adaptive_cooking_notes'] = adaptive_notes
         
         return scaled_recipe
     
