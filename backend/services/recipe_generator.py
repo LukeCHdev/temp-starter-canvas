@@ -125,11 +125,12 @@ IMPORTANT:
 """
         
         try:
-            # Generate recipe using AI
+            # Generate recipe using AI with retry logic
             recipe_data = await ai_service.generate_json(
                 system_message=SOUS_CHEF_SYSTEM_PROMPT,
                 user_message=user_prompt,
-                session_id=f"recipe_gen_{dish_name}_{country}"
+                session_id=f"recipe_gen_{dish_name}_{country}",
+                context=context
             )
             
             # Add metadata
