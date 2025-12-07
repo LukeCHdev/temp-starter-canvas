@@ -19,13 +19,37 @@ class AuthenticityEngine:
             'checks_performed': [],
             'checks_passed': [],
             'checks_failed': [],
-            'warnings': []
+            'warnings': [],
+            'special_status': None
         }
         
         # Check for manual override
         if recipe_data.get('manual_override', False):
             validation_report['checks_performed'].append('manual_override')
             validation_report['warnings'].append('Recipe approved via manual override')
+            validation_report['special_status'] = 'manual_override'
+            return True, '', validation_report
+        
+        # Check for PAT certification (PRIORITY CHECK)
+        from config.authenticity_levels import is_pat_certified, PAT_VALIDATION_RULES
+        
+        if is_pat_certified(recipe_data):
+            validation_report['checks_performed'].append('pat_certification_check')
+            validation_report['checks_passed'].append('pat_certification_verified')
+            validation_report['special_status'] = 'PAT_CERTIFIED'
+            validation_report['warnings'].append('PAT status: strict source requirements relaxed')
+            
+            # For PAT recipes, ensure rank is 2 (Traditional)
+            source_validation = recipe_data.get('source_validation', {})
+            if source_validation.get('authenticity_rank') != 2:
+                validation_report['warnings'].append('PAT recipes must be rank 2 (Traditional)')
+            
+            # PAT certification overrides most requirements
+            # Only check that basic structure exists
+            if not recipe_data.get('authenticity_levels'):
+                return False, 'PAT recipe must have authenticity levels structure', validation_report
+            
+            validation_report['checks_passed'].append('pat_validation_complete')
             return True, '', validation_report
         
         # Check source validation object
