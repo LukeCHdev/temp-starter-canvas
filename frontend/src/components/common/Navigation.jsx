@@ -33,7 +33,7 @@ export const Navigation = () => {
                         <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
                             <ChefHat className="h-8 w-8 text-[#6A1F2E]" />
                             <span className="text-2xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                Sous Chef Linguini
+                                Sous Chef Linguine
                             </span>
                         </Link>
 
