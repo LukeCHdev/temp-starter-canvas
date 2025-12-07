@@ -294,6 +294,156 @@ async def detect_locale(browser_locale: Optional[str] = None, geo_location: Opti
     locale_settings = locale_service.detect_locale(browser_locale, geo_location)
     return locale_settings
 
+# ============== AUTHENTICATION ROUTES ==============
+
+@api_router.post("/auth/register", response_model=Token)
+async def register(user_create: UserCreate):
+    """Register a new user."""
+    try:
+        # Check if user exists
+        existing_user = await db.users.find_one({"email": user_create.email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Hash password
+        hashed_password = hash_password(user_create.password)
+        
+        # Create user document
+        user_doc = {
+            "email": user_create.email,
+            "password_hash": hashed_password,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.users.insert_one(user_doc)
+        
+        # Create access token
+        access_token = create_access_token(data={"sub": user_create.email})
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Registration error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/auth/login", response_model=Token)
+async def login(user_login: UserLogin):
+    """Login user."""
+    try:
+        # Find user
+        user = await db.users.find_one({"email": user_login.email})
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Verify password
+        if not verify_password(user_login.password, user["password_hash"]):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Create access token
+        access_token = create_access_token(data={"sub": user_login.email})
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Login error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/auth/me", response_model=User)
+async def get_current_user_info(current_user: str = Security(get_current_user)):
+    """Get current user info."""
+    user = await db.users.find_one({"email": current_user}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+# ============== FAVORITES ROUTES ==============
+
+@api_router.post("/favorites/{recipe_slug}")
+async def save_recipe(recipe_slug: str, current_user: str = Security(get_current_user)):
+    """Save a recipe to favorites."""
+    try:
+        # Check if recipe exists
+        recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Check if already saved
+        existing = await db.saved_recipes.find_one({
+            "user_email": current_user,
+            "recipe_slug": recipe_slug
+        })
+        
+        if existing:
+            return {"message": "Recipe already in favorites"}
+        
+        # Save recipe
+        saved_doc = {
+            "user_email": current_user,
+            "recipe_slug": recipe_slug,
+            "saved_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.saved_recipes.insert_one(saved_doc)
+        
+        return {"message": "Recipe saved to favorites"}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Save recipe error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/favorites/{recipe_slug}")
+async def unsave_recipe(recipe_slug: str, current_user: str = Security(get_current_user)):
+    """Remove a recipe from favorites."""
+    try:
+        result = await db.saved_recipes.delete_one({
+            "user_email": current_user,
+            "recipe_slug": recipe_slug
+        })
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Recipe not in favorites")
+        
+        return {"message": "Recipe removed from favorites"}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Unsave recipe error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/favorites")
+async def get_favorites(current_user: str = Security(get_current_user)):
+    """Get user's saved recipes."""
+    try:
+        # Get saved recipe slugs
+        saved = await db.saved_recipes.find(
+            {"user_email": current_user},
+            {"_id": 0, "recipe_slug": 1}
+        ).to_list(1000)
+        
+        if not saved:
+            return {"recipes": []}
+        
+        slugs = [s["recipe_slug"] for s in saved]
+        
+        # Get full recipe details
+        recipes = await db.recipes.find(
+            {"slug": {"$in": slugs}, "status": "published"},
+            {"_id": 0}
+        ).to_list(1000)
+        
+        return {"recipes": recipes}
+    
+    except Exception as e:
+        logger.error(f"Get favorites error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============== ROOT ROUTE ==============
 
 @api_router.get("/")
