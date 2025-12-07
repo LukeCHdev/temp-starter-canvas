@@ -47,7 +47,7 @@ const HomePage = () => {
                     <p className="text-lg sm:text-xl text-[#1E1E1E]/80 mb-8 max-w-2xl mx-auto leading-relaxed">
                         Discover genuine, traditional recipes from every corner of the world. 
                         Each dish validated for cultural authenticity and accompanied by warm, 
-                        sensory storytelling from Sous Chef Linguini.
+                        sensory storytelling from Sous Chef Linguine.
                     </p>
                     <SearchBar className="max-w-2xl mx-auto" />
                 </div>
