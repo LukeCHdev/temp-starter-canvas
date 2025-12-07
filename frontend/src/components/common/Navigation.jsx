@@ -38,7 +38,7 @@ export const Navigation = () => {
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-8">
+                        <div className="hidden md:flex items-center space-x-6">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.to}
@@ -50,6 +50,9 @@ export const Navigation = () => {
                                     <span>{link.label}</span>
                                 </Link>
                             ))}
+                            
+                            {/* Language Selector */}
+                            <LanguageSelector />
                             
                             {/* Auth Section */}
                             {user ? (
