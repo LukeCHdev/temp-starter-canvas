@@ -47,7 +47,7 @@ const AboutPage = () => {
                     <p className="narrative-text">
                         A warm, empathetic Italian sous-chef with a passion for cultural storytelling. 
                         Every recipe is narrated with sensory richness, emotional depth, and profound respect 
-                        for the traditions that birthed it. Linguini doesn't just teach you to cook—he invites 
+                        for the traditions that birthed it. Linguine doesn't just teach you to cook—he invites 
                         you into the soul of each dish.
                     </p>
                 </div>
