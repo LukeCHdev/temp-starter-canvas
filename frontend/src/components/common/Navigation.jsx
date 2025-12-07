@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal';
+import { LanguageSelector } from '@/components/common/LanguageSelector';
 import {
   DropdownMenu,
   DropdownMenuContent,
