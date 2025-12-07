@@ -166,7 +166,7 @@ const HomePage = () => {
                             Warm Storytelling
                         </h3>
                         <p className="narrative-text text-sm">
-                            Each recipe comes alive through Sous Chef Linguini's warm, 
+                            Each recipe comes alive through Sous Chef Linguine's warm, 
                             sensory narration — turning cooking into an emotional journey.
                         </p>
                     </div>
