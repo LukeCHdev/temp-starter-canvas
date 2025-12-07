@@ -51,7 +51,7 @@ const MenuBuilderPage = () => {
                     </h1>
                     <div className="gold-divider"></div>
                     <p className="narrative-text text-lg mt-6">
-                        Let Sous Chef Linguini create a culturally coherent menu from authentic regional recipes.
+                        Let Sous Chef Linguine create a culturally coherent menu from authentic regional recipes.
                     </p>
                 </div>
             </section>
