@@ -12,7 +12,7 @@ export const Footer = () => {
                         <div className="flex items-center space-x-2 mb-4">
                             <ChefHat className="h-6 w-6 text-[#CBA55B]" />
                             <span className="text-xl font-bold" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                Sous Chef Linguini
+                                Sous Chef Linguine
                             </span>
                         </div>
                         <p className="text-[#FAF7F0]/70 text-sm max-w-md">
