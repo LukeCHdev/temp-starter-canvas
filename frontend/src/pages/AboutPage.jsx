@@ -20,7 +20,7 @@ const AboutPage = () => {
                         Our Mission
                     </h2>
                     <p className="narrative-text">
-                        Sous Chef Linguini exists to preserve and celebrate the authentic culinary heritage 
+                        Sous Chef Linguine exists to preserve and celebrate the authentic culinary heritage 
                         of every culture. In a world where recipes are often diluted or commercialized, 
                         we stand as guardians of tradition, ensuring that each dish tells its true story.
                     </p>
