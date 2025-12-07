@@ -49,7 +49,7 @@ export const AuthModal = ({ open, onClose }) => {
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Welcome to Sous Chef Linguini</DialogTitle>
+                    <DialogTitle>Welcome to Sous Chef Linguine</DialogTitle>
                 </DialogHeader>
                 <Tabs defaultValue="login" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
