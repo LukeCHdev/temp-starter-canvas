@@ -50,6 +50,15 @@ class TranslationEngine:
         
         return adapted_recipe
     
+    def _get_temperature_system(self, locale: str) -> str:
+        """Get temperature system (C or F)."""
+        locale_lower = locale.lower()
+        
+        if 'en-us' in locale_lower or 'en_us' in locale_lower:
+            return 'F'
+        else:
+            return 'C'
+    
     def _generate_glossary(self, recipe_data: Dict[str, Any], target_lang: str) -> Dict[str, str]:
         """Generate glossary for culturally specific terms that shouldn't be translated."""
         
