@@ -84,14 +84,17 @@ async def get_recipes(
     }
 
 @api_router.get("/recipes/{slug}")
-async def get_recipe(slug: str):
-    """Get single recipe by slug."""
+async def get_recipe(slug: str, locale: Optional[str] = "en-US"):
+    """Get single recipe by slug with locale adaptation."""
     recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
     
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
     
-    return recipe
+    # Adapt recipe to user's locale
+    adapted_recipe = translation_engine.get_locale_content(recipe, locale)
+    
+    return adapted_recipe
 
 @api_router.post("/recipes/generate")
 async def generate_recipe(recipe_create: RecipeCreate):
