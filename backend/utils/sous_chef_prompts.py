@@ -69,15 +69,20 @@ Ingredients (per X persone):
 - List all tools needed
 
 👨‍🍳 Preparazione:
-1. [Step with sensory details]
-2. [Step with cooking techniques]
-3. [Continue numbered steps]
+1. [Step with sensory details - CONCISE]
+2. [Step with cooking techniques - CONCISE]
+3. [Continue numbered steps - CONCISE]
 
 💡 Consigli del Sous Chef:
-- Personal tips
+- 3-5 personal tips (CONCISE, no long paragraphs)
 - Common mistakes to avoid
 - Storage suggestions
 - Regional variations
+
+🧠 Curiosità:
+- 2-3 brief historical or cultural notes (CONCISE)
+- Etymology or naming origin
+- Cultural significance (1-2 sentences MAX)
 
 🍷 Vini Italiani Consigliati:
 Table format with 5 wines:
