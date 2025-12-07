@@ -45,7 +45,7 @@ export const Footer = () => {
                 </div>
 
                 <div className="border-t border-[#FAF7F0]/20 mt-8 pt-8 text-center text-sm text-[#FAF7F0]/60">
-                    <p>© {new Date().getFullYear()} Sous Chef Linguini. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Sous Chef Linguine. All rights reserved.</p>
                 </div>
             </div>
         </footer>
