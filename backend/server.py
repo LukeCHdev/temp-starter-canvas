@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Query, Security
+from fastapi import FastAPI, APIRouter, HTTPException, Query, Security, UploadFile, File
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -23,6 +23,7 @@ from services.scaling_engine import scaling_engine
 from services.substitution_engine import substitution_engine
 from services.translation_engine import translation_engine
 from services.locale_service import locale_service
+from services.csv_importer import csv_importer
 
 # Import auth utilities
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
