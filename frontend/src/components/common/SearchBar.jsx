@@ -1,17 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { recipeAPI } from '@/utils/api';
 import { toast } from 'sonner';
-import { LanguageContext } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const SearchBar = ({ className = '' }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { language } = useContext(LanguageContext);
+    const { language } = useLanguage();
 
     const handleSearch = async (e) => {
         e.preventDefault();
