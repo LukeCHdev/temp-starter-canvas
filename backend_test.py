@@ -406,7 +406,7 @@ class AdminPanelTester:
 
 def main():
     """Main test runner"""
-    tester = SousChefTester()
+    tester = AdminPanelTester()
     results = tester.run_all_tests()
     
     # Return exit code based on results
