@@ -17,7 +17,9 @@ export const recipeAPI = {
     getByCountry: (country) => api.get(`/recipes/country/${country}`),
     getByRegion: (region) => api.get(`/recipes/region/${region}`),
     generate: (data) => api.post('/recipes/generate', data),
-    search: (query, autoGenerate = true) => api.get('/recipes/search', { params: { q: query, auto_generate: autoGenerate } }),
+    search: (query, autoGenerate = true, lang = 'en') => api.get('/recipes/search', { 
+        params: { q: query, auto_generate: autoGenerate, lang } 
+    }),
     // Homepage & Explore
     getBest: () => api.get('/recipes/best'),
     getFeatured: (limit = 4) => api.get('/recipes/featured', { params: { limit } }),
