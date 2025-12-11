@@ -93,65 +93,66 @@ class SousChefTester:
             
         return all_passed and len(found_recipes) > 0
             
-    def test_search_same_recipe_italian(self, english_recipe_slug: str = None):
-        """Test Case 2: Search for SAME recipe in Italian (should translate, NOT create duplicate)"""
-        print("\n=== Test 2: Search for same recipe in Italian ===")
+    def test_country_attribution_fixes(self):
+        """Test Case 2: Country Attribution - Verify correct country origins"""
+        print("\n=== Test 2: Country Attribution Tests ===")
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara",
-                "lang": "it"
-            })
-            
-            if response.status_code != 200:
-                self.log_test("Search Carbonara (IT)", False, f"HTTP {response.status_code}: {response.text}")
-                return None
+        test_cases = [
+            {
+                "query": "Peking Duck",
+                "expected_country": "China",
+                "description": "Chinese dish should not default to Italy"
+            },
+            {
+                "query": "Beef Wellington", 
+                "expected_country": "United Kingdom",
+                "description": "British dish should not default to Italy"
+            },
+            {
+                "query": "Kimchi",
+                "expected_country": "South Korea", 
+                "description": "Korean dish should not default to Italy"
+            }
+        ]
+        
+        all_passed = True
+        
+        for test_case in test_cases:
+            try:
+                response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                    "q": test_case["query"],
+                    "lang": "en"
+                })
                 
-            data = response.json()
-            
-            # Check expected fields
-            expected_fields = ["found", "generated", "translated", "recipe"]
-            missing_fields = [field for field in expected_fields if field not in data]
-            
-            if missing_fields:
-                self.log_test("Search Carbonara (IT)", False, f"Missing fields: {missing_fields}", data)
-                return None
+                if response.status_code != 200:
+                    self.log_test(f"Country Attribution ({test_case['query']})", False, f"HTTP {response.status_code}: {response.text}")
+                    all_passed = False
+                    continue
+                    
+                data = response.json()
+                recipe = data.get("recipe")
                 
-            # Validate expected values
-            if not data.get("found"):
-                self.log_test("Search Carbonara (IT)", False, "Expected found=true", data)
-                return None
+                if not recipe:
+                    self.log_test(f"Country Attribution ({test_case['query']})", False, "No recipe returned")
+                    all_passed = False
+                    continue
                 
-            if data.get("generated"):
-                self.log_test("Search Carbonara (IT)", False, "Expected generated=false", data)
-                return None
+                actual_country = recipe.get("origin_country")
+                expected_country = test_case["expected_country"]
                 
-            if not data.get("translated"):
-                self.log_test("Search Carbonara (IT)", False, "Expected translated=true (IMPORTANT!)", data)
-                return None
+                if actual_country == expected_country:
+                    self.log_test(f"Country Attribution ({test_case['query']})", True, f"Correct country: {actual_country}")
+                else:
+                    self.log_test(f"Country Attribution ({test_case['query']})", False, f"Expected {expected_country}, got {actual_country}")
+                    all_passed = False
+                    
+                print(f"  {test_case['query']} -> {actual_country} (expected: {expected_country})")
                 
-            recipe = data.get("recipe")
-            if not recipe or not recipe.get("slug"):
-                self.log_test("Search Carbonara (IT)", False, "Recipe or slug missing", data)
-                return None
+            except Exception as e:
+                self.log_test(f"Country Attribution ({test_case['query']})", False, f"Exception: {str(e)}")
+                all_passed = False
                 
-            # Check if same slug as English version
-            if english_recipe_slug and recipe["slug"] != english_recipe_slug:
-                self.log_test("Search Carbonara (IT)", False, f"Different slug! EN: {english_recipe_slug}, IT: {recipe['slug']}", data)
-                return None
-                
-            # Check if history_summary is in Italian (basic check)
-            history = recipe.get("history_summary", "")
-            if not history:
-                self.log_test("Search Carbonara (IT)", False, "No history_summary found", data)
-                return None
-                
-            self.log_test("Search Carbonara (IT)", True, f"Translated recipe with same slug: {recipe['slug']}", data)
-            return recipe
-            
-        except Exception as e:
-            self.log_test("Search Carbonara (IT)", False, f"Exception: {str(e)}")
-            return None
+        return all_passed
             
     def test_search_new_recipe_english(self):
         """Test Case 3: Search for new recipe in English"""
