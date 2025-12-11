@@ -116,48 +116,41 @@ class AdminPanelTester:
             self.log_test("Admin Token Verify", False, f"Exception: {str(e)}")
             return False
             
-    def test_api_endpoint_format(self):
-        """Test Case 4: API Endpoint Format Validation"""
-        print("\n=== Test 4: API Endpoint Format Validation ===")
+    def test_admin_recipes_list(self):
+        """Test Case 4: Admin Recipe Management - Get All Recipes"""
+        print("\n=== Test 4: Admin Get All Recipes ===")
         
+        if not self.admin_token:
+            self.log_test("Admin Recipes List", False, "No admin token available")
+            return False
+            
         try:
-            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara",
-                "lang": "en"
-            })
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/recipes", headers=headers)
             
             if response.status_code != 200:
-                self.log_test("API Format Test", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("Admin Recipes List", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
             data = response.json()
             
-            # Check required top-level fields
-            required_fields = ["found", "generated", "translated", "recipe"]
-            missing_fields = [field for field in required_fields if field not in data]
+            # Check response structure
+            if "recipes" not in data or "total" not in data:
+                self.log_test("Admin Recipes List", False, "Missing 'recipes' or 'total' in response")
+                return False
+                
+            recipes = data.get("recipes", [])
+            total = data.get("total", 0)
             
-            if missing_fields:
-                self.log_test("API Format Test", False, f"Missing top-level fields: {missing_fields}")
+            if len(recipes) != total:
+                self.log_test("Admin Recipes List", False, f"Recipe count mismatch: got {len(recipes)}, expected {total}")
                 return False
                 
-            recipe = data.get("recipe")
-            if not recipe:
-                self.log_test("API Format Test", False, "No recipe object found")
-                return False
-                
-            # Check required recipe fields
-            required_recipe_fields = ["recipe_name", "slug", "origin_country", "origin_region"]
-            missing_recipe_fields = [field for field in required_recipe_fields if field not in recipe]
-            
-            if missing_recipe_fields:
-                self.log_test("API Format Test", False, f"Missing recipe fields: {missing_recipe_fields}")
-                return False
-                
-            self.log_test("API Format Test", True, "All required fields present in API response")
+            self.log_test("Admin Recipes List", True, f"Retrieved {total} recipes successfully")
             return True
             
         except Exception as e:
-            self.log_test("API Format Test", False, f"Exception: {str(e)}")
+            self.log_test("Admin Recipes List", False, f"Exception: {str(e)}")
             return False
             
     def test_comprehensive_duplicate_prevention(self):
