@@ -36,7 +36,30 @@
 - User registration available for favorites/ratings
 
 ## Last Updated
-December 2024 - Phase 1-5 Implementation
+December 2024 - Phase 1-5 Implementation + Duplicate Prevention Fix
+
+---
+
+## FIXES IMPLEMENTED - December 2024
+
+### Issue 1: Duplicate Recipe Prevention - ✅ FIXED
+- Implemented fuzzy string matching using `thefuzz` library
+- Search queries like "Carbonara", "Pasta Carbonara", "Spaghetti Carbonara" now all return the same recipe
+- Threshold set to 75% match score for similar recipes
+- Tested variations all resolve to canonical recipe
+
+### Issue 2: Incorrect Country Attribution - ✅ FIXED
+- Improved `_infer_country_region` function with comprehensive cuisine patterns
+- Returns `(None, None)` for unknown dishes to let AI determine origin
+- Updated AI system prompt to emphasize correct country identification
+- Fixed recipe_generator to prioritize AI's country over hints
+- Corrected legacy data: Peking Duck → China, Beef Wellington → UK
+
+### Database Cleanup Performed
+- Removed 15 duplicate recipes
+- Fixed incorrect country assignments
+- Consolidated Carbonara variants
+- Total recipes: 28 (down from 45)
 
 ---
 
