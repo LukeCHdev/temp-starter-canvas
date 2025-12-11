@@ -216,6 +216,7 @@ async def import_json(recipe: RecipeJSON, authorized: bool = Depends(verify_admi
             **recipe_data,
             "slug": slug,
             "continent": recipe_data.get('continent') or get_continent(origin_country),
+            "content_language": recipe_data.get('content_language', 'en'),  # Default to English
             "status": recipe_data.get('status', 'published'),
             "date_fetched": datetime.now(timezone.utc).isoformat(),
             "gpt_used": recipe_data.get('gpt_used', 'Manual Import'),
