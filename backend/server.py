@@ -622,13 +622,38 @@ async def get_recipes_by_country_name(country: str, limit: int = 50):
     }
 
 @api_router.get("/recipes/{slug}")
-async def get_recipe(slug: str, locale: Optional[str] = "en-US"):
-    """Get single recipe by slug."""
+async def get_recipe(slug: str, lang: Optional[str] = "en"):
+    """Get single recipe by slug with optional translation.
+    
+    If lang parameter differs from the recipe's content_language,
+    the recipe will be translated on-the-fly (not saved to DB).
+    """
+    from services.sous_chef_ai import sous_chef_ai
+    
     try:
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
         
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Normalize language code
+        target_lang = lang.lower()[:2] if lang else "en"
+        
+        # Check if translation is needed
+        content_lang = recipe.get("content_language", "en")[:2].lower()
+        
+        if target_lang != content_lang:
+            logger.info(f"Translating recipe '{slug}' from {content_lang} to {target_lang}")
+            try:
+                translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
+                # Preserve original metadata
+                translated_recipe["slug"] = recipe["slug"]
+                translated_recipe["_translated"] = True
+                translated_recipe["_original_lang"] = content_lang
+                translated_recipe["_display_lang"] = target_lang
+                return translated_recipe
+            except Exception as e:
+                logger.warning(f"Translation failed, returning canonical: {str(e)}")
         
         return recipe
     except HTTPException:
