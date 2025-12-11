@@ -662,6 +662,117 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
         logger.error(f"Error fetching recipe {slug}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+
+# ============== REVIEWS & RATINGS ==============
+
+from models.rating import ReviewCreate, Review, ReviewsResponse
+from uuid import uuid4
+
+@api_router.post("/recipes/{slug}/review")
+async def create_review(slug: str, review: ReviewCreate):
+    """Create a new review for a recipe.
+    
+    No authentication required for MVP.
+    Updates the recipe's average_rating and ratings_count.
+    """
+    try:
+        # Verify recipe exists
+        recipe = await db.recipes.find_one({"slug": slug, "status": "published"})
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Create review document
+        review_doc = {
+            "id": str(uuid4()),
+            "recipe_slug": slug,
+            "rating": review.rating,
+            "comment": review.comment.strip() if review.comment else None,
+            "language": review.language or "en",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Save review to recipe_reviews collection
+        await db.recipe_reviews.insert_one(review_doc)
+        
+        # Calculate new average rating
+        all_reviews = await db.recipe_reviews.find(
+            {"recipe_slug": slug},
+            {"rating": 1, "_id": 0}
+        ).to_list(10000)
+        
+        ratings = [r["rating"] for r in all_reviews]
+        new_average = sum(ratings) / len(ratings) if ratings else 0
+        new_count = len(ratings)
+        
+        # Update recipe with new rating stats
+        await db.recipes.update_one(
+            {"slug": slug},
+            {
+                "$set": {
+                    "average_rating": round(new_average, 2),
+                    "ratings_count": new_count,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        logger.info(f"New review for {slug}: {review.rating} stars (new avg: {new_average:.2f}, count: {new_count})")
+        
+        # Return the created review (without MongoDB _id)
+        review_doc.pop('_id', None)
+        
+        return {
+            "success": True,
+            "review": review_doc,
+            "average_rating": round(new_average, 2),
+            "ratings_count": new_count
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating review for {slug}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/recipes/{slug}/reviews")
+async def get_reviews(slug: str, limit: int = 50, offset: int = 0):
+    """Get all reviews for a recipe.
+    
+    Returns reviews sorted by newest first.
+    """
+    try:
+        # Verify recipe exists
+        recipe = await db.recipes.find_one(
+            {"slug": slug, "status": "published"},
+            {"average_rating": 1, "ratings_count": 1, "_id": 0}
+        )
+        if not recipe:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Get reviews with pagination
+        reviews = await db.recipe_reviews.find(
+            {"recipe_slug": slug},
+            {"_id": 0}
+        ).sort("created_at", -1).skip(offset).limit(limit).to_list(limit)
+        
+        # Get total count
+        total = await db.recipe_reviews.count_documents({"recipe_slug": slug})
+        
+        return {
+            "reviews": reviews,
+            "total": total,
+            "average_rating": recipe.get("average_rating", 0),
+            "ratings_count": recipe.get("ratings_count", 0)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching reviews for {slug}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @api_router.post("/recipes/generate")
 async def generate_recipe(recipe_create: RecipeCreate):
     """Generate a new recipe using Sous-Chef Linguine GPT."""
