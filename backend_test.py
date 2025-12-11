@@ -159,9 +159,10 @@ class SousChefTester:
         print("\n=== Test 3: Translation Duplicate Prevention ===")
         
         try:
+            # Use Beef Wellington (English recipe) for translation test
             # First get English version
             response_en = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara",
+                "q": "Beef Wellington",
                 "lang": "en"
             })
             
@@ -177,10 +178,11 @@ class SousChefTester:
                 return False
                 
             english_slug = recipe_en["slug"]
+            english_origin_lang = recipe_en.get("origin_language", "en")
             
-            # Now get Italian version
+            # Now get Italian version (should be translated)
             response_it = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara", 
+                "q": "Beef Wellington", 
                 "lang": "it"
             })
             
@@ -199,10 +201,12 @@ class SousChefTester:
                 self.log_test("Translation Test (IT)", False, f"Expected generated=false (should reuse existing), got {data_it.get('generated')}")
                 return False
                 
-            if not data_it.get("translated"):
-                self.log_test("Translation Test (IT)", False, f"Expected translated=true, got {data_it.get('translated')}")
-                return False
-                
+            # Only expect translation if original language is different from requested language
+            if english_origin_lang != "it":
+                if not data_it.get("translated"):
+                    self.log_test("Translation Test (IT)", False, f"Expected translated=true for English->Italian, got {data_it.get('translated')}")
+                    return False
+            
             recipe_it = data_it.get("recipe")
             if not recipe_it or not recipe_it.get("slug"):
                 self.log_test("Translation Test (IT)", False, "No Italian recipe found")
@@ -212,7 +216,7 @@ class SousChefTester:
             
             # Check if same slug
             if english_slug == italian_slug:
-                self.log_test("Translation Duplicate Prevention", True, f"Same slug for both languages: {english_slug}")
+                self.log_test("Translation Duplicate Prevention", True, f"Same slug for both languages: {english_slug}, translated: {data_it.get('translated')}")
                 return True
             else:
                 self.log_test("Translation Duplicate Prevention", False, f"Different slugs! EN: {english_slug}, IT: {italian_slug}")
