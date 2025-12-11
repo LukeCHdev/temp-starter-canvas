@@ -322,31 +322,31 @@ class SousChefTester:
         return all_passed
             
     def run_all_tests(self):
-        """Run all test cases"""
-        print("🧪 Starting Sous Chef Linguine Backend Tests")
+        """Run all test cases based on review request"""
+        print("🧪 Starting Sous Chef Linguine Recipe Search API Tests")
+        print("Testing duplicate prevention and country attribution fixes")
         print(f"Backend URL: {BACKEND_URL}")
-        print("=" * 60)
+        print("=" * 70)
         
-        # Test 1: Search existing recipe in English
-        english_recipe = self.test_search_existing_recipe_english()
-        english_slug = english_recipe["slug"] if english_recipe else None
+        # Test 1: Duplicate Prevention Tests
+        self.test_duplicate_prevention_carbonara()
         
-        # Test 2: Search same recipe in Italian
-        self.test_search_same_recipe_italian(english_slug)
+        # Test 2: Country Attribution Tests  
+        self.test_country_attribution_fixes()
         
-        # Test 3: Search new recipe in English
-        self.test_search_new_recipe_english()
+        # Test 3: Translation Test (Duplicate Prevention across languages)
+        self.test_translation_duplicate_prevention()
         
-        # Test 4: Verify no duplicates
-        self.test_verify_no_duplicates()
+        # Test 4: API Endpoint Format
+        self.test_api_endpoint_format()
         
-        # Test 5: Test technique_links field
-        self.test_technique_links_field()
+        # Test 5: Comprehensive Duplicate Prevention
+        self.test_comprehensive_duplicate_prevention()
         
         # Summary
-        print("\n" + "=" * 60)
+        print("\n" + "=" * 70)
         print("📊 TEST SUMMARY")
-        print("=" * 60)
+        print("=" * 70)
         
         passed = sum(1 for result in self.test_results if result["success"])
         total = len(self.test_results)
@@ -360,6 +360,15 @@ class SousChefTester:
         for result in self.test_results:
             status = "✅" if result["success"] else "❌"
             print(f"{status} {result['test']}: {result['details']}")
+            
+        # Critical Issues Summary
+        failed_tests = [r for r in self.test_results if not r["success"]]
+        if failed_tests:
+            print(f"\n❌ CRITICAL ISSUES FOUND:")
+            for failed in failed_tests:
+                print(f"  - {failed['test']}: {failed['details']}")
+        else:
+            print(f"\n✅ ALL TESTS PASSED - Duplicate prevention and country attribution working correctly!")
             
         return self.test_results
 
