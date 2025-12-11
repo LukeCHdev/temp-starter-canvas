@@ -3,15 +3,34 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { recipeAPI } from '@/utils/api';
 
 export const SearchBar = ({ className = '' }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            navigate(`/recipes?search=${encodeURIComponent(searchQuery)}`);
+        const query = searchQuery.trim();
+        if (!query) return;
+
+        try {
+            // 🔥 CALL THE BACKEND API
+            const res = await recipeAPI.search(query, true);
+
+            // Expect the backend to return the recipe object with a slug
+            const recipe = res.data;
+
+            if (recipe && recipe.slug) {
+                // Navigate to the AI-generated or existing recipe
+                navigate(`/recipe/${recipe.slug}`);
+            } else {
+                alert("Recipe not found");
+            }
+
+        } catch (error) {
+            console.error("Search error:", error);
+            alert("No recipe found or AI generation failed.");
         }
     };
 
