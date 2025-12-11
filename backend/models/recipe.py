@@ -41,6 +41,12 @@ class SourceURL(BaseModel):
     type: Optional[str] = "traditional"
     language: Optional[str] = ""
 
+class TechniqueLink(BaseModel):
+    """Link to technique guide/tutorial"""
+    technique: str
+    url: str
+    description: Optional[str] = ""
+
 class SousChefRecipe(BaseModel):
     """
     Recipe model matching Sous-Chef Linguine GPT output.
