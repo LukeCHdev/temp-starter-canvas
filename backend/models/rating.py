@@ -1,8 +1,32 @@
 # Rating and Comment models
 
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List
+from datetime import datetime
 
+class ReviewCreate(BaseModel):
+    """Model for creating a new review."""
+    rating: int = Field(..., ge=1, le=5, description="Rating from 1 to 5 stars")
+    comment: Optional[str] = Field(None, max_length=2000, description="Optional review comment")
+    language: Optional[str] = Field("en", description="Language of the comment")
+
+class Review(BaseModel):
+    """Model for a recipe review."""
+    id: str
+    recipe_slug: str
+    rating: int
+    comment: Optional[str] = None
+    language: str = "en"
+    created_at: str
+
+class ReviewsResponse(BaseModel):
+    """Response model for getting reviews."""
+    reviews: List[Review]
+    total: int
+    average_rating: float
+    ratings_count: int
+
+# Legacy models for backward compatibility
 class RatingCreate(BaseModel):
     recipe_slug: str
     rating: int  # 1-5 stars
