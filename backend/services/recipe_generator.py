@@ -20,6 +20,12 @@ COUNTRY_TO_CONTINENT = {
     "Czech Republic": "Europe", "Hungary": "Europe", "Romania": "Europe", "Bulgaria": "Europe",
     "Croatia": "Europe", "Serbia": "Europe", "Ireland": "Europe", "Scotland": "Europe",
     "Wales": "Europe", "Russia": "Europe", "Ukraine": "Europe", "Turkey": "Europe",
+    "Albania": "Europe", "Bosnia and Herzegovina": "Europe", "Montenegro": "Europe",
+    "North Macedonia": "Europe", "Slovenia": "Europe", "Slovakia": "Europe", "Kosovo": "Europe",
+    "Moldova": "Europe", "Belarus": "Europe", "Lithuania": "Europe", "Latvia": "Europe",
+    "Estonia": "Europe", "Iceland": "Europe", "Luxembourg": "Europe", "Malta": "Europe",
+    "Cyprus": "Europe", "Andorra": "Europe", "Monaco": "Europe", "San Marino": "Europe",
+    "Liechtenstein": "Europe", "Vatican City": "Europe",
     
     # Asia
     "Japan": "Asia", "China": "Asia", "South Korea": "Asia", "North Korea": "Asia",
@@ -27,26 +33,40 @@ COUNTRY_TO_CONTINENT = {
     "Singapore": "Asia", "Philippines": "Asia", "India": "Asia", "Pakistan": "Asia",
     "Bangladesh": "Asia", "Sri Lanka": "Asia", "Nepal": "Asia", "Myanmar": "Asia",
     "Cambodia": "Asia", "Laos": "Asia", "Taiwan": "Asia", "Hong Kong": "Asia",
+    "Mongolia": "Asia", "Kazakhstan": "Asia", "Uzbekistan": "Asia", "Turkmenistan": "Asia",
+    "Tajikistan": "Asia", "Kyrgyzstan": "Asia", "Afghanistan": "Asia", "Bhutan": "Asia",
+    "Maldives": "Asia", "Brunei": "Asia", "Timor-Leste": "Asia",
     
     # Americas
     "United States": "Americas", "USA": "Americas", "Mexico": "Americas", "Canada": "Americas",
     "Brazil": "Americas", "Argentina": "Americas", "Peru": "Americas", "Colombia": "Americas",
     "Chile": "Americas", "Venezuela": "Americas", "Ecuador": "Americas", "Cuba": "Americas",
     "Jamaica": "Americas", "Dominican Republic": "Americas", "Puerto Rico": "Americas",
+    "Guatemala": "Americas", "Honduras": "Americas", "El Salvador": "Americas", "Nicaragua": "Americas",
+    "Costa Rica": "Americas", "Panama": "Americas", "Bolivia": "Americas", "Paraguay": "Americas",
+    "Uruguay": "Americas", "Haiti": "Americas", "Trinidad and Tobago": "Americas", "Bahamas": "Americas",
+    "Barbados": "Americas", "Guyana": "Americas", "Suriname": "Americas", "Belize": "Americas",
     
     # Africa
     "Morocco": "Africa", "Egypt": "Africa", "Ethiopia": "Africa", "Nigeria": "Africa",
     "South Africa": "Africa", "Kenya": "Africa", "Ghana": "Africa", "Senegal": "Africa",
-    "Tunisia": "Africa", "Algeria": "Africa", "Tanzania": "Africa",
+    "Tunisia": "Africa", "Algeria": "Africa", "Tanzania": "Africa", "Libya": "Africa",
+    "Sudan": "Africa", "Uganda": "Africa", "Cameroon": "Africa", "Ivory Coast": "Africa",
+    "Cote d'Ivoire": "Africa", "Madagascar": "Africa", "Mozambique": "Africa", "Zimbabwe": "Africa",
+    "Zambia": "Africa", "Mali": "Africa", "Niger": "Africa", "Burkina Faso": "Africa",
+    "Rwanda": "Africa", "Benin": "Africa", "Togo": "Africa", "Somalia": "Africa",
+    "Eritrea": "Africa", "Mauritius": "Africa", "Botswana": "Africa", "Namibia": "Africa",
     
     # Middle East
     "Lebanon": "Middle East", "Israel": "Middle East", "Iran": "Middle East", "Iraq": "Middle East",
     "Saudi Arabia": "Middle East", "United Arab Emirates": "Middle East", "UAE": "Middle East",
     "Jordan": "Middle East", "Syria": "Middle East", "Yemen": "Middle East", "Oman": "Middle East",
     "Kuwait": "Middle East", "Bahrain": "Middle East", "Qatar": "Middle East", "Palestine": "Middle East",
+    "Georgia": "Middle East", "Armenia": "Middle East", "Azerbaijan": "Middle East",
     
     # Oceania
     "Australia": "Oceania", "New Zealand": "Oceania", "Fiji": "Oceania", "Papua New Guinea": "Oceania",
+    "Samoa": "Oceania", "Tonga": "Oceania", "Vanuatu": "Oceania", "Solomon Islands": "Oceania",
 }
 
 
