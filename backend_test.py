@@ -207,6 +207,141 @@ class AdminPanelTester:
         except Exception as e:
             self.log_test("Admin Single Recipe", False, f"Exception: {str(e)}")
             return False
+    def test_admin_json_import(self):
+        """Test Case 6: Admin JSON Import"""
+        print("\n=== Test 6: Admin JSON Import ===")
+        
+        if not self.admin_token:
+            self.log_test("Admin JSON Import", False, "No admin token available")
+            return False
+            
+        # Test recipe JSON from review request
+        test_recipe = {
+            "recipe_name": "Test Admin Recipe",
+            "origin_country": "France", 
+            "origin_region": "Provence",
+            "authenticity_level": 2,
+            "history_summary": "A test recipe for admin panel",
+            "characteristic_profile": "Test flavor profile",
+            "no_no_rules": ["Test rule 1"],
+            "special_techniques": ["Test technique"],
+            "ingredients": [{"item": "Test ingredient", "amount": "100", "unit": "g", "notes": ""}],
+            "instructions": ["Step 1", "Step 2"],
+            "wine_pairing": {"recommended_wines": [], "notes": "Test notes"}
+        }
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.post(f"{BACKEND_URL}/admin/import/json", 
+                                       headers=headers,
+                                       json={"recipe_json": test_recipe})
+            
+            if response.status_code != 200:
+                self.log_test("Admin JSON Import", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            if not data.get("success"):
+                self.log_test("Admin JSON Import", False, f"Import failed: {data}")
+                return False
+                
+            if not data.get("slug"):
+                self.log_test("Admin JSON Import", False, "No slug returned from import")
+                return False
+                
+            imported_slug = data["slug"]
+            self.log_test("Admin JSON Import", True, f"Recipe imported successfully with slug: {imported_slug}")
+            
+            # Test duplicate detection - try importing same recipe again
+            response2 = self.session.post(f"{BACKEND_URL}/admin/import/json", 
+                                        headers=headers,
+                                        json={"recipe_json": test_recipe})
+            
+            if response2.status_code == 400:
+                self.log_test("Admin JSON Duplicate Detection", True, "Correctly rejected duplicate recipe")
+                return True
+            else:
+                self.log_test("Admin JSON Duplicate Detection", False, f"Expected 400 for duplicate, got {response2.status_code}")
+                return False
+            
+        except Exception as e:
+            self.log_test("Admin JSON Import", False, f"Exception: {str(e)}")
+            return False
+            
+    def test_admin_stats(self):
+        """Test Case 7: Admin Dashboard Statistics"""
+        print("\n=== Test 7: Admin Dashboard Statistics ===")
+        
+        if not self.admin_token:
+            self.log_test("Admin Stats", False, "No admin token available")
+            return False
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/stats", headers=headers)
+            
+            if response.status_code != 200:
+                self.log_test("Admin Stats", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            # Check required fields
+            required_fields = ["total_recipes", "published_recipes", "recipes_by_country", "recipes_by_continent", "recent_recipes"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if missing_fields:
+                self.log_test("Admin Stats", False, f"Missing fields: {missing_fields}")
+                return False
+                
+            total_recipes = data.get("total_recipes", 0)
+            published_recipes = data.get("published_recipes", 0)
+            
+            if total_recipes < 0 or published_recipes < 0:
+                self.log_test("Admin Stats", False, f"Invalid recipe counts: total={total_recipes}, published={published_recipes}")
+                return False
+                
+            self.log_test("Admin Stats", True, f"Stats retrieved: {total_recipes} total, {published_recipes} published")
+            return True
+            
+        except Exception as e:
+            self.log_test("Admin Stats", False, f"Exception: {str(e)}")
+            return False
+            
+    def test_csv_template(self):
+        """Test Case 8: CSV Template Endpoint"""
+        print("\n=== Test 8: CSV Template ===")
+        
+        if not self.admin_token:
+            self.log_test("CSV Template", False, "No admin token available")
+            return False
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/csv-template", headers=headers)
+            
+            if response.status_code != 200:
+                self.log_test("CSV Template", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            if "headers" not in data or "notes" not in data:
+                self.log_test("CSV Template", False, "Missing 'headers' or 'notes' in response")
+                return False
+                
+            headers_list = data.get("headers", [])
+            if not headers_list or len(headers_list) < 10:
+                self.log_test("CSV Template", False, f"Invalid headers list: {len(headers_list)} items")
+                return False
+                
+            self.log_test("CSV Template", True, f"CSV template retrieved with {len(headers_list)} headers")
+            return True
+            
+        except Exception as e:
+            self.log_test("CSV Template", False, f"Exception: {str(e)}")
+            return False
             
     def run_all_tests(self):
         """Run all test cases based on review request"""
