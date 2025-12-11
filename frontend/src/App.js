@@ -8,6 +8,7 @@ import { LanguageProvider } from '@/context/LanguageContext';
 
 // Pages
 import HomePage from '@/pages/HomePage';
+import ExplorePage from '@/pages/ExplorePage';
 import RegionsPage from '@/pages/RegionsPage';
 import CountryPage from '@/pages/CountryPage';
 import RecipePage from '@/pages/RecipePage';
@@ -31,6 +32,9 @@ function App() {
             <main className="flex-1">
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/explore" element={<ExplorePage />} />
+              <Route path="/explore/:continent" element={<ExplorePage />} />
+              <Route path="/explore/:continent/:country" element={<ExplorePage />} />
               <Route path="/regions" element={<RegionsPage />} />
               <Route path="/country/:slug" element={<CountryPage />} />
               <Route path="/recipe/:slug" element={<RecipePage />} />
