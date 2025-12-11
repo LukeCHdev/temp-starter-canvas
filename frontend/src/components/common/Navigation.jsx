@@ -18,7 +18,7 @@ export const Navigation = () => {
     const [showAuthModal, setShowAuthModal] = useState(false);
 
     const navLinks = [
-        { to: '/regions', label: 'Regions', icon: Globe },
+        { to: '/explore', label: 'Explore', icon: Globe },
         { to: '/menu-builder', label: 'Menu Builder', icon: MenuIcon },
         { to: '/techniques', label: 'Techniques', icon: BookOpen },
         { to: '/about', label: 'About', icon: null },
