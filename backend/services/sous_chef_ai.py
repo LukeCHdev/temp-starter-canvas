@@ -258,7 +258,7 @@ Original recipe:
                     },
                     json={
                         "model": self.model,
-                        "input": [
+                        "messages": [
                             {
                                 "role": "system",
                                 "content": SOUS_CHEF_SYSTEM_PROMPT
@@ -267,18 +267,20 @@ Original recipe:
                                 "role": "user",
                                 "content": user_message
                             }
-                        ]
+                        ],
+                        "temperature": 0.7,
+                        "max_tokens": 4000
                     }
                 )
                 
                 response.raise_for_status()
                 data = response.json()
                 
-                if "output" in data and len(data["output"]) > 0:
-                    output_content = data["output"][0]
-                    if "content" in output_content and len(output_content["content"]) > 0:
-                        text_content = output_content["content"][0].get("text", "")
-                        return self._parse_json_response(text_content)
+                # Parse Chat Completions format
+                if "choices" in data and len(data["choices"]) > 0:
+                    message_content = data["choices"][0].get("message", {}).get("content", "")
+                    if message_content:
+                        return self._parse_json_response(message_content)
                 
                 raise ValueError("Unexpected API response format")
                 
