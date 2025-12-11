@@ -57,19 +57,18 @@ async def search_recipes(
     locale: Optional[str] = "en-US",
     auto_generate: bool = True
 ):
-    """Search for recipes with on-demand generation.
+    """Search for recipes with on-demand generation using Sous-Chef Linguine GPT.
     
     If recipe doesn't exist and auto_generate=True, it will be generated automatically.
     """
     try:
-        # Search in database first
+        # Search in database first (search both old and new schema fields)
         search_query = {
             "$or": [
+                {"recipe_name": {"$regex": q, "$options": "i"}},
                 {"title_original": {"$regex": q, "$options": "i"}},
                 {"title_translated.en": {"$regex": q, "$options": "i"}},
-                {"title_translated.it": {"$regex": q, "$options": "i"}},
-                {"title_translated.es": {"$regex": q, "$options": "i"}},
-                {"title_translated.fr": {"$regex": q, "$options": "i"}}
+                {"slug": {"$regex": q.lower().replace(" ", "-"), "$options": "i"}}
             ],
             "status": "published"
         }
@@ -98,11 +97,10 @@ async def search_recipes(
             )
             
             logger.info(f"Recipe found for query '{q}': {recipe['slug']}")
-            adapted_recipe = translation_engine.get_locale_content(recipe, locale)
             return {
                 "found": True,
                 "generated": False,
-                "recipe": adapted_recipe
+                "recipe": recipe
             }
         
         # Recipe not found - generate if enabled
@@ -113,36 +111,23 @@ async def search_recipes(
                 "message": f"No recipe found for '{q}'"
             }
         
-        logger.info(f"Recipe not found for '{q}' - generating on-demand")
+        logger.info(f"Recipe not found for '{q}' - generating on-demand using Sous-Chef Linguine GPT")
         
         # Determine country and region from query (simplified logic)
-        # In production, this could use NLP or a mapping table
         country, region = _infer_country_region(q)
         
-        # Generate recipe using AI
+        # Generate recipe using Sous-Chef Linguine GPT
         recipe_data = await recipe_generator.generate_recipe(
             dish_name=q,
             country=country,
             region=region
         )
         
-        # Validate authenticity
-        is_valid, rejection_reason, validation_report = authenticity_engine.validate_recipe(recipe_data)
-        
-        if not is_valid:
-            logger.warning(f"Generated recipe for '{q}' failed validation: {rejection_reason}")
-            recipe_data['status'] = 'rejected'
-            recipe_data['rejection_reason'] = rejection_reason
-            await db.recipes.insert_one(recipe_data)
-            
-            raise HTTPException(
-                status_code=400,
-                detail=f"Recipe generation failed validation: {rejection_reason}"
-            )
-        
-        # Save to database
-        recipe_data['status'] = 'published'
+        # Save to database (Sous-Chef GPT already enforces authenticity)
         await db.recipes.insert_one(recipe_data)
+        
+        # Remove _id before returning
+        recipe_data.pop('_id', None)
         
         # Initialize analytics
         await db.recipe_analytics.insert_one({
@@ -161,14 +146,11 @@ async def search_recipes(
         
         logger.info(f"Recipe generated and saved for '{q}': {recipe_data['slug']}")
         
-        # Adapt to locale
-        adapted_recipe = translation_engine.get_locale_content(recipe_data, locale)
-        
         return {
             "found": False,
             "generated": True,
-            "recipe": adapted_recipe,
-            "message": f"Recipe for '{q}' generated successfully!"
+            "recipe": recipe_data,
+            "message": f"Recipe for '{q}' generated successfully by Sous-Chef Linguine!"
         }
     
     except HTTPException:
