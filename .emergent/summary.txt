@@ -2,306 +2,167 @@
 The user wants to build Sous Chef Linguine – The Authentic Global Recipe Engine, a multilingual, AI-powered cooking platform. The core mission is to deliver authentic, traditional, and culturally correct recipes from every country, rejecting Americanized or globalized distortions.
 
 **PRODUCT REQUIREMENTS:**
-- **Authenticity First:** A strict, multi-level authenticity framework (Official > Traditional > Modern) must be used to validate every recipe. Validation requires checking native-language sources, country-specific domains, and official registries (DOP, PAT, etc.).
-- **Sous Chef Linguine Persona:** All content must be written in the warm, humorous, and sensory voice of an Italian sous-chef. The tone should be culturally rich but concise (max 8-10 lines for introductions).
-- **AI-Powered Engines:** The platform must feature several AI engines for:
-    - **On-Demand Generation:** Generate recipes automatically when a user searches for one that doesn't exist in the database.
-    - **Authenticity Validation:** Rank and validate sources.
-    - **Adaptive Cooking Logic:** Adjust cooking times based on weight, cut, and quantity.
-    - **Translation & Locale Adaptation:** Display all content in the user's selected language (IT, EN, ES, FR, DE) and adapt units (Metric/Imperial) and temperature (°C/°F).
-- **Data Ingestion:** The database must be populated through multiple methods: initial seeding, on-demand generation, official scraping, manual imports (CSV, PDF), and an automated bot.
-- **Rich Recipe Structure:** Every recipe must include a detailed structure with history, cultural context, no-no rules, techniques, variations, media (photos, YouTube links), and user-generated content.
-- **User & Community Features:** Users must be able to create accounts, save favorite recipes, rate recipes (1-5 stars), and leave comments. A Verified by Community badge system should be implemented.
-- **Discovery:** The homepage should feature trending, recently generated, and regionally popular recipes based on analytics like search, view, and favorite counts.
+- **Authenticity First:** Use a strict framework (Official > Traditional > Modern) to validate every recipe.
+- **AI-Powered Engines:** The platform must feature AI engines for on-demand recipe generation, authenticity validation, and dynamic translation. All AI generation must be performed by the user's custom GPT, Sous-Chef Linguine, via the OpenAI API.
+- **Dynamic Translation:** Recipe translations are generated on-demand and are NOT saved to the database to prevent duplicates. Only one canonical recipe is stored per dish.
+- **Data Ingestion:** The database is populated via on-demand AI generation and CSV imports.
+- **Rich Recipe Structure:** Recipes must include history, cultural context, no-no rules, special techniques, media links, and wine pairings. A new optional  field was recently added.
+- **User & Community Features:** Users can create accounts, save favorites, rate recipes, and leave comments.
+- **Discovery & SEO:** The homepage features ranked recipes. An Explore page allows browsing by continent and country. The site must be SEO-ready with a sitemap, robots.txt, and structured data.
 - **Tech Stack:** FastAPI backend, React frontend, and MongoDB database.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A full-stack application foundation is in place. The backend has the complete folder structure, Pydantic models (, , , etc.), and API routes for all major features, including authentication, favorites, ratings, and on-demand recipe generation. Core services for AI integration, authenticity validation, translation, and adaptive cooking have been created. The frontend has a component-based structure, context providers for Auth and Language, and pages for most of the sitemap. User authentication and a language selector are integrated into the UI. The name has been standardized to Sous Chef Linguine across the codebase.
+A full-stack application with a FastAPI backend, React frontend, and MongoDB database. The AI pipeline has been successfully migrated from a placeholder to the user's custom Sous-Chef Linguine GPT, using their OpenAI API key. The backend database schema and Pydantic models have been updated to match the AI's JSON output.
+
+The frontend features a redesigned homepage with a hero recipe, a new multi-level Explore page for browsing by continent/country, and an updated recipe page that displays detailed information, including wine pairings and special techniques.
+
+The backend provides APIs for ranking, discovery, on-demand AI generation, and dynamic translation. The search logic correctly finds existing recipes and translates them on-the-fly, preventing the creation of duplicates based on language. SEO features like a sitemap, robots.txt, and JSON-LD structured data are also implemented.
 
 **Last working item**:
-- **Last item agent was working:** Seeding the database with an initial batch of 20-30 curated recipes as specified by the user. The agent created the script  and started its execution.
-- **Status:** BLOCKED
-- **Reasoning:** The execution of the seeding script failed because the Emergent LLM key has exceeded its budget ( used of  budget). This prevents the AI from generating the required recipe content.
-- **Agent Testing Done:** N
-- **Which testing method agent to use?** backend testing agent. After the user confirms the LLM key budget has been topped up, the agent must re-run the 
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'. script. The agent should then verify that the recipes have been successfully added to the MongoDB  collection.
+- **Last item agent was working:** Addressing issues found by the frontend testing agent after implementing the dynamic translation feature. The testing agent revealed that while language-based duplicates are prevented, searching for slight variations of the same dish (e.g., Carbonara vs. Pasta Carbonara) still creates duplicate recipes.
+- **Status:** IN PROGRESS
+- **Agent Testing Done:** Y
+- **Which testing method agent to use?** Backend testing agent. The fix requires modifying the backend search logic. After implementation, use the testing agent to verify that various permutations of a recipe name (e.g., Carbonara, Spaghetti Carbonara, Pasta alla Carbonara) all resolve to a single canonical recipe without creating duplicates.
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1 (P0):** Emergent LLM Key Budget Exceeded.
-  - **Attempted fixes:** None. The agent correctly identified that this is an external budget issue that the user must resolve.
-  - **Next debug checklist:**
-    1. Inform the user that the Emergent LLM key has run out of funds and that they need to add more balance to proceed.
-    2. Once the user confirms the key is funded, re-run the last failed command: 
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+- **Issue 1 (P0):** Duplicate recipes are created from similar search queries.
+- **Issue 2 (P1):** The AI occasionally infers the incorrect country of origin for a generated recipe.
 
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
-
-
-[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
-LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'..
-  - **Why fix this issue and what will be achieved with the fix?** This is a hard blocker for all AI-powered features. Fixing it will unblock the initial database seeding and all on-demand generation capabilities, which are central to the project.
-  - **Status:** BLOCKED
-  - **Is recurring issue?** Y (The agent previously encountered 502 errors and timeouts, which are often related to LLM service load or key issues).
-  - **Should Test frontend/backend/both after fix?** Backend.
-  - **Blocked on other issue:** None. This is the root blocker.
+**Issues Detail:**
+- **Issue 1: Duplicate recipes from similar queries**
+    - **Attempted fixes:** None. The issue was just identified by the testing agent.
+    - **Next debug checklist:**
+        1. Review the search logic in  at the  endpoint.
+        2. Implement a more robust matching strategy before triggering AI generation. Consider using fuzzy string matching (e.g., with a library like ) or keyword analysis to identify if a search query closely matches an existing recipe name in the database.
+        3. If a sufficiently similar recipe is found, return that recipe (or its translation) instead of generating a new one.
+    - **Why fix this issue and what will be achieved?** This is a critical fix to enforce the one canonical recipe per dish rule, preventing database bloat and ensuring data integrity.
+    - **Status:** NOT STARTED
+    - **Is recurring issue?** N
+    - **Should Test frontend/backend/both after fix?** Backend.
+- **Issue 2: Incorrect country inference**
+    - **Attempted fixes:** None.
+    - **Next debug checklist:**
+        1. Review the system prompt in  to add a stronger directive for accurate country identification.
+        2. Investigate the  helper function in . It may be acting as an incorrect fallback when the AI does not provide a country, causing slugs like . The AI should be the sole source of truth for the origin country.
+    - **Why fix this issue and what will be achieved?** This ensures recipes have correct geographical data, which is fundamental to the platform's authenticity mission and the functionality of the Explore page.
+    - **Status:** NOT STARTED
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?** Backend.
 
 **In progress Task List**:
-- **Task 1 (P0):** Initial Database Seeding.
-  - **Where to resume:** Execute the script .
-  - **What will be achieved with this?** Populate the database with the initial 20-30 core recipes, making the platform usable for initial demonstration and testing.
-  - **Status:** IN PROGRESS (Blocked by Issue 1).
-  - **Should Test frontend/backend/both after fix?** Backend.
-  - **Blocked on something:** Issue 1: Emergent LLM Key Budget Exceeded.
+- None.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - **P0: Complete On-Demand Recipe Generation:** The search endpoint () needs to be fully integrated with the AI pipeline to generate, translate, validate, and save new recipes when they are not found in the database.
-    - **P1: Implement Frontend for Ratings & Comments:** The backend is ready. The frontend needs UI components on the  to display ratings/comments and allow authenticated users to submit them.
-    - **P1: Complete AI Translation Layer:** The  must be fully integrated to translate all recipe fields on-the-fly based on the user's selected language from the .
-    - **P2: Integrate Adaptive Cooking Logic:** The logic in  needs to be called during recipe generation/scaling to provide dynamic cooking times in the recipe display.
+    - **P1:** Implement Frontend UI for Ratings & Comments on the .
+    - **P2:** Integrate Adaptive Cooking Logic from  to allow users to scale ingredient quantities.
+    - **P2:** Improve the UI of the  component.
+    - **P3:** Finalize UI/UX touches, including a dedicated No results found page and enhanced loading states.
 - **Future Tasks:**
-    - **P2: Implement Community Verification Badges:** Add logic to award Verified by Community and Highly Authentic badges based on user feedback counts.
-    - **P2: Implement Trending & Discovery Features:** Add backend analytics (, etc.) and create homepage components to display trending, recent, and popular recipes.
-    - **P3: Build Data Ingestion Tools:** Implement the frameworks for official source scraping, manual imports (CSV, PDF), and the automated recipe bot.
-    - **P3: Implement Media Handling:** Develop the logic for storing and displaying images and YouTube videos, including copyright checks.
+    - **P2:** Implement Community Verification badges based on user feedback metrics.
+    - **P3:** Build out the full CSV import tool.
+    - **P3:** Implement media handling for user-uploaded photos and videos.
+    - **P3:** Populate the content of the legal pages.
+    - **P3:** Complete the final go-live checklist (performance tests, link checks, HTTPS).
 
 **Completed work in this session**
-- Full-stack application foundation (FastAPI, React, MongoDB).
-- Detailed architecture plan including folder structure, database schema, and API endpoints.
-- Backend services for AI integration, authenticity checks, and utilities.
-- Implemented robust retry logic for LLM API calls to handle transient errors.
-- User authentication system (backend and frontend) with JWT.
-- Multilingual support framework with a language selector in the UI.
-- User Favorites system (backend and frontend page).
-- PAT (Prodotto Agroalimentare Tradizionale) exception rules for the authenticity engine.
-- Fixed a critical JSON serialization error in the FastAPI response.
-- Standardized the persona name to Sous Chef Linguine throughout the codebase.
-- Created backend models and routes for the user ratings and comments system.
+- Migrated the entire AI pipeline to use the user's Sous-Chef Linguine custom GPT via the OpenAI API.
+- Fixed  loading and resolved OpenAI API quota errors.
+- Refactored the backend  model and database storage to align with the AI's JSON output, resolving a critical schema mismatch.
+- Debugged and fixed AI JSON parsing by refining the system prompt to include the exact expected schema.
+- Implemented a new  with Best Recipe and Featured sections, backed by new ranking APIs.
+- Created a new multi-level  for recipe discovery by continent and country.
+- Fixed a FastAPI route ordering bug that prevented ranking APIs from being called.
+- Implemented a full SEO suite (, , JSON-LD structured data).
+- Implemented the critical dynamic translation feature to prevent creating duplicate recipes across different languages.
+- Added a new  field to the recipe schema and updated the frontend to display it.
+- Successfully verified the complete end-to-end search flow: Search -> AI Generation -> DB Save -> Frontend Display.
 
 **Earlier issues found/mentioned but not fixed**
 - None.
 
 **Known issue recurrence from previous fork**
 - **Issue recurrence in previous fork:** LLM Service Instability.
-- **Recurrence count:** High (manifested as 502 errors, timeouts, and now a budget exceeded error).
-- **Status:** BLOCKED.
+- **Recurrence count:** High.
+- **Status:** RESOLVED. The agent successfully navigated a budget issue and an insufficient quota error by switching to the user's OpenAI key and coordinating with the user to add credits. The pipeline is currently stable but dependent on the user's OpenAI account status.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Full-Stack:** React frontend, FastAPI backend, MongoDB database.
-- **AI Integration:** Uses an Emergent LLM Key to interact with an external, custom Sous-Chef GPT for content generation, validation, and translation.
-- **Architecture:** Service-oriented backend with distinct services for each major function (AI, authenticity, translation). Component-based React frontend using Context for state management.
-- **On-Demand Content:** Core architecture is designed for dynamic database growth based on user searches.
+- **Full-Stack:** React, FastAPI, MongoDB.
+- **AI Integration:** OpenAI Chat Completions API () with a user-provided API key.
+- **Dynamic Translation:** On-demand translation of recipes without persisting them in the database.
+- **SEO:** Server-side generation of  and , and client-side rendering of JSON-LD and meta tags with .
 
 **key DB schema**
-- : The main collection storing all recipe data, including content, authenticity metadata, and analytics counts.
-- : Stores user credentials (email, hashed password).
-- : Stores user ratings and comments, linked to  and .
-- , : Collections for geographical data and categorization.
+- : Stores the canonical version of each recipe. Key fields include , , , , , , , and the new optional .
 
 **changes in tech stack**
-- None.
+-  was added to the frontend for SEO.
+- usage: openai [-h] [-v] [-b API_BASE] [-k API_KEY] [-p PROXY [PROXY ...]]
+              [-o ORGANIZATION] [-t {openai,azure}]
+              [--api-version API_VERSION] [--azure-endpoint AZURE_ENDPOINT]
+              [--azure-ad-token AZURE_AD_TOKEN] [-V]
+              {api,tools,migrate,grit} ...
+
+positional arguments:
+  {api,tools,migrate,grit}
+    api                 Direct API calls
+    tools               Client side tools for convenience
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         Set verbosity.
+  -b API_BASE, --api-base API_BASE
+                        What API base url to use.
+  -k API_KEY, --api-key API_KEY
+                        What API key to use.
+  -p PROXY [PROXY ...], --proxy PROXY [PROXY ...]
+                        What proxy to use.
+  -o ORGANIZATION, --organization ORGANIZATION
+                        Which organization to run as (will use your default
+                        organization if not specified)
+  -t {openai,azure}, --api-type {openai,azure}
+                        The backend API to call, must be `openai` or `azure`
+  --api-version API_VERSION
+                        The Azure API version, e.g.
+                        'https://learn.microsoft.com/en-us/azure/ai-
+                        services/openai/reference#rest-api-versioning'
+  --azure-endpoint AZURE_ENDPOINT
+                        The Azure endpoint, e.g.
+                        'https://endpoint.openai.azure.com'
+  --azure-ad-token AZURE_AD_TOKEN
+                        A token from Azure Active Directory,
+                        https://www.microsoft.com/en-
+                        us/security/business/identity-access/microsoft-entra-
+                        id
+  -V, --version         show program's version number and exit Python library was added to the backend.
 
 **All files of reference**
-- : Main FastAPI application file containing all API routes.
-- : Central service for all interactions with the external LLM, includes retry logic.
-- : Contains the logic for validating recipes against the authenticity rules, including the PAT exception.
-- : Stores the detailed system prompts used to enforce the persona and rules for the LLM.
-- : The script for the currently blocked task of seeding the initial database content.
-- : The page where recipe details will be displayed.
--  & : State management for user authentication and language selection.
+- : Contains the  endpoint that needs to be updated for fuzzy matching.
+- : Contains the system prompt for the AI.
+- : Defines the current database schema for a recipe.
+- : The component that triggers the search flow.
+- : Contains the latest testing report that identified the current high-priority issues.
 
 **Areas that need refactoring**:
-- No immediate refactoring is needed. However, the services created (, ) need to be fully integrated into the main recipe generation workflow rather than existing as standalone files.
+- **Slug Generation:** The logic for creating slugs needs to be improved to better handle Unicode and special characters (e.g.,  became ).
+- **Legacy Services:** Old services like  and  are still present and should be removed or refactored to eliminate dead code and dependencies.
 
 **key api endpoints**
-- : The core endpoint for on-demand recipe generation.
-- : Endpoint for submitting user ratings and comments.
-- : Retrieves a specific recipe, with logic to be enhanced for translation.
-- , : User authentication endpoints.
-- : Endpoint for managing user's favorite recipes.
+- : The primary endpoint for search, generation, and translation. It is the main focus of the next bug fix.
+- , : Endpoints for homepage rankings.
+- , : SEO endpoints.
 
 **Critical Info for New Agent**
-- **The absolute top priority is to resolve the LLM key budget issue.** You must inform the user that the budget is depleted and wait for their confirmation before attempting any AI-related task.
-- The user has provided a final, comprehensive set of requirements that should be treated as the ultimate source of truth for all future development.
-- The development flow should be incremental, focusing on one major feature at a time as requested (e.g., fix serialization, then implement on-demand generation, then adaptive cooking, etc.). Do not try to implement everything at once.
+- **Top Priority:** The highest priority is to fix the creation of duplicate recipes from similar search queries (e.g., Carbonara vs. Pasta Carbonara). This requires implementing a more intelligent matching algorithm in the  backend endpoint before deciding to call the AI for generation.
+- The entire AI pipeline now uses the user's OpenAI API key and custom Sous-Chef Linguine prompt. All references to Emergent LLM are obsolete.
+- Translations are generated dynamically and MUST NOT be saved to the database. The database should only contain one canonical version of each recipe.
+- The second priority is to address the incorrect country inference by the AI, which may require tuning the system prompt and reviewing the slug generation logic.
 
 **documents created in this job**
 - 
@@ -310,38 +171,40 @@ LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'..
 - 
 - 
 - 
+- 
+- 
 
 **Last 10 User Messages and any pending user messages**
-1. User provided 4 full recipe examples to define the desired tone and structure, and requested to add a Skip to content link.
-2. Agent confirmed understanding and updated the generation prompts and seed data.
-3. User introduced the PAT recipe exception rule.
-4. Agent implemented the PAT rule in the authenticity engine and prompts.
-5. User refined the tone (concise), multilingual display logic, and glossary requirements.
-6. Agent implemented the language selector and locale-aware backend endpoint but ran into a serialization issue.
-7. User provided a final, comprehensive list of all requirements for the entire platform, asking for confirmation and an implementation plan.
-8. Agent confirmed understanding and outlined a plan, starting with fixing the serialization issue.
-9. User approved the plan and asked the agent to proceed.
-10. Agent fixed the serialization issue, started implementing other features, then changed Linguini to Linguine.
-11. User provided another complete, authoritative prompt defining the entire system, asking for confirmation and a development sequence.
-12. Agent confirmed full understanding and provided a system architecture map and development plan.
-13. Agent started implementing the plan (seeding the DB) but was blocked by the LLM key budget.
-14. **Pending User Message:** The user has provided a final, very detailed prompt describing the entire business goal and system architecture, ending with the request: **“Emergent, please confirm full understanding of this entire system, produce a complete system map, and propose the optimal development sequence.”** The agent has already responded to this, but the task (seeding) that followed was blocked. The next agent should re-iterate the plan after the blocker is resolved.
+1. **User:** Provided the final Sous-Chef system prompt, JSON schema, API template, and test data.
+2. **Agent:** Implemented the full OpenAI integration, replacing the old AI service.
+3. **User:** Requested a full go-live implementation plan, including homepage redesign, an Explore page, SEO, and legal pages.
+4. **Agent:** Implemented the full homepage and explore page redesign, including backend ranking APIs and frontend components.
+5. **Agent:** Implemented SEO features (sitemap, robots.txt, JSON-LD) and created placeholder legal pages.
+6. **User:** Reported that the API key was added, but search was not working, and requested a diagnostic.
+7. **Agent:** Diagnosed and fixed the environment variable loading issue and the  error.
+8. **Agent:** Debugged and fixed the AI JSON parsing by updating the system prompt, making the AI generation pipeline fully functional.
+9. **User:** Provided the final diagnostic analysis, asking the agent to check the full frontend to backend flow and fix the schema mismatch.
+10. **Agent:** Confirmed the schema mismatch and refactored the backend  model to match the AI's output, successfully fixing the end-to-end search-to-display flow.
+11. **User:** Requested two final changes: add an optional  field and, critically, fix the recipe duplication issue caused by searching in different languages.
+12. **Agent:** Implemented the  field and the dynamic translation logic, which prevents language-based duplicates.
+13. **(Implicit Pending):** The testing agent then found that *similar* queries still create duplicates. The next step is to fix this issue as reported by the test agent.
 
 **Project Health Check:**
-- **Broken:** The core feature—AI-powered recipe generation—is completely broken due to the LLM key budget being exceeded. This blocks database seeding and on-demand generation.
-- **Mocked:** The AI translation service exists but is not yet fully implemented to perform real-time AI translations.
+- **Broken:** The search feature is critically flawed as it creates duplicate database entries for similar queries, undermining data integrity.
+- **Mocked:** None.
 
 **3rd Party Integrations**
-- **Emergent LLM Key:** Used for all AI-powered features, including recipe generation, validation, and translation via a custom Sous-Chef GPT. Requires a user-provided key/budget.
+- **OpenAI GPT-5.1:** Used for all recipe generation and translation via the Sous-Chef Linguine custom GPT. Requires a User-provided API Key ().
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
-- **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None
-- **Known regressions:** None
+- **Testing agent used after significant changes:** YES. The frontend testing agent was used and successfully identified the next set of critical issues to be resolved.
+- **Troubleshoot agent used after agent stuck in loop:** NO.
+- **Test files created:** 
+- **Known regressions:** None.
 
 **Credentials to test flow:**
-- User registration is available. The agent can use test credentials like  /  to test authentication and features requiring a logged-in user (e.g., favorites, commenting).
+- User registration is available. Test credentials like  /  can be used.
+- The  is provided by the user in .
 
 **What agent forgot to execute**
-- The agent has not forgotten tasks but was blocked from completing the last one. Many features are in a scaffolded state and require full integration, as detailed in the Upcoming Tasks. The highest priority is to complete the initial database seeding once the LLM key is active.</analysis>
+- The agent has not forgotten tasks but was in the process of working through a list of user requests and test results. The immediate next step, which has not been started, is to fix the duplicate creation from similar search queries.</analysis>

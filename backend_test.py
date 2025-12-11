@@ -10,7 +10,7 @@ import time
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://linguine-chef.preview.emergentagent.com/api"
+BACKEND_URL = "https://authentic-cuisine.preview.emergentagent.com/api"
 
 class SousChefTester:
     def __init__(self):

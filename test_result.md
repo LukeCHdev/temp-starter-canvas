@@ -46,7 +46,7 @@ December 2024 - Phase 1-5 Implementation
 
 **Test Date:** December 2024  
 **Tester:** Testing Agent  
-**Frontend URL:** https://linguine-chef.preview.emergentagent.com
+**Frontend URL:** https://authentic-cuisine.preview.emergentagent.com
 
 ### 1. Homepage Tests - ✅ PASSED
 - ✅ Banner "Authentic Regional Recipes Powered by Sous-Chef Linguine" visible
@@ -140,7 +140,7 @@ The Sous Chef Linguine recipe platform is working excellently across all tested 
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://linguine-chef.preview.emergentagent.com/api
+**Backend URL:** https://authentic-cuisine.preview.emergentagent.com/api
 
 ### Recipe Search and Translation System Tests
 
