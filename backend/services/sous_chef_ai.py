@@ -136,18 +136,18 @@ RECIPE_JSON_SCHEMA = {
 
 
 class SousChefAI:
-    """Service for interacting with OpenAI Responses API using Sous-Chef Linguine persona."""
+    """Service for interacting with OpenAI API using Sous-Chef Linguine persona."""
     
     def __init__(self):
         self.api_key = os.environ.get('OPENAI_API_KEY')
         if not self.api_key:
             logger.warning("OPENAI_API_KEY not found in environment")
         
-        self.model = "gpt-4.1"  # Default model
-        self.api_url = "https://api.openai.com/v1/responses"
+        self.model = "gpt-4o"  # Using gpt-4o for better availability
+        self.api_url = "https://api.openai.com/v1/chat/completions"  # Standard Chat Completions API
     
     def set_model(self, model: str):
-        """Set the OpenAI model to use (gpt-4.1, gpt-4.1-mini, gpt-5.1)."""
+        """Set the OpenAI model to use."""
         self.model = model
     
     async def generate_recipe(self, recipe_name: str, target_language: str = "en") -> Dict[str, Any]:
@@ -178,7 +178,7 @@ class SousChefAI:
                     },
                     json={
                         "model": self.model,
-                        "input": [
+                        "messages": [
                             {
                                 "role": "system",
                                 "content": SOUS_CHEF_SYSTEM_PROMPT
@@ -187,23 +187,22 @@ class SousChefAI:
                                 "role": "user",
                                 "content": user_message
                             }
-                        ]
+                        ],
+                        "temperature": 0.7,
+                        "max_tokens": 4000
                     }
                 )
                 
                 response.raise_for_status()
                 data = response.json()
                 
-                # Parse the response
-                # OpenAI Responses API format: data.output[0].content[0].text
-                if "output" in data and len(data["output"]) > 0:
-                    output_content = data["output"][0]
-                    if "content" in output_content and len(output_content["content"]) > 0:
-                        text_content = output_content["content"][0].get("text", "")
-                        recipe_json = self._parse_json_response(text_content)
+                # Parse the response - Chat Completions format
+                if "choices" in data and len(data["choices"]) > 0:
+                    message_content = data["choices"][0].get("message", {}).get("content", "")
+                    if message_content:
+                        recipe_json = self._parse_json_response(message_content)
                         return recipe_json
                 
-                # Fallback: try to parse entire response
                 logger.warning(f"Unexpected API response format: {data}")
                 raise ValueError("Unexpected API response format")
                 
