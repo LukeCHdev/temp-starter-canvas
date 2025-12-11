@@ -218,6 +218,8 @@ class SousChefAI:
         # Clean up the response text
         text = text.strip()
         
+        logger.info(f"Parsing JSON response, length: {len(text)}")
+        
         # Remove markdown code blocks if present
         if text.startswith("```json"):
             text = text[7:]
@@ -230,11 +232,14 @@ class SousChefAI:
         text = text.strip()
         
         try:
-            return json.loads(text)
+            result = json.loads(text)
+            logger.info(f"Successfully parsed JSON with keys: {list(result.keys())}")
+            return result
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse JSON: {str(e)}")
-            logger.error(f"Raw text: {text[:500]}...")
-            raise ValueError(f"AI did not return valid JSON: {str(e)}")
+            logger.error(f"Raw text (first 1000 chars): {text[:1000]}")
+            # Return empty dict instead of raising to prevent crashes
+            return {}
     
     async def translate_recipe(self, recipe: Dict[str, Any], target_language: str) -> Dict[str, Any]:
         """Translate an existing recipe to a different language."""
