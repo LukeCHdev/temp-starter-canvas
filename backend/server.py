@@ -172,12 +172,14 @@ async def search_recipes(
             )
             
             # Check if translation is needed
+            # Translate whenever target language differs from the recipe's original language
             canonical_lang = recipe.get("origin_language", "en")[:2].lower()
             
-            if target_lang != "en" and target_lang != canonical_lang:
+            if target_lang != canonical_lang:
                 logger.info(f"Translating recipe '{recipe['slug']}' from {canonical_lang} to {target_lang}")
                 try:
                     translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
+                    # Preserve original metadata
                     translated_recipe["slug"] = recipe["slug"]
                     translated_recipe["_translated"] = True
                     translated_recipe["_original_lang"] = canonical_lang
