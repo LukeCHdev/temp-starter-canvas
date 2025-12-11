@@ -383,6 +383,13 @@ const RecipePage = () => {
                     </Card>
                 )}
 
+                {/* Ratings & Reviews Section */}
+                <ReviewSection 
+                    slug={slug} 
+                    initialRating={recipe.average_rating || 0}
+                    initialCount={recipe.ratings_count || 0}
+                />
+
                 {/* Metadata */}
                 <div className="text-center text-sm text-[#1E1E1E]/50 pt-8 border-t">
                     {recipe.date_fetched && (
