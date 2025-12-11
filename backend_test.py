@@ -14,10 +14,11 @@ from typing import Dict, Any, List
 BACKEND_URL = "https://authentic-cuisine.preview.emergentagent.com/api"
 ADMIN_PASSWORD = "SousChefAdmin2024!"
 
-class SousChefTester:
+class AdminPanelTester:
     def __init__(self):
         self.session = requests.Session()
         self.test_results = []
+        self.admin_token = None
         
     def log_test(self, test_name: str, success: bool, details: str, response_data: Dict = None):
         """Log test results"""
