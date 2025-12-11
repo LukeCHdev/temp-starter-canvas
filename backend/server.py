@@ -351,6 +351,143 @@ async def get_recipes_by_region(region: str):
     
     return {"recipes": recipes}
 
+# ============== CSV IMPORT ROUTES ==============
+
+@api_router.post("/recipes/import/csv")
+async def import_recipes_from_csv(file: UploadFile = File(...)):
+    """Import recipes from a CSV file.
+    
+    CSV Format Required Columns:
+    - recipe_name, origin_country, origin_region, origin_language, authenticity_level
+    
+    Optional Columns:
+    - history_summary, characteristic_profile, no_no_rules, special_techniques
+    - ingredients (format: "item:amount:unit:notes;item2:amount2:unit2:notes2")
+    - instructions (semicolon-separated)
+    - wine_name_1, wine_region_1, wine_reason_1 (up to 3 wines)
+    - photo_url, photo_credit, youtube_url, youtube_title
+    - source_url, source_type, source_language
+    """
+    try:
+        # Validate file type
+        if not file.filename.endswith('.csv'):
+            raise HTTPException(status_code=400, detail="File must be a CSV file")
+        
+        # Read and decode CSV content
+        content = await file.read()
+        csv_content = content.decode('utf-8')
+        
+        # Parse CSV
+        recipes = csv_importer.parse_csv(csv_content)
+        
+        if not recipes:
+            raise HTTPException(status_code=400, detail="No valid recipes found in CSV")
+        
+        # Insert recipes into database
+        imported_count = 0
+        skipped_count = 0
+        errors = []
+        
+        for recipe in recipes:
+            try:
+                # Check if recipe already exists
+                existing = await db.recipes.find_one({"slug": recipe["slug"]})
+                if existing:
+                    skipped_count += 1
+                    continue
+                
+                # Insert recipe
+                await db.recipes.insert_one(recipe)
+                imported_count += 1
+                
+            except Exception as e:
+                errors.append(f"Error importing {recipe.get('recipe_name', 'unknown')}: {str(e)}")
+                logger.error(f"Error importing recipe: {str(e)}")
+        
+        return {
+            "message": "CSV import completed",
+            "imported": imported_count,
+            "skipped": skipped_count,
+            "errors": errors[:10]  # Limit errors returned
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"CSV import error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/recipes/import/template")
+async def get_csv_template():
+    """Get a CSV template for recipe import."""
+    template_headers = [
+        "recipe_name",
+        "origin_country",
+        "origin_region",
+        "origin_language",
+        "authenticity_level",
+        "history_summary",
+        "characteristic_profile",
+        "no_no_rules",
+        "special_techniques",
+        "ingredients",
+        "instructions",
+        "wine_name_1",
+        "wine_region_1",
+        "wine_reason_1",
+        "wine_name_2",
+        "wine_region_2",
+        "wine_reason_2",
+        "wine_notes",
+        "photo_url",
+        "photo_credit",
+        "youtube_url",
+        "youtube_title",
+        "source_url",
+        "source_type",
+        "source_language"
+    ]
+    
+    example_row = {
+        "recipe_name": "Spaghetti alla Carbonara",
+        "origin_country": "Italy",
+        "origin_region": "Lazio",
+        "origin_language": "it",
+        "authenticity_level": "1",
+        "history_summary": "A Roman pasta dish documented by traditional institutions...",
+        "characteristic_profile": "Rich, salty, creamy texture with smoky guanciale and pecorino romano.",
+        "no_no_rules": "Never use cream;Never use garlic or onion;Must use guanciale not pancetta",
+        "special_techniques": "mantecatura (creaming with pasta water)",
+        "ingredients": "Spaghetti:380:g:;Guanciale:150:g:cut into strips;Egg yolks:4::;Pecorino Romano:100:g:finely grated;Black pepper:to taste::freshly ground",
+        "instructions": "Cook the guanciale until crisp;Mix yolks, egg, pecorino, and pepper;Cook pasta al dente;Combine pasta, guanciale, and egg mixture off heat using mantecatura;Serve immediately with more pecorino and pepper",
+        "wine_name_1": "Frascati Superiore DOCG",
+        "wine_region_1": "Lazio",
+        "wine_reason_1": "High acidity cuts through egg and guanciale richness",
+        "wine_name_2": "Verdicchio dei Castelli di Jesi DOC",
+        "wine_region_2": "Marche",
+        "wine_reason_2": "Fresh, mineral white balancing salt and fat",
+        "wine_notes": "Central Italian whites are classic; light reds also work if not oaky.",
+        "photo_url": "",
+        "photo_credit": "Accademia Italiana della Cucina",
+        "youtube_url": "",
+        "youtube_title": "",
+        "source_url": "https://www.accademiaitalianacucina.it",
+        "source_type": "official",
+        "source_language": "it"
+    }
+    
+    return {
+        "headers": template_headers,
+        "example": example_row,
+        "notes": {
+            "no_no_rules": "Semicolon-separated list",
+            "special_techniques": "Semicolon-separated list",
+            "ingredients": "Format: item:amount:unit:notes separated by semicolons",
+            "instructions": "Semicolon-separated steps",
+            "authenticity_level": "1 (highest) to 5 (lowest)"
+        }
+    }
+
 # ============== REGION ROUTES ==============
 
 @api_router.get("/regions")
