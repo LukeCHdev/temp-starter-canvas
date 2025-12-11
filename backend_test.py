@@ -400,7 +400,7 @@ class AdminPanelTester:
             for failed in failed_tests:
                 print(f"  - {failed['test']}: {failed['details']}")
         else:
-            print(f"\n✅ ALL TESTS PASSED - Duplicate prevention and country attribution working correctly!")
+            print(f"\n✅ ALL TESTS PASSED - Admin Panel APIs working correctly!")
             
         return self.test_results
 
