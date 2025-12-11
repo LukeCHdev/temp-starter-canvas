@@ -264,7 +264,6 @@ async def generate_recipe(recipe_create: RecipeCreate):
         return {
             "message": "Recipe generated successfully by Sous-Chef Linguine",
             "recipe": recipe_data
-            "validation_report": validation_report
         }
     
     except Exception as e:
