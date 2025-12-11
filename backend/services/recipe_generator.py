@@ -74,6 +74,7 @@ class RecipeGenerator:
             'characteristic_profile': recipe_json.get('characteristic_profile', ''),
             'no_no_rules': recipe_json.get('no_no_rules', []),
             'special_techniques': recipe_json.get('special_techniques', []),
+            'technique_links': recipe_json.get('technique_links', []),
             
             # Recipe Content
             'ingredients': recipe_json.get('ingredients', []),
