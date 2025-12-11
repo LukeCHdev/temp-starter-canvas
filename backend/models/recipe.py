@@ -66,6 +66,7 @@ class SousChefRecipe(BaseModel):
     characteristic_profile: Optional[str] = ""
     no_no_rules: List[str] = []
     special_techniques: List[str] = []
+    technique_links: List[TechniqueLink] = []  # NEW: Links to technique guides
     
     # Recipe Content
     ingredients: List[SimpleIngredient] = []
