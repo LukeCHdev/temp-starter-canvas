@@ -26,6 +26,9 @@ export const recipeAPI = {
     getTopWorldwide: (limit = 10) => api.get('/recipes/top-worldwide', { params: { limit } }),
     getByContinent: (continent, limit = 10) => api.get(`/recipes/by-continent/${continent}`, { params: { limit } }),
     getByCountryName: (country, limit = 50) => api.get(`/recipes/by-country/${country}`, { params: { limit } }),
+    // Reviews & Ratings
+    getReviews: (slug, limit = 50, offset = 0) => api.get(`/recipes/${slug}/reviews`, { params: { limit, offset } }),
+    createReview: (slug, data) => api.post(`/recipes/${slug}/review`, data),
 };
 
 // Continent API
