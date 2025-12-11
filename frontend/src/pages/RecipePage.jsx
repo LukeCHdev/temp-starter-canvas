@@ -209,6 +209,41 @@ const RecipePage = () => {
                     </Card>
                 )}
 
+                {/* Technique Guides - NEW SECTION */}
+                {recipe.technique_links && recipe.technique_links.length > 0 && (
+                    <Card className="card-elegant border-l-4 border-l-[#3F4A3C]">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <BookOpen className="h-5 w-5 text-[#3F4A3C]" />
+                                Technique Guides
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {recipe.technique_links.map((link, index) => (
+                                    <div key={index} className="bg-[#F5F2E8] rounded-lg p-4">
+                                        <h4 className="font-semibold text-[#1E1E1E] mb-1">{link.technique}</h4>
+                                        {link.description && (
+                                            <p className="text-sm text-[#1E1E1E]/70 mb-2">{link.description}</p>
+                                        )}
+                                        {link.url && (
+                                            <a 
+                                                href={link.url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-sm text-[#6A1F2E] hover:underline"
+                                            >
+                                                <ExternalLink className="h-3 w-3" />
+                                                Watch Tutorial
+                                            </a>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Ingredients */}
                 {recipe.ingredients && recipe.ingredients.length > 0 && (
                     <Card className="card-elegant">
