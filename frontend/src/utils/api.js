@@ -13,7 +13,7 @@ export const api = axios.create({
 // Recipe API
 export const recipeAPI = {
     getAll: (params) => api.get('/recipes', { params }),
-    getBySlug: (slug) => api.get(`/recipes/${slug}`),
+    getBySlug: (slug, lang = 'en') => api.get(`/recipes/${slug}`, { params: { lang } }),
     getByCountry: (country) => api.get(`/recipes/country/${country}`),
     getByRegion: (region) => api.get(`/recipes/region/${region}`),
     generate: (data) => api.post('/recipes/generate', data),
