@@ -30,6 +30,9 @@ from services.csv_importer import csv_importer
 # Import auth utilities
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 
+# Import admin routes
+from routes.admin import admin_router
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
