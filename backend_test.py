@@ -266,55 +266,60 @@ class SousChefTester:
             self.log_test("API Format Test", False, f"Exception: {str(e)}")
             return False
             
-    def test_technique_links_field(self):
-        """Test Case 5: Test the technique_links field structure"""
-        print("\n=== Test 5: Test technique_links field structure ===")
+    def test_comprehensive_duplicate_prevention(self):
+        """Test Case 5: Comprehensive Duplicate Prevention Test"""
+        print("\n=== Test 5: Comprehensive Duplicate Prevention ===")
         
-        try:
-            # Get a recipe that should have technique_links
-            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara",
-                "lang": "en"
-            })
+        # Test multiple variations of the same dish
+        test_groups = [
+            {
+                "dish": "Carbonara",
+                "variations": ["Carbonara", "Spaghetti Carbonara", "Pasta Carbonara", "carbonara", "Spaghetti alla Carbonara"]
+            },
+            {
+                "dish": "Wellington", 
+                "variations": ["Beef Wellington", "Wellington"]
+            }
+        ]
+        
+        all_passed = True
+        
+        for group in test_groups:
+            print(f"\n  Testing {group['dish']} variations:")
+            found_slugs = set()
             
-            if response.status_code != 200:
-                self.log_test("Technique Links Field", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-            data = response.json()
-            recipe = data.get("recipe")
+            for variation in group["variations"]:
+                try:
+                    response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                        "q": variation,
+                        "lang": "en"
+                    })
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get("recipe") and data["recipe"].get("slug"):
+                            slug = data["recipe"]["slug"]
+                            found_slugs.add(slug)
+                            print(f"    '{variation}' -> {slug}")
+                            
+                except Exception as e:
+                    print(f"    '{variation}' -> ERROR: {str(e)}")
+                    all_passed = False
             
-            if not recipe:
-                self.log_test("Technique Links Field", False, "No recipe found")
-                return False
+            # Check if all variations returned the same slug
+            if len(found_slugs) <= 1:
+                dish_name = group["dish"]
+                if found_slugs:
+                    slug = list(found_slugs)[0]
+                    self.log_test(f"Duplicate Prevention ({dish_name})", True, f"All {dish_name} variations return same slug: {slug}")
+                else:
+                    self.log_test(f"Duplicate Prevention ({dish_name})", False, f"No recipes found for {dish_name} variations")
+                    all_passed = False
+            else:
+                self.log_test(f"Duplicate Prevention ({dish_name})", False, f"Found {len(found_slugs)} different slugs for {dish_name}: {list(found_slugs)}")
+                all_passed = False
                 
-            # Check if technique_links field exists
-            if "technique_links" not in recipe:
-                self.log_test("Technique Links Field", False, "technique_links field missing from recipe")
-                return False
-                
-            technique_links = recipe["technique_links"]
-            
-            # Should be an array (even if empty)
-            if not isinstance(technique_links, list):
-                self.log_test("Technique Links Field", False, f"technique_links should be array, got: {type(technique_links)}")
-                return False
-                
-            # If not empty, check structure
-            if technique_links:
-                for i, link in enumerate(technique_links):
-                    required_fields = ["technique", "url", "description"]
-                    missing = [field for field in required_fields if field not in link]
-                    if missing:
-                        self.log_test("Technique Links Field", False, f"technique_links[{i}] missing fields: {missing}")
-                        return False
-                        
-            self.log_test("Technique Links Field", True, f"technique_links field valid (array with {len(technique_links)} items)")
-            return True
-            
-        except Exception as e:
-            self.log_test("Technique Links Field", False, f"Exception: {str(e)}")
-            return False
+        return all_passed
             
     def run_all_tests(self):
         """Run all test cases"""
