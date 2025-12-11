@@ -1139,6 +1139,85 @@ async def get_countries_by_continent(continent: str):
         "countries": countries
     }
 
+# ============== SEO ROUTES ==============
+
+@api_router.get("/sitemap.xml")
+async def get_sitemap():
+    """Generate sitemap.xml for SEO."""
+    from fastapi.responses import Response
+    
+    base_url = "https://souschef-linguine.com"  # Replace with actual URL
+    
+    # Static pages
+    static_pages = [
+        {"loc": "/", "priority": "1.0", "changefreq": "daily"},
+        {"loc": "/explore", "priority": "0.9", "changefreq": "daily"},
+        {"loc": "/about", "priority": "0.6", "changefreq": "monthly"},
+        {"loc": "/contact", "priority": "0.5", "changefreq": "monthly"},
+        {"loc": "/privacy", "priority": "0.3", "changefreq": "monthly"},
+        {"loc": "/terms", "priority": "0.3", "changefreq": "monthly"},
+        {"loc": "/cookies", "priority": "0.3", "changefreq": "monthly"},
+    ]
+    
+    # Get continents
+    continents = ["europe", "asia", "americas", "africa", "middle-east", "oceania"]
+    
+    # Get all recipes
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"slug": 1, "date_fetched": 1, "_id": 0}
+    ).to_list(1000)
+    
+    # Build XML
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # Add static pages
+    for page in static_pages:
+        xml_content += f'''  <url>
+    <loc>{base_url}{page["loc"]}</loc>
+    <changefreq>{page["changefreq"]}</changefreq>
+    <priority>{page["priority"]}</priority>
+  </url>\n'''
+    
+    # Add continent pages
+    for continent in continents:
+        xml_content += f'''  <url>
+    <loc>{base_url}/explore/{continent}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n'''
+    
+    # Add recipe pages
+    for recipe in recipes:
+        lastmod = recipe.get("date_fetched", datetime.now(timezone.utc).isoformat())[:10]
+        xml_content += f'''  <url>
+    <loc>{base_url}/recipe/{recipe["slug"]}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n'''
+    
+    xml_content += '</urlset>'
+    
+    return Response(content=xml_content, media_type="application/xml")
+
+@api_router.get("/robots.txt")
+async def get_robots():
+    """Generate robots.txt for SEO."""
+    from fastapi.responses import PlainTextResponse
+    
+    robots_content = """User-agent: *
+Allow: /
+Allow: /explore
+Allow: /recipe/
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://souschef-linguine.com/api/sitemap.xml
+"""
+    return PlainTextResponse(content=robots_content)
+
 # ============== ROOT ROUTE ==============
 
 @api_router.get("/")
