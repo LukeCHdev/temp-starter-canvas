@@ -17,6 +17,19 @@ export const recipeAPI = {
     getByCountry: (country) => api.get(`/recipes/country/${country}`),
     getByRegion: (region) => api.get(`/recipes/region/${region}`),
     generate: (data) => api.post('/recipes/generate', data),
+    search: (query, autoGenerate = true) => api.get('/recipes/search', { params: { q: query, auto_generate: autoGenerate } }),
+    // Homepage & Explore
+    getBest: () => api.get('/recipes/best'),
+    getFeatured: (limit = 4) => api.get('/recipes/featured', { params: { limit } }),
+    getTopWorldwide: (limit = 10) => api.get('/recipes/top-worldwide', { params: { limit } }),
+    getByContinent: (continent, limit = 10) => api.get(`/recipes/by-continent/${continent}`, { params: { limit } }),
+    getByCountryName: (country, limit = 50) => api.get(`/recipes/by-country/${country}`, { params: { limit } }),
+};
+
+// Continent API
+export const continentAPI = {
+    getAll: () => api.get('/continents'),
+    getCountries: (continent) => api.get(`/continents/${continent}/countries`),
 };
 
 // Region API
