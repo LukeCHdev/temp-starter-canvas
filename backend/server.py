@@ -228,6 +228,98 @@ async def get_recipes(
         "pages": (total + limit - 1) // limit
     }
 
+# ============== HOMEPAGE & EXPLORE ROUTES (must be before /{slug}) ==============
+
+@api_router.get("/recipes/best")
+async def get_best_recipe():
+    """Get the #1 best recipe worldwide based on rating > reviews > favorites."""
+    recipe = await db.recipes.find_one(
+        {"status": "published"},
+        {"_id": 0},
+        sort=[
+            ("average_rating", -1),
+            ("ratings_count", -1),
+            ("favorites_count", -1)
+        ]
+    )
+    
+    if not recipe:
+        return {"recipe": None}
+    
+    return {"recipe": recipe}
+
+@api_router.get("/recipes/featured")
+async def get_featured_recipes(limit: int = 4):
+    """Get top featured recipes (excluding the #1 best)."""
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).skip(1).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/recipes/top-worldwide")
+async def get_top_worldwide(limit: int = 10):
+    """Get top 10 recipes worldwide sorted by rating > reviews > favorites."""
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/recipes/by-continent/{continent}")
+async def get_recipes_by_continent_name(continent: str, limit: int = 10):
+    """Get top recipes from a continent."""
+    continent_name = continent.replace("-", " ").title()
+    
+    recipes = await db.recipes.find(
+        {"continent": continent_name, "status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {
+        "continent": continent_name,
+        "recipes": recipes
+    }
+
+@api_router.get("/recipes/by-country/{country}")
+async def get_recipes_by_country_name(country: str, limit: int = 50):
+    """Get all recipes from a specific country with ranking."""
+    country_name = country.replace("-", " ").title()
+    
+    # Get recipes sorted by rating
+    recipes = await db.recipes.find(
+        {"origin_country": {"$regex": f"^{country_name}$", "$options": "i"}, "status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    # Get continent for breadcrumb
+    continent = recipes[0].get("continent", "Unknown") if recipes else "Unknown"
+    
+    return {
+        "country": country_name,
+        "continent": continent,
+        "recipes": recipes,
+        "total": len(recipes)
+    }
+
 @api_router.get("/recipes/{slug}")
 async def get_recipe(slug: str, locale: Optional[str] = "en-US"):
     """Get single recipe by slug."""
