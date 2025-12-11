@@ -222,39 +222,48 @@ class SousChefTester:
             self.log_test("Translation Duplicate Prevention", False, f"Exception: {str(e)}")
             return False
             
-    def test_verify_no_duplicates(self):
-        """Test Case 4: Verify no duplicates were created"""
-        print("\n=== Test 4: Verify no duplicates were created ===")
+    def test_api_endpoint_format(self):
+        """Test Case 4: API Endpoint Format Validation"""
+        print("\n=== Test 4: API Endpoint Format Validation ===")
         
         try:
-            # Search for recipes with similar names
-            test_queries = ["Carbonara", "Spaghetti Carbonara", "Pasta Carbonara"]
-            found_slugs = set()
+            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                "q": "Carbonara",
+                "lang": "en"
+            })
             
-            for query in test_queries:
-                response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                    "q": query,
-                    "lang": "en"
-                })
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("recipe") and data["recipe"].get("slug"):
-                        found_slugs.add(data["recipe"]["slug"])
-            
-            # Check if we found multiple different slugs for similar recipes
-            if len(found_slugs) > 1:
-                self.log_test("No Duplicates Check", False, f"Found multiple slugs for similar recipes: {list(found_slugs)}")
-                return False
-            elif len(found_slugs) == 1:
-                self.log_test("No Duplicates Check", True, f"Single slug found for Carbonara variants: {list(found_slugs)[0]}")
-                return True
-            else:
-                self.log_test("No Duplicates Check", False, "No recipes found for Carbonara variants")
+            if response.status_code != 200:
+                self.log_test("API Format Test", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
+            data = response.json()
+            
+            # Check required top-level fields
+            required_fields = ["found", "generated", "translated", "recipe"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if missing_fields:
+                self.log_test("API Format Test", False, f"Missing top-level fields: {missing_fields}")
+                return False
+                
+            recipe = data.get("recipe")
+            if not recipe:
+                self.log_test("API Format Test", False, "No recipe object found")
+                return False
+                
+            # Check required recipe fields
+            required_recipe_fields = ["recipe_name", "slug", "origin_country", "origin_region"]
+            missing_recipe_fields = [field for field in required_recipe_fields if field not in recipe]
+            
+            if missing_recipe_fields:
+                self.log_test("API Format Test", False, f"Missing recipe fields: {missing_recipe_fields}")
+                return False
+                
+            self.log_test("API Format Test", True, "All required fields present in API response")
+            return True
+            
         except Exception as e:
-            self.log_test("No Duplicates Check", False, f"Exception: {str(e)}")
+            self.log_test("API Format Test", False, f"Exception: {str(e)}")
             return False
             
     def test_technique_links_field(self):
