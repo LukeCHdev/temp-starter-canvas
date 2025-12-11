@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for Sous Chef Linguine Recipe Search API
-Tests duplicate prevention and country attribution fixes as per review request.
+Backend Test Suite for Sous Chef Linguine Admin Panel APIs
+Tests admin authentication, recipe management, and JSON import functionality.
 """
 
 import requests
 import json
 import time
+import base64
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
 BACKEND_URL = "https://authentic-cuisine.preview.emergentagent.com/api"
+ADMIN_PASSWORD = "SousChefAdmin2024!"
 
 class SousChefTester:
     def __init__(self):
