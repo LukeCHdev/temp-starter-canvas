@@ -67,66 +67,25 @@ class AdminPanelTester:
             self.log_test("Admin Login (Valid)", False, f"Exception: {str(e)}")
             return False
             
-    def test_country_attribution_fixes(self):
-        """Test Case 2: Country Attribution - Verify correct country origins"""
-        print("\n=== Test 2: Country Attribution Tests ===")
+    def test_admin_login_failure(self):
+        """Test Case 2: Admin Authentication - Invalid Password"""
+        print("\n=== Test 2: Admin Login with Invalid Password ===")
         
-        test_cases = [
-            {
-                "query": "Peking Duck",
-                "expected_country": "China",
-                "description": "Chinese dish should not default to Italy"
-            },
-            {
-                "query": "Beef Wellington", 
-                "expected_country": "United Kingdom",
-                "description": "British dish should not default to Italy"
-            },
-            {
-                "query": "Kimchi",
-                "expected_country": "South Korea", 
-                "description": "Korean dish should not default to Italy"
-            }
-        ]
-        
-        all_passed = True
-        
-        for test_case in test_cases:
-            try:
-                response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                    "q": test_case["query"],
-                    "lang": "en"
-                })
+        try:
+            response = self.session.post(f"{BACKEND_URL}/admin/login", json={
+                "password": "wrongpassword"
+            })
+            
+            if response.status_code == 401:
+                self.log_test("Admin Login (Invalid)", True, "Correctly rejected invalid password with 401")
+                return True
+            else:
+                self.log_test("Admin Login (Invalid)", False, f"Expected 401, got {response.status_code}")
+                return False
                 
-                if response.status_code != 200:
-                    self.log_test(f"Country Attribution ({test_case['query']})", False, f"HTTP {response.status_code}: {response.text}")
-                    all_passed = False
-                    continue
-                    
-                data = response.json()
-                recipe = data.get("recipe")
-                
-                if not recipe:
-                    self.log_test(f"Country Attribution ({test_case['query']})", False, "No recipe returned")
-                    all_passed = False
-                    continue
-                
-                actual_country = recipe.get("origin_country")
-                expected_country = test_case["expected_country"]
-                
-                if actual_country == expected_country:
-                    self.log_test(f"Country Attribution ({test_case['query']})", True, f"Correct country: {actual_country}")
-                else:
-                    self.log_test(f"Country Attribution ({test_case['query']})", False, f"Expected {expected_country}, got {actual_country}")
-                    all_passed = False
-                    
-                print(f"  {test_case['query']} -> {actual_country} (expected: {expected_country})")
-                
-            except Exception as e:
-                self.log_test(f"Country Attribution ({test_case['query']})", False, f"Exception: {str(e)}")
-                all_passed = False
-                
-        return all_passed
+        except Exception as e:
+            self.log_test("Admin Login (Invalid)", False, f"Exception: {str(e)}")
+            return False
             
     def test_translation_duplicate_prevention(self):
         """Test Case 3: Translation Test - Same recipe in different languages should return same slug"""
