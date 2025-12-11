@@ -344,26 +344,36 @@ class AdminPanelTester:
             return False
             
     def run_all_tests(self):
-        """Run all test cases based on review request"""
-        print("🧪 Starting Sous Chef Linguine Recipe Search API Tests")
-        print("Testing duplicate prevention and country attribution fixes")
+        """Run all admin panel test cases based on review request"""
+        print("🧪 Starting Sous Chef Linguine Admin Panel API Tests")
+        print("Testing admin authentication, recipe management, and JSON import")
         print(f"Backend URL: {BACKEND_URL}")
+        print(f"Admin Password: {ADMIN_PASSWORD}")
         print("=" * 70)
         
-        # Test 1: Duplicate Prevention Tests
-        self.test_duplicate_prevention_carbonara()
+        # Test 1: Admin Authentication - Valid Password
+        self.test_admin_login_success()
         
-        # Test 2: Country Attribution Tests  
-        self.test_country_attribution_fixes()
+        # Test 2: Admin Authentication - Invalid Password  
+        self.test_admin_login_failure()
         
-        # Test 3: Translation Test (Duplicate Prevention across languages)
-        self.test_translation_duplicate_prevention()
+        # Test 3: Admin Token Verification
+        self.test_admin_verify_token()
         
-        # Test 4: API Endpoint Format
-        self.test_api_endpoint_format()
+        # Test 4: Admin Recipe Management - Get All Recipes
+        self.test_admin_recipes_list()
         
-        # Test 5: Comprehensive Duplicate Prevention
-        self.test_comprehensive_duplicate_prevention()
+        # Test 5: Admin Recipe Management - Get Single Recipe
+        self.test_admin_single_recipe()
+        
+        # Test 6: Admin JSON Import & Duplicate Detection
+        self.test_admin_json_import()
+        
+        # Test 7: Admin Dashboard Statistics
+        self.test_admin_stats()
+        
+        # Test 8: CSV Template
+        self.test_csv_template()
         
         # Summary
         print("\n" + "=" * 70)
