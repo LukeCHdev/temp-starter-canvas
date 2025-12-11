@@ -1,11 +1,130 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ChefHat, Home, ChevronRight } from 'lucide-react';
 
 const PrivacyPage = () => {
     return (
-        <div className="min-h-screen" data-testid="privacy-page">
-            <section className="max-w-4xl mx-auto px-4 py-16">
-                <h1 className="text-4xl mb-4">Privacy Policy</h1>
-                <p>Coming soon...</p>
+        <div className="min-h-screen bg-[#FAF7F0]">
+            {/* Header */}
+            <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
+                <div className="max-w-4xl mx-auto">
+                    <nav className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-6">
+                        <Link to="/" className="hover:text-[#6A1F2E] flex items-center gap-1">
+                            <Home className="h-4 w-4" /> Home
+                        </Link>
+                        <ChevronRight className="h-4 w-4" />
+                        <span className="text-[#6A1F2E] font-medium">Privacy Policy</span>
+                    </nav>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        Privacy Policy
+                    </h1>
+                    <p className="text-[#1E1E1E]/70 mt-4">Last updated: December 2024</p>
+                </div>
+            </section>
+
+            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="prose prose-lg max-w-none">
+                    <div className="bg-white rounded-xl p-8 shadow-sm space-y-8">
+                        
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                1. Introduction
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed">
+                                Sous Chef Linguine ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                2. Information We Collect
+                            </h2>
+                            <h3 className="text-lg font-semibold mt-4 mb-2">Personal Information</h3>
+                            <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
+                                <li>Email address (when you create an account)</li>
+                                <li>Password (securely hashed)</li>
+                                <li>Saved recipes and favorites</li>
+                                <li>Ratings and comments you submit</li>
+                            </ul>
+                            
+                            <h3 className="text-lg font-semibold mt-4 mb-2">Automatically Collected Information</h3>
+                            <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
+                                <li>Browser type and version</li>
+                                <li>Device information</li>
+                                <li>IP address</li>
+                                <li>Pages visited and time spent</li>
+                                <li>Search queries</li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                3. How We Use Your Information
+                            </h2>
+                            <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
+                                <li>To provide and maintain our service</li>
+                                <li>To personalize your experience</li>
+                                <li>To save your favorite recipes</li>
+                                <li>To improve our recipe recommendations</li>
+                                <li>To analyze usage patterns and improve our platform</li>
+                                <li>To communicate with you about updates and changes</li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                4. AI-Generated Content
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed">
+                                Some recipes on our platform are generated by Sous-Chef Linguine AI. This AI system uses traditional authenticity ranking and validation to ensure recipe quality. Your search queries may be processed by AI systems to generate new recipes on demand. We do not use your personal information to train AI models.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                5. Data Sharing
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed">
+                                We do not sell your personal information. We may share anonymized, aggregated data for analytics purposes. Recipe ratings and comments may be publicly visible with your username.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                6. Your Rights (GDPR)
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
+                                If you are a resident of the European Economic Area (EEA), you have the following rights:
+                            </p>
+                            <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
+                                <li><strong>Right to Access:</strong> Request copies of your personal data</li>
+                                <li><strong>Right to Rectification:</strong> Request correction of inaccurate data</li>
+                                <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
+                                <li><strong>Right to Data Portability:</strong> Request transfer of your data</li>
+                                <li><strong>Right to Object:</strong> Object to processing of your data</li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                7. Data Security
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed">
+                                We implement appropriate technical and organizational security measures to protect your personal information, including encryption of passwords and secure HTTPS connections.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                8. Contact Us
+                            </h2>
+                            <p className="text-[#1E1E1E]/80 leading-relaxed">
+                                If you have questions about this Privacy Policy, please contact us through our <Link to="/contact" className="text-[#6A1F2E] hover:underline">Contact page</Link>.
+                            </p>
+                        </section>
+
+                    </div>
+                </div>
             </section>
         </div>
     );
