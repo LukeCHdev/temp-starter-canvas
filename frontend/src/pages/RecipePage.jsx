@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { RecipeSEO } from '@/components/seo/SEOHelmet';
+import { useLanguage } from '@/context/LanguageContext';
 import { 
     ChefHat, 
     Globe, 
@@ -23,14 +24,17 @@ const RecipePage = () => {
     const { slug } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { language } = useLanguage();
 
     useEffect(() => {
         loadRecipe();
-    }, [slug]);
+    }, [slug, language]);
 
     const loadRecipe = async () => {
         try {
-            const res = await recipeAPI.getBySlug(slug);
+            // Pass the current UI language to get translated recipe
+            const lang = language?.split('-')[0] || 'en';
+            const res = await recipeAPI.getBySlug(slug, lang);
             setRecipe(res.data);
         } catch (error) {
             toast.error('Recipe not found');
@@ -67,7 +71,7 @@ const RecipePage = () => {
     const recipeName = recipe.recipe_name || recipe.title_original || recipe.title_translated?.en || 'Unknown Recipe';
     const country = recipe.origin_country || recipe.country || 'Unknown';
     const region = recipe.origin_region || recipe.region || 'Unknown';
-    const language = recipe.origin_language || recipe.original_language || 'en';
+    const recipeLanguage = recipe.origin_language || recipe.original_language || 'en';
     const authenticityLevel = recipe.authenticity_level || recipe.source_validation?.authenticity_rank || 3;
 
     const getAuthenticityBadgeColor = (level) => {
