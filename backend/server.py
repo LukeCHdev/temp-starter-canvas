@@ -227,39 +227,215 @@ async def search_recipes(
         logger.error(f"Search error for '{q}': {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-def _infer_country_region(dish_name: str) -> tuple:
+def _infer_country_region(dish_name: str) -> Tuple[Optional[str], Optional[str]]:
     """Infer country and region from dish name.
     
-    This is a simplified version. In production, use NLP or a comprehensive mapping.
+    Returns (None, None) if the dish cannot be identified, allowing the AI to determine origin.
+    This prevents incorrect country attribution like "Peking Duck" -> Italy.
     """
     dish_lower = dish_name.lower()
     
-    # Italian dishes
-    if any(word in dish_lower for word in ['pasta', 'pizza', 'risotto', 'carbonara', 'amatriciana', 'parmigiana', 'tiramisu', 'osso']):
-        return ("Italy", "Mediterranean")
+    # Comprehensive keyword mapping - expanded to cover more cuisines
+    cuisine_patterns = {
+        # Italian dishes
+        ("Italy", "Mediterranean"): [
+            'pasta', 'pizza', 'risotto', 'carbonara', 'amatriciana', 'parmigiana', 
+            'tiramisu', 'osso', 'gnocchi', 'lasagna', 'lasagne', 'ravioli', 'tortellini',
+            'pesto', 'bolognese', 'milanese', 'marinara', 'margherita', 'cacio e pepe',
+            'arancini', 'bruschetta', 'focaccia', 'prosciutto', 'ribollita', 'cotoletta',
+            'plin', 'polenta', 'saltimbocca', 'carpaccio', 'vitello', 'ossobuco'
+        ],
+        # Japanese dishes
+        ("Japan", "East Asia"): [
+            'sushi', 'ramen', 'tempura', 'teriyaki', 'miso', 'udon', 'soba', 'yakitori',
+            'tonkatsu', 'tonkotsu', 'gyudon', 'okonomiyaki', 'takoyaki', 'onigiri',
+            'bento', 'edamame', 'gyoza', 'matcha', 'sake', 'wasabi', 'dashi', 'nigiri',
+            'sashimi', 'maki', 'donburi', 'katsu', 'shabu', 'sukiyaki', 'kaiseki'
+        ],
+        # Chinese dishes
+        ("China", "East Asia"): [
+            'peking', 'beijing', 'kung pao', 'kung-pao', 'dim sum', 'wonton', 'chow mein',
+            'lo mein', 'fried rice', 'spring roll', 'dumplings', 'mapo tofu', 'char siu',
+            'hoisin', 'szechuan', 'sichuan', 'cantonese', 'hakka', 'jiaozi', 'baozi',
+            'congee', 'hot pot', 'xiaolongbao', 'xiao long bao', 'dan dan', 'gongbao'
+        ],
+        # Korean dishes
+        ("South Korea", "East Asia"): [
+            'kimchi', 'bibimbap', 'bulgogi', 'korean', 'gochujang', 'jjigae', 'samgyeopsal',
+            'tteokbokki', 'japchae', 'sundubu', 'galbi', 'kalbi', 'banchan', 'kimbap',
+            'gimbap', 'soju', 'makgeolli', 'dakgalbi', 'bossam', 'naengmyeon', '찌개',
+            '김치', '불고기', '비빔밥'
+        ],
+        # Vietnamese dishes
+        ("Vietnam", "Southeast Asia"): [
+            'pho', 'phở', 'banh mi', 'bánh mì', 'spring roll', 'vietnamese', 'goi cuon',
+            'bun', 'bún', 'nuoc mam', 'cao lau', 'com tam', 'che', 'nem'
+        ],
+        # Thai dishes
+        ("Thailand", "Southeast Asia"): [
+            'pad thai', 'tom yum', 'green curry', 'red curry', 'thai', 'massaman',
+            'satay', 'som tam', 'khao pad', 'panang', 'basil chicken', 'pad krapow',
+            'larb', 'mango sticky rice', 'tom kha'
+        ],
+        # Mexican dishes
+        ("Mexico", "Latin America"): [
+            'taco', 'burrito', 'enchilada', 'mole', 'pozole', 'tamale', 'quesadilla',
+            'guacamole', 'salsa', 'fajita', 'churro', 'ceviche', 'carnitas', 'barbacoa',
+            'elote', 'tostada', 'chilaquiles', 'huevos rancheros', 'chiles', 'pastor'
+        ],
+        # French dishes
+        ("France", "Western Europe"): [
+            'coq au vin', 'bouillabaisse', 'ratatouille', 'quiche', 'croissant', 
+            'cassoulet', 'baguette', 'escargot', 'soufflé', 'souffle', 'crepe',
+            'crème brûlée', 'creme brulee', 'foie gras', 'confit', 'bourguignon',
+            'béarnaise', 'bearnaise', 'hollandaise', 'béchamel', 'macaron', 'eclair',
+            'tarte tatin', 'provençal', 'provencal', 'niçoise', 'nicoise', 'french'
+        ],
+        # Spanish dishes
+        ("Spain", "Mediterranean"): [
+            'paella', 'gazpacho', 'spanish tortilla', 'tortilla española', 'tapas',
+            'patatas bravas', 'jamon', 'jamón', 'croquetas', 'sangria', 'fabada',
+            'pimientos', 'manchego', 'spanish', 'valenciana', 'catalán', 'catalan'
+        ],
+        # Indian dishes
+        ("India", "South Asia"): [
+            'curry', 'tikka', 'masala', 'biryani', 'samosa', 'naan', 'roti', 'dosa',
+            'paneer', 'dal', 'daal', 'tandoori', 'vindaloo', 'korma', 'butter chicken',
+            'chutney', 'pakora', 'paratha', 'idli', 'vada', 'lassi', 'chai'
+        ],
+        # Greek dishes
+        ("Greece", "Mediterranean"): [
+            'moussaka', 'souvlaki', 'gyro', 'tzatziki', 'spanakopita', 'greek salad',
+            'feta', 'dolma', 'baklava', 'greek', 'horiatiki', 'fasolada'
+        ],
+        # Middle Eastern dishes
+        ("Lebanon", "Middle East"): [
+            'hummus', 'falafel', 'tabbouleh', 'baba ganoush', 'shawarma', 'kibbeh',
+            'fattoush', 'labneh', 'lebanese', 'levantine'
+        ],
+        # North African dishes
+        ("Morocco", "North Africa"): [
+            'tagine', 'couscous', 'moroccan', 'harira', 'bastilla', 'pastilla', 'rfissa'
+        ],
+        ("Tunisia", "North Africa"): [
+            'shakshuka', 'brik', 'lablabi', 'tunisian'
+        ],
+        # Swedish/Nordic dishes
+        ("Sweden", "Nordic"): [
+            'köttbullar', 'kottbullar', 'swedish meatball', 'gravlax', 'semla',
+            'kanelbulle', 'surströmming', 'janssons frestelse', 'smörgåsbord', 
+            'smorgasbord', 'swedish'
+        ],
+        # German dishes
+        ("Germany", "Central Europe"): [
+            'schnitzel', 'bratwurst', 'sauerkraut', 'pretzel', 'strudel', 'spätzle',
+            'spaetzle', 'currywurst', 'rouladen', 'sauerbraten', 'german'
+        ],
+        # Hungarian dishes
+        ("Hungary", "Central Europe"): [
+            'goulash', 'gulyás', 'gulyas', 'paprikash', 'dobos', 'hungarian', 'pörkölt'
+        ],
+        # British dishes
+        ("United Kingdom", "Western Europe"): [
+            'fish and chips', 'shepherd\'s pie', 'cottage pie', 'sunday roast',
+            'yorkshire pudding', 'bangers and mash', 'full english', 'british',
+            'beef wellington', 'wellington', 'cornish pasty', 'trifle', 'scones'
+        ],
+        # Australian dishes
+        ("Australia", "Oceania"): [
+            'meat pie', 'lamington', 'vegemite', 'pavlova', 'australian', 'barramundi',
+            'anzac biscuit', 'tim tam'
+        ]
+    }
     
-    # Japanese dishes
-    if any(word in dish_lower for word in ['sushi', 'ramen', 'tempura', 'teriyaki', 'miso', 'udon', 'soba']):
-        return ("Japan", "East Asia")
+    # Check each cuisine pattern
+    for (country, region), keywords in cuisine_patterns.items():
+        if any(keyword in dish_lower for keyword in keywords):
+            return (country, region)
     
-    # Mexican dishes
-    if any(word in dish_lower for word in ['taco', 'burrito', 'enchilada', 'mole', 'pozole', 'tamale', 'quesadilla']):
-        return ("Mexico", "Latin America")
+    # IMPORTANT: Return None if we can't identify the cuisine
+    # Let the AI determine the correct country of origin
+    return (None, None)
+
+
+async def _find_similar_recipe(db, search_query: str, threshold: int = 75) -> Optional[dict]:
+    """Find an existing recipe that matches the search query using fuzzy matching.
     
-    # French dishes
-    if any(word in dish_lower for word in ['coq au vin', 'bouillabaisse', 'ratatouille', 'quiche', 'croissant', 'cassoulet']):
-        return ("France", "Mediterranean")
+    This prevents duplicate recipes from being created for similar queries like:
+    - "Carbonara" vs "Pasta Carbonara" vs "Spaghetti alla Carbonara"
+    - "Beef Wellington" vs "Wellington"
     
-    # Swedish dishes
-    if any(word in dish_lower for word in ['köttbullar', 'gravlax', 'semla', 'kanelbulle', 'surströmming']):
-        return ("Sweden", "Nordic")
+    Args:
+        db: Database connection
+        search_query: The user's search query
+        threshold: Minimum fuzzy match score (0-100) to consider a match
+        
+    Returns:
+        Matching recipe dict or None
+    """
+    # Normalize the search query
+    query_normalized = search_query.lower().strip()
     
-    # Spanish dishes
-    if any(word in dish_lower for word in ['paella', 'gazpacho', 'tortilla', 'tapas', 'churro']):
-        return ("Spain", "Mediterranean")
+    # Remove common prefixes/suffixes for better matching
+    common_words = ['pasta', 'alla', 'al', 'di', 'con', 'e', 'the', 'with', 'style', 'homemade', 'authentic', 'traditional']
+    query_words = query_normalized.split()
+    query_core = ' '.join([w for w in query_words if w not in common_words]) or query_normalized
     
-    # Default to Italy if unknown
-    return ("Italy", "Mediterranean")
+    # Get all published recipes for matching
+    all_recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0, "recipe_name": 1, "slug": 1}
+    ).to_list(1000)
+    
+    if not all_recipes:
+        return None
+    
+    # Build list of recipe names for fuzzy matching
+    recipe_names = []
+    recipe_map = {}
+    
+    for r in all_recipes:
+        name = r.get("recipe_name") or ""
+        if name:
+            recipe_names.append(name)
+            recipe_map[name] = r["slug"]
+    
+    if not recipe_names:
+        return None
+    
+    # Use fuzzy matching to find best match
+    # Try full query first
+    matches = process.extract(search_query, recipe_names, scorer=fuzz.token_set_ratio, limit=3)
+    
+    # Also try core query (without common words)
+    if query_core != query_normalized:
+        core_matches = process.extract(query_core, recipe_names, scorer=fuzz.token_set_ratio, limit=3)
+        matches.extend(core_matches)
+    
+    # Also try partial matching for shorter queries
+    partial_matches = process.extract(search_query, recipe_names, scorer=fuzz.partial_ratio, limit=3)
+    matches.extend(partial_matches)
+    
+    # Find the best match above threshold
+    best_match = None
+    best_score = 0
+    
+    for match_name, score in matches:
+        if score >= threshold and score > best_score:
+            best_match = match_name
+            best_score = score
+    
+    if best_match:
+        # Get the full recipe
+        slug = recipe_map[best_match]
+        recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
+        if recipe:
+            logger.info(f"Fuzzy match found: '{search_query}' -> '{best_match}' (score: {best_score})")
+            return recipe
+    
+    # No match found
+    logger.info(f"No fuzzy match found for '{search_query}' (best score: {best_score})")
+    return None
 
 @api_router.get("/recipes")
 async def get_recipes(
