@@ -20,7 +20,7 @@ SOUS_CHEF_SYSTEM_PROMPT = """You are Sous-Chef Linguine, an elite culinary intel
 IMPORTANT: You must return ONLY valid JSON that matches this EXACT structure:
 
 {
-  "recipe_name": "string - the dish name",
+  "recipe_name": "string - the dish name in its ORIGINAL language",
   "origin_country": "string - country of origin",
   "origin_region": "string - specific region",
   "origin_language": "string - 2-letter language code (it, fr, ja, etc.)",
@@ -29,6 +29,9 @@ IMPORTANT: You must return ONLY valid JSON that matches this EXACT structure:
   "characteristic_profile": "string - taste and texture description",
   "no_no_rules": ["string - what NOT to do when making this dish"],
   "special_techniques": ["string - traditional cooking techniques"],
+  "technique_links": [
+    {"technique": "technique name", "url": "YouTube or article URL", "description": "what this technique teaches"}
+  ],
   "ingredients": [
     {"item": "ingredient name", "amount": "quantity", "unit": "g/ml/tbsp/etc", "notes": "optional preparation notes"}
   ],
@@ -56,9 +59,11 @@ RULES:
 - Include at least 2-3 wine pairings with regional preferences
 - Include at least 3 no-no rules (what NOT to do)
 - Include at least 2 special techniques
+- For each special technique, try to include a technique_link with a relevant tutorial URL
 - All ingredients must have item, amount, unit fields
 - Instructions should be clear numbered steps
-- authenticity_level must be a number 1-5"""
+- authenticity_level must be a number 1-5
+- Recipe content should be in ENGLISH by default"""
 
 # JSON Schema for recipe output
 RECIPE_JSON_SCHEMA = {
@@ -71,6 +76,7 @@ RECIPE_JSON_SCHEMA = {
     "characteristic_profile": "",
     "no_no_rules": [],
     "special_techniques": [],
+    "technique_links": [],
     "ingredients": [
         {"item": "", "amount": "", "unit": "", "notes": ""}
     ],
