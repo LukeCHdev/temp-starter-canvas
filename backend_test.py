@@ -33,68 +33,39 @@ class AdminPanelTester:
         status = "✅ PASS" if success else "❌ FAIL"
         print(f"{status} {test_name}: {details}")
         
-    def test_duplicate_prevention_carbonara(self):
-        """Test Case 1: Duplicate Prevention - All Carbonara variations should return same recipe"""
-        print("\n=== Test 1: Duplicate Prevention - Carbonara Variations ===")
+    def test_admin_login_success(self):
+        """Test Case 1: Admin Authentication - Valid Password"""
+        print("\n=== Test 1: Admin Login with Valid Password ===")
         
-        carbonara_queries = [
-            "Carbonara",
-            "Spaghetti Carbonara", 
-            "Pasta Carbonara",
-            "carbonara"  # lowercase test
-        ]
-        
-        found_recipes = {}
-        all_passed = True
-        
-        for query in carbonara_queries:
-            try:
-                response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                    "q": query,
-                    "lang": "en"
-                })
-                
-                if response.status_code != 200:
-                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"HTTP {response.status_code}: {response.text}")
-                    all_passed = False
-                    continue
-                    
-                data = response.json()
-                
-                # Check expected response structure
-                if not data.get("found"):
-                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Expected found=true, got {data.get('found')}")
-                    all_passed = False
-                    continue
-                    
-                if data.get("generated"):
-                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Expected generated=false (should find existing), got {data.get('generated')}")
-                    all_passed = False
-                    continue
-                
-                recipe = data.get("recipe")
-                if not recipe or not recipe.get("slug"):
-                    self.log_test(f"Carbonara Duplicate Test ({query})", False, "Recipe or slug missing")
-                    all_passed = False
-                    continue
-                    
-                found_recipes[query] = recipe["slug"]
-                print(f"  Query '{query}' -> slug: {recipe['slug']}")
-                
-            except Exception as e:
-                self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Exception: {str(e)}")
-                all_passed = False
-        
-        # Check if all queries returned the same slug
-        unique_slugs = set(found_recipes.values())
-        if len(unique_slugs) == 1:
-            slug = list(unique_slugs)[0]
-            self.log_test("Carbonara Duplicate Prevention", True, f"All Carbonara variations return same recipe: {slug}")
-        else:
-            self.log_test("Carbonara Duplicate Prevention", False, f"Found {len(unique_slugs)} different slugs: {list(unique_slugs)}")
-            all_passed = False
+        try:
+            response = self.session.post(f"{BACKEND_URL}/admin/login", json={
+                "password": ADMIN_PASSWORD
+            })
             
-        return all_passed and len(found_recipes) > 0
+            if response.status_code != 200:
+                self.log_test("Admin Login (Valid)", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            # Check response structure
+            if not data.get("success"):
+                self.log_test("Admin Login (Valid)", False, f"Expected success=true, got {data.get('success')}")
+                return False
+                
+            if not data.get("token"):
+                self.log_test("Admin Login (Valid)", False, "No token returned")
+                return False
+                
+            # Store token for subsequent tests
+            self.admin_token = data["token"]
+            
+            self.log_test("Admin Login (Valid)", True, f"Login successful, token received")
+            return True
+            
+        except Exception as e:
+            self.log_test("Admin Login (Valid)", False, f"Exception: {str(e)}")
+            return False
             
     def test_country_attribution_fixes(self):
         """Test Case 2: Country Attribution - Verify correct country origins"""
