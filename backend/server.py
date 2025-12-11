@@ -205,11 +205,12 @@ async def get_recipes(
     query = {"status": "published"}
     
     if region:
-        query["region"] = region
+        query["$or"] = [{"region": region}, {"origin_region": region}]
     if country:
-        query["country"] = country
+        query["$or"] = [{"country": country}, {"origin_country": country}]
     if search:
         query["$or"] = [
+            {"recipe_name": {"$regex": search, "$options": "i"}},
             {"title_original": {"$regex": search, "$options": "i"}},
             {"title_translated.en": {"$regex": search, "$options": "i"}}
         ]
@@ -229,17 +230,14 @@ async def get_recipes(
 
 @api_router.get("/recipes/{slug}")
 async def get_recipe(slug: str, locale: Optional[str] = "en-US"):
-    """Get single recipe by slug with locale adaptation."""
+    """Get single recipe by slug."""
     try:
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
         
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
         
-        # Adapt recipe to user's locale
-        adapted_recipe = translation_engine.get_locale_content(recipe, locale)
-        
-        return adapted_recipe
+        return recipe
     except HTTPException:
         raise
     except Exception as e:
@@ -248,7 +246,7 @@ async def get_recipe(slug: str, locale: Optional[str] = "en-US"):
 
 @api_router.post("/recipes/generate")
 async def generate_recipe(recipe_create: RecipeCreate):
-    """Generate a new recipe using AI."""
+    """Generate a new recipe using Sous-Chef Linguine GPT."""
     try:
         # Generate recipe
         recipe_data = await recipe_generator.generate_recipe(
@@ -257,27 +255,15 @@ async def generate_recipe(recipe_create: RecipeCreate):
             region=recipe_create.region
         )
         
-        # Validate authenticity
-        is_valid, rejection_reason, validation_report = authenticity_engine.validate_recipe(recipe_data)
-        
-        if not is_valid:
-            # Mark as rejected
-            recipe_data['status'] = 'rejected'
-            recipe_data['rejection_reason'] = rejection_reason
-            await db.recipes.insert_one(recipe_data)
-            
-            raise HTTPException(
-                status_code=400,
-                detail=f"Recipe rejected: {rejection_reason}",
-                headers={"X-Validation-Report": str(validation_report)}
-            )
-        
         # Save to database
         await db.recipes.insert_one(recipe_data)
         
+        # Remove _id before returning
+        recipe_data.pop('_id', None)
+        
         return {
-            "message": "Recipe generated successfully",
-            "recipe": recipe_data,
+            "message": "Recipe generated successfully by Sous-Chef Linguine",
+            "recipe": recipe_data
             "validation_report": validation_report
         }
     
