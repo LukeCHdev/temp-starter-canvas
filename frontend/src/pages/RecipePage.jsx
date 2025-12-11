@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { RecipeSEO } from '@/components/seo/SEOHelmet';
 import { useLanguage } from '@/context/LanguageContext';
+import { ReviewSection } from '@/components/recipe/ReviewSection';
 import { 
     ChefHat, 
     Globe, 
