@@ -154,51 +154,73 @@ class SousChefTester:
                 
         return all_passed
             
-    def test_search_new_recipe_english(self):
-        """Test Case 3: Search for new recipe in English"""
-        print("\n=== Test 3: Search for new recipe in English ===")
+    def test_translation_duplicate_prevention(self):
+        """Test Case 3: Translation Test - Same recipe in different languages should return same slug"""
+        print("\n=== Test 3: Translation Duplicate Prevention ===")
         
         try:
-            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Kimchi Jjigae",
+            # First get English version
+            response_en = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                "q": "Carbonara",
                 "lang": "en"
             })
             
-            if response.status_code != 200:
-                self.log_test("Search Kimchi Jjigae (EN)", False, f"HTTP {response.status_code}: {response.text}")
-                return None
+            if response_en.status_code != 200:
+                self.log_test("Translation Test (EN)", False, f"HTTP {response_en.status_code}: {response_en.text}")
+                return False
                 
-            data = response.json()
+            data_en = response_en.json()
+            recipe_en = data_en.get("recipe")
             
-            # Check expected fields
-            expected_fields = ["found", "generated", "translated", "recipe"]
-            missing_fields = [field for field in expected_fields if field not in data]
+            if not recipe_en or not recipe_en.get("slug"):
+                self.log_test("Translation Test (EN)", False, "No English recipe found")
+                return False
+                
+            english_slug = recipe_en["slug"]
             
-            if missing_fields:
-                self.log_test("Search Kimchi Jjigae (EN)", False, f"Missing fields: {missing_fields}", data)
-                return None
-                
-            # For new recipe, it should be generated
-            if not data.get("generated"):
-                self.log_test("Search Kimchi Jjigae (EN)", False, "Expected generated=true", data)
-                return None
-                
-            recipe = data.get("recipe")
-            if not recipe or not recipe.get("slug"):
-                self.log_test("Search Kimchi Jjigae (EN)", False, "Recipe or slug missing", data)
-                return None
-                
-            # Check if technique_links field exists
-            if "technique_links" not in recipe:
-                self.log_test("Search Kimchi Jjigae (EN)", False, "technique_links field missing", data)
-                return None
-                
-            self.log_test("Search Kimchi Jjigae (EN)", True, f"Generated recipe with slug: {recipe['slug']}, technique_links present", data)
-            return recipe
+            # Now get Italian version
+            response_it = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                "q": "Carbonara", 
+                "lang": "it"
+            })
             
+            if response_it.status_code != 200:
+                self.log_test("Translation Test (IT)", False, f"HTTP {response_it.status_code}: {response_it.text}")
+                return False
+                
+            data_it = response_it.json()
+            
+            # Check expected response structure
+            if not data_it.get("found"):
+                self.log_test("Translation Test (IT)", False, f"Expected found=true, got {data_it.get('found')}")
+                return False
+                
+            if data_it.get("generated"):
+                self.log_test("Translation Test (IT)", False, f"Expected generated=false (should reuse existing), got {data_it.get('generated')}")
+                return False
+                
+            if not data_it.get("translated"):
+                self.log_test("Translation Test (IT)", False, f"Expected translated=true, got {data_it.get('translated')}")
+                return False
+                
+            recipe_it = data_it.get("recipe")
+            if not recipe_it or not recipe_it.get("slug"):
+                self.log_test("Translation Test (IT)", False, "No Italian recipe found")
+                return False
+                
+            italian_slug = recipe_it["slug"]
+            
+            # Check if same slug
+            if english_slug == italian_slug:
+                self.log_test("Translation Duplicate Prevention", True, f"Same slug for both languages: {english_slug}")
+                return True
+            else:
+                self.log_test("Translation Duplicate Prevention", False, f"Different slugs! EN: {english_slug}, IT: {italian_slug}")
+                return False
+                
         except Exception as e:
-            self.log_test("Search Kimchi Jjigae (EN)", False, f"Exception: {str(e)}")
-            return None
+            self.log_test("Translation Duplicate Prevention", False, f"Exception: {str(e)}")
+            return False
             
     def test_verify_no_duplicates(self):
         """Test Case 4: Verify no duplicates were created"""
