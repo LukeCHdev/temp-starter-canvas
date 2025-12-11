@@ -1000,6 +1000,146 @@ async def get_most_loved(limit: int = 10, region: Optional[str] = None):
     
     return {"recipes": recipes}
 
+# ============== HOMEPAGE & EXPLORE ROUTES ==============
+
+@api_router.get("/recipes/best")
+async def get_best_recipe():
+    """Get the #1 best recipe worldwide based on rating > reviews > favorites."""
+    recipe = await db.recipes.find_one(
+        {"status": "published"},
+        {"_id": 0},
+        sort=[
+            ("average_rating", -1),
+            ("ratings_count", -1),
+            ("favorites_count", -1)
+        ]
+    )
+    
+    if not recipe:
+        return {"recipe": None}
+    
+    return {"recipe": recipe}
+
+@api_router.get("/recipes/featured")
+async def get_featured_recipes(limit: int = 4):
+    """Get top featured recipes (excluding the #1 best)."""
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).skip(1).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/recipes/top-worldwide")
+async def get_top_worldwide(limit: int = 10):
+    """Get top 10 recipes worldwide sorted by rating > reviews > favorites."""
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {"recipes": recipes}
+
+@api_router.get("/continents")
+async def get_continents():
+    """Get all continents with recipe counts."""
+    # Define continents
+    continent_list = ["Europe", "Asia", "Americas", "Africa", "Middle East", "Oceania"]
+    
+    continents = []
+    for continent in continent_list:
+        count = await db.recipes.count_documents({"continent": continent, "status": "published"})
+        if count > 0:
+            continents.append({
+                "name": continent,
+                "slug": continent.lower().replace(" ", "-"),
+                "recipe_count": count
+            })
+    
+    return {"continents": continents}
+
+@api_router.get("/continents/{continent}/countries")
+async def get_countries_by_continent(continent: str):
+    """Get all countries in a continent that have recipes."""
+    # Convert slug back to name
+    continent_name = continent.replace("-", " ").title()
+    
+    # Aggregate countries with recipe counts
+    pipeline = [
+        {"$match": {"continent": continent_name, "status": "published"}},
+        {"$group": {
+            "_id": "$origin_country",
+            "recipe_count": {"$sum": 1}
+        }},
+        {"$sort": {"recipe_count": -1}}
+    ]
+    
+    countries = []
+    async for doc in db.recipes.aggregate(pipeline):
+        if doc["_id"]:
+            countries.append({
+                "name": doc["_id"],
+                "slug": doc["_id"].lower().replace(" ", "-"),
+                "recipe_count": doc["recipe_count"]
+            })
+    
+    return {
+        "continent": continent_name,
+        "countries": countries
+    }
+
+@api_router.get("/recipes/by-continent/{continent}")
+async def get_recipes_by_continent_name(continent: str, limit: int = 10):
+    """Get top recipes from a continent."""
+    continent_name = continent.replace("-", " ").title()
+    
+    recipes = await db.recipes.find(
+        {"continent": continent_name, "status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    return {
+        "continent": continent_name,
+        "recipes": recipes
+    }
+
+@api_router.get("/recipes/by-country/{country}")
+async def get_recipes_by_country_name(country: str, limit: int = 50):
+    """Get all recipes from a specific country with ranking."""
+    country_name = country.replace("-", " ").title()
+    
+    # Get recipes sorted by rating
+    recipes = await db.recipes.find(
+        {"origin_country": {"$regex": f"^{country_name}$", "$options": "i"}, "status": "published"},
+        {"_id": 0}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1),
+        ("favorites_count", -1)
+    ]).limit(limit).to_list(limit)
+    
+    # Get continent for breadcrumb
+    continent = recipes[0].get("continent", "Unknown") if recipes else "Unknown"
+    
+    return {
+        "country": country_name,
+        "continent": continent,
+        "recipes": recipes,
+        "total": len(recipes)
+    }
+
 # ============== ROOT ROUTE ==============
 
 @api_router.get("/")
