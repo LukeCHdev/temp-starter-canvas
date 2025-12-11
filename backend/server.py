@@ -1092,6 +1092,53 @@ async def get_most_loved(limit: int = 10, region: Optional[str] = None):
     
     return {"recipes": recipes}
 
+# ============== CONTINENT ROUTES ==============
+
+@api_router.get("/continents")
+async def get_continents():
+    """Get all continents with recipe counts."""
+    continent_list = ["Europe", "Asia", "Americas", "Africa", "Middle East", "Oceania"]
+    
+    continents = []
+    for continent in continent_list:
+        count = await db.recipes.count_documents({"continent": continent, "status": "published"})
+        if count > 0:
+            continents.append({
+                "name": continent,
+                "slug": continent.lower().replace(" ", "-"),
+                "recipe_count": count
+            })
+    
+    return {"continents": continents}
+
+@api_router.get("/continents/{continent}/countries")
+async def get_countries_by_continent(continent: str):
+    """Get all countries in a continent that have recipes."""
+    continent_name = continent.replace("-", " ").title()
+    
+    pipeline = [
+        {"$match": {"continent": continent_name, "status": "published"}},
+        {"$group": {
+            "_id": "$origin_country",
+            "recipe_count": {"$sum": 1}
+        }},
+        {"$sort": {"recipe_count": -1}}
+    ]
+    
+    countries = []
+    async for doc in db.recipes.aggregate(pipeline):
+        if doc["_id"]:
+            countries.append({
+                "name": doc["_id"],
+                "slug": doc["_id"].lower().replace(" ", "-"),
+                "recipe_count": doc["recipe_count"]
+            })
+    
+    return {
+        "continent": continent_name,
+        "countries": countries
+    }
+
 # ============== ROOT ROUTE ==============
 
 @api_router.get("/")
