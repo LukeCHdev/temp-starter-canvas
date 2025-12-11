@@ -179,15 +179,43 @@ def generate_slug(recipe_name: str, country: str = "") -> str:
 def get_continent(country: str) -> str:
     """Get continent for a country."""
     COUNTRY_TO_CONTINENT = {
+        # Europe
         "Italy": "Europe", "France": "Europe", "Spain": "Europe", "Germany": "Europe",
         "United Kingdom": "Europe", "Greece": "Europe", "Portugal": "Europe", "Sweden": "Europe",
-        "Japan": "Asia", "China": "Asia", "South Korea": "Asia", "Vietnam": "Asia",
-        "Thailand": "Asia", "Indonesia": "Asia", "India": "Asia", "Taiwan": "Asia",
-        "United States": "Americas", "USA": "Americas", "Mexico": "Americas", "Brazil": "Americas",
-        "Argentina": "Americas", "Peru": "Americas", "Colombia": "Americas",
-        "Morocco": "Africa", "Egypt": "Africa", "Ethiopia": "Africa", "Tunisia": "Africa",
-        "Lebanon": "Middle East", "Israel": "Middle East", "Iran": "Middle East", "Turkey": "Middle East",
-        "Australia": "Oceania", "New Zealand": "Oceania",
+        "Norway": "Europe", "Denmark": "Europe", "Finland": "Europe", "Netherlands": "Europe",
+        "Belgium": "Europe", "Austria": "Europe", "Switzerland": "Europe", "Poland": "Europe",
+        "Czech Republic": "Europe", "Hungary": "Europe", "Romania": "Europe", "Bulgaria": "Europe",
+        "Croatia": "Europe", "Serbia": "Europe", "Ireland": "Europe", "Russia": "Europe",
+        "Ukraine": "Europe", "Turkey": "Europe", "Albania": "Europe", "Bosnia and Herzegovina": "Europe",
+        "Montenegro": "Europe", "North Macedonia": "Europe", "Slovenia": "Europe", "Slovakia": "Europe",
+        "Moldova": "Europe", "Belarus": "Europe", "Lithuania": "Europe", "Latvia": "Europe",
+        "Estonia": "Europe", "Iceland": "Europe", "Luxembourg": "Europe", "Malta": "Europe",
+        "Cyprus": "Europe",
+        # Asia
+        "Japan": "Asia", "China": "Asia", "South Korea": "Asia", "North Korea": "Asia",
+        "Vietnam": "Asia", "Thailand": "Asia", "Indonesia": "Asia", "Malaysia": "Asia",
+        "Singapore": "Asia", "Philippines": "Asia", "India": "Asia", "Pakistan": "Asia",
+        "Bangladesh": "Asia", "Sri Lanka": "Asia", "Nepal": "Asia", "Myanmar": "Asia",
+        "Cambodia": "Asia", "Laos": "Asia", "Taiwan": "Asia", "Hong Kong": "Asia",
+        "Mongolia": "Asia", "Kazakhstan": "Asia",
+        # Americas
+        "United States": "Americas", "USA": "Americas", "Mexico": "Americas", "Canada": "Americas",
+        "Brazil": "Americas", "Argentina": "Americas", "Peru": "Americas", "Colombia": "Americas",
+        "Chile": "Americas", "Venezuela": "Americas", "Ecuador": "Americas", "Cuba": "Americas",
+        "Jamaica": "Americas", "Dominican Republic": "Americas", "Puerto Rico": "Americas",
+        "Guatemala": "Americas", "Honduras": "Americas", "Costa Rica": "Americas", "Panama": "Americas",
+        # Africa
+        "Morocco": "Africa", "Egypt": "Africa", "Ethiopia": "Africa", "Nigeria": "Africa",
+        "South Africa": "Africa", "Kenya": "Africa", "Ghana": "Africa", "Senegal": "Africa",
+        "Tunisia": "Africa", "Algeria": "Africa", "Tanzania": "Africa",
+        # Middle East
+        "Lebanon": "Middle East", "Israel": "Middle East", "Iran": "Middle East", "Iraq": "Middle East",
+        "Saudi Arabia": "Middle East", "United Arab Emirates": "Middle East", "UAE": "Middle East",
+        "Jordan": "Middle East", "Syria": "Middle East", "Yemen": "Middle East", "Oman": "Middle East",
+        "Kuwait": "Middle East", "Bahrain": "Middle East", "Qatar": "Middle East", "Palestine": "Middle East",
+        "Georgia": "Middle East", "Armenia": "Middle East", "Azerbaijan": "Middle East",
+        # Oceania
+        "Australia": "Oceania", "New Zealand": "Oceania", "Fiji": "Oceania", "Papua New Guinea": "Oceania",
     }
     return COUNTRY_TO_CONTINENT.get(country, "Unknown")
 
