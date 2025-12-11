@@ -92,6 +92,9 @@ const RecipePage = () => {
 
     return (
         <div className="min-h-screen" data-testid="recipe-page">
+            {/* SEO Metadata */}
+            <RecipeSEO recipe={recipe} url={window.location.href} />
+            
             {/* Hero Section */}
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
                 <div className="max-w-4xl mx-auto">
