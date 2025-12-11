@@ -139,7 +139,8 @@ class RecipeGenerator:
             'origin_country': origin_country,
             'origin_region': origin_region,
             'continent': continent,  # Add continent for Explore page
-            'origin_language': recipe_json.get('origin_language', 'en'),
+            'origin_language': recipe_json.get('origin_language', 'en'),  # Native language of the dish's country
+            'content_language': 'en',  # Language the recipe content is written in (always English for generated)
             'authenticity_level': recipe_json.get('authenticity_level', 3),
             
             # Cultural Content
