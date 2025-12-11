@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { Navigation } from '@/components/common/Navigation';
 import { Footer } from '@/components/common/Footer';
@@ -22,15 +22,42 @@ import TermsPage from '@/pages/TermsPage';
 import CookiesPage from '@/pages/CookiesPage';
 import FavoritesPage from '@/pages/FavoritesPage';
 
+// Admin Pages
+import {
+  AdminLoginPage,
+  AdminRecipesPage,
+  AdminNewRecipePage,
+  AdminEditRecipePage,
+  AdminImportCSVPage,
+  AdminImportJSONPage,
+  AdminScrapePage
+} from '@/pages/admin';
+
+// Layout wrapper that conditionally shows Navigation and Footer
+const AppLayout = ({ children }) => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  
+  return (
+    <div className={`min-h-screen flex flex-col ${isAdminRoute ? 'bg-gray-50' : 'bg-[#FAF7F0]'}`} data-testid="app-container">
+      {!isAdminRoute && <Navigation />}
+      <main className="flex-1">
+        {children}
+      </main>
+      {!isAdminRoute && <Footer />}
+      <Toaster />
+    </div>
+  );
+};
+
 function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <div className="min-h-screen flex flex-col bg-[#FAF7F0]" data-testid="app-container">
-          <BrowserRouter>
-            <Navigation />
-            <main className="flex-1">
+        <BrowserRouter>
+          <AppLayout>
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<HomePage />} />
               <Route path="/explore" element={<ExplorePage />} />
               <Route path="/explore/:continent" element={<ExplorePage />} />
@@ -47,14 +74,21 @@ function App() {
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/cookies" element={<CookiesPage />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLoginPage />} />
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin/recipes" element={<AdminRecipesPage />} />
+              <Route path="/admin/recipes/new" element={<AdminNewRecipePage />} />
+              <Route path="/admin/recipes/:slug/edit" element={<AdminEditRecipePage />} />
+              <Route path="/admin/import-csv" element={<AdminImportCSVPage />} />
+              <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
+              <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
             </Routes>
-          </main>
-          <Footer />
-          <Toaster />
+          </AppLayout>
         </BrowserRouter>
-      </div>
-    </AuthProvider>
-  </LanguageProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 
