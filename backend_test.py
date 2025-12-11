@@ -153,60 +153,60 @@ class AdminPanelTester:
             self.log_test("Admin Recipes List", False, f"Exception: {str(e)}")
             return False
             
-    def test_comprehensive_duplicate_prevention(self):
-        """Test Case 5: Comprehensive Duplicate Prevention Test"""
-        print("\n=== Test 5: Comprehensive Duplicate Prevention ===")
+    def test_admin_single_recipe(self):
+        """Test Case 5: Admin Recipe Management - Get Single Recipe"""
+        print("\n=== Test 5: Admin Get Single Recipe ===")
         
-        # Test multiple variations of the same dish
-        test_groups = [
-            {
-                "dish": "Carbonara",
-                "variations": ["Carbonara", "Spaghetti Carbonara", "Pasta Carbonara", "carbonara", "Spaghetti alla Carbonara"]
-            },
-            {
-                "dish": "Wellington", 
-                "variations": ["Beef Wellington", "Wellington"]
-            }
-        ]
-        
-        all_passed = True
-        
-        for group in test_groups:
-            print(f"\n  Testing {group['dish']} variations:")
-            found_slugs = set()
+        if not self.admin_token:
+            self.log_test("Admin Single Recipe", False, "No admin token available")
+            return False
             
-            for variation in group["variations"]:
-                try:
-                    response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                        "q": variation,
-                        "lang": "en"
-                    })
-                    
-                    if response.status_code == 200:
-                        data = response.json()
-                        if data.get("recipe") and data["recipe"].get("slug"):
-                            slug = data["recipe"]["slug"]
-                            found_slugs.add(slug)
-                            print(f"    '{variation}' -> {slug}")
-                            
-                except Exception as e:
-                    print(f"    '{variation}' -> ERROR: {str(e)}")
-                    all_passed = False
+        try:
+            # First get list of recipes to find a valid slug
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/recipes", headers=headers)
             
-            # Check if all variations returned the same slug
-            if len(found_slugs) <= 1:
-                dish_name = group["dish"]
-                if found_slugs:
-                    slug = list(found_slugs)[0]
-                    self.log_test(f"Duplicate Prevention ({dish_name})", True, f"All {dish_name} variations return same slug: {slug}")
-                else:
-                    self.log_test(f"Duplicate Prevention ({dish_name})", False, f"No recipes found for {dish_name} variations")
-                    all_passed = False
-            else:
-                self.log_test(f"Duplicate Prevention ({dish_name})", False, f"Found {len(found_slugs)} different slugs for {dish_name}: {list(found_slugs)}")
-                all_passed = False
+            if response.status_code != 200:
+                self.log_test("Admin Single Recipe", False, f"Failed to get recipes list: {response.status_code}")
+                return False
                 
-        return all_passed
+            data = response.json()
+            recipes = data.get("recipes", [])
+            
+            if not recipes:
+                self.log_test("Admin Single Recipe", False, "No recipes available to test")
+                return False
+                
+            # Use first recipe's slug
+            test_slug = recipes[0].get("slug")
+            if not test_slug:
+                self.log_test("Admin Single Recipe", False, "No slug found in first recipe")
+                return False
+                
+            # Now test getting single recipe
+            response = self.session.get(f"{BACKEND_URL}/admin/recipes/{test_slug}", headers=headers)
+            
+            if response.status_code != 200:
+                self.log_test("Admin Single Recipe", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            if "recipe" not in data:
+                self.log_test("Admin Single Recipe", False, "Missing 'recipe' in response")
+                return False
+                
+            recipe = data["recipe"]
+            if recipe.get("slug") != test_slug:
+                self.log_test("Admin Single Recipe", False, f"Slug mismatch: expected {test_slug}, got {recipe.get('slug')}")
+                return False
+                
+            self.log_test("Admin Single Recipe", True, f"Retrieved recipe '{test_slug}' successfully")
+            return True
+            
+        except Exception as e:
+            self.log_test("Admin Single Recipe", False, f"Exception: {str(e)}")
+            return False
             
     def run_all_tests(self):
         """Run all test cases based on review request"""
