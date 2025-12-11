@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for Sous Chef Linguine Recipe Search and Translation System
-Tests the recipe search functionality with translation capabilities.
+Backend Test Suite for Sous Chef Linguine Recipe Search API
+Tests duplicate prevention and country attribution fixes as per review request.
 """
 
 import requests
@@ -30,54 +30,68 @@ class SousChefTester:
         status = "✅ PASS" if success else "❌ FAIL"
         print(f"{status} {test_name}: {details}")
         
-    def test_search_existing_recipe_english(self):
-        """Test Case 1: Search for existing recipe in English"""
-        print("\n=== Test 1: Search for existing recipe in English ===")
+    def test_duplicate_prevention_carbonara(self):
+        """Test Case 1: Duplicate Prevention - All Carbonara variations should return same recipe"""
+        print("\n=== Test 1: Duplicate Prevention - Carbonara Variations ===")
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Carbonara",
-                "lang": "en"
-            })
+        carbonara_queries = [
+            "Carbonara",
+            "Spaghetti Carbonara", 
+            "Pasta Carbonara",
+            "carbonara"  # lowercase test
+        ]
+        
+        found_recipes = {}
+        all_passed = True
+        
+        for query in carbonara_queries:
+            try:
+                response = self.session.get(f"{BACKEND_URL}/recipes/search", params={
+                    "q": query,
+                    "lang": "en"
+                })
+                
+                if response.status_code != 200:
+                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"HTTP {response.status_code}: {response.text}")
+                    all_passed = False
+                    continue
+                    
+                data = response.json()
+                
+                # Check expected response structure
+                if not data.get("found"):
+                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Expected found=true, got {data.get('found')}")
+                    all_passed = False
+                    continue
+                    
+                if data.get("generated"):
+                    self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Expected generated=false (should find existing), got {data.get('generated')}")
+                    all_passed = False
+                    continue
+                
+                recipe = data.get("recipe")
+                if not recipe or not recipe.get("slug"):
+                    self.log_test(f"Carbonara Duplicate Test ({query})", False, "Recipe or slug missing")
+                    all_passed = False
+                    continue
+                    
+                found_recipes[query] = recipe["slug"]
+                print(f"  Query '{query}' -> slug: {recipe['slug']}")
+                
+            except Exception as e:
+                self.log_test(f"Carbonara Duplicate Test ({query})", False, f"Exception: {str(e)}")
+                all_passed = False
+        
+        # Check if all queries returned the same slug
+        unique_slugs = set(found_recipes.values())
+        if len(unique_slugs) == 1:
+            slug = list(unique_slugs)[0]
+            self.log_test("Carbonara Duplicate Prevention", True, f"All Carbonara variations return same recipe: {slug}")
+        else:
+            self.log_test("Carbonara Duplicate Prevention", False, f"Found {len(unique_slugs)} different slugs: {list(unique_slugs)}")
+            all_passed = False
             
-            if response.status_code != 200:
-                self.log_test("Search Carbonara (EN)", False, f"HTTP {response.status_code}: {response.text}")
-                return None
-                
-            data = response.json()
-            
-            # Check expected fields
-            expected_fields = ["found", "generated", "translated", "recipe"]
-            missing_fields = [field for field in expected_fields if field not in data]
-            
-            if missing_fields:
-                self.log_test("Search Carbonara (EN)", False, f"Missing fields: {missing_fields}", data)
-                return None
-                
-            # Validate expected values
-            if not data.get("found"):
-                self.log_test("Search Carbonara (EN)", False, "Expected found=true", data)
-                return None
-                
-            if data.get("generated"):
-                self.log_test("Search Carbonara (EN)", False, "Expected generated=false", data)
-                return None
-                
-            if data.get("translated"):
-                self.log_test("Search Carbonara (EN)", False, "Expected translated=false", data)
-                return None
-                
-            recipe = data.get("recipe")
-            if not recipe or not recipe.get("slug"):
-                self.log_test("Search Carbonara (EN)", False, "Recipe or slug missing", data)
-                return None
-                
-            self.log_test("Search Carbonara (EN)", True, f"Found recipe with slug: {recipe['slug']}", data)
-            return recipe
-            
-        except Exception as e:
-            self.log_test("Search Carbonara (EN)", False, f"Exception: {str(e)}")
-            return None
+        return all_passed and len(found_recipes) > 0
             
     def test_search_same_recipe_italian(self, english_recipe_slug: str = None):
         """Test Case 2: Search for SAME recipe in Italian (should translate, NOT create duplicate)"""
