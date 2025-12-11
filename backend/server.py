@@ -67,13 +67,17 @@ async def search_recipes(
     Flow:
     1. First try fuzzy matching to find similar existing recipes
     2. If match found with score >= 75, return that recipe
-    3. If no match and auto_generate=True:
+    3. If target language differs from content language, translate dynamically (NOT saved)
+    4. If no match and auto_generate=True:
        - Generate new recipe in ENGLISH (canonical)
-       - Save to DB
+       - Save to DB with content_language='en'
        - Translate if needed (NOT saved)
     
     This prevents duplicate recipes for similar queries like:
     - "Carbonara" vs "Pasta Carbonara" → returns same recipe
+    
+    IMPORTANT: origin_language = the dish's native language (e.g., 'it' for Italian dishes)
+               content_language = the language the recipe content is written in (always 'en' for generated recipes)
     """
     from services.sous_chef_ai import sous_chef_ai
     
@@ -108,17 +112,18 @@ async def search_recipes(
             )
             
             # Check if translation is needed
-            # Translate whenever target language differs from the recipe's original language
-            canonical_lang = similar_recipe.get("origin_language", "en")[:2].lower()
+            # Use content_language (what the content is actually written in), NOT origin_language
+            # Generated recipes are always in English, so content_language defaults to 'en'
+            content_lang = similar_recipe.get("content_language", "en")[:2].lower()
             
-            if target_lang != canonical_lang:
-                logger.info(f"Translating recipe '{similar_recipe['slug']}' from {canonical_lang} to {target_lang}")
+            if target_lang != content_lang:
+                logger.info(f"Translating recipe '{similar_recipe['slug']}' from {content_lang} to {target_lang}")
                 try:
                     translated_recipe = await sous_chef_ai.translate_recipe(similar_recipe, target_lang)
                     # Preserve original metadata
                     translated_recipe["slug"] = similar_recipe["slug"]
                     translated_recipe["_translated"] = True
-                    translated_recipe["_original_lang"] = canonical_lang
+                    translated_recipe["_original_lang"] = content_lang
                     translated_recipe["_display_lang"] = target_lang
                     
                     return {
@@ -172,17 +177,17 @@ async def search_recipes(
             )
             
             # Check if translation is needed
-            # Translate whenever target language differs from the recipe's original language
-            canonical_lang = recipe.get("origin_language", "en")[:2].lower()
+            # Use content_language (defaults to 'en' for generated recipes)
+            content_lang = recipe.get("content_language", "en")[:2].lower()
             
-            if target_lang != canonical_lang:
-                logger.info(f"Translating recipe '{recipe['slug']}' from {canonical_lang} to {target_lang}")
+            if target_lang != content_lang:
+                logger.info(f"Translating recipe '{recipe['slug']}' from {content_lang} to {target_lang}")
                 try:
                     translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
                     # Preserve original metadata
                     translated_recipe["slug"] = recipe["slug"]
                     translated_recipe["_translated"] = True
-                    translated_recipe["_original_lang"] = canonical_lang
+                    translated_recipe["_original_lang"] = content_lang
                     translated_recipe["_display_lang"] = target_lang
                     
                     return {
