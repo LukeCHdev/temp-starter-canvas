@@ -87,76 +87,33 @@ class AdminPanelTester:
             self.log_test("Admin Login (Invalid)", False, f"Exception: {str(e)}")
             return False
             
-    def test_translation_duplicate_prevention(self):
-        """Test Case 3: Translation Test - Same recipe in different languages should return same slug"""
-        print("\n=== Test 3: Translation Duplicate Prevention ===")
+    def test_admin_verify_token(self):
+        """Test Case 3: Admin Token Verification"""
+        print("\n=== Test 3: Admin Token Verification ===")
         
+        if not self.admin_token:
+            self.log_test("Admin Token Verify", False, "No admin token available from login test")
+            return False
+            
         try:
-            # Use Beef Wellington (English recipe) for translation test
-            # First get English version
-            response_en = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Beef Wellington",
-                "lang": "en"
-            })
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/verify", headers=headers)
             
-            if response_en.status_code != 200:
-                self.log_test("Translation Test (EN)", False, f"HTTP {response_en.status_code}: {response_en.text}")
+            if response.status_code != 200:
+                self.log_test("Admin Token Verify", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
-            data_en = response_en.json()
-            recipe_en = data_en.get("recipe")
+            data = response.json()
             
-            if not recipe_en or not recipe_en.get("slug"):
-                self.log_test("Translation Test (EN)", False, "No English recipe found")
-                return False
-                
-            english_slug = recipe_en["slug"]
-            english_origin_lang = recipe_en.get("origin_language", "en")
-            
-            # Now get Italian version (should be translated)
-            response_it = self.session.get(f"{BACKEND_URL}/recipes/search", params={
-                "q": "Beef Wellington", 
-                "lang": "it"
-            })
-            
-            if response_it.status_code != 200:
-                self.log_test("Translation Test (IT)", False, f"HTTP {response_it.status_code}: {response_it.text}")
-                return False
-                
-            data_it = response_it.json()
-            
-            # Check expected response structure
-            if not data_it.get("found"):
-                self.log_test("Translation Test (IT)", False, f"Expected found=true, got {data_it.get('found')}")
-                return False
-                
-            if data_it.get("generated"):
-                self.log_test("Translation Test (IT)", False, f"Expected generated=false (should reuse existing), got {data_it.get('generated')}")
-                return False
-                
-            # Only expect translation if original language is different from requested language
-            if english_origin_lang != "it":
-                if not data_it.get("translated"):
-                    self.log_test("Translation Test (IT)", False, f"Expected translated=true for English->Italian, got {data_it.get('translated')}")
-                    return False
-            
-            recipe_it = data_it.get("recipe")
-            if not recipe_it or not recipe_it.get("slug"):
-                self.log_test("Translation Test (IT)", False, "No Italian recipe found")
-                return False
-                
-            italian_slug = recipe_it["slug"]
-            
-            # Check if same slug
-            if english_slug == italian_slug:
-                self.log_test("Translation Duplicate Prevention", True, f"Same slug for both languages: {english_slug}, translated: {data_it.get('translated')}")
+            if data.get("valid") == True:
+                self.log_test("Admin Token Verify", True, "Token verification successful")
                 return True
             else:
-                self.log_test("Translation Duplicate Prevention", False, f"Different slugs! EN: {english_slug}, IT: {italian_slug}")
+                self.log_test("Admin Token Verify", False, f"Expected valid=true, got {data.get('valid')}")
                 return False
                 
         except Exception as e:
-            self.log_test("Translation Duplicate Prevention", False, f"Exception: {str(e)}")
+            self.log_test("Admin Token Verify", False, f"Exception: {str(e)}")
             return False
             
     def test_api_endpoint_format(self):
