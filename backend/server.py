@@ -62,16 +62,15 @@ async def search_recipes(
     """Search for recipes with on-demand generation and translation support.
     
     Flow:
-    1. Search DB for canonical recipe (stored in original language, usually EN)
-    2. If found:
-       - If lang matches canonical language → return as-is
-       - If lang differs → translate dynamically (NOT saved to DB)
-    3. If not found and auto_generate=True:
-       - Generate in ENGLISH (canonical)
+    1. First try fuzzy matching to find similar existing recipes
+    2. If match found with score >= 75, return that recipe
+    3. If no match and auto_generate=True:
+       - Generate new recipe in ENGLISH (canonical)
        - Save to DB
-       - If lang != 'en' → translate for response (NOT saved)
+       - Translate if needed (NOT saved)
     
-    This prevents duplicate recipes for different languages.
+    This prevents duplicate recipes for similar queries like:
+    - "Carbonara" vs "Pasta Carbonara" → returns same recipe
     """
     from services.sous_chef_ai import sous_chef_ai
     
@@ -79,13 +78,65 @@ async def search_recipes(
         # Normalize language code
         target_lang = lang.lower()[:2] if lang else "en"
         
-        # Search in database first (search both old and new schema fields)
+        # STEP 1: Try fuzzy matching first (this prevents duplicates!)
+        similar_recipe = await _find_similar_recipe(db, q, threshold=75)
+        
+        if similar_recipe:
+            logger.info(f"Similar recipe found via fuzzy matching for '{q}': {similar_recipe.get('slug')}")
+            
+            # Update analytics
+            await db.recipe_analytics.update_one(
+                {"recipe_slug": similar_recipe["slug"]},
+                {
+                    "$inc": {"search_count": 1},
+                    "$set": {
+                        "last_searched_at": datetime.now(timezone.utc).isoformat(),
+                        "last_lang_used": target_lang
+                    },
+                    "$push": {
+                        "search_history": {
+                            "query": q,
+                            "lang": target_lang,
+                            "timestamp": datetime.now(timezone.utc).isoformat()
+                        }
+                    }
+                },
+                upsert=True
+            )
+            
+            # Check if translation is needed
+            canonical_lang = similar_recipe.get("origin_language", "en")[:2].lower()
+            
+            if target_lang != "en" and target_lang != canonical_lang:
+                logger.info(f"Translating recipe '{similar_recipe['slug']}' from {canonical_lang} to {target_lang}")
+                try:
+                    translated_recipe = await sous_chef_ai.translate_recipe(similar_recipe, target_lang)
+                    translated_recipe["slug"] = similar_recipe["slug"]
+                    translated_recipe["_translated"] = True
+                    translated_recipe["_original_lang"] = canonical_lang
+                    translated_recipe["_display_lang"] = target_lang
+                    
+                    return {
+                        "found": True,
+                        "generated": False,
+                        "translated": True,
+                        "recipe": translated_recipe
+                    }
+                except Exception as e:
+                    logger.warning(f"Translation failed, returning canonical: {str(e)}")
+            
+            return {
+                "found": True,
+                "generated": False,
+                "translated": False,
+                "recipe": similar_recipe
+            }
+        
+        # STEP 2: Try exact regex match as fallback (for edge cases)
         search_query = {
             "$or": [
-                {"recipe_name": {"$regex": q, "$options": "i"}},
-                {"title_original": {"$regex": q, "$options": "i"}},
-                {"title_translated.en": {"$regex": q, "$options": "i"}},
-                {"slug": {"$regex": q.lower().replace(" ", "-"), "$options": "i"}}
+                {"recipe_name": {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
+                {"slug": {"$regex": f"^{re.escape(q.lower().replace(' ', '-'))}$", "$options": "i"}}
             ],
             "status": "published"
         }
@@ -93,8 +144,7 @@ async def search_recipes(
         recipe = await db.recipes.find_one(search_query, {"_id": 0})
         
         if recipe:
-            # Recipe found in database
-            logger.info(f"Recipe found for query '{q}': {recipe['slug']}")
+            logger.info(f"Exact recipe found for query '{q}': {recipe['slug']}")
             
             # Update analytics
             await db.recipe_analytics.update_one(
@@ -120,11 +170,9 @@ async def search_recipes(
             canonical_lang = recipe.get("origin_language", "en")[:2].lower()
             
             if target_lang != "en" and target_lang != canonical_lang:
-                # Translation needed - translate dynamically, DO NOT SAVE
                 logger.info(f"Translating recipe '{recipe['slug']}' from {canonical_lang} to {target_lang}")
                 try:
                     translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
-                    # Preserve slug and metadata from canonical recipe
                     translated_recipe["slug"] = recipe["slug"]
                     translated_recipe["_translated"] = True
                     translated_recipe["_original_lang"] = canonical_lang
@@ -138,9 +186,7 @@ async def search_recipes(
                     }
                 except Exception as e:
                     logger.warning(f"Translation failed, returning canonical: {str(e)}")
-                    # Fall through to return canonical version
             
-            # Return canonical recipe (no translation needed or translation failed)
             return {
                 "found": True,
                 "generated": False,
@@ -148,7 +194,7 @@ async def search_recipes(
                 "recipe": recipe
             }
         
-        # Recipe not found - generate if enabled
+        # STEP 3: Recipe not found - generate if enabled
         if not auto_generate:
             return {
                 "found": False,
@@ -159,7 +205,7 @@ async def search_recipes(
         
         logger.info(f"Recipe not found for '{q}' - generating on-demand using Sous-Chef Linguine GPT")
         
-        # Determine country and region from query
+        # Determine country and region from query (may return None to let AI decide)
         country, region = _infer_country_region(q)
         
         # Generate recipe in ENGLISH (canonical version)
@@ -211,7 +257,6 @@ async def search_recipes(
                 }
             except Exception as e:
                 logger.warning(f"Translation of new recipe failed: {str(e)}")
-                # Return English version if translation fails
         
         return {
             "found": False,
