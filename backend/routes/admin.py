@@ -12,6 +12,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
 
+# Import canonical schema validation
+from models.recipe import validate_canonical_recipe, normalize_to_canonical
+
 ROOT_DIR = Path(__file__).parent.parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -34,6 +37,7 @@ class AdminLogin(BaseModel):
 
 class RecipeJSON(BaseModel):
     recipe_json: Dict[str, Any]
+    validate_schema: bool = True  # Enable schema validation by default
 
 class ScrapeRequest(BaseModel):
     url: str
