@@ -30,7 +30,8 @@ import {
   AdminEditRecipePage,
   AdminImportCSVPage,
   AdminImportJSONPage,
-  AdminScrapePage
+  AdminScrapePage,
+  AdminDocumentImportPage
 } from '@/pages/admin';
 
 // Layout wrapper that conditionally shows Navigation and Footer
