@@ -33,6 +33,9 @@ from utils.auth import hash_password, verify_password, create_access_token, get_
 # Import admin routes
 from routes.admin import admin_router
 
+# Import document import routes
+from routes.document_import import document_router
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
