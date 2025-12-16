@@ -512,6 +512,86 @@ async def get_csv_template(authorized: bool = Depends(verify_admin_token)):
         }
     }
 
+@admin_router.get("/canonical-schema")
+async def get_canonical_schema(authorized: bool = Depends(verify_admin_token)):
+    """Get the canonical recipe schema definition.
+    
+    This is the SINGLE SOURCE OF TRUTH for all recipe data.
+    Use this when creating recipes in ChatGPT or other external tools.
+    """
+    return {
+        "schema_version": "1.0",
+        "description": "Canonical Recipe Schema for Sous Chef Linguine",
+        "example": {
+            "recipe_name": "Spaghetti alla Carbonara",
+            "origin_country": "Italy",
+            "origin_region": "Lazio",
+            "origin_language": "it",
+            "authenticity_level": 1,
+            "history_summary": "A Roman pasta dish documented by traditional institutions...",
+            "characteristic_profile": "Rich, salty, creamy texture with smoky guanciale and pecorino romano.",
+            "no_no_rules": [
+                "Never use cream",
+                "Never use garlic or onion",
+                "Must use guanciale, not pancetta or bacon"
+            ],
+            "special_techniques": [
+                "mantecatura (creaming with pasta water)",
+                "tempering eggs off heat"
+            ],
+            "technique_links": [
+                {
+                    "technique": "mantecatura",
+                    "url": "https://youtube.com/example",
+                    "description": "How to cream pasta properly"
+                }
+            ],
+            "ingredients": [
+                {"item": "Spaghetti", "amount": "380", "unit": "g", "notes": ""},
+                {"item": "Guanciale", "amount": "150", "unit": "g", "notes": "cut into strips"}
+            ],
+            "instructions": [
+                "Cook the guanciale in a cold pan until crispy",
+                "Mix egg yolks with pecorino and black pepper",
+                "Cook pasta al dente, reserve pasta water",
+                "Combine off heat using mantecatura technique"
+            ],
+            "wine_pairing": {
+                "recommended_wines": [
+                    {
+                        "name": "Frascati Superiore DOCG",
+                        "region": "Lazio",
+                        "reason": "High acidity cuts through richness"
+                    }
+                ],
+                "notes": "Central Italian whites work best"
+            }
+        },
+        "required_fields": [
+            "recipe_name"
+        ],
+        "field_definitions": {
+            "recipe_name": "Name of the dish in its original language",
+            "origin_country": "Country of origin",
+            "origin_region": "Specific region within the country",
+            "origin_language": "2-letter language code (it, fr, ja, etc.)",
+            "authenticity_level": "1=Official/DOP, 2=Traditional, 3=Regional, 4=Recognized, 5=Modern",
+            "history_summary": "Brief history of the dish",
+            "characteristic_profile": "Taste and texture description",
+            "no_no_rules": "Array of strings - what NOT to do when making this dish",
+            "special_techniques": "Array of strings - traditional cooking techniques",
+            "technique_links": "Array of {technique, url, description} - links to tutorials",
+            "ingredients": "Array of {item, amount, unit, notes}",
+            "instructions": "Array of strings - step-by-step cooking instructions",
+            "wine_pairing": "{recommended_wines: [{name, region, reason}], notes}"
+        },
+        "notes": {
+            "technique_links": "REQUIRED when special_techniques exist - link to tutorials",
+            "translations": "Computed on demand, NOT saved as new recipes",
+            "authenticity_level": "Lower number = more authentic (1 is highest)"
+        }
+    }
+
 # ============== STATS ROUTES ==============
 
 @admin_router.get("/stats")
