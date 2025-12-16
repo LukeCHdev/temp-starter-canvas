@@ -5,3 +5,4 @@ export { AdminEditRecipePage } from './AdminEditRecipePage';
 export { AdminImportCSVPage } from './AdminImportCSVPage';
 export { AdminImportJSONPage } from './AdminImportJSONPage';
 export { AdminScrapePage } from './AdminScrapePage';
+export { AdminDocumentImportPage } from './AdminDocumentImportPage';
