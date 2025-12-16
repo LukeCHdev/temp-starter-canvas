@@ -85,6 +85,7 @@ function App() {
               <Route path="/admin/import-csv" element={<AdminImportCSVPage />} />
               <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
               <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
+              <Route path="/admin/import-document" element={<AdminDocumentImportPage />} />
             </Routes>
           </AppLayout>
         </BrowserRouter>
