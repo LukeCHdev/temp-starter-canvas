@@ -225,49 +225,66 @@ def get_continent(country: str) -> str:
 
 @admin_router.post("/import/json")
 async def import_json(recipe: RecipeJSON, authorized: bool = Depends(verify_admin_token)):
-    """Import a recipe from JSON."""
+    """Import a recipe from JSON using the CANONICAL SCHEMA.
+    
+    All imported recipes are validated and normalized to ensure
+    consistency across the platform.
+    """
     try:
         recipe_data = recipe.recipe_json
         
-        # Validate required fields
-        recipe_name = recipe_data.get('recipe_name', '')
+        # Step 1: Validate against canonical schema
+        if recipe.validate_schema:
+            is_valid, errors = validate_canonical_recipe(recipe_data)
+            if not is_valid:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Schema validation failed: {'; '.join(errors)}"
+                )
+        
+        # Step 2: Normalize to canonical format
+        normalized_data = normalize_to_canonical(recipe_data)
+        
+        # Validate required fields after normalization
+        recipe_name = normalized_data.get('recipe_name', '')
         if not recipe_name:
             raise HTTPException(status_code=400, detail="recipe_name is required")
         
-        # Get or generate slug
-        origin_country = recipe_data.get('origin_country', '')
+        # Step 3: Generate slug and check for duplicates
+        origin_country = normalized_data.get('origin_country', '')
         slug = recipe_data.get('slug') or generate_slug(recipe_name, origin_country)
         
-        # Check for duplicates
         existing = await db.recipes.find_one({"slug": slug})
         if existing:
             raise HTTPException(status_code=400, detail=f"Recipe with slug '{slug}' already exists")
         
-        # Enrich the recipe data
+        # Step 4: Enrich with system metadata
         enriched_recipe = {
-            **recipe_data,
+            **normalized_data,
             "slug": slug,
-            "continent": recipe_data.get('continent') or get_continent(origin_country),
-            "content_language": recipe_data.get('content_language', 'en'),  # Default to English
-            "status": recipe_data.get('status', 'published'),
+            "continent": normalized_data.get('continent') or get_continent(origin_country),
+            "content_language": normalized_data.get('content_language', 'en'),
+            "status": normalized_data.get('status', 'published'),
             "date_fetched": datetime.now(timezone.utc).isoformat(),
-            "gpt_used": recipe_data.get('gpt_used', 'Manual Import'),
-            "collection_method": recipe_data.get('collection_method', 'admin_import'),
-            # Initialize analytics if not present
-            "views_count": recipe_data.get('views_count', 0),
-            "favorites_count": recipe_data.get('favorites_count', 0),
-            "average_rating": recipe_data.get('average_rating', 0),
-            "ratings_count": recipe_data.get('ratings_count', 0),
-            "comments_count": recipe_data.get('comments_count', 0),
+            "gpt_used": normalized_data.get('gpt_used', 'Manual Import'),
+            "collection_method": normalized_data.get('collection_method', 'admin_import'),
+            # Initialize analytics
+            "views_count": normalized_data.get('views_count', 0),
+            "favorites_count": normalized_data.get('favorites_count', 0),
+            "average_rating": normalized_data.get('average_rating', 0),
+            "ratings_count": normalized_data.get('ratings_count', 0),
+            "comments_count": normalized_data.get('comments_count', 0),
         }
         
-        # Save to database
+        # Step 5: Save to database
         await db.recipes.insert_one(enriched_recipe)
+        
+        logger.info(f"Recipe imported via admin: {slug}")
         
         return {
             "success": True,
             "slug": slug,
-            "message": f"Recipe '{recipe_name}' imported successfully"
+            "message": f"Recipe '{recipe_name}' imported successfully (canonical schema)"
         }
     
     except HTTPException:
