@@ -162,6 +162,11 @@ export const AdminRecipesPage = () => {
                             <FileSpreadsheet className="w-4 h-4 mr-2" /> Import CSV
                         </Button>
                     </Link>
+                    <Link to="/admin/import-document">
+                        <Button variant="outline">
+                            <FileSpreadsheet className="w-4 h-4 mr-2" /> Import PDF/ODF
+                        </Button>
+                    </Link>
                     <Link to="/admin/import-scrape">
                         <Button variant="outline">
                             <LinkIcon className="w-4 h-4 mr-2" /> Scrape URL
