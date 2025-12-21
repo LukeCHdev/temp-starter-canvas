@@ -11,16 +11,19 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export const LanguageSelector = () => {
     const { language, changeLanguage, supportedLanguages } = useLanguage();
+    
+    // Get current language info safely
+    const currentLangInfo = supportedLanguages[language] || supportedLanguages['es'];
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" data-testid="language-selector">
                     <Globe className="h-4 w-4 mr-2" />
-                    {supportedLanguages[language].flag}
+                    {currentLangInfo.flag}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end">
                 {Object.values(supportedLanguages).map((lang) => (
                     <DropdownMenuItem
                         key={lang.code}
