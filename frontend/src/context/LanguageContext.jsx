@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const LanguageContext = createContext(null);
 
@@ -13,55 +13,122 @@ export const useLanguage = () => {
 
 // Supported languages
 export const SUPPORTED_LANGUAGES = {
+    'es': { code: 'es', name: 'Español', flag: '🇪🇸' },
     'en': { code: 'en', name: 'English', flag: '🇬🇧' },
     'it': { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-    'es': { code: 'es', name: 'Español', flag: '🇪🇸' },
     'fr': { code: 'fr', name: 'Français', flag: '🇫🇷' },
     'de': { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
 };
 
-export const LanguageProvider = ({ children }) => {
-    const { i18n } = useTranslation();
-    
-    // Get initial language from i18next (which uses detector)
-    const [language, setLanguage] = useState(i18n.language?.split('-')[0] || 'en');
+const LANGUAGE_CODES = ['es', 'en', 'it', 'fr', 'de'];
+const DEFAULT_LANGUAGE = 'es';
 
-    const changeLanguage = (langCode) => {
-        if (SUPPORTED_LANGUAGES[langCode]) {
-            i18n.changeLanguage(langCode);
-            setLanguage(langCode);
-            localStorage.setItem('preferred_language', langCode);
+// Helper to extract language from pathname
+const getLanguageFromPath = (pathname) => {
+    for (const code of LANGUAGE_CODES) {
+        if (pathname.startsWith(`/${code}/`) || pathname === `/${code}`) {
+            return code;
         }
-    };
+    }
+    return DEFAULT_LANGUAGE;
+};
 
+// Helper to get path without language prefix
+const getPathWithoutLang = (pathname) => {
+    for (const code of LANGUAGE_CODES) {
+        if (pathname.startsWith(`/${code}/`)) {
+            return pathname.slice(code.length + 1) || '/';
+        } else if (pathname === `/${code}`) {
+            return '/';
+        }
+    }
+    return pathname;
+};
+
+// Inner provider that has access to router
+const LanguageProviderInner = ({ children }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    // Determine initial language from URL
+    const initialLang = getLanguageFromPath(location.pathname);
+    const [language, setLanguage] = useState(initialLang);
+
+    // Sync language with URL changes
     useEffect(() => {
-        // Sync with i18next language changes
-        const handleLanguageChanged = (lng) => {
-            const baseLang = lng?.split('-')[0] || 'en';
-            setLanguage(baseLang);
-            document.documentElement.lang = baseLang;
-        };
+        const urlLang = getLanguageFromPath(location.pathname);
+        if (urlLang !== language) {
+            setLanguage(urlLang);
+            document.documentElement.lang = urlLang;
+        }
+    }, [location.pathname, language]);
+
+    // Change language and navigate to new URL
+    const changeLanguage = useCallback((langCode) => {
+        if (!SUPPORTED_LANGUAGES[langCode]) return;
         
-        i18n.on('languageChanged', handleLanguageChanged);
+        const currentPath = getPathWithoutLang(location.pathname);
         
-        // Set initial HTML lang attribute
-        document.documentElement.lang = language;
+        // Build new path with language prefix
+        let newPath;
+        if (langCode === DEFAULT_LANGUAGE) {
+            // Spanish: use root path (no prefix) or /es explicitly
+            newPath = currentPath === '/' ? '/' : currentPath;
+        } else {
+            // Other languages: add prefix
+            newPath = currentPath === '/' ? `/${langCode}` : `/${langCode}${currentPath}`;
+        }
         
-        return () => {
-            i18n.off('languageChanged', handleLanguageChanged);
-        };
-    }, [i18n, language]);
+        setLanguage(langCode);
+        document.documentElement.lang = langCode;
+        localStorage.setItem('preferred_language', langCode);
+        
+        // Navigate to new URL
+        navigate(newPath, { replace: true });
+    }, [location.pathname, navigate]);
+
+    // Get localized path for links
+    const getLocalizedPath = useCallback((path, targetLang = language) => {
+        // Clean the path first
+        let cleanPath = getPathWithoutLang(path);
+        
+        if (targetLang === DEFAULT_LANGUAGE) {
+            return cleanPath || '/';
+        }
+        
+        if (cleanPath === '/') {
+            return `/${targetLang}`;
+        }
+        return `/${targetLang}${cleanPath}`;
+    }, [language]);
 
     const value = {
         language,
         changeLanguage,
+        getLocalizedPath,
         supportedLanguages: SUPPORTED_LANGUAGES,
-        currentLanguage: SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES['en']
+        currentLanguage: SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES[DEFAULT_LANGUAGE],
+        defaultLanguage: DEFAULT_LANGUAGE,
+        isDefaultLanguage: language === DEFAULT_LANGUAGE
     };
 
     return (
         <LanguageContext.Provider value={value}>
             {children}
         </LanguageContext.Provider>
+    );
+};
+
+// Outer provider for use outside Router
+export const LanguageProvider = ({ children }) => {
+    return children;
+};
+
+// This is the actual provider to use inside BrowserRouter
+export const LanguageRouterProvider = ({ children }) => {
+    return (
+        <LanguageProviderInner>
+            {children}
+        </LanguageProviderInner>
     );
 };
