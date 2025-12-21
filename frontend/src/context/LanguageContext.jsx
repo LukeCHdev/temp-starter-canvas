@@ -64,7 +64,7 @@ const LanguageProviderInner = ({ children }) => {
     }, [location.pathname, language]);
 
     // Change language and navigate to new URL
-    const changeLanguage = useCallback((langCode) => {
+    const changeLanguage = (langCode) => {
         if (!SUPPORTED_LANGUAGES[langCode]) return;
         
         const currentPath = getPathWithoutLang(location.pathname);
@@ -72,20 +72,22 @@ const LanguageProviderInner = ({ children }) => {
         // Build new path with language prefix
         let newPath;
         if (langCode === DEFAULT_LANGUAGE) {
-            // Spanish: use root path (no prefix) or /es explicitly
+            // Spanish: use root path (no prefix)
             newPath = currentPath === '/' ? '/' : currentPath;
         } else {
             // Other languages: add prefix
             newPath = currentPath === '/' ? `/${langCode}` : `/${langCode}${currentPath}`;
         }
         
+        console.log('Changing language to:', langCode, 'New path:', newPath);
+        
         setLanguage(langCode);
         document.documentElement.lang = langCode;
         localStorage.setItem('preferred_language', langCode);
         
-        // Navigate to new URL
-        navigate(newPath, { replace: true });
-    }, [location.pathname, navigate]);
+        // Navigate to new URL using window.location for reliability
+        window.location.href = newPath;
+    };
 
     // Get localized path for links
     const getLocalizedPath = useCallback((path, targetLang = language) => {
