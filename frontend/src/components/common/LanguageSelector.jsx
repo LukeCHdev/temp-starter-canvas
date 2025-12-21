@@ -15,6 +15,11 @@ export const LanguageSelector = () => {
     // Get current language info safely
     const currentLangInfo = supportedLanguages[language] || supportedLanguages['es'];
 
+    const handleLanguageChange = (langCode) => {
+        console.log('LanguageSelector: changing to', langCode);
+        changeLanguage(langCode);
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -27,7 +32,7 @@ export const LanguageSelector = () => {
                 {Object.values(supportedLanguages).map((lang) => (
                     <DropdownMenuItem
                         key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
+                        onSelect={() => handleLanguageChange(lang.code)}
                         className={language === lang.code ? 'bg-[#F5F2E8]' : ''}
                     >
                         <span className="mr-2">{lang.flag}</span>
