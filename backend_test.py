@@ -11,7 +11,7 @@ import base64
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://authentic-cuisine.preview.emergentagent.com/api"
+BACKEND_URL = "https://global-recipes-23.preview.emergentagent.com/api"
 ADMIN_PASSWORD = "SousChefAdmin2024!"
 
 class AdminPanelTester:
