@@ -4,8 +4,10 @@ import { ChefHat, Globe, BookOpen, Menu as MenuIcon, Heart, User, LogOut } from 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
+import { t } from '@/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,13 +17,14 @@ import {
 
 export const Navigation = () => {
     const { user, logout } = useAuth();
+    const { language } = useLanguage();
     const [showAuthModal, setShowAuthModal] = useState(false);
 
     const navLinks = [
-        { to: '/explore', label: 'Explore', icon: Globe },
-        { to: '/menu-builder', label: 'Menu Builder', icon: MenuIcon },
-        { to: '/techniques', label: 'Techniques', icon: BookOpen },
-        { to: '/about', label: 'About', icon: null },
+        { to: '/explore', label: t('nav.explore', language), icon: Globe },
+        { to: '/menu-builder', label: t('nav.menuBuilder', language), icon: MenuIcon },
+        { to: '/techniques', label: t('nav.techniques', language), icon: BookOpen },
+        { to: '/about', label: t('nav.about', language), icon: null },
     ];
 
     return (
@@ -44,7 +47,7 @@ export const Navigation = () => {
                                     key={link.to}
                                     to={link.to}
                                     className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
-                                    data-testid={`nav-${link.label.toLowerCase().replace(' ', '-')}`}
+                                    data-testid={`nav-${link.to.replace('/', '')}`}
                                 >
                                     {link.icon && <link.icon className="h-4 w-4" />}
                                     <span>{link.label}</span>
@@ -66,12 +69,12 @@ export const Navigation = () => {
                                         <DropdownMenuItem asChild>
                                             <Link to="/favorites" className="flex items-center">
                                                 <Heart className="h-4 w-4 mr-2" />
-                                                Favorites
+                                                {t('nav.favorites', language)}
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={logout}>
                                             <LogOut className="h-4 w-4 mr-2" />
-                                            Logout
+                                            {t('nav.logout', language)}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -81,7 +84,7 @@ export const Navigation = () => {
                                     variant="outline"
                                     size="sm"
                                 >
-                                    Login
+                                    {t('nav.login', language)}
                                 </Button>
                             )}
                         </div>
@@ -108,9 +111,14 @@ export const Navigation = () => {
                                     {user && (
                                         <Link to="/favorites" className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors">
                                             <Heart className="h-5 w-5" />
-                                            <span>Favorites</span>
+                                            <span>{t('nav.favorites', language)}</span>
                                         </Link>
                                     )}
+                                    
+                                    {/* Mobile Language Selector */}
+                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                        <LanguageSelector />
+                                    </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
