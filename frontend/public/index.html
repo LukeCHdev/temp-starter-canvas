@@ -3,37 +3,99 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="description" content="A product of emergent.sh" />
-        <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-        <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-        <title>Emergent | Fullstack App</title>
+        <meta name="theme-color" content="#6A1F2E" />
+        
+        <!-- Primary Meta Tags -->
+        <title>Sous Chef Linguine | Authentic Global Recipe Archive</title>
+        <meta name="title" content="Sous Chef Linguine | Authentic Global Recipe Archive" />
+        <meta name="description" content="Sous Chef Linguine is an editorial and cultural archive dedicated to preserving and documenting authentic traditional recipes from around the world. No adaptation, no compromise - just authentic culinary heritage." />
+        <meta name="keywords" content="authentic recipes, traditional cooking, global cuisine, recipe archive, culinary heritage, authentic food, traditional recipes, international cooking" />
+        <meta name="author" content="Sous Chef Linguine" />
+        <meta name="robots" content="index, follow" />
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://www.souscheflinguine.com" />
+        
+        <!-- Google Search Console Verification -->
+        <meta name="google-site-verification" content="google7f434fab106122d7" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.souscheflinguine.com" />
+        <meta property="og:title" content="Sous Chef Linguine | Authentic Global Recipe Archive" />
+        <meta property="og:description" content="An editorial and cultural archive dedicated to preserving authentic traditional recipes from around the world." />
+        <meta property="og:site_name" content="Sous Chef Linguine" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="it_IT" />
+        <meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:locale:alternate" content="es_ES" />
+        <meta property="og:locale:alternate" content="de_DE" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://www.souscheflinguine.com" />
+        <meta name="twitter:title" content="Sous Chef Linguine | Authentic Global Recipe Archive" />
+        <meta name="twitter:description" content="An editorial and cultural archive dedicated to preserving authentic traditional recipes from around the world." />
+        
+        <!-- Hreflang Tags for Multilingual Support -->
+        <link rel="alternate" hreflang="en" href="https://www.souscheflinguine.com/en/" />
+        <link rel="alternate" hreflang="it" href="https://www.souscheflinguine.com/it/" />
+        <link rel="alternate" hreflang="fr" href="https://www.souscheflinguine.com/fr/" />
+        <link rel="alternate" hreflang="es" href="https://www.souscheflinguine.com/es/" />
+        <link rel="alternate" hreflang="de" href="https://www.souscheflinguine.com/de/" />
+        <link rel="alternate" hreflang="x-default" href="https://www.souscheflinguine.com" />
+        
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        
+        <!-- Structured Data: WebSite -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Sous Chef Linguine",
+            "alternateName": "Sous Chef Linguine - Authentic Global Recipe Archive",
+            "url": "https://www.souscheflinguine.com",
+            "description": "An editorial and cultural archive dedicated to preserving and documenting authentic traditional recipes from around the world.",
+            "inLanguage": ["en", "it", "fr", "es", "de"],
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.souscheflinguine.com/search?q={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+            }
+        }
+        </script>
+        
+        <!-- Structured Data: Organization -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Sous Chef Linguine",
+            "url": "https://www.souscheflinguine.com",
+            "logo": "https://www.souscheflinguine.com/logo.png",
+            "description": "Sous Chef Linguine is an editorial and cultural archive dedicated to the preservation and documentation of authentic traditional recipes from around the world.",
+            "sameAs": [],
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "email": "contact@souscheflinguine.com",
+                "availableLanguage": ["English", "Italian", "French", "Spanish", "German"]
+            }
+        }
+        </script>
+        
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
-        <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        
         <a
             id="emergent-badge"
             target="_blank"
@@ -145,7 +207,7 @@
             })(document, window.posthog || []);
             posthog.init("phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE", {
                 api_host: "https://us.i.posthog.com",
-                person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
+                person_profiles: "identified_only",
             });
         </script>
     </body>
