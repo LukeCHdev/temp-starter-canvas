@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LanguageContext = createContext(null);
 
@@ -20,37 +21,42 @@ export const SUPPORTED_LANGUAGES = {
 };
 
 export const LanguageProvider = ({ children }) => {
-    // Detect browser language or use stored preference
-    const detectLanguage = () => {
-        const stored = localStorage.getItem('preferred_language');
-        if (stored && SUPPORTED_LANGUAGES[stored]) {
-            return stored;
-        }
-        
-        // Detect from browser
-        const browserLang = navigator.language.split('-')[0];
-        return SUPPORTED_LANGUAGES[browserLang] ? browserLang : 'en';
-    };
-
-    const [language, setLanguage] = useState(detectLanguage());
+    const { i18n } = useTranslation();
+    
+    // Get initial language from i18next (which uses detector)
+    const [language, setLanguage] = useState(i18n.language?.split('-')[0] || 'en');
 
     const changeLanguage = (langCode) => {
         if (SUPPORTED_LANGUAGES[langCode]) {
+            i18n.changeLanguage(langCode);
             setLanguage(langCode);
             localStorage.setItem('preferred_language', langCode);
         }
     };
 
     useEffect(() => {
-        // Set HTML lang attribute
+        // Sync with i18next language changes
+        const handleLanguageChanged = (lng) => {
+            const baseLang = lng?.split('-')[0] || 'en';
+            setLanguage(baseLang);
+            document.documentElement.lang = baseLang;
+        };
+        
+        i18n.on('languageChanged', handleLanguageChanged);
+        
+        // Set initial HTML lang attribute
         document.documentElement.lang = language;
-    }, [language]);
+        
+        return () => {
+            i18n.off('languageChanged', handleLanguageChanged);
+        };
+    }, [i18n, language]);
 
     const value = {
         language,
         changeLanguage,
         supportedLanguages: SUPPORTED_LANGUAGES,
-        currentLanguage: SUPPORTED_LANGUAGES[language]
+        currentLanguage: SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES['en']
     };
 
     return (
