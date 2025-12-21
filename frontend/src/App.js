@@ -21,6 +21,7 @@ import PrivacyPage from '@/pages/PrivacyPage';
 import TermsPage from '@/pages/TermsPage';
 import CookiesPage from '@/pages/CookiesPage';
 import FavoritesPage from '@/pages/FavoritesPage';
+import EditorialPolicyPage from '@/pages/EditorialPolicyPage';
 
 // Admin Pages
 import {
