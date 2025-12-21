@@ -10,7 +10,7 @@ import time
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://global-recipes-23.preview.emergentagent.com/api"
+BACKEND_URL = "https://recipehub-17.preview.emergentagent.com/api"
 
 class TranslationTester:
     def __init__(self):
