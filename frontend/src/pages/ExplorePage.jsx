@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { recipeAPI, continentAPI } from '@/utils/api';
+import { recipeAPI, continentAPI, translationAPI } from '@/utils/api';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
+import { TranslatedRecipeCard } from '@/components/recipe/TranslatedRecipeCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Globe, MapPin, ChevronRight, Home } from 'lucide-react';
