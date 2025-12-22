@@ -129,13 +129,6 @@ const ExplorePage = () => {
             setLoading(false);
         }
     };
-    
-    // Re-fetch when language changes
-    useEffect(() => {
-        if (country) {
-            loadCountryData(country, continent);
-        }
-    }, [i18n.language]);
 
     const handleContinentSelect = (continentSlug) => {
         navigate(`/explore/${continentSlug}`);
