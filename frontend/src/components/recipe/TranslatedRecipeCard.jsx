@@ -16,15 +16,6 @@ import { Badge } from '@/components/ui/badge';
 export const TranslatedRecipeCard = ({ recipe }) => {
     const { t, i18n } = useTranslation();
     
-    // Debug log
-    console.log('TranslatedRecipeCard recipe:', {
-        slug: recipe?.slug,
-        status: recipe?.status,
-        hasContent: !!recipe?.content,
-        contentRecipeName: recipe?.content?.recipe_name,
-        contentHistorySummary: recipe?.content?.history_summary?.substring(0, 50)
-    });
-    
     const { status, content, metadata, slug } = recipe;
     
     // Authenticity level styling
