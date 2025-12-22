@@ -23,8 +23,22 @@ const CONTINENT_INFO = {
 const ExplorePage = () => {
     const { continent, country } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { t, i18n } = useTranslation();
-    const { getLocalizedPath } = useLanguage();
+    const { language, getLocalizedPath } = useLanguage();
+    
+    // CRITICAL: Sync i18n with route language on every route change
+    // Language is derived from URL as single source of truth
+    useEffect(() => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const urlLang = pathSegments[0];
+        
+        // Only update if it's a valid language and different from current
+        if (SUPPORTED_LANGUAGES[urlLang] && urlLang !== i18n.language) {
+            console.log(`ExplorePage: Syncing i18n language to ${urlLang} from route`);
+            i18n.changeLanguage(urlLang);
+        }
+    }, [location.pathname, i18n]);
     
     // Helper function to translate country/continent names
     const translateName = useCallback((name, type = 'countries') => {
