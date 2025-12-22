@@ -48,7 +48,7 @@ const ExplorePage = () => {
         } else {
             loadExploreData();
         }
-    }, [continent, country]);
+    }, [continent, country, i18n.language]);  // Add language dependency
 
     const loadExploreData = async () => {
         setLoading(true);
