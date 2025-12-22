@@ -185,7 +185,7 @@ const ExplorePage = () => {
                     /* Continent Countries View */
                     <>
                         <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            Countries in {selectedContinent}
+                            {t('explore.countriesIn')} {selectedContinent}
                         </h2>
 
                         {countries.length > 0 ? (
@@ -199,20 +199,20 @@ const ExplorePage = () => {
                                         <Globe className="h-8 w-8 text-[#6A1F2E]" />
                                         <div>
                                             <h3 className="font-semibold text-[#1E1E1E]">{c.name}</h3>
-                                            <p className="text-sm text-[#1E1E1E]/60">{c.recipe_count} recipes</p>
+                                            <p className="text-sm text-[#1E1E1E]/60">{c.recipe_count} {t('explore.recipes')}</p>
                                         </div>
                                     </Link>
                                 ))}
                             </div>
                         ) : (
                             <div className="text-center py-12 bg-white rounded-lg">
-                                <p className="text-[#1E1E1E]/60">No countries with recipes in this continent yet.</p>
+                                <p className="text-[#1E1E1E]/60">{t('explore.noCountries')}</p>
                             </div>
                         )}
 
                         {/* Other Continents */}
                         <div className="mt-12">
-                            <h3 className="text-lg font-semibold mb-4">Other Continents</h3>
+                            <h3 className="text-lg font-semibold mb-4">{t('explore.otherContinents')}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {continents.filter(c => c.slug !== continent).map((c) => (
                                     <Button
