@@ -14,7 +14,7 @@ import {
 import { toast } from 'sonner';
 
 const HomePage = () => {
-    const { language } = useLanguage();
+    const { language, getLocalizedPath } = useLanguage();
     const [bestRecipe, setBestRecipe] = useState(null);
     const [featuredRecipes, setFeaturedRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
