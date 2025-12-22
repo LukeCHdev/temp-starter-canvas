@@ -172,7 +172,7 @@ const HomePage = () => {
                     {/* Available Languages */}
                     <div className="flex justify-center gap-4 mt-8 flex-wrap">
                         {[
-                            { code: 'en', flag: '🇬🇧', name: 'English' },
+                            { code: 'en', flag: 'EN', name: 'English' },
                             { code: 'it', flag: '🇮🇹', name: 'Italiano' },
                             { code: 'fr', flag: '🇫🇷', name: 'Français' },
                             { code: 'es', flag: '🇪🇸', name: 'Español' },

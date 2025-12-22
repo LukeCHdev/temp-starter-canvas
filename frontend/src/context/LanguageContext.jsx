@@ -15,7 +15,7 @@ export const useLanguage = () => {
 // Supported languages
 export const SUPPORTED_LANGUAGES = {
     'es': { code: 'es', name: 'Español', flag: '🇪🇸' },
-    'en': { code: 'en', name: 'English', flag: '🇬🇧' },
+    'en': { code: 'en', name: 'English', flag: 'EN' },
     'it': { code: 'it', name: 'Italiano', flag: '🇮🇹' },
     'fr': { code: 'fr', name: 'Français', flag: '🇫🇷' },
     'de': { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
