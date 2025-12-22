@@ -233,7 +233,7 @@ const ExplorePage = () => {
                         {/* Top 10 Worldwide */}
                         <div className="mb-16">
                             <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                🌍 Top 10 Worldwide
+                                🌍 {t('explore.topWorldwide')}
                             </h2>
                             
                             {topRecipes.length > 0 ? (
@@ -249,7 +249,7 @@ const ExplorePage = () => {
                                 </div>
                             ) : (
                                 <div className="text-center py-12 bg-white rounded-lg">
-                                    <p className="text-[#1E1E1E]/60">No recipes available yet.</p>
+                                    <p className="text-[#1E1E1E]/60">{t('home.noRecipes')}</p>
                                 </div>
                             )}
                         </div>
@@ -257,7 +257,7 @@ const ExplorePage = () => {
                         {/* Continent Selector */}
                         <div>
                             <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                Browse by Continent
+                                {t('explore.byContinent')}
                             </h2>
                             
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -274,7 +274,7 @@ const ExplorePage = () => {
                                             {c.name}
                                         </h3>
                                         <p className="text-sm text-[#1E1E1E]/60 mt-1">
-                                            {c.recipe_count} recipes
+                                            {c.recipe_count} {t('explore.recipes')}
                                         </p>
                                     </button>
                                 ))}
