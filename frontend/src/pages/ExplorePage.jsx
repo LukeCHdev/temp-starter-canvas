@@ -95,18 +95,47 @@ const ExplorePage = () => {
 
     const loadCountryData = async (countrySlug, continentSlug) => {
         setLoading(true);
+        const currentLang = i18n.language?.slice(0, 2) || 'en';
+        
         try {
-            const res = await recipeAPI.getByCountryName(countrySlug);
+            // Use translation API for language-aware content
+            const res = await translationAPI.getRecipes({
+                country: countrySlug.replace('-', ' '),
+                lang: currentLang,
+                limit: 100
+            });
+            
             setCountryRecipes(res.data.recipes || []);
-            setSelectedContinent(res.data.continent);
-            setPageTitle(res.data.country);
+            
+            // Get country name from first recipe metadata
+            const firstRecipe = res.data.recipes?.[0];
+            const countryName = firstRecipe?.metadata?.origin_country || countrySlug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const continentName = firstRecipe?.metadata?.origin_region || continentSlug?.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            setSelectedContinent(continentName);
+            setPageTitle(countryName);
         } catch (error) {
             console.error('Error loading country data:', error);
-            toast.error('Failed to load recipes');
+            // Fallback to non-translated API
+            try {
+                const fallbackRes = await recipeAPI.getByCountryName(countrySlug);
+                setCountryRecipes(fallbackRes.data.recipes || []);
+                setSelectedContinent(fallbackRes.data.continent);
+                setPageTitle(fallbackRes.data.country);
+            } catch (fallbackError) {
+                toast.error('Failed to load recipes');
+            }
         } finally {
             setLoading(false);
         }
     };
+    
+    // Re-fetch when language changes
+    useEffect(() => {
+        if (country) {
+            loadCountryData(country, continent);
+        }
+    }, [i18n.language]);
 
     const handleContinentSelect = (continentSlug) => {
         navigate(`/explore/${continentSlug}`);
