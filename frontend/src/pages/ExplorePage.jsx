@@ -137,25 +137,25 @@ const ExplorePage = () => {
     };
 
     const handleContinentSelect = (continentSlug) => {
-        navigate(`/explore/${continentSlug}`);
+        navigate(getLocalizedPath(`/explore/${continentSlug}`));
     };
 
     // Breadcrumb component
     const Breadcrumb = () => (
         <nav className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-6" aria-label="Breadcrumb">
-            <Link to="/" className="hover:text-[#6A1F2E] flex items-center gap-1">
+            <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
                 <Home className="h-4 w-4" />
                 {t('common.home')}
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <Link to="/explore" className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
+            <Link to={getLocalizedPath('/explore')} className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
                 {t('nav.explore')}
             </Link>
             {continent && (
                 <>
                     <ChevronRight className="h-4 w-4" />
                     <Link 
-                        to={`/explore/${continent}`} 
+                        to={getLocalizedPath(`/explore/${continent}`)} 
                         className={`hover:text-[#6A1F2E] ${!country ? 'text-[#6A1F2E] font-medium' : ''}`}
                     >
                         {translateName(selectedContinent || continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), 'continents')}
