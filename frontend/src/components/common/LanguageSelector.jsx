@@ -16,27 +16,41 @@ export const LanguageSelector = () => {
     const currentLangInfo = supportedLanguages[language] || supportedLanguages['es'];
 
     const handleLanguageChange = (langCode) => {
-        console.log('LanguageSelector: changing to', langCode);
-        changeLanguage(langCode);
+        if (langCode !== language) {
+            changeLanguage(langCode);
+        }
     };
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" data-testid="language-selector">
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    data-testid="language-selector"
+                    className="font-sans text-sm"
+                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                >
                     <Globe className="h-4 w-4 mr-2" />
-                    {currentLangInfo.flag}
+                    <span style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                        {currentLangInfo.flag}
+                    </span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="min-w-[140px]">
                 {Object.values(supportedLanguages).map((lang) => (
                     <DropdownMenuItem
                         key={lang.code}
                         onSelect={() => handleLanguageChange(lang.code)}
-                        className={language === lang.code ? 'bg-[#F5F2E8]' : ''}
+                        className={`cursor-pointer ${language === lang.code ? 'bg-[#F5F2E8]' : ''}`}
+                        style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                     >
-                        <span className="mr-2">{lang.flag}</span>
-                        {lang.name}
+                        <span className="mr-2" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                            {lang.flag}
+                        </span>
+                        <span style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                            {lang.name}
+                        </span>
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>
