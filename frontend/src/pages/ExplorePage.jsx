@@ -21,6 +21,7 @@ const CONTINENT_INFO = {
 const ExplorePage = () => {
     const { continent, country } = useParams();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
     
     const [topRecipes, setTopRecipes] = useState([]);
     const [continents, setContinents] = useState([]);
@@ -28,7 +29,7 @@ const ExplorePage = () => {
     const [countryRecipes, setCountryRecipes] = useState([]);
     const [selectedContinent, setSelectedContinent] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [pageTitle, setPageTitle] = useState('Explore Recipes');
+    const [pageTitle, setPageTitle] = useState(t('explore.title'));
 
     useEffect(() => {
         if (country) {
