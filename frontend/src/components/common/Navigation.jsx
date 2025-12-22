@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChefHat, Globe, BookOpen, Menu as MenuIcon, Heart, User, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
-import { t } from '@/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,14 +16,14 @@ import {
 
 export const Navigation = () => {
     const { user, logout } = useAuth();
-    const { language } = useLanguage();
+    const { t } = useTranslation();
     const [showAuthModal, setShowAuthModal] = useState(false);
 
     const navLinks = [
-        { to: '/explore', label: t('nav.explore', language), icon: Globe },
-        { to: '/menu-builder', label: t('nav.menuBuilder', language), icon: MenuIcon },
-        { to: '/techniques', label: t('nav.techniques', language), icon: BookOpen },
-        { to: '/about', label: t('nav.about', language), icon: null },
+        { to: '/explore', label: t('nav.explore'), icon: Globe },
+        { to: '/menu-builder', label: t('nav.menuBuilder'), icon: MenuIcon },
+        { to: '/techniques', label: t('nav.techniques'), icon: BookOpen },
+        { to: '/about', label: t('nav.about'), icon: null },
     ];
 
     return (
@@ -47,6 +46,7 @@ export const Navigation = () => {
                                     key={link.to}
                                     to={link.to}
                                     className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
+                                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                                     data-testid={`nav-${link.to.replace('/', '')}`}
                                 >
                                     {link.icon && <link.icon className="h-4 w-4" />}
@@ -69,12 +69,12 @@ export const Navigation = () => {
                                         <DropdownMenuItem asChild>
                                             <Link to="/favorites" className="flex items-center">
                                                 <Heart className="h-4 w-4 mr-2" />
-                                                {t('nav.favorites', language)}
+                                                {t('nav.favorites')}
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={logout}>
                                             <LogOut className="h-4 w-4 mr-2" />
-                                            {t('nav.logout', language)}
+                                            {t('nav.logout')}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -83,8 +83,9 @@ export const Navigation = () => {
                                     onClick={() => setShowAuthModal(true)}
                                     variant="outline"
                                     size="sm"
+                                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                                 >
-                                    {t('nav.login', language)}
+                                    {t('nav.login')}
                                 </Button>
                             )}
                         </div>
@@ -103,6 +104,7 @@ export const Navigation = () => {
                                             key={link.to}
                                             to={link.to}
                                             className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
+                                            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                                         >
                                             {link.icon && <link.icon className="h-5 w-5" />}
                                             <span>{link.label}</span>
@@ -111,7 +113,7 @@ export const Navigation = () => {
                                     {user && (
                                         <Link to="/favorites" className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors">
                                             <Heart className="h-5 w-5" />
-                                            <span>{t('nav.favorites', language)}</span>
+                                            <span>{t('nav.favorites')}</span>
                                         </Link>
                                     )}
                                     
