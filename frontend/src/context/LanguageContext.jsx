@@ -13,32 +13,42 @@ export const SUPPORTED_LANGUAGES = {
     'de': { code: 'de', name: 'Deutsch', flag: 'DE' },
 };
 
+// Default fallback language (only used if nothing else available)
+const DEFAULT_LANGUAGE = 'en';
+
 // Helper to extract language from URL path
 const getLanguageFromPath = (pathname) => {
     const segments = pathname.split('/').filter(Boolean);
     if (segments.length > 0 && SUPPORTED_LANGUAGES[segments[0]]) {
         return segments[0];
     }
-    return 'es'; // Default to Spanish
+    return null; // Return null if no language in URL
 };
 
-// Helper to update path with new language
-const updatePathLanguage = (pathname, newLang) => {
-    const segments = pathname.split('/').filter(Boolean);
-    const currentLang = SUPPORTED_LANGUAGES[segments[0]] ? segments[0] : null;
+// Get language with fallback logic (URL -> localStorage -> default)
+const getInitialLanguage = (pathname) => {
+    // 1. First try URL
+    const urlLang = getLanguageFromPath(pathname);
+    if (urlLang) return urlLang;
     
-    if (currentLang) {
-        segments[0] = newLang;
-    } else if (newLang !== 'es') {
-        segments.unshift(newLang);
+    // 2. Then try localStorage
+    const storedLang = localStorage.getItem('preferred_language');
+    if (storedLang && SUPPORTED_LANGUAGES[storedLang]) return storedLang;
+    
+    // 3. Finally fallback to English (NOT Spanish)
+    return DEFAULT_LANGUAGE;
+};
+
+// Helper to get language-prefixed path
+export const getLocalizedPath = (path, language) => {
+    // Remove any existing language prefix
+    const cleanPath = path.replace(/^\/(en|es|it|fr|de)(\/|$)/, '/');
+    
+    // Always add language prefix for consistency
+    if (cleanPath === '/' || cleanPath === '') {
+        return `/${language}`;
     }
-    
-    // For Spanish (default), don't add prefix
-    if (newLang === 'es' && segments[0] === 'es') {
-        segments.shift();
-    }
-    
-    return '/' + segments.join('/') || '/';
+    return `/${language}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
 };
 
 // Inner provider that uses router hooks
@@ -46,25 +56,34 @@ const LanguageProviderInner = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Get initial language from URL
-    const initialLang = useMemo(() => getLanguageFromPath(location.pathname), []);
+    // Get initial language with proper fallback
+    const initialLang = useMemo(() => getInitialLanguage(location.pathname), []);
     const [language, setLanguage] = useState(initialLang);
     
-    // Initialize i18n on mount
+    // Initialize i18n and persist on mount
     useEffect(() => {
         i18n.changeLanguage(initialLang);
         document.documentElement.lang = initialLang;
-    }, [initialLang]);
+        localStorage.setItem('preferred_language', initialLang);
+        
+        // If URL doesn't have language prefix, add it
+        const urlLang = getLanguageFromPath(location.pathname);
+        if (!urlLang) {
+            const newPath = getLocalizedPath(location.pathname, initialLang);
+            navigate(newPath, { replace: true });
+        }
+    }, [initialLang, location.pathname, navigate]);
 
-    // Sync language with URL changes (only when URL actually changes)
+    // Sync language with URL changes
     useEffect(() => {
         const urlLang = getLanguageFromPath(location.pathname);
-        if (urlLang !== language) {
+        if (urlLang && urlLang !== language) {
             setLanguage(urlLang);
             i18n.changeLanguage(urlLang);
             document.documentElement.lang = urlLang;
+            localStorage.setItem('preferred_language', urlLang);
         }
-    }, [location.pathname]); // Remove 'language' from deps to prevent loops
+    }, [location.pathname, language]);
 
     // Stable change language function
     const changeLanguage = useCallback((langCode) => {
@@ -80,8 +99,8 @@ const LanguageProviderInner = ({ children }) => {
         // Sync with i18next
         i18n.changeLanguage(langCode);
         
-        // Navigate to new URL
-        const newPath = updatePathLanguage(location.pathname, langCode);
+        // Navigate to new URL with language prefix
+        const newPath = getLocalizedPath(location.pathname, langCode);
         navigate(newPath, { replace: true });
     }, [language, location.pathname, navigate]);
 
@@ -90,7 +109,8 @@ const LanguageProviderInner = ({ children }) => {
         language,
         changeLanguage,
         supportedLanguages: SUPPORTED_LANGUAGES,
-        isDefaultLanguage: language === 'es',
+        isDefaultLanguage: language === DEFAULT_LANGUAGE,
+        getLocalizedPath: (path) => getLocalizedPath(path, language),
     }), [language, changeLanguage]);
 
     return (
