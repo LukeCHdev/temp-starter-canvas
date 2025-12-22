@@ -147,7 +147,7 @@ const ExplorePage = () => {
                     </h1>
                     {!country && !continent && (
                         <p className="text-[#1E1E1E]/70 mt-4">
-                            Discover authentic recipes from around the world
+                            {t('explore.subtitle')}
                         </p>
                     )}
                 </div>
