@@ -281,7 +281,7 @@ const ExplorePage = () => {
                                             {CONTINENT_INFO[c.name]?.emoji || '🌍'}
                                         </span>
                                         <h3 className="font-semibold text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors">
-                                            {c.name}
+                                            {translateName(c.name, 'continents')}
                                         </h3>
                                         <p className="text-sm text-[#1E1E1E]/60 mt-1">
                                             {c.recipe_count} {t('explore.recipes')}
