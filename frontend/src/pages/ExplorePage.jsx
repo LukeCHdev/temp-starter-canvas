@@ -116,11 +116,11 @@ const ExplorePage = () => {
         <nav className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-6" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-[#6A1F2E] flex items-center gap-1">
                 <Home className="h-4 w-4" />
-                Home
+                {t('common.home')}
             </Link>
             <ChevronRight className="h-4 w-4" />
             <Link to="/explore" className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
-                Explore
+                {t('nav.explore')}
             </Link>
             {continent && (
                 <>
@@ -129,7 +129,7 @@ const ExplorePage = () => {
                         to={`/explore/${continent}`} 
                         className={`hover:text-[#6A1F2E] ${!country ? 'text-[#6A1F2E] font-medium' : ''}`}
                     >
-                        {selectedContinent || continent.replace('-', ' ')}
+                        {translateName(selectedContinent || continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), 'continents')}
                     </Link>
                 </>
             )}
@@ -137,7 +137,7 @@ const ExplorePage = () => {
                 <>
                     <ChevronRight className="h-4 w-4" />
                     <span className="text-[#6A1F2E] font-medium">
-                        {pageTitle}
+                        {translateName(pageTitle, 'countries')}
                     </span>
                 </>
             )}
