@@ -232,7 +232,7 @@ const ExplorePage = () => {
                                 {countries.map((c) => (
                                     <Link
                                         key={c.slug}
-                                        to={`/explore/${continent}/${c.slug}`}
+                                        to={getLocalizedPath(`/explore/${continent}/${c.slug}`)}
                                         className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3"
                                     >
                                         <Globe className="h-8 w-8 text-[#6A1F2E]" />
