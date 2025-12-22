@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { recipeAPI, continentAPI, translationAPI } from '@/utils/api';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Globe, MapPin, ChevronRight, Home } from 'lucide-react';
 import { toast } from 'sonner';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 
 // Continent flags/emojis
 const CONTINENT_INFO = {
