@@ -1678,6 +1678,7 @@ async def root():
 app.include_router(api_router)
 app.include_router(admin_router)
 app.include_router(document_router)
+app.include_router(translation_router)
 
 # Add CORS middleware
 app.add_middleware(
