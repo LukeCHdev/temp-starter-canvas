@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,13 +18,15 @@ import {
 export const Navigation = () => {
     const { user, logout } = useAuth();
     const { t } = useTranslation();
+    const { getLocalizedPath } = useLanguage();
     const [showAuthModal, setShowAuthModal] = useState(false);
 
+    // All navigation links use getLocalizedPath to preserve language
     const navLinks = [
-        { to: '/explore', label: t('nav.explore'), icon: Globe },
-        { to: '/menu-builder', label: t('nav.menuBuilder'), icon: MenuIcon },
-        { to: '/techniques', label: t('nav.techniques'), icon: BookOpen },
-        { to: '/about', label: t('nav.about'), icon: null },
+        { path: '/explore', label: t('nav.explore'), icon: Globe },
+        { path: '/menu-builder', label: t('nav.menuBuilder'), icon: MenuIcon },
+        { path: '/techniques', label: t('nav.techniques'), icon: BookOpen },
+        { path: '/about', label: t('nav.about'), icon: null },
     ];
 
     return (
@@ -31,8 +34,8 @@ export const Navigation = () => {
             <nav className="bg-white border-b border-[#E5DCC3] sticky top-0 z-50" data-testid="main-navigation">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        {/* Logo */}
-                        <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
+                        {/* Logo - also preserves language */}
+                        <Link to={getLocalizedPath('/')} className="flex items-center space-x-2" data-testid="logo-link">
                             <ChefHat className="h-8 w-8 text-[#6A1F2E]" />
                             <span className="text-2xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 Sous Chef Linguine
@@ -43,11 +46,11 @@ export const Navigation = () => {
                         <div className="hidden md:flex items-center space-x-6">
                             {navLinks.map((link) => (
                                 <Link
-                                    key={link.to}
-                                    to={link.to}
+                                    key={link.path}
+                                    to={getLocalizedPath(link.path)}
                                     className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
                                     style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                                    data-testid={`nav-${link.to.replace('/', '')}`}
+                                    data-testid={`nav-${link.path.replace('/', '')}`}
                                 >
                                     {link.icon && <link.icon className="h-4 w-4" />}
                                     <span>{link.label}</span>
@@ -67,7 +70,7 @@ export const Navigation = () => {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                         <DropdownMenuItem asChild>
-                                            <Link to="/favorites" className="flex items-center">
+                                            <Link to={getLocalizedPath('/favorites')} className="flex items-center">
                                                 <Heart className="h-4 w-4 mr-2" />
                                                 {t('nav.favorites')}
                                             </Link>
@@ -101,8 +104,8 @@ export const Navigation = () => {
                                 <div className="flex flex-col space-y-4 mt-8">
                                     {navLinks.map((link) => (
                                         <Link
-                                            key={link.to}
-                                            to={link.to}
+                                            key={link.path}
+                                            to={getLocalizedPath(link.path)}
                                             className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
                                             style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                                         >
@@ -111,7 +114,7 @@ export const Navigation = () => {
                                         </Link>
                                     ))}
                                     {user && (
-                                        <Link to="/favorites" className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors">
+                                        <Link to={getLocalizedPath('/favorites')} className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors">
                                             <Heart className="h-5 w-5" />
                                             <span>{t('nav.favorites')}</span>
                                         </Link>
