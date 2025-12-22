@@ -64,7 +64,7 @@ const ExplorePage = () => {
         } else {
             loadExploreData();
         }
-    }, [continent, country, i18n.language]);  // Add language dependency
+    }, [continent, country, language]);  // Use language from context as dependency
 
     const loadExploreData = async () => {
         setLoading(true);
