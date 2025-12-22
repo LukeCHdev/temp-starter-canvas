@@ -31,6 +31,21 @@ export const recipeAPI = {
     createReview: (slug, data) => api.post(`/recipes/${slug}/review`, data),
 };
 
+// Translation API - Language-aware recipe content
+export const translationAPI = {
+    // Get single recipe with translated content
+    getRecipe: (slug, lang = 'en') => api.get(`/translations/recipe/${slug}`, { params: { lang } }),
+    
+    // Get recipes list with translated content
+    getRecipes: (params) => api.get('/translations/recipes', { params }),
+    
+    // Queue translations for multiple recipes
+    queueTranslations: (slugs, lang) => api.post('/translations/queue', slugs, { params: { lang } }),
+    
+    // Get queue status
+    getQueueStatus: () => api.get('/translations/queue/status'),
+};
+
 // Continent API
 export const continentAPI = {
     getAll: () => api.get('/continents'),
