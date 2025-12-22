@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Clock, ChefHat, Globe, Star, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/LanguageContext';
 
 /**
  * TranslatedRecipeCard - Displays recipe content based on translation status
@@ -15,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
  */
 export const TranslatedRecipeCard = ({ recipe }) => {
     const { t, i18n } = useTranslation();
+    const { getLocalizedPath } = useLanguage();
     
     const { status, content, metadata, slug } = recipe;
     
