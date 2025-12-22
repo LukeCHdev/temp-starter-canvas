@@ -151,7 +151,9 @@ const ExplorePage = () => {
                 <div className="max-w-6xl mx-auto">
                     <Breadcrumb />
                     <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        {pageTitle}
+                        {country ? translateName(pageTitle, 'countries') : 
+                         continent ? translateName(pageTitle, 'continents') : 
+                         pageTitle}
                     </h1>
                     {!country && !continent && (
                         <p className="text-[#1E1E1E]/70 mt-4">
