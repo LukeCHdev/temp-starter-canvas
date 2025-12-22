@@ -24,6 +24,7 @@ const ExplorePage = () => {
     const { continent, country } = useParams();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const { getLocalizedPath } = useLanguage();
     
     // Helper function to translate country/continent names
     const translateName = useCallback((name, type = 'countries') => {
