@@ -193,7 +193,7 @@ const ExplorePage = () => {
                     /* Continent Countries View */
                     <>
                         <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('explore.countriesIn')} {selectedContinent}
+                            {t('explore.countriesIn')} {translateName(selectedContinent, 'continents')}
                         </h2>
 
                         {countries.length > 0 ? (
