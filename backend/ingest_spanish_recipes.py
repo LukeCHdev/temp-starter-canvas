@@ -746,3 +746,237 @@ SPANISH_RECIPES.extend([
         "source_url": "https://realacademiadegastronomia.com/recetas/conejo-con-caracoles/"
     }
 ])
+
+# Batch 6-9 remaining recipes
+SPANISH_RECIPES.extend([
+    {
+        "name": "Cuajada",
+        "origin_region": "País Vasco",
+        "ingredients": [
+            {"item": "leche de oveja", "quantity": 1, "unit": "l"},
+            {"item": "rama de canela", "quantity": 1, "unit": "unidad"},
+            {"item": "cuajo", "quantity": 18, "unit": "gotas"}
+        ],
+        "instructions": [
+            "Poner en un cazo la leche de oveja con la rama de canela al fuego.",
+            "Cuando rompa a hervir retirar del fuego y dejar enfriar hasta que llegue a una temperatura entre 28 a 30°C. Retirar la rama de canela.",
+            "Poner tres gotas de cuajo en 6 moldes de cristal o de barro. Incorporar la leche de oveja a la temperatura indicada, remover ligeramente y dejar enfriar hasta que cuaje.",
+            "Servir en el mismo envase."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/cuajada/"
+    },
+    {
+        "name": "Arroz Negro",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "cebollas", "quantity": 1, "unit": "kg"},
+            {"item": "arroz de grano medio", "quantity": 400, "unit": "g"},
+            {"item": "chipirones con su tinta", "quantity": 400, "unit": "g"},
+            {"item": "tomates maduros", "quantity": 125, "unit": "g"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 100, "unit": "ml"},
+            {"item": "caldo de pescado", "quantity": 1, "unit": "l"},
+            {"item": "pimentón", "quantity": 1, "unit": "cucharadita"},
+            {"item": "tinta de calamar", "quantity": 4, "unit": "paquetitos"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Pelar y picar las cebollas en trozos pequeños. Pochar en una sartén, con un poco de aceite, hasta caramelizar y obtener un color muy oscuro, durante una hora aprox.",
+            "Preparar los demás ingredientes: Limpiar los chipirones, reservar la tinta y cortar en aros. Pelar los tomates y los ajos y picar. Poner el caldo de pescado a hervir.",
+            "En una paella calentar el aceite. Saltear los chipirones y luego los ajos y el tomate. Añadir el pimentón y rehogar el arroz junto con la cebolla caramelizada.",
+            "Mojar con el caldo caliente, sazonar y dejar cocer a fuego vivo 10 minutos. Añadir la tinta desleída en un poco de caldo. Dejar cocer de 6 a 8 minutos a fuego bajo.",
+            "Comprobar si el arroz está cocido. Retirar del fuego, dejar reposar 5 minutos y servir en la misma paella."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/arroz-negro/"
+    },
+    {
+        "name": "Sepia al Ajillo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "sepia", "quantity": 150, "unit": "g"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 100, "unit": "ml"},
+            {"item": "jugo de limón", "quantity": 1, "unit": "cucharada"},
+            {"item": "pimentón picante", "quantity": 1, "unit": "cucharadita"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta blanca", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar la sepia y cortarla en tiras.",
+            "En una cazuela a fuego fuerte calentar el aceite de oliva, saltear la sepia durante 2 minutos e incorporar el ajo laminado, el pimentón y el jugo de limón.",
+            "Salpimentar y servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/sepia-al-ajillo/"
+    },
+    {
+        "name": "Duelos y Quebrantos",
+        "origin_region": "Castilla-La Mancha",
+        "ingredients": [
+            {"item": "chorizos blandos", "quantity": 3, "unit": "unidades"},
+            {"item": "panceta o tocino", "quantity": 150, "unit": "g"},
+            {"item": "huevos", "quantity": 8, "unit": "unidades"},
+            {"item": "cebolletas", "quantity": 2, "unit": "unidades"},
+            {"item": "dientes de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Picar las cebolletas en juliana y laminar los ajos. Pochar en 3 cucharadas de aceite y salpimentar.",
+            "Cortar en dados el chorizo y la panceta. Incorporar al sofrito y cocinar hasta que estén bien dorados.",
+            "Incorporar los huevos enteros, sazonar y cuando empiecen a cuajar apagar el fuego.",
+            "Remover todo para que se forme un revuelto.",
+            "Servir en el momento."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/duelos-y-quebrantos/"
+    },
+    {
+        "name": "Coliflor al Ajoarriero",
+        "origin_region": "Castilla y León",
+        "ingredients": [
+            {"item": "coliflor grande", "quantity": 1, "unit": "unidad"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 50, "unit": "g"},
+            {"item": "pimentón", "quantity": 1, "unit": "cucharada"},
+            {"item": "vinagre", "quantity": 2, "unit": "cucharadas"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Dividir en ramilletes la coliflor y cocer en agua hirviendo con sal. Escurrir cuando esté tierna y reservar algo del caldo de la cocción.",
+            "Por un lado, hacer un majado: machacar en el mortero uno de los dientes de ajo con sal. Desleír la pasta que se forma con tres cucharadas del agua de cocer la coliflor y otras tres de aceite de oliva crudo.",
+            "Por otro lado, poner el resto del aceite en una sartén y dorar el otro diente de ajo picado; retirar y fuera de fuego, incorporar el pimentón, mezclar bien y mojar con el vinagre.",
+            "Unir el majado del mortero con el sofrito de la sartén. Mezclar bien y rociar con todo ello la coliflor."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/coliflor-al-ajoarriero/"
+    },
+    {
+        "name": "Arroz con Costra",
+        "origin_region": "Comunitat Valenciana",
+        "ingredients": [
+            {"item": "arroz bomba", "quantity": 400, "unit": "g"},
+            {"item": "pollo troceado", "quantity": 400, "unit": "g"},
+            {"item": "conejo troceado", "quantity": 300, "unit": "g"},
+            {"item": "butifarras blanca y negra", "quantity": 300, "unit": "g"},
+            {"item": "longanizas blanca y roja", "quantity": 250, "unit": "g"},
+            {"item": "tomate triturado", "quantity": 200, "unit": "g"},
+            {"item": "caldo de cocido", "quantity": None, "unit": "al gusto"},
+            {"item": "garbanzos cocidos", "quantity": 100, "unit": "g"},
+            {"item": "huevos camperos", "quantity": 6, "unit": "unidades"},
+            {"item": "hebras de azafrán", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar las butifarras en rodajas y marcar por ambos lados en la misma cazuela. Reservar hasta el final del arroz.",
+            "Salpimentar el pollo y el conejo y dorar en una cazuela de barro con un fondo de aceite. Reservar.",
+            "Trocear las longanizas y dorar también en la cazuela. Añadir el tomate, rehogar hasta que pierda el agua y agregar el arroz para sellar. Incorporar el pollo, el conejo y el azafrán.",
+            "Cubrir el arroz con el caldo caliente y cocer 8 minutos a fuego medio-alto.",
+            "Batir los huevos, salpimentar.",
+            "Poner los garbanzos, colocar las butifarras y repartir los huevos por encima. Llevar al horno a 200º unos 10 minutos.",
+            "Sacar del horno, dejar reposar 5 minutos y servir enseguida."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/arroz-con-costra/"
+    },
+    {
+        "name": "Bacalao a la Llauna",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "bacalao en lomos", "quantity": 1.5, "unit": "kg"},
+            {"item": "harina", "quantity": None, "unit": "al gusto"},
+            {"item": "dientes de ajo en láminas", "quantity": 6, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 200, "unit": "ml"},
+            {"item": "caldo de pescado", "quantity": 100, "unit": "ml"},
+            {"item": "vino blanco seco", "quantity": 100, "unit": "ml"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharada"},
+            {"item": "judías secas cocidas", "quantity": 500, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Desalar el bacalao, escurrir, enharinar y freír. Pasar a una llauna o una fuente de horno de metal.",
+            "Colar el aceite de freír el bacalao, poner en otra sartén y freír en él los ajos en láminas; luego añadir el pimentón y mojar con el caldo de pescado y el vino, reducir un poco e incorporar a la fuente del bacalao.",
+            "Colocar alrededor las judías ya hervidas.",
+            "Meter al horno a 180º y dejar que se haga, unos 10 minutos. Debe quedar prácticamente sin caldo."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bacalao-a-la-llauna/"
+    },
+    {
+        "name": "Ensalada Murciana",
+        "origin_region": "Región de Murcia",
+        "ingredients": [
+            {"item": "bonito en escabeche", "quantity": 1, "unit": "lata"},
+            {"item": "tomates enteros al natural", "quantity": 1, "unit": "lata"},
+            {"item": "cebolleta", "quantity": 1, "unit": "unidad"},
+            {"item": "huevo duro", "quantity": 1, "unit": "unidad"},
+            {"item": "aceitunas de Cuquillo aliñadas", "quantity": 50, "unit": "g"},
+            {"item": "vinagre", "quantity": 50, "unit": "g"},
+            {"item": "aceite de oliva virgen extra", "quantity": 110, "unit": "g"},
+            {"item": "pimentón", "quantity": 0.5, "unit": "cucharadita"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Escurrir los tomates y cortar en gajos.",
+            "Cortar el huevo duro en trozos.",
+            "Pelar la cebolleta y cortar en juliana fina.",
+            "En un bol mezclar el vinagre con el aceite, el pimentón, la pimienta y la sal. Batir bien hasta que quede todo muy mezclado.",
+            "En una ensaladera colocar los tomates, el huevo duro, la cebolleta, el bonito y las aceitunas.",
+            "Aliñar con la vinagreta y servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/ensalada-murciana/"
+    },
+    {
+        "name": "Cocido Montañés",
+        "origin_region": "Cantabria",
+        "ingredients": [
+            {"item": "alubias blancas", "quantity": 400, "unit": "g"},
+            {"item": "nabo", "quantity": 1, "unit": "unidad"},
+            {"item": "patata", "quantity": 1, "unit": "unidad"},
+            {"item": "morcilla", "quantity": 1, "unit": "unidad"},
+            {"item": "chorizo", "quantity": 1, "unit": "unidad"},
+            {"item": "papada de cerdo", "quantity": 100, "unit": "g"},
+            {"item": "rabo de cerdo", "quantity": 1, "unit": "unidad"},
+            {"item": "oreja de cerdo", "quantity": 1, "unit": "unidad"},
+            {"item": "tocino entreverado", "quantity": 100, "unit": "g"},
+            {"item": "costilla de cerdo", "quantity": 100, "unit": "g"},
+            {"item": "berza o repollo", "quantity": 200, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta negra en grano", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Poner las alubias a remojar la víspera en abundante agua fría. Al día siguiente, escurrir bien y colocar en una olla grande, junto con los demás ingredientes, excepto la berza. Cubrir todo con agua.",
+            "Dejar cocer aproximadamente 2 h y 1/2 a fuego lento. Si se evapora mucho líquido, completar con un poco más de agua.",
+            "Media hora antes de terminar la cocción, incorporar la berza lavada y cortada en tiras.",
+            "Comprobar la sazón y servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/cocido-montanes/"
+    },
+    {
+        "name": "Arroz a la Zamorana",
+        "origin_region": "Castilla y León",
+        "ingredients": [
+            {"item": "oreja de cerdo", "quantity": 1, "unit": "unidad"},
+            {"item": "mano de cerdo", "quantity": 1, "unit": "unidad"},
+            {"item": "morro de cerdo", "quantity": 1, "unit": "unidad"},
+            {"item": "tomillo", "quantity": 1, "unit": "ramita"},
+            {"item": "manteca de cerdo", "quantity": 2, "unit": "cucharadas"},
+            {"item": "aceite de oliva", "quantity": 2, "unit": "cucharadas"},
+            {"item": "cebollas grandes", "quantity": 2, "unit": "unidades"},
+            {"item": "dientes de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "nabo", "quantity": 1, "unit": "unidad"},
+            {"item": "jamón", "quantity": 180, "unit": "g"},
+            {"item": "chorizo picado", "quantity": 1, "unit": "unidad"},
+            {"item": "pimentón", "quantity": 2, "unit": "cucharadas"},
+            {"item": "arroz redondo", "quantity": 360, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar la oreja, mano y morro de cerdo y escaldar en agua hirviendo durante unos minutos. Desechar el agua y poner a cocer en una cazuela cubiertos de agua salada con el tomillo durante unas 3 horas. Reservar el líquido.",
+            "Deshuesar la mano y cortar en trocitos junto con la oreja y el morro.",
+            "En una cazuela de barro calentar la manteca de cerdo y el aceite, incorporar la cebolla pelada y cortada finamente, los ajos pelados y en láminas, y los nabos en rodajas. Rehogar todo y cuando empiece a dorarse, añadir el jamón picado y las partes del cerdo.",
+            "Mojar el conjunto con 1,5 l de caldo de la cocción de las carnes y dejar cocer lentamente hasta que los nabos estén tiernos.",
+            "Agregar el pimentón, el arroz y rectificar de sal. Dejar cocer unos 8 minutos. Meter la cazuela en el horno precalentado unos 10 minutos más.",
+            "Retirar del horno y dejar reposar 5 minutos. Servir en la misma cazuela."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/arroz-a-la-zamorana/"
+    }
+])
