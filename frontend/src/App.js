@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Navigation } from '@/components/common/Navigation';
 import { Footer } from '@/components/common/Footer';
 import { AuthProvider } from '@/context/AuthContext';
-import { LanguageRouterProvider } from '@/context/LanguageContext';
+import { LanguageProvider } from '@/context/LanguageContext';
 
 // Pages
 import HomePage from '@/pages/HomePage';
@@ -78,7 +78,7 @@ const PublicRoutes = () => (
 function App() {
   return (
     <BrowserRouter>
-      <LanguageRouterProvider>
+      <LanguageProvider>
         <AuthProvider>
           <AppLayout>
             <Routes>
@@ -138,7 +138,7 @@ function App() {
             </Routes>
           </AppLayout>
         </AuthProvider>
-      </LanguageRouterProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
