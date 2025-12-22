@@ -15,8 +15,8 @@ import { useLanguage } from '@/context/LanguageContext';
  * - status='failed': Show localized error placeholder
  */
 export const TranslatedRecipeCard = ({ recipe }) => {
-    const { t, i18n } = useTranslation();
-    const { getLocalizedPath } = useLanguage();
+    const { t } = useTranslation();
+    const { language, getLocalizedPath } = useLanguage();
     
     const { status, content, metadata, slug } = recipe;
     
@@ -37,7 +37,8 @@ export const TranslatedRecipeCard = ({ recipe }) => {
         5: { en: 'Modern', es: 'Moderno', it: 'Moderno', fr: 'Moderne', de: 'Modern' },
     };
     
-    const currentLang = i18n.language?.slice(0, 2) || 'en';
+    // Use language from context (derived from URL) - single source of truth
+    const currentLang = language || 'en';
     const authenticityLevel = metadata?.authenticity_level || 3;
     const levelLabel = levelLabels[authenticityLevel]?.[currentLang] || levelLabels[authenticityLevel]?.en || 'Traditional';
     
