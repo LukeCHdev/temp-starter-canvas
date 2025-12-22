@@ -206,7 +206,7 @@ const ExplorePage = () => {
                                     >
                                         <Globe className="h-8 w-8 text-[#6A1F2E]" />
                                         <div>
-                                            <h3 className="font-semibold text-[#1E1E1E]">{c.name}</h3>
+                                            <h3 className="font-semibold text-[#1E1E1E]">{translateName(c.name, 'countries')}</h3>
                                             <p className="text-sm text-[#1E1E1E]/60">{c.recipe_count} {t('explore.recipes')}</p>
                                         </div>
                                     </Link>
