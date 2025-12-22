@@ -95,7 +95,7 @@ const RecipePage = () => {
             <div className="min-h-screen flex items-center justify-center" data-testid="not-found-state">
                 <div className="text-center">
                     <p className="text-xl text-[#1E1E1E]/70 mb-4">{t('recipe.notFound')}</p>
-                    <Link to="/" className="text-[#6A1F2E] hover:underline">
+                    <Link to={getLocalizedPath('/')} className="text-[#6A1F2E] hover:underline">
                         {t('recipe.returnHome')}
                     </Link>
                 </div>
