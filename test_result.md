@@ -69,7 +69,7 @@ December 2024 - Phase 1-5 Implementation + Duplicate Prevention Fix
 
 **Test Date:** December 2024  
 **Tester:** Testing Agent  
-**Frontend URL:** https://recipehub-17.preview.emergentagent.com
+**Frontend URL:** https://seo-recipe-platform.preview.emergentagent.com
 
 ### 1. Homepage Tests - ✅ PASSED
 - ✅ Banner "Authentic Regional Recipes Powered by Sous-Chef Linguine" visible
@@ -163,7 +163,7 @@ The Sous Chef Linguine recipe platform is working excellently across all tested 
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://recipehub-17.preview.emergentagent.com/api
+**Backend URL:** https://seo-recipe-platform.preview.emergentagent.com/api
 
 ### Recipe Search and Translation System Tests
 
@@ -254,7 +254,7 @@ The Sous Chef Linguine recipe platform is working excellently across all tested 
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://recipehub-17.preview.emergentagent.com/api
+**Backend URL:** https://seo-recipe-platform.preview.emergentagent.com/api
 
 ### Comprehensive Recipe Search API Testing
 
@@ -336,7 +336,7 @@ The Sous Chef Linguine recipe platform is working excellently across all tested 
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://recipehub-17.preview.emergentagent.com/api  
+**Backend URL:** https://seo-recipe-platform.preview.emergentagent.com/api  
 **Admin Password:** SousChefAdmin2024!
 
 ### Admin Panel API Testing
@@ -447,7 +447,7 @@ The Sous Chef Linguine recipe platform is working excellently across all tested 
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Frontend URL:** https://recipehub-17.preview.emergentagent.com/recipe/spaghetti-alla-carbonara-italy
+**Frontend URL:** https://seo-recipe-platform.preview.emergentagent.com/recipe/spaghetti-alla-carbonara-italy
 
 ### Comprehensive Ratings & Reviews Feature Tests
 
@@ -575,7 +575,7 @@ The Ratings & Reviews feature on Sous Chef Linguine is working perfectly. All re
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://recipehub-17.preview.emergentagent.com/api  
+**Backend URL:** https://seo-recipe-platform.preview.emergentagent.com/api  
 **Admin Password:** SousChefAdmin2024!
 
 ### Comprehensive Canonical Schema Enforcement Tests
@@ -804,12 +804,12 @@ Canonical recipe schema enforcement system is fully functional and ready for pro
 
 **Test Date:** December 21, 2024  
 **Tester:** Testing Agent  
-**Frontend URL:** https://recipehub-17.preview.emergentagent.com
+**Frontend URL:** https://seo-recipe-platform.preview.emergentagent.com
 
 ### Comprehensive Frontend UI Tests
 
 #### 1. Homepage Tests - ✅ PASSED
-- ✅ Homepage loads correctly at https://recipehub-17.preview.emergentagent.com
+- ✅ Homepage loads correctly at https://seo-recipe-platform.preview.emergentagent.com
 - ✅ Page title: "Sous Chef Linguine | Authentic Global Recipe Archive"
 - ✅ "Our Editorial Mission" section visible with cultural archive text
 - ✅ "Our Language Philosophy" section visible and properly formatted
@@ -972,7 +972,7 @@ Ratings & Reviews feature is fully functional and ready for production use. No f
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Backend URL:** https://recipehub-17.preview.emergentagent.com/api
+**Backend URL:** https://seo-recipe-platform.preview.emergentagent.com/api
 
 ### Translation System Tests (Critical Fix Verification)
 
@@ -1110,7 +1110,7 @@ The language translation system and technique_links functionality are working pe
 
 **Test Date:** December 11, 2024  
 **Tester:** Testing Agent  
-**Frontend URL:** https://recipehub-17.preview.emergentagent.com
+**Frontend URL:** https://seo-recipe-platform.preview.emergentagent.com
 
 ### Comprehensive Frontend Translation System Tests
 
