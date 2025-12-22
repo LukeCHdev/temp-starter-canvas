@@ -95,7 +95,11 @@ const ExplorePage = () => {
 
     const loadCountryData = async (countrySlug, continentSlug) => {
         setLoading(true);
-        const currentLang = i18n.language?.slice(0, 2) || 'en';
+        // Get language from URL path as it's more reliable than i18n on initial load
+        const pathLang = window.location.pathname.split('/')[1];
+        const currentLang = ['en', 'es', 'it', 'fr', 'de'].includes(pathLang) ? pathLang : (i18n.language?.slice(0, 2) || 'en');
+        
+        console.log(`Loading country data with lang: ${currentLang}, URL path: ${window.location.pathname}`);
         
         try {
             // Use translation API for language-aware content
