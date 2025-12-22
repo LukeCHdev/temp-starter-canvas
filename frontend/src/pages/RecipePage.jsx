@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { recipeAPI } from '@/utils/api';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { RecipeSEO } from '@/components/seo/SEOHelmet';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ReviewSection } from '@/components/recipe/ReviewSection';
 import { 
     ChefHat, 
@@ -22,13 +22,25 @@ import {
 
 const RecipePage = () => {
     const { slug } = useParams();
+    const location = useLocation();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const { language, getLocalizedPath } = useLanguage();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
-    // Memoize language to prevent unnecessary re-fetches
-    const currentLang = useMemo(() => language?.split('-')[0] || 'en', [language]);
+    // CRITICAL: Sync i18n with route language on every route change
+    useEffect(() => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const urlLang = pathSegments[0];
+        
+        if (SUPPORTED_LANGUAGES[urlLang] && urlLang !== i18n.language) {
+            console.log(`RecipePage: Syncing i18n language to ${urlLang} from route`);
+            i18n.changeLanguage(urlLang);
+        }
+    }, [location.pathname, i18n]);
+
+    // Use language from context - derived from URL
+    const currentLang = useMemo(() => language || 'en', [language]);
 
     useEffect(() => {
         let isMounted = true;
