@@ -36,6 +36,9 @@ from routes.admin import admin_router
 # Import document import routes
 from routes.document_import import document_router
 
+# Import translation routes
+from routes.translation import translation_router, set_database as set_translation_db
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
