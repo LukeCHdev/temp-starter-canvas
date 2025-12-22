@@ -452,8 +452,8 @@ class AdminPanelTester:
             
     def run_all_tests(self):
         """Run all admin panel test cases based on review request"""
-        print("🧪 Starting Sous Chef Linguine Admin Panel API Tests")
-        print("Testing admin authentication, recipe management, and JSON import")
+        print("🧪 Starting Sous Chef Linguine Backend API Tests")
+        print("Testing admin authentication, recipe management, JSON import, and Spanish recipes")
         print(f"Backend URL: {BACKEND_URL}")
         print(f"Admin Password: {ADMIN_PASSWORD}")
         print("=" * 70)
@@ -481,6 +481,12 @@ class AdminPanelTester:
         
         # Test 8: CSV Template
         self.test_csv_template()
+        
+        # Test 9: Spanish Recipes Count (Critical Test)
+        self.test_spanish_recipes_count()
+        
+        # Test 10: Recipes by Country Name - Spain (Critical Test)
+        self.test_recipes_by_country_spain()
         
         # Summary
         print("\n" + "=" * 70)
