@@ -87,6 +87,8 @@ const LanguageProviderInner = ({ children }) => {
         setLanguage(langCode);
         document.documentElement.lang = langCode;
         localStorage.setItem('preferred_language', langCode);
+        // Sync with i18next
+        i18n.changeLanguage(langCode);
         
         // Navigate to new URL using window.location for reliability
         window.location.href = newPath;
