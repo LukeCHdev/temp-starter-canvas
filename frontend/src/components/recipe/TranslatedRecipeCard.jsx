@@ -124,7 +124,7 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     };
     
     return (
-        <Link to={`/recipe/${slug}`} data-testid={`recipe-card-${slug}`}>
+        <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
             <Card className="card-elegant group cursor-pointer h-full flex flex-col">
                 <div className="relative overflow-hidden rounded-sm mb-4 h-48 bg-[#F5F2E8]">
                     {photoUrl ? (
