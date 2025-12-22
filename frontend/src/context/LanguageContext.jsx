@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import i18n from '../i18n/i18nConfig';
 
@@ -55,13 +55,20 @@ export const getLocalizedPath = (path, language) => {
 const LanguageProviderInner = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const isInitialized = useRef(false);
     
-    // Get initial language with proper fallback
-    const initialLang = useMemo(() => getInitialLanguage(location.pathname), []);
-    const [language, setLanguage] = useState(initialLang);
+    // Compute initial language directly from current pathname
+    const computeInitialLang = () => getInitialLanguage(location.pathname);
+    const [language, setLanguage] = useState(computeInitialLang);
     
-    // Initialize i18n and persist on mount
+    // Initialize i18n and persist on mount (runs once)
     useEffect(() => {
+        if (isInitialized.current) return;
+        isInitialized.current = true;
+        
+        const initialLang = getInitialLanguage(location.pathname);
+        
+        // Sync i18n
         i18n.changeLanguage(initialLang);
         document.documentElement.lang = initialLang;
         localStorage.setItem('preferred_language', initialLang);
@@ -72,21 +79,32 @@ const LanguageProviderInner = ({ children }) => {
             const newPath = getLocalizedPath(location.pathname, initialLang);
             navigate(newPath, { replace: true });
         }
-    }, [initialLang, location.pathname, navigate]);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Sync language with URL changes - this is the SINGLE SOURCE OF TRUTH
+    // Using a ref to track previous URL to avoid cascading renders
+    const prevPathname = useRef(location.pathname);
+    
     useEffect(() => {
+        // Only process if pathname actually changed
+        if (prevPathname.current === location.pathname) return;
+        prevPathname.current = location.pathname;
+        
         const urlLang = getLanguageFromPath(location.pathname);
         if (urlLang) {
             // Always sync i18n with URL language
             if (i18n.language !== urlLang) {
                 i18n.changeLanguage(urlLang);
             }
-            // Update state if different
+            // Update document and localStorage
+            document.documentElement.lang = urlLang;
+            localStorage.setItem('preferred_language', urlLang);
+            // Update state - wrapped in setTimeout to avoid cascading renders
             if (urlLang !== language) {
-                setLanguage(urlLang);
-                document.documentElement.lang = urlLang;
-                localStorage.setItem('preferred_language', urlLang);
+                // Use a microtask to avoid the warning about setState in effect
+                queueMicrotask(() => {
+                    setLanguage(urlLang);
+                });
             }
         }
     }, [location.pathname, language]);
