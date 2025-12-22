@@ -157,7 +157,7 @@ const ExplorePage = () => {
                 {loading ? (
                     <div className="text-center py-12">
                         <ChefHat className="h-12 w-12 mx-auto text-[#6A1F2E] animate-pulse mb-4" />
-                        <p className="text-[#1E1E1E]/60">Loading...</p>
+                        <p className="text-[#1E1E1E]/60">{t('explore.loading')}</p>
                     </div>
                 ) : country ? (
                     /* Country Recipes View */
