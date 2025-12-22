@@ -79,7 +79,7 @@ const LanguageProviderInner = ({ children }) => {
             const newPath = getLocalizedPath(location.pathname, initialLang);
             navigate(newPath, { replace: true });
         }
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []);
 
     // Sync language with URL changes - this is the SINGLE SOURCE OF TRUTH
     // Using a ref to track previous URL to avoid cascading renders
