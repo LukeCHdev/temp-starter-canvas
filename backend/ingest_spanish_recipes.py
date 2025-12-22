@@ -1591,3 +1591,70 @@ SPANISH_RECIPES.extend([
         "source_url": "https://realacademiadegastronomia.com/recetas/bunuelos-de-platano/"
     }
 ])
+
+def generate_slug(name):
+    """Generate URL-friendly slug from recipe name"""
+    slug = name.lower()
+    slug = re.sub(r'[áàäâ]', 'a', slug)
+    slug = re.sub(r'[éèëê]', 'e', slug)
+    slug = re.sub(r'[íìïî]', 'i', slug)
+    slug = re.sub(r'[óòöô]', 'o', slug)
+    slug = re.sub(r'[úùüû]', 'u', slug)
+    slug = re.sub(r'[ñ]', 'n', slug)
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = re.sub(r'[\s_]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug)
+    return slug.strip('-')
+
+async def ingest_recipes():
+    client = AsyncIOMotorClient(os.environ.get('MONGO_URL'))
+    db = client[os.environ.get('DB_NAME')]
+    
+    inserted = 0
+    skipped = 0
+    
+    print(f"Starting ingestion of {len(SPANISH_RECIPES)} Spanish recipes...")
+    
+    for recipe in SPANISH_RECIPES:
+        # Check for duplicate by name + origin_region
+        existing = await db.recipes.find_one({
+            "recipe_name": recipe["name"],
+            "origin_region": recipe["origin_region"]
+        })
+        
+        if existing:
+            print(f"  ⏭️  Skipping duplicate: {recipe['name']} ({recipe['origin_region']})")
+            skipped += 1
+            continue
+        
+        # Map to database schema
+        doc = {
+            "id": str(uuid4()),
+            "recipe_name": recipe["name"],
+            "slug": generate_slug(recipe["name"]),
+            "origin_country": "Spain",  # Canonical English form
+            "origin_region": recipe["origin_region"],
+            "ingredients": recipe["ingredients"],
+            "instructions": recipe["instructions"],
+            "source_url": recipe.get("source_url", ""),
+            "authenticity_level": 1,
+            "published": True,
+            "featured": False,
+            "source": "Real Academia de Gastronomía",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "content_language": "es"
+        }
+        
+        await db.recipes.insert_one(doc)
+        print(f"  ✅ Inserted: {recipe['name']}")
+        inserted += 1
+    
+    print(f"\n{'='*50}")
+    print(f"Ingestion complete!")
+    print(f"  Inserted: {inserted}")
+    print(f"  Skipped (duplicates): {skipped}")
+    print(f"  Total Spanish recipes now: {await db.recipes.count_documents({'origin_country': 'Spain'})}")
+
+if __name__ == "__main__":
+    asyncio.run(ingest_recipes())
