@@ -200,7 +200,7 @@ const ExplorePage = () => {
                         <p className="text-[#1E1E1E]/60">{t('explore.loading')}</p>
                     </div>
                 ) : country ? (
-                    /* Country Recipes View */
+                    /* Country Recipes View - Using TranslatedRecipeCard */
                     <>
                         <div className="flex items-center gap-3 mb-8">
                             <MapPin className="h-6 w-6 text-[#6A1F2E]" />
@@ -212,7 +212,7 @@ const ExplorePage = () => {
                         {countryRecipes.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {countryRecipes.map((recipe) => (
-                                    <RecipeCard key={recipe.slug} recipe={recipe} />
+                                    <TranslatedRecipeCard key={recipe.slug} recipe={recipe} />
                                 ))}
                             </div>
                         ) : (
