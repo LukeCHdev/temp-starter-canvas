@@ -173,7 +173,7 @@ const ExplorePage = () => {
                         <div className="flex items-center gap-3 mb-8">
                             <MapPin className="h-6 w-6 text-[#6A1F2E]" />
                             <span className="text-lg text-[#1E1E1E]/70">
-                                {countryRecipes.length} {t('explore.recipesFrom')} {pageTitle}
+                                {countryRecipes.length} {t('explore.recipesFrom')} {translateName(pageTitle, 'countries')}
                             </span>
                         </div>
 
