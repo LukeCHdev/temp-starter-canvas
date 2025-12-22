@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { Clock, ChefHat, Globe, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const RecipeCard = ({ recipe }) => {
+    const { getLocalizedPath } = useLanguage();
+    
     // Handle both old and new schema
     const title = recipe.recipe_name || recipe.title_translated?.en || recipe.title_original || 'Unknown Recipe';
     const country = recipe.origin_country || recipe.country || 'Unknown';
@@ -34,7 +37,7 @@ export const RecipeCard = ({ recipe }) => {
         : null;
 
     return (
-        <Link to={`/recipe/${recipe.slug}`} data-testid={`recipe-card-${recipe.slug}`}>
+        <Link to={getLocalizedPath(`/recipe/${recipe.slug}`)} data-testid={`recipe-card-${recipe.slug}`}>
             <Card className="card-elegant group cursor-pointer h-full flex flex-col">
                 <div className="relative overflow-hidden rounded-sm mb-4 h-48 bg-[#F5F2E8]">
                     {photoUrl ? (
