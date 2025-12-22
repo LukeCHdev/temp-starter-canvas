@@ -200,7 +200,7 @@ const HomePage = () => {
                         <div className="w-24 h-1 bg-[#CBA55B] mx-auto"></div>
                     </div>
 
-                    <Link to={`/recipe/${bestRecipe.slug}`} className="block">
+                    <Link to={getLocalizedPath(`/recipe/${bestRecipe.slug}`)} className="block">
                         <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300" data-testid="best-recipe-hero">
                             <div className="grid md:grid-cols-2 gap-0">
                                 {/* Image/Placeholder */}
@@ -287,7 +287,7 @@ const HomePage = () => {
 
                     {/* View More Button */}
                     <div className="text-center mt-12">
-                        <Link to="/explore">
+                        <Link to={getLocalizedPath('/explore')}>
                             <Button className="btn-elegant" size="lg" data-testid="view-more-btn">
                                 {t('home.viewMore', language)} <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
@@ -356,7 +356,7 @@ const HomePage = () => {
                             : 'Erfahren Sie mehr über unser Engagement für Authentizität, unseren Quellenverifizierungsprozess und unsere strengen redaktionellen Standards.'
                         }
                     </p>
-                    <Link to="/editorial-policy">
+                    <Link to={getLocalizedPath('/editorial-policy')}>
                         <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E1E1E]">
                             {t('common.learnMore', language)} <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
