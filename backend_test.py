@@ -343,6 +343,113 @@ class AdminPanelTester:
             self.log_test("CSV Template", False, f"Exception: {str(e)}")
             return False
             
+    def test_spanish_recipes_count(self):
+        """Test Case 9: Spanish Recipes Count API"""
+        print("\n=== Test 9: Spanish Recipes Count ===")
+        
+        try:
+            # Test the endpoint: GET /api/recipes?country=Spain&limit=100
+            response = self.session.get(f"{BACKEND_URL}/recipes?country=Spain&limit=100")
+            
+            if response.status_code != 200:
+                self.log_test("Spanish Recipes Count", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            # Check response structure
+            if "recipes" not in data or "total" not in data:
+                self.log_test("Spanish Recipes Count", False, "Missing 'recipes' or 'total' in response")
+                return False
+                
+            recipes = data.get("recipes", [])
+            total = data.get("total", 0)
+            
+            # Check if we have exactly 74 Spanish recipes
+            if total != 74:
+                self.log_test("Spanish Recipes Count", False, f"Expected 74 Spanish recipes, got {total}")
+                return False
+                
+            # Verify all returned recipes are from Spain and published
+            spanish_count = 0
+            for recipe in recipes:
+                origin_country = recipe.get("origin_country", "")
+                status = recipe.get("status", "")
+                
+                if origin_country.lower() == "spain" and status == "published":
+                    spanish_count += 1
+                elif origin_country.lower() == "spain":
+                    self.log_test("Spanish Recipes Count", False, f"Found Spanish recipe with status '{status}', expected 'published'")
+                    return False
+                    
+            if spanish_count != len(recipes):
+                self.log_test("Spanish Recipes Count", False, f"Not all returned recipes are from Spain: {spanish_count}/{len(recipes)}")
+                return False
+                
+            self.log_test("Spanish Recipes Count", True, f"Found exactly 74 Spanish recipes, all published")
+            return True
+            
+        except Exception as e:
+            self.log_test("Spanish Recipes Count", False, f"Exception: {str(e)}")
+            return False
+            
+    def test_recipes_by_country_spain(self):
+        """Test Case 10: Recipe by Country Name - Spain"""
+        print("\n=== Test 10: Recipes by Country Name (Spain) ===")
+        
+        try:
+            # Test the endpoint: GET /api/recipes/by-country/spain
+            response = self.session.get(f"{BACKEND_URL}/recipes/by-country/spain")
+            
+            if response.status_code != 200:
+                self.log_test("Recipes by Country Spain", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+            data = response.json()
+            
+            # Check response structure
+            if "recipes" not in data or "country" not in data or "total" not in data:
+                self.log_test("Recipes by Country Spain", False, "Missing required fields in response")
+                return False
+                
+            recipes = data.get("recipes", [])
+            country = data.get("country", "")
+            total = data.get("total", 0)
+            
+            # Check country name
+            if country.lower() != "spain":
+                self.log_test("Recipes by Country Spain", False, f"Expected country 'Spain', got '{country}'")
+                return False
+                
+            # Check if we have exactly 74 Spanish recipes
+            if total != 74:
+                self.log_test("Recipes by Country Spain", False, f"Expected 74 Spanish recipes, got {total}")
+                return False
+                
+            if len(recipes) != 74:
+                self.log_test("Recipes by Country Spain", False, f"Expected 74 recipes in array, got {len(recipes)}")
+                return False
+                
+            # Verify all returned recipes are from Spain and published
+            for recipe in recipes:
+                origin_country = recipe.get("origin_country", "")
+                status = recipe.get("status", "")
+                
+                if origin_country.lower() != "spain":
+                    self.log_test("Recipes by Country Spain", False, f"Found non-Spanish recipe: {origin_country}")
+                    return False
+                    
+                if status != "published":
+                    self.log_test("Recipes by Country Spain", False, f"Found unpublished recipe with status: {status}")
+                    return False
+                    
+            self.log_test("Recipes by Country Spain", True, f"Found exactly 74 Spanish recipes, all published")
+            return True
+            
+        except Exception as e:
+            self.log_test("Recipes by Country Spain", False, f"Exception: {str(e)}")
+            return False
+            
     def run_all_tests(self):
         """Run all admin panel test cases based on review request"""
         print("🧪 Starting Sous Chef Linguine Admin Panel API Tests")
