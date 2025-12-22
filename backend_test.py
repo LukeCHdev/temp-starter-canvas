@@ -398,8 +398,8 @@ class AdminPanelTester:
         print("\n=== Test 10: Recipes by Country Name (Spain) ===")
         
         try:
-            # Test the endpoint: GET /api/recipes/by-country/spain
-            response = self.session.get(f"{BACKEND_URL}/recipes/by-country/spain")
+            # Test the endpoint: GET /api/recipes/by-country/spain with limit=100 to get all recipes
+            response = self.session.get(f"{BACKEND_URL}/recipes/by-country/spain?limit=100")
             
             if response.status_code != 200:
                 self.log_test("Recipes by Country Spain", False, f"HTTP {response.status_code}: {response.text}")
