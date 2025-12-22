@@ -5,7 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { t } from '@/i18n';
 
 export const Footer = () => {
-    const { language } = useLanguage();
+    const { language, getLocalizedPath } = useLanguage();
 
     return (
         <footer className="bg-[#1E1E1E] text-[#FAF7F0] mt-20" data-testid="main-footer">
@@ -31,12 +31,12 @@ export const Footer = () => {
                     <div>
                         <h3 className="font-semibold mb-4 text-[#CBA55B]">{t('footer.explore', language)}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to="/" className="hover:text-[#CBA55B] transition-colors">{t('common.home', language)}</Link></li>
-                            <li><Link to="/explore" className="hover:text-[#CBA55B] transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
-                            <li><Link to="/menu-builder" className="hover:text-[#CBA55B] transition-colors">{t('nav.menuBuilder', language)}</Link></li>
-                            <li><Link to="/techniques" className="hover:text-[#CBA55B] transition-colors">{t('nav.techniques', language)}</Link></li>
-                            <li><Link to="/about" className="hover:text-[#CBA55B] transition-colors">{t('nav.about', language)}</Link></li>
-                            <li><Link to="/contact" className="hover:text-[#CBA55B] transition-colors">{t('nav.contact', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/')} className="hover:text-[#CBA55B] transition-colors">{t('common.home', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/explore')} className="hover:text-[#CBA55B] transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/menu-builder')} className="hover:text-[#CBA55B] transition-colors">{t('nav.menuBuilder', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/techniques')} className="hover:text-[#CBA55B] transition-colors">{t('nav.techniques', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/about')} className="hover:text-[#CBA55B] transition-colors">{t('nav.about', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/contact')} className="hover:text-[#CBA55B] transition-colors">{t('nav.contact', language)}</Link></li>
                         </ul>
                     </div>
 
@@ -44,11 +44,11 @@ export const Footer = () => {
                     <div>
                         <h3 className="font-semibold mb-4 text-[#CBA55B]">{t('footer.legal', language)}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to="/editorial-policy" className="hover:text-[#CBA55B] transition-colors">{t('footer.editorial', language)}</Link></li>
-                            <li><Link to="/privacy" className="hover:text-[#CBA55B] transition-colors">{t('footer.privacy', language)}</Link></li>
-                            <li><Link to="/terms" className="hover:text-[#CBA55B] transition-colors">{t('footer.terms', language)}</Link></li>
-                            <li><Link to="/cookies" className="hover:text-[#CBA55B] transition-colors">{t('footer.cookies', language)}</Link></li>
-                            <li><Link to="/for-ai" className="hover:text-[#CBA55B] transition-colors">{t('footer.forAI', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/editorial-policy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.editorial', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/privacy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.privacy', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/terms')} className="hover:text-[#CBA55B] transition-colors">{t('footer.terms', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/cookies')} className="hover:text-[#CBA55B] transition-colors">{t('footer.cookies', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/for-ai')} className="hover:text-[#CBA55B] transition-colors">{t('footer.forAI', language)}</Link></li>
                         </ul>
                     </div>
                 </div>
