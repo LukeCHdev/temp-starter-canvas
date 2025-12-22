@@ -59,6 +59,10 @@ export const TranslatedRecipeCard = ({ recipe }) => {
             const description = content.history_summary || content.characteristic_profile || '';
             const ingredientCount = content.ingredients?.length || 0;
             
+            // Translate country and region names
+            const countryName = t(`countries.${metadata?.origin_country}`, { defaultValue: metadata?.origin_country || 'Unknown' });
+            const regionName = metadata?.origin_region || 'Unknown';
+            
             return (
                 <>
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
@@ -67,7 +71,7 @@ export const TranslatedRecipeCard = ({ recipe }) => {
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
                         <Globe className="h-3 w-3" />
-                        {metadata?.origin_country || 'Unknown'} • {metadata?.origin_region || 'Unknown'}
+                        {countryName} • {regionName}
                     </p>
                     
                     {description && (
