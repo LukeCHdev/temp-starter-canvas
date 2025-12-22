@@ -165,7 +165,7 @@ const ExplorePage = () => {
                         <div className="flex items-center gap-3 mb-8">
                             <MapPin className="h-6 w-6 text-[#6A1F2E]" />
                             <span className="text-lg text-[#1E1E1E]/70">
-                                {countryRecipes.length} recipes from {pageTitle}
+                                {countryRecipes.length} {t('explore.recipesFrom')} {pageTitle}
                             </span>
                         </div>
 
@@ -177,7 +177,7 @@ const ExplorePage = () => {
                             </div>
                         ) : (
                             <div className="text-center py-12 bg-white rounded-lg">
-                                <p className="text-[#1E1E1E]/60">No recipes found for this country yet.</p>
+                                <p className="text-[#1E1E1E]/60">{t('explore.noRecipes')}</p>
                             </div>
                         )}
                     </>
