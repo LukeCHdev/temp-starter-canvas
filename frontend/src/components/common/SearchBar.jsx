@@ -12,7 +12,7 @@ export const SearchBar = ({ className = '' }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { language } = useLanguage();
+    const { getLocalizedPath } = useLanguage();
     const { t } = useTranslation();
 
     const handleSearch = useCallback(async (e) => {
@@ -30,7 +30,7 @@ export const SearchBar = ({ className = '' }) => {
                 if (data.generated) {
                     toast.success(t('search.generatedSuccess'));
                 }
-                navigate(`/recipe/${data.recipe.slug}`);
+                navigate(getLocalizedPath(`/recipe/${data.recipe.slug}`));
             } else if (data.message) {
                 toast.error(data.message);
             } else {
@@ -43,7 +43,7 @@ export const SearchBar = ({ className = '' }) => {
         } finally {
             setLoading(false);
         }
-    }, [searchQuery, navigate, t]);
+    }, [searchQuery, navigate, t, getLocalizedPath]);
 
     return (
         <form onSubmit={handleSearch} className={`flex gap-2 ${className}`} data-testid="search-form">
