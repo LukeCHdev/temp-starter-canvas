@@ -55,6 +55,12 @@ const LanguageProviderInner = ({ children }) => {
     const initialLang = getLanguageFromPath(location.pathname);
     const [language, setLanguage] = useState(initialLang);
 
+    // Initialize i18next with URL language on mount
+    useEffect(() => {
+        i18n.changeLanguage(initialLang);
+        document.documentElement.lang = initialLang;
+    }, []); // Run once on mount
+
     // Sync language with URL changes
     useEffect(() => {
         const urlLang = getLanguageFromPath(location.pathname);
