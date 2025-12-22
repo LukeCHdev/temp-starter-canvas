@@ -980,3 +980,614 @@ SPANISH_RECIPES.extend([
         "source_url": "https://realacademiadegastronomia.com/recetas/arroz-a-la-zamorana/"
     }
 ])
+
+# Batch 10-14 remaining recipes
+SPANISH_RECIPES.extend([
+    {
+        "name": "Berenjenas Fritas con Miel",
+        "origin_region": "Andalucía",
+        "ingredients": [
+            {"item": "berenjenas grandes", "quantity": 2, "unit": "unidades"},
+            {"item": "leche", "quantity": 1, "unit": "l"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "harina", "quantity": None, "unit": "para rebozar"},
+            {"item": "aceite", "quantity": None, "unit": "para freír"},
+            {"item": "miel de caña", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar las berenjenas limpias en bastones conservando la piel.",
+            "Remojar una media hora en la leche fría con sal.",
+            "Escurrir y secar muy bien. Salpimentar los bastones y rebozar con harina.",
+            "Freír en abundante aceite caliente hasta que estén dorados y crujientes.",
+            "Servir recién hechos con miel de caña."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/berenjenas-fritas/"
+    },
+    {
+        "name": "Castañas con Leche",
+        "origin_region": "Galicia",
+        "ingredients": [
+            {"item": "castañas", "quantity": 1, "unit": "kg"},
+            {"item": "hinojo", "quantity": 0.5, "unit": "bulbo"},
+            {"item": "leche", "quantity": 1, "unit": "l"},
+            {"item": "azúcar", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Pelar las castañas y quitar la película que las recubre.",
+            "Poner a cocer de nuevo, ahora bien limpias, en agua con un poco de sal y el hinojo. A media cocción retirar del fuego y escurrir, desechando el hinojo.",
+            "Poner con la leche ya caliente, de nuevo al fuego, dejar que cuezan hasta que estén tiernas.",
+            "Poner en una fuente y dejar que se enfríen. Espolvorear con azúcar antes de servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/castanas-con-leche/"
+    },
+    {
+        "name": "Almendras Garrapiñadas",
+        "origin_region": "Comunidad de Madrid",
+        "ingredients": [
+            {"item": "almendras crudas con piel", "quantity": 150, "unit": "g"},
+            {"item": "azúcar", "quantity": 150, "unit": "g"},
+            {"item": "aceite", "quantity": 1, "unit": "cucharada"},
+            {"item": "zumo de limón", "quantity": 1, "unit": "cucharada"}
+        ],
+        "instructions": [
+            "Tostar las almendras en una sartén caliente sin nada de grasa. Reservar.",
+            "En una sartén profunda poner el azúcar y el zumo de limón al fuego. Remover con cuchara de madera y cuando empiece a tomar punto de caramelo, añadir las almendras enteras, removiendo bien.",
+            "Mantener a fuego medio sin dejar de remover, hasta que el azúcar quede grumoso.",
+            "En cuanto adquieran un color rubio tirando a tostado, sacar sobre una placa previamente untada con el aceite. Separar con un tenedor y dejar enfriar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/almendras-garrapinadas/"
+    },
+    {
+        "name": "Espárragos Blancos con Huevo",
+        "origin_region": "Comunidad Foral de Navarra",
+        "ingredients": [
+            {"item": "espárragos blancos frescos de Navarra", "quantity": 36, "unit": "unidades"},
+            {"item": "sal", "quantity": 1, "unit": "cucharadita"},
+            {"item": "azúcar", "quantity": 0.5, "unit": "cucharadita"},
+            {"item": "huevos frescos", "quantity": 6, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "vinagre de vino", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Lavar y secar los espárragos. Pelar con un pelador sacando la piel superficialmente desde debajo de la yema hasta el final del tallo. Cortar la parte final más dura del tallo.",
+            "En una cazuela alta poner el agua con el azúcar y la sal. Cuando empiece a hervir, introducir el manojo de espárragos con las yemas hacia arriba durante 30 minutos.",
+            "Añadir los huevos en bolsitas de plástico engrasadas y continuar durante 3 minutos más.",
+            "Retirar la cazuela y dejar reposar durante 5-10 minutos.",
+            "Alinear en un plato los espárragos, poner encima los huevos cortados por la mitad y añadir vinagre y aceite al gusto."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/esparragos-blancos-cocidos-con-huevo-escalfado/"
+    },
+    {
+        "name": "All i Pebre",
+        "origin_region": "Comunitat Valenciana",
+        "ingredients": [
+            {"item": "anguila fresca", "quantity": 1, "unit": "kg"},
+            {"item": "patata", "quantity": 1.2, "unit": "kg"},
+            {"item": "cabezas de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "pimentón dulce", "quantity": 2, "unit": "cucharadas"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Freír los dientes de ajos picados en dos, en aceite a fuego suave. Reservar aparte.",
+            "Pelar las patatas, lavar y chascar. Añadir al aceite en el que hemos frito los ajos, subir el fuego y cocinar durante cinco minutos. Añadir el pimentón, cubrir con agua, y cocinar hasta que las patatas estén blandas.",
+            "Majar los ajos en un mortero con un poco de sal, y añadir la pasta de ajos a la cazuela, junto con la anguila troceada.",
+            "Dejar que se haga a fuego medio todo junto durante unos 10-15 minutos.",
+            "Rectificar de sal y pimienta, apagar y dejar reposar unos minutos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/all-i-pebre/"
+    },
+    {
+        "name": "Espinacas a la Catalana",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "espinacas", "quantity": 2, "unit": "kg"},
+            {"item": "aceite", "quantity": 1, "unit": "dl"},
+            {"item": "ajo picado", "quantity": 1, "unit": "unidad"},
+            {"item": "pasas gordas", "quantity": 50, "unit": "g"},
+            {"item": "piñones", "quantity": 50, "unit": "g"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Hervir las espinacas en uno o dos dedos de agua y sal. Escurrir y enfriar con agua y hielos para que conserven el color verde.",
+            "En una sartén con el aceite tostar apenas los piñones, a continuación, añadir las espinacas y las pasas. Salpimentar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/espinacas-a-la-catalana/"
+    },
+    {
+        "name": "Casadielles",
+        "origin_region": "Principado de Asturias",
+        "ingredients": [
+            {"item": "vino blanco", "quantity": 250, "unit": "g"},
+            {"item": "yema de huevo grande", "quantity": 1, "unit": "unidad"},
+            {"item": "mantequilla", "quantity": 120, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "una pizca"},
+            {"item": "harina floja", "quantity": 500, "unit": "g"},
+            {"item": "levadura en polvo", "quantity": 1, "unit": "cucharadita"},
+            {"item": "nueces", "quantity": 230, "unit": "g"},
+            {"item": "azúcar", "quantity": 100, "unit": "g"},
+            {"item": "anís dulce", "quantity": 60, "unit": "ml"},
+            {"item": "aceite", "quantity": 0.5, "unit": "l"}
+        ],
+        "instructions": [
+            "Para la masa: Tamizar la harina con la levadura en polvo y mezclar con la mantequilla. Mezclar el vino con la yema. Añadir la mezcla seca en dos a tres partes, a mano sin amasar, solo hasta lograr una masa blanda.",
+            "Extender con ayuda de un rodillo y doblar en tres. Repetir esta operación tres veces. Tapar y dejar reposar en la nevera una hora.",
+            "Para el relleno: Picar a cuchillo la mitad de las nueces, y rallar el resto. Mezclar las nueces con el azúcar, el anís y la mantequilla.",
+            "Montaje: Estirar porciones de masa de 2 mm de grosor y cortar cuadrados de 10x10. Humedecer los bordes con un poco de agua, poner una cucharada de relleno a un extremo de la masa, enrollar.",
+            "Fritura: Calentar el aceite de oliva en un cazo profundo. Freír por tandas, hasta que queden dorados. Rebozar en azúcar cuando aún estén calientes."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/casadielles/"
+    },
+    {
+        "name": "Besugo a la Madrileña",
+        "origin_region": "Comunidad de Madrid",
+        "ingredients": [
+            {"item": "besugo grande", "quantity": 1, "unit": "unidad"},
+            {"item": "cebolla", "quantity": 1, "unit": "unidad"},
+            {"item": "dientes de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "patatas grandes", "quantity": 4, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 1, "unit": "cucharón"},
+            {"item": "pan rallado", "quantity": 100, "unit": "g"},
+            {"item": "limón", "quantity": 1, "unit": "unidad"},
+            {"item": "vino blanco", "quantity": 1, "unit": "vaso"},
+            {"item": "pimienta blanca", "quantity": 1, "unit": "cucharadita"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar el pescado y hacer tres incisiones en el lomo introduciendo en cada una media luna de limón.",
+            "Colocar el besugo en una bandeja para horno, sazonar con sal, pimienta y vino blanco y espolvorear con pan rallado mezclado con ajo picado.",
+            "Rociar con una cucharada de aceite y meter al horno precalentado a 180º junto con un vaso de vino blanco sobre una cama de patatas y cebolla previamente asadas.",
+            "Cocinar 20 minutos el primer kilo, añadiendo 10 minutos por cada kilo adicional."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/besugo-a-la-madrilena/"
+    },
+    {
+        "name": "Alcachofas a la Montillana",
+        "origin_region": "Andalucía",
+        "ingredients": [
+            {"item": "alcachofas", "quantity": 1, "unit": "kg"},
+            {"item": "cebolla", "quantity": 1, "unit": "unidad"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "jamón serrano en dados", "quantity": 75, "unit": "g"},
+            {"item": "vino fino", "quantity": 200, "unit": "ml"},
+            {"item": "limón", "quantity": 1, "unit": "unidad"},
+            {"item": "almidón de maíz", "quantity": 1, "unit": "cucharadita"},
+            {"item": "aceite de oliva virgen extra", "quantity": 50, "unit": "ml"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar las alcachofas y frotar con medio limón. Hervir en abundante agua con sal y retirar cuando estén tiernas.",
+            "Rehogar la cebolla cortada muy pequeña y el ajo picado en el aceite. Cuando estén transparentes, añadir el almidón de maíz.",
+            "Incorporar las alcachofas y mover bien. Añadir el jamón y el vino, bajar el fuego y dejar estofar 15 minutos suavemente.",
+            "Añadir agua de la cocción de las alcachofas si hiciera falta, rectificar de sal."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/alcachofas-a-la-montillana/"
+    },
+    {
+        "name": "Bocartes en Cazuela",
+        "origin_region": "Cantabria",
+        "ingredients": [
+            {"item": "bocartes o anchoas", "quantity": 24, "unit": "unidades"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "vino blanco", "quantity": 0.5, "unit": "copa"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "vinagre de vino", "quantity": None, "unit": "al gusto"},
+            {"item": "guindilla en vinagre", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar los bocartes, quitar la cabeza y las espinas. Lavar y secar bien.",
+            "En una cazuela freír los ajos, añadir los bocartes y rehogar un poco a fuego fuerte moviendo la cazuela; mojar con el vino y un poco de vinagre.",
+            "Espolvorear con la guindilla picada y dejar cocer unos cinco minutos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bocartes-en-cazuela/"
+    },
+    {
+        "name": "Carrilleras de Cerdo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "carrilleras de cerdo ibérico", "quantity": 18, "unit": "unidades"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "cebollas dulces", "quantity": 3, "unit": "unidades"},
+            {"item": "tomillo", "quantity": 1, "unit": "ramita"},
+            {"item": "romero", "quantity": 1, "unit": "ramita"},
+            {"item": "hojas de laurel", "quantity": 2, "unit": "unidades"},
+            {"item": "vino tinto", "quantity": 1, "unit": "vaso"},
+            {"item": "caldo de carne", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Salpimentar las carrilleras. Dorar en una cazuela con un poco de aceite. Retirar.",
+            "En el mismo aceite estofar a fuego suave, las cebollas muy picadas.",
+            "Volver a poner la carne en la cazuela, agregar las hierbas y dar un par de vueltas al conjunto.",
+            "Agregar el vino tinto, subir el fuego y dejar que se evapore el alcohol.",
+            "Cubrir con caldo o agua y dejar cocer a fuego suave unas dos horas.",
+            "Deben de quedar jugosas y con salsa."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/carrilleras/"
+    },
+    {
+        "name": "Bonito con Tomate",
+        "origin_region": "País Vasco",
+        "ingredients": [
+            {"item": "bonito en tacos", "quantity": 1, "unit": "kg"},
+            {"item": "tomates", "quantity": 3, "unit": "kg"},
+            {"item": "cebolla", "quantity": 1, "unit": "unidad"},
+            {"item": "diente de ajo", "quantity": 1, "unit": "unidad"},
+            {"item": "pimiento verde", "quantity": 1, "unit": "unidad"},
+            {"item": "hoja de laurel", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar el bonito de restos de piel y espinas. Sazonar los trozos de bonito.",
+            "Dorar en una sartén por todos los lados con un poco de aceite caliente, dejando el centro crudo.",
+            "Pelar y cortar la cebolla, el ajo y el pimiento en dados pequeños.",
+            "Rehogar la cebolla y el pimiento en el aceite de dorar el bonito. Cuando estén transparentes añadir el ajo picado, los tomates limpios y troceados y la hoja de laurel.",
+            "Cocer hasta que se evapore el agua que sueltan los tomates. Sazonar.",
+            "Calentar la salsa de tomate al fuego y cuando rompa a hervir añadir el bonito dorado y cocer todo junto muy pocos minutos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bonito-con-tomate/"
+    },
+    {
+        "name": "Canutillos de Crema",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "masa de hojaldre", "quantity": 500, "unit": "g"},
+            {"item": "harina", "quantity": None, "unit": "para trabajar la masa"},
+            {"item": "huevo batido", "quantity": 1, "unit": "unidad"},
+            {"item": "leche", "quantity": 0.5, "unit": "l"},
+            {"item": "azúcar", "quantity": 150, "unit": "g"},
+            {"item": "yemas de huevo", "quantity": 6, "unit": "unidades"},
+            {"item": "harina", "quantity": 20, "unit": "g"},
+            {"item": "fécula de maíz", "quantity": 20, "unit": "g"},
+            {"item": "azúcar glass", "quantity": None, "unit": "para espolvorear"}
+        ],
+        "instructions": [
+            "Sobre una superficie enharinada extender el hojaldre. Cortar en tiras de unos 4 cm de ancho y enrollar en los moldes especiales para canutillos.",
+            "Colocar sobre una placa de horno y pintar por la parte de arriba con huevo batido.",
+            "Meter en horno precalentado a 200°C durante unos 15 minutos. Retirar con cuidado de los moldes y dejar enfriar para rellenar.",
+            "Para la crema pastelera: Llevar a hervor la leche. En un bol batir las yemas con el azúcar hasta que blanqueen. Añadir la fécula de maíz y la harina. Añadir la leche a la mezcla de las yemas, sin dejar de batir. Poner de nuevo en el cazo a fuego suave y cocinar hasta que espese.",
+            "Retirar del fuego y dejar enfriar. Una vez fría se pueden rellenar los canutillos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/canutillos-de-crema/"
+    },
+    {
+        "name": "Boquerones en Vinagre",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "boquerones medianos", "quantity": 500, "unit": "g"},
+            {"item": "agua", "quantity": 100, "unit": "g"},
+            {"item": "vinagre blanco", "quantity": 100, "unit": "g"},
+            {"item": "sal gorda", "quantity": 1, "unit": "cucharada sopera"},
+            {"item": "aceite de oliva", "quantity": 100, "unit": "g"},
+            {"item": "diente de ajo", "quantity": 1, "unit": "unidad"}
+        ],
+        "instructions": [
+            "Limpiar bien los boquerones. Separar los lomos retirando la espina. Pasar por agua fría.",
+            "Colocar en un recipiente los lomos de los boquerones y cubrir con el agua, el vinagre y la sal, durante 4 horas. Escurrir.",
+            "Disponer en un plato. Rociar con aceite de oliva y ajo picado."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/boquerones-en-vinagre/"
+    },
+    {
+        "name": "Cangrejos de Río",
+        "origin_region": "Castilla y León",
+        "ingredients": [
+            {"item": "cangrejos de río", "quantity": 1, "unit": "kg"},
+            {"item": "aceite de oliva", "quantity": 100, "unit": "g"},
+            {"item": "dientes de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "brandy", "quantity": 250, "unit": "g"},
+            {"item": "vino blanco seco", "quantity": 250, "unit": "g"},
+            {"item": "caldo de pescado", "quantity": 250, "unit": "g"},
+            {"item": "salsa de tomate frito", "quantity": 200, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Lavar los cangrejos cuidadosamente retirando el intestino que tienen a lo largo del cuerpo.",
+            "Poner el aceite en una cazuela y saltear los cangrejos hasta que éstos adquieran color rojo.",
+            "Agregar los dientes de ajo picados y flambear con el brandy. Regar con el vino blanco, el caldo de pescado y el tomate.",
+            "Dejar cocer todo junto unos 15 minutos. Salpimentar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/cangrejos-de-rio/"
+    },
+    {
+        "name": "Boquerones Fritos",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "boquerones medianos enteros", "quantity": 500, "unit": "g"},
+            {"item": "harina", "quantity": 100, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite de oliva", "quantity": 1, "unit": "dl"}
+        ],
+        "instructions": [
+            "Retirar la cabeza y las vísceras de los boquerones. Dejar en agua con hielo durante una hora.",
+            "Pasar por la harina, tamizar y freír en una sartén con el aceite a fuego vivo.",
+            "Escurrir. Sazonar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/boquerones-fritos/"
+    },
+    {
+        "name": "Tarta de Santiago",
+        "origin_region": "Galicia",
+        "ingredients": [
+            {"item": "huevos", "quantity": 5, "unit": "unidades"},
+            {"item": "azúcar", "quantity": 250, "unit": "g"},
+            {"item": "ralladura de limón", "quantity": 1, "unit": "unidad"},
+            {"item": "canela en polvo", "quantity": 1, "unit": "cucharadita"},
+            {"item": "almendras molidas", "quantity": 250, "unit": "g"},
+            {"item": "azúcar glas", "quantity": 50, "unit": "g"}
+        ],
+        "instructions": [
+            "Batir los huevos con el azúcar. Agregar la ralladura de limón, la canela y las almendras molidas.",
+            "Mezclar todos los ingredientes y rellenar un molde engrasado y enharinado.",
+            "Meter en el horno precalentado a 160ºC durante 35 min. Sacar del horno y dejar enfriar.",
+            "Desmoldar la tarta. Colocar encima una plantilla de la cruz de Santiago. Espolvorear con el azúcar glas y retirar la plantilla."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/tarta-de-santiago/"
+    },
+    {
+        "name": "Huevos a la Flamenca",
+        "origin_region": "Andalucía",
+        "ingredients": [
+            {"item": "judías verdes tiernas", "quantity": 100, "unit": "g"},
+            {"item": "guisantes", "quantity": 100, "unit": "g"},
+            {"item": "tomates", "quantity": 250, "unit": "g"},
+            {"item": "patatas", "quantity": 150, "unit": "g"},
+            {"item": "jamón", "quantity": 100, "unit": "g"},
+            {"item": "chorizo", "quantity": 100, "unit": "g"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "al gusto"},
+            {"item": "cebolla pequeña", "quantity": 1, "unit": "unidad"},
+            {"item": "huevos", "quantity": 6, "unit": "unidades"},
+            {"item": "pimienta blanca", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar las judías verdes en trocitos pequeños. Cocer con los guisantes en agua hirviendo con sal durante 10 min. Pasar por agua fría y escurrir.",
+            "Pelar los tomates, quitar las semillas y picar. Pelar y cortar las patatas en dados y cocer en agua hirviendo durante 5 min. Escurrir. Cortar el jamón en tiras y el chorizo en dados.",
+            "En un poco de aceite rehogar la cebolla pelada y picada fino. Cuando comience a tomar color, añadir el jamón y el tomate. Dejar reducir e incorporar las judías verdes, los guisantes, las patatas y el chorizo. Salpimentar.",
+            "Repartir las verduras en cazuelitas individuales, hacer un hueco y cascar un huevo en cada una.",
+            "Tapar las cazuelitas y meter en el horno precalentado a 200ºC hasta que las claras estén cuajadas."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/huevos-a-la-flamenca/"
+    },
+    {
+        "name": "Canelones",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "ternera picada", "quantity": 160, "unit": "g"},
+            {"item": "magro de cerdo picado", "quantity": 160, "unit": "g"},
+            {"item": "pechuga de pollo en daditos", "quantity": 160, "unit": "g"},
+            {"item": "cebolla picada", "quantity": 1, "unit": "unidad"},
+            {"item": "vino blanco", "quantity": 1, "unit": "copa"},
+            {"item": "paté de campaña", "quantity": 50, "unit": "g"},
+            {"item": "tomate concentrado", "quantity": 2, "unit": "cucharadas"},
+            {"item": "placas de canelones precocidos", "quantity": 18, "unit": "unidades"},
+            {"item": "salsa bechamel", "quantity": 1, "unit": "l"},
+            {"item": "queso rallado", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Preparar el relleno poniendo en una sartén la cebolla picada con el aceite de oliva. Estofar e incorporar las carnes, rehogar todo junto.",
+            "Mojar con el vino, dejar evaporar a fuego fuerte. Agregar el tomate, sazonar y rehogar todo junto a fuego bajo 20 minutos. Incorporar el paté, mezclar y dejar enfriar.",
+            "Ablandar las placas de canelones en agua tibia con un chorrito de aceite. Escurrir, disponer sobre un paño seco y rellenar con la pasta.",
+            "Disponer los canelones en una fuente de horno, cubrir con la bechamel, espolvorear con queso rallado y gratinar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/canelones/"
+    },
+    {
+        "name": "Huevas Aliñadas",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "huevas de merluza", "quantity": 300, "unit": "g"},
+            {"item": "pimiento rojo", "quantity": 50, "unit": "g"},
+            {"item": "tomate", "quantity": 50, "unit": "g"},
+            {"item": "cebolla dulce", "quantity": 50, "unit": "g"},
+            {"item": "aceite de oliva", "quantity": 3, "unit": "cucharadas"},
+            {"item": "vinagre blanco", "quantity": 1, "unit": "cucharada"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Envolver las huevas en papel transparente. Cocer 30 minutos en agua hirviendo.",
+            "Pasarlas a un colador. Pinchar con cuchillo para que suelten el agua interior. Dejar enfriar y cortar en finas rodajas.",
+            "Picar el pimiento, el tomate, la cebolla y mezclar con el aceite y el vinagre y la sal.",
+            "Cubrir las huevas con la vinagreta."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/huevas-alinadas-2/"
+    },
+    {
+        "name": "Tortilla de Bacalao",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "bacalao fresco desmigado desalado", "quantity": 150, "unit": "g"},
+            {"item": "huevos medianos", "quantity": 4, "unit": "unidades"},
+            {"item": "pimienta blanca", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite de oliva", "quantity": 2, "unit": "cucharadas"}
+        ],
+        "instructions": [
+            "Batir los huevos. Mezclar con el bacalao. Salpimentar.",
+            "En una sartén calentar el aceite. Incorporar la preparación.",
+            "Cuajar la tortilla por todos los lados."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/tortilla-de-bacalao/"
+    },
+    {
+        "name": "Filloas",
+        "origin_region": "Galicia",
+        "ingredients": [
+            {"item": "huevos", "quantity": 4, "unit": "unidades"},
+            {"item": "harina de trigo", "quantity": 50, "unit": "g"},
+            {"item": "leche", "quantity": 330, "unit": "g"},
+            {"item": "mantequilla", "quantity": 75, "unit": "g"},
+            {"item": "azúcar glas", "quantity": 50, "unit": "g"},
+            {"item": "canela molida", "quantity": 1, "unit": "cucharada"},
+            {"item": "sal", "quantity": None, "unit": "una pizca"}
+        ],
+        "instructions": [
+            "Batir los huevos en un recipiente. Agregar la harina, 50 g de mantequilla fundida, la leche y la sal. Mezclar muy bien.",
+            "Poner una sartén al fuego y engrasar con un pellizco de mantequilla. Poner una cucharada de la preparación de modo que cubra el fondo de la sartén.",
+            "Cuando esté dorada por un lado y se desprenda fácilmente de la sartén dar la vuelta.",
+            "Repetir la operación con el resto de la masa.",
+            "Doblar las filloas, colocar en un plato y espolvorear con el azúcar glas y la canela mezclados."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/filloas/"
+    },
+    {
+        "name": "Cabrito Asado",
+        "origin_region": "Castilla y León",
+        "ingredients": [
+            {"item": "cabrito", "quantity": 2, "unit": "kg"},
+            {"item": "manteca de cerdo", "quantity": None, "unit": "al gusto"},
+            {"item": "dientes de ajo", "quantity": 4, "unit": "unidades"},
+            {"item": "tomillo", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "vino blanco", "quantity": 1, "unit": "copita"}
+        ],
+        "instructions": [
+            "Majar los dientes de ajo con sal, tomillo y un poco de vino.",
+            "Una vez bien limpio el cabrito se coloca, bien engrasado en manteca, sobre una fuente de horno.",
+            "Hornear a 160º, y a los 30 minutos repartir el majado por encima del cabrito.",
+            "Seguir horneando durante 1 hora y media más, dándole la vuelta a mitad de cocción, y regando de vez en cuando con la grasa que suelta y el resto del vino, hasta que esté dorado y tierno."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/cabrito-asado/"
+    },
+    {
+        "name": "Almejas al Ajillo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "almejas frescas", "quantity": 300, "unit": "g"},
+            {"item": "aceite de oliva", "quantity": 1, "unit": "dl"},
+            {"item": "ajo", "quantity": 15, "unit": "g"},
+            {"item": "cebolleta", "quantity": 1, "unit": "unidad"},
+            {"item": "vino blanco", "quantity": 2, "unit": "dl"},
+            {"item": "sal gorda", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta negra", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Poner las almejas en agua con hielo una hora.",
+            "Pochar en una cazuela con el aceite caliente el ajo y la cebolleta. Incorporar el vino blanco.",
+            "Cuando hierva añadir las almejas. Tapar hasta que las almejas se abran.",
+            "Añadir la sal."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/almejas-al-ajillo/"
+    },
+    {
+        "name": "Mejillones en Escabeche",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "mejillones frescos", "quantity": 1, "unit": "kg"},
+            {"item": "pimiento rojo", "quantity": 50, "unit": "g"},
+            {"item": "pimiento verde", "quantity": 50, "unit": "g"},
+            {"item": "cebolla dulce", "quantity": 50, "unit": "g"},
+            {"item": "vino blanco", "quantity": 1, "unit": "dl"},
+            {"item": "aceite de oliva", "quantity": 50, "unit": "g"},
+            {"item": "vinagre blanco", "quantity": 1, "unit": "cucharada sopera"},
+            {"item": "pimienta negra", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Raspar con cuchillo las conchas de los mejillones debajo del grifo del agua.",
+            "Poner una olla con el vino blanco y los mejillones a fuego vivo. Cocer hasta que se abran.",
+            "Retirar del fuego y colar el caldo.",
+            "Picar los pimientos y la cebolla. Salpimentar. Repartir por los mejillones y rociar con el aceite batido con el caldo."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/mejillones-en-vinagre/"
+    },
+    {
+        "name": "Butifarra con Setas",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "butifarras frescas", "quantity": 4, "unit": "unidades"},
+            {"item": "rovellons o níscalos", "quantity": 250, "unit": "g"},
+            {"item": "cebolla picada", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva", "quantity": 1, "unit": "dl"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "tomate pelado y sin pepitas", "quantity": 0.5, "unit": "unidad"},
+            {"item": "almendras tostadas", "quantity": 5, "unit": "unidades"},
+            {"item": "caldo de carne", "quantity": 1, "unit": "dl"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "En una cazuela pochar la cebolla en el aceite y dorar ligeramente. Añadir las butifarras y dorar por ambos lados.",
+            "Añadir los rovellons limpios, y dejar cocinar unos minutos.",
+            "Mientras, en un mortero, machacar todos los ingredientes de la picada.",
+            "Espolvorear con ella la cazuela, y dejar cocer todo junto unos 15 minutos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/butifarra-con-rovellons/"
+    },
+    {
+        "name": "Buñuelos de Bacalao",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "bacalao fresco desmigado y desalado", "quantity": 200, "unit": "g"},
+            {"item": "leche", "quantity": 2, "unit": "dl"},
+            {"item": "harina", "quantity": 100, "unit": "g"},
+            {"item": "huevo mediano", "quantity": 2, "unit": "unidades"},
+            {"item": "pimienta blanca", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite de oliva", "quantity": 2, "unit": "dl"}
+        ],
+        "instructions": [
+            "Picar finamente el bacalao, mezclar con el huevo batido, la leche y la harina hasta conseguir una masa espesa. Salpimentar.",
+            "Calentar el aceite a fuego vivo en una sartén e incorporar cucharadas de la preparación.",
+            "Freír hasta que queden doradas y crujientes. Escurrir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bunuelos-de-bacalao-2/"
+    },
+    {
+        "name": "Prueba de Picadillo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "carne magra de cerdo picada", "quantity": 130, "unit": "g"},
+            {"item": "tocino picado", "quantity": 30, "unit": "g"},
+            {"item": "jamón serrano picado", "quantity": 30, "unit": "g"},
+            {"item": "diente de ajo", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva", "quantity": 1, "unit": "cucharada sopera"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharada de café"},
+            {"item": "vino blanco", "quantity": 1, "unit": "dl"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Rehogar en una cazuela con el aceite de oliva, la carne, el tocino y el jamón.",
+            "Agregar el ajo picado y el pimentón. Salar.",
+            "Añadir el vino blanco y reducir.",
+            "Por último, dejar hervir hasta que el líquido quede consumido. Sazonar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/prueba-de-picadillo/"
+    },
+    {
+        "name": "Buñuelos de Plátano",
+        "origin_region": "Canarias",
+        "ingredients": [
+            {"item": "huevos", "quantity": 2, "unit": "unidades"},
+            {"item": "harina", "quantity": 160, "unit": "g"},
+            {"item": "azúcar", "quantity": 100, "unit": "g"},
+            {"item": "levadura en polvo", "quantity": 10, "unit": "g"},
+            {"item": "leche", "quantity": 200, "unit": "ml"},
+            {"item": "aceite de oliva", "quantity": 2, "unit": "cucharadas"},
+            {"item": "sal", "quantity": None, "unit": "una pizca"},
+            {"item": "plátanos firmes", "quantity": 5, "unit": "unidades"},
+            {"item": "brandy", "quantity": 1, "unit": "copita"},
+            {"item": "azúcar en polvo", "quantity": 2, "unit": "cucharadas"},
+            {"item": "aceite para freír", "quantity": 0.5, "unit": "l"}
+        ],
+        "instructions": [
+            "Separar las yemas de las claras. En un bol poner la harina y la levadura tamizadas, hacer un hueco en el centro y añadir las yemas, el azúcar, el aceite, la leche y la sal. Mezclar bien todos los ingredientes.",
+            "Tapar el bol y dejar reposar 2 horas. Partir los plátanos en rodajas y poner a macerar en el brandy.",
+            "Montar las claras a punto de nieve e incorporar a la masa ya reposada, con movimientos envolventes.",
+            "Escurrir los plátanos del brandy, secar y pasar de uno en uno por la masa.",
+            "Cuando el aceite esté caliente, freír hasta que adquieran un color dorado.",
+            "Retirar, escurrir y servir espolvoreados del azúcar en polvo."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bunuelos-de-platano/"
+    }
+])
