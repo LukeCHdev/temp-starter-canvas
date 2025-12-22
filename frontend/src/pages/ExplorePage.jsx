@@ -51,7 +51,7 @@ const ExplorePage = () => {
             
             setTopRecipes(topRes.data.recipes || []);
             setContinents(continentRes.data.continents || []);
-            setPageTitle('Explore Recipes');
+            setPageTitle(t('explore.title'));
             setSelectedContinent(null);
             setCountries([]);
             setCountryRecipes([]);
