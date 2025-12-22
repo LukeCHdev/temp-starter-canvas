@@ -52,9 +52,11 @@ i18n
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      // URL path takes precedence - this ensures language from route is used first
+      order: ['path', 'localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'preferred_language'
+      lookupLocalStorage: 'preferred_language',
+      lookupFromPathIndex: 0  // Look at first path segment for language
     },
     react: {
       useSuspense: false
