@@ -111,9 +111,8 @@ const ExplorePage = () => {
 
     const loadCountryData = async (countrySlug, continentSlug) => {
         setLoading(true);
-        // Get language from URL path as it's more reliable than i18n on initial load
-        const pathLang = window.location.pathname.split('/')[1];
-        const currentLang = ['en', 'es', 'it', 'fr', 'de'].includes(pathLang) ? pathLang : (i18n.language?.slice(0, 2) || 'en');
+        // Use language from context (derived from URL) - single source of truth
+        const currentLang = language || 'en';
         
         console.log(`Loading country data with lang: ${currentLang}, URL path: ${window.location.pathname}`);
         
