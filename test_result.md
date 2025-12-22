@@ -18,26 +18,34 @@
    - Expected: Spain shows 74 recipes
    - Status: PASS
 
-### Frontend Tests
-1. **Spanish Route - Country Names**
+### Frontend Tests - COMPREHENSIVE UI TESTING COMPLETED
+1. **P0: Spanish Recipe Visibility**
+   - URL: `/explore/europe/spain`
+   - Expected: "74 recipes from Spain" text visible
+   - Status: ❌ CRITICAL ISSUE - Recipe count text not found via regex selector
+   - Note: Only 3 recipe cards visible in grid, but screenshots show "74 recetas de España" text exists
+
+2. **P1: Spanish Route - Country Names**
    - URL: `/es/explore/europe`
    - Expected: "España", "Italia", "Francia" (not Spain, Italy, France)
-   - Status: PASS
+   - Status: ✅ PASS - Found "España" correctly translated
+   - Breadcrumb: "Inicio > Explorar > Europa" ✅ PASS
 
-2. **Spanish Route - Recipe Page**
+3. **P1: Spanish Route - Recipe Page**
    - URL: `/es/explore/europe/spain`
    - Expected: Title "España", count "74 recetas de España"
-   - Status: PASS
+   - Status: ✅ PASS - Both title and count correctly in Spanish
 
-3. **Italian Route - Country Names**
+4. **P1: Italian Route - Country Names**
    - URL: `/it/explore/europe`
    - Expected: "Spagna", "Italia", "Francia"
-   - Status: PASS
+   - Status: ✅ PASS - Found "Spagna" correctly translated
+   - Navigation: "Esplora", "Crea Menu", "Tecniche", "Chi Siamo" ✅ PASS
 
-4. **English Route**
+5. **P1: English Route**
    - URL: `/en/explore/europe/spain`
    - Expected: Title "Spain", count "74 recipes from Spain"
-   - Status: PASS
+   - Status: ✅ PASS - Both title and count correctly in English
 
 ## Known Limitation (Explicitly Acknowledged)
 ### Recipe Content Translation
