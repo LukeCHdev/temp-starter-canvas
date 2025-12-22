@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { recipeAPI, continentAPI, translationAPI } from '@/utils/api';
@@ -20,12 +20,53 @@ const CONTINENT_INFO = {
     'Oceania': { emoji: '🦘', color: 'bg-purple-500' },
 };
 
+// Breadcrumb component - moved outside to prevent re-renders
+const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t }) => (
+    <nav className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-6" aria-label="Breadcrumb">
+        <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
+            <Home className="h-4 w-4" />
+            {t('common.home')}
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <Link to={getLocalizedPath('/explore')} className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
+            {t('nav.explore')}
+        </Link>
+        {continent && (
+            <>
+                <ChevronRight className="h-4 w-4" />
+                <Link 
+                    to={getLocalizedPath(`/explore/${continent}`)} 
+                    className={`hover:text-[#6A1F2E] ${!country ? 'text-[#6A1F2E] font-medium' : ''}`}
+                >
+                    {translateName(selectedContinent || continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), 'continents')}
+                </Link>
+            </>
+        )}
+        {country && (
+            <>
+                <ChevronRight className="h-4 w-4" />
+                <span className="text-[#6A1F2E] font-medium">
+                    {translateName(pageTitle, 'countries')}
+                </span>
+            </>
+        )}
+    </nav>
+);
+
 const ExplorePage = () => {
     const { continent, country } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const { t, i18n } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
+    
+    const [topRecipes, setTopRecipes] = useState([]);
+    const [continents, setContinents] = useState([]);
+    const [countries, setCountries] = useState([]);
+    const [countryRecipes, setCountryRecipes] = useState([]);
+    const [selectedContinent, setSelectedContinent] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [pageTitle, setPageTitle] = useState(t('explore.title'));
     
     // CRITICAL: Sync i18n with route language on every route change
     // Language is derived from URL as single source of truth
@@ -47,26 +88,9 @@ const ExplorePage = () => {
         // If translation returns the key, return original name
         return translated === key ? name : translated;
     }, [t]);
-    
-    const [topRecipes, setTopRecipes] = useState([]);
-    const [continents, setContinents] = useState([]);
-    const [countries, setCountries] = useState([]);
-    const [countryRecipes, setCountryRecipes] = useState([]);
-    const [selectedContinent, setSelectedContinent] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [pageTitle, setPageTitle] = useState(t('explore.title'));
 
-    useEffect(() => {
-        if (country) {
-            loadCountryData(country, continent);
-        } else if (continent) {
-            loadContinentData(continent);
-        } else {
-            loadExploreData();
-        }
-    }, [continent, country, language]);  // Use language from context as dependency
-
-    const loadExploreData = async () => {
+    // Load explore data function
+    const loadExploreData = useCallback(async () => {
         setLoading(true);
         try {
             const [topRes, continentRes] = await Promise.all([
@@ -86,9 +110,10 @@ const ExplorePage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [t]);
 
-    const loadContinentData = async (continentSlug) => {
+    // Load continent data function
+    const loadContinentData = useCallback(async (continentSlug) => {
         setLoading(true);
         try {
             const [countriesRes, continentRes] = await Promise.all([
@@ -107,9 +132,10 @@ const ExplorePage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const loadCountryData = async (countrySlug, continentSlug) => {
+    // Load country data function - uses language from context
+    const loadCountryData = useCallback(async (countrySlug, continentSlug) => {
         setLoading(true);
         // Use language from context (derived from URL) - single source of truth
         const currentLang = language || 'en';
@@ -147,51 +173,40 @@ const ExplorePage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [language]);
 
-    const handleContinentSelect = (continentSlug) => {
+    // Main effect to load data based on route params
+    useEffect(() => {
+        if (country) {
+            loadCountryData(country, continent);
+        } else if (continent) {
+            loadContinentData(continent);
+        } else {
+            loadExploreData();
+        }
+    }, [continent, country, loadCountryData, loadContinentData, loadExploreData]);
+
+    const handleContinentSelect = useCallback((continentSlug) => {
         navigate(getLocalizedPath(`/explore/${continentSlug}`));
-    };
+    }, [navigate, getLocalizedPath]);
 
-    // Breadcrumb component
-    const Breadcrumb = () => (
-        <nav className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-6" aria-label="Breadcrumb">
-            <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
-                <Home className="h-4 w-4" />
-                {t('common.home')}
-            </Link>
-            <ChevronRight className="h-4 w-4" />
-            <Link to={getLocalizedPath('/explore')} className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
-                {t('nav.explore')}
-            </Link>
-            {continent && (
-                <>
-                    <ChevronRight className="h-4 w-4" />
-                    <Link 
-                        to={getLocalizedPath(`/explore/${continent}`)} 
-                        className={`hover:text-[#6A1F2E] ${!country ? 'text-[#6A1F2E] font-medium' : ''}`}
-                    >
-                        {translateName(selectedContinent || continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), 'continents')}
-                    </Link>
-                </>
-            )}
-            {country && (
-                <>
-                    <ChevronRight className="h-4 w-4" />
-                    <span className="text-[#6A1F2E] font-medium">
-                        {translateName(pageTitle, 'countries')}
-                    </span>
-                </>
-            )}
-        </nav>
-    );
+    // Memoize breadcrumb props
+    const breadcrumbProps = useMemo(() => ({
+        continent,
+        country,
+        selectedContinent,
+        pageTitle,
+        getLocalizedPath,
+        translateName,
+        t
+    }), [continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t]);
 
     return (
         <div className="min-h-screen bg-[#FAF7F0]" data-testid="explore-page">
             {/* Header */}
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
                 <div className="max-w-6xl mx-auto">
-                    <Breadcrumb />
+                    <Breadcrumb {...breadcrumbProps} />
                     <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                         {country ? translateName(pageTitle, 'countries') : 
                          continent ? translateName(pageTitle, 'continents') : 
