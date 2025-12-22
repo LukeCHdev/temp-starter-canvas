@@ -898,6 +898,50 @@ export const translations = {
   },
 
   // ============================================
+  // COUNTRY NAMES
+  // ============================================
+  countries: {
+    Spain: { en: 'Spain', es: 'España', it: 'Spagna', fr: 'Espagne', de: 'Spanien' },
+    Italy: { en: 'Italy', es: 'Italia', it: 'Italia', fr: 'Italie', de: 'Italien' },
+    France: { en: 'France', es: 'Francia', it: 'Francia', fr: 'France', de: 'Frankreich' },
+    Germany: { en: 'Germany', es: 'Alemania', it: 'Germania', fr: 'Allemagne', de: 'Deutschland' },
+    Greece: { en: 'Greece', es: 'Grecia', it: 'Grecia', fr: 'Grèce', de: 'Griechenland' },
+    Portugal: { en: 'Portugal', es: 'Portugal', it: 'Portogallo', fr: 'Portugal', de: 'Portugal' },
+    Albania: { en: 'Albania', es: 'Albania', it: 'Albania', fr: 'Albanie', de: 'Albanien' },
+    Russia: { en: 'Russia', es: 'Rusia', it: 'Russia', fr: 'Russie', de: 'Russland' },
+    Hungary: { en: 'Hungary', es: 'Hungría', it: 'Ungheria', fr: 'Hongrie', de: 'Ungarn' },
+    'United Kingdom': { en: 'United Kingdom', es: 'Reino Unido', it: 'Regno Unito', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich' },
+    Turkey: { en: 'Turkey', es: 'Turquía', it: 'Turchia', fr: 'Turquie', de: 'Türkei' },
+    Latvia: { en: 'Latvia', es: 'Letonia', it: 'Lettonia', fr: 'Lettonie', de: 'Lettland' },
+    Romania: { en: 'Romania', es: 'Rumanía', it: 'Romania', fr: 'Roumanie', de: 'Rumänien' },
+    Japan: { en: 'Japan', es: 'Japón', it: 'Giappone', fr: 'Japon', de: 'Japan' },
+    China: { en: 'China', es: 'China', it: 'Cina', fr: 'Chine', de: 'China' },
+    India: { en: 'India', es: 'India', it: 'India', fr: 'Inde', de: 'Indien' },
+    Thailand: { en: 'Thailand', es: 'Tailandia', it: 'Thailandia', fr: 'Thaïlande', de: 'Thailand' },
+    Vietnam: { en: 'Vietnam', es: 'Vietnam', it: 'Vietnam', fr: 'Vietnam', de: 'Vietnam' },
+    'South Korea': { en: 'South Korea', es: 'Corea del Sur', it: 'Corea del Sud', fr: 'Corée du Sud', de: 'Südkorea' },
+    Mexico: { en: 'Mexico', es: 'México', it: 'Messico', fr: 'Mexique', de: 'Mexiko' },
+    USA: { en: 'USA', es: 'EE.UU.', it: 'USA', fr: 'États-Unis', de: 'USA' },
+    Brazil: { en: 'Brazil', es: 'Brasil', it: 'Brasile', fr: 'Brésil', de: 'Brasilien' },
+    Argentina: { en: 'Argentina', es: 'Argentina', it: 'Argentina', fr: 'Argentine', de: 'Argentinien' },
+    Morocco: { en: 'Morocco', es: 'Marruecos', it: 'Marocco', fr: 'Maroc', de: 'Marokko' },
+    Egypt: { en: 'Egypt', es: 'Egipto', it: 'Egitto', fr: 'Égypte', de: 'Ägypten' },
+    Australia: { en: 'Australia', es: 'Australia', it: 'Australia', fr: 'Australie', de: 'Australien' }
+  },
+
+  // ============================================
+  // CONTINENT NAMES
+  // ============================================
+  continents: {
+    Europe: { en: 'Europe', es: 'Europa', it: 'Europa', fr: 'Europe', de: 'Europa' },
+    Asia: { en: 'Asia', es: 'Asia', it: 'Asia', fr: 'Asie', de: 'Asien' },
+    Americas: { en: 'Americas', es: 'Américas', it: 'Americhe', fr: 'Amériques', de: 'Amerika' },
+    Africa: { en: 'Africa', es: 'África', it: 'Africa', fr: 'Afrique', de: 'Afrika' },
+    'Middle East': { en: 'Middle East', es: 'Oriente Medio', it: 'Medio Oriente', fr: 'Moyen-Orient', de: 'Naher Osten' },
+    Oceania: { en: 'Oceania', es: 'Oceanía', it: 'Oceania', fr: 'Océanie', de: 'Ozeanien' }
+  },
+
+  // ============================================
   // COMMON / MISC
   // ============================================
   common: {
