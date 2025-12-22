@@ -61,6 +61,8 @@ const LanguageProviderInner = ({ children }) => {
         if (urlLang !== language) {
             setLanguage(urlLang);
             document.documentElement.lang = urlLang;
+            // Sync with i18next
+            i18n.changeLanguage(urlLang);
         }
     }, [location.pathname, language]);
 
