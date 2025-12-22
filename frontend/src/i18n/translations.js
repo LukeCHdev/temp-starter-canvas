@@ -922,6 +922,20 @@ export const translations = {
       fr: 'Chargement de la recette...',
       de: 'Rezept wird geladen...'
     },
+    notFound: {
+      en: 'Recipe not found',
+      es: 'Receta no encontrada',
+      it: 'Ricetta non trovata',
+      fr: 'Recette non trouvée',
+      de: 'Rezept nicht gefunden'
+    },
+    returnHome: {
+      en: 'Return to Home',
+      es: 'Volver al inicio',
+      it: 'Torna alla home',
+      fr: 'Retour à l\'accueil',
+      de: 'Zurück zur Startseite'
+    },
     ingredients: {
       en: 'Ingredients',
       es: 'Ingredientes',
@@ -937,11 +951,11 @@ export const translations = {
       de: 'Anleitung'
     },
     history: {
-      en: 'History',
-      es: 'Historia',
-      it: 'Storia',
-      fr: 'Histoire',
-      de: 'Geschichte'
+      en: 'History & Origin',
+      es: 'Historia y Origen',
+      it: 'Storia e Origine',
+      fr: 'Histoire et Origine',
+      de: 'Geschichte und Herkunft'
     },
     profile: {
       en: 'Characteristic Profile',
@@ -950,12 +964,12 @@ export const translations = {
       fr: 'Profil caractéristique',
       de: 'Charakteristisches Profil'
     },
-    doNot: {
-      en: 'What NOT to do',
-      es: 'Lo que NO debes hacer',
-      it: 'Cosa NON fare',
-      fr: 'Ce qu\'il NE faut PAS faire',
-      de: 'Was man NICHT tun sollte'
+    noNoRules: {
+      en: 'No-No Rules (Respect the Tradition!)',
+      es: 'Reglas de oro (¡Respeta la tradición!)',
+      it: 'Regole d\'oro (Rispetta la tradizione!)',
+      fr: 'Règles d\'or (Respectez la tradition !)',
+      de: 'Goldene Regeln (Respektiere die Tradition!)'
     },
     techniques: {
       en: 'Special Techniques',
@@ -964,12 +978,172 @@ export const translations = {
       fr: 'Techniques spéciales',
       de: 'Besondere Techniken'
     },
+    techniqueGuides: {
+      en: 'Technique Guides',
+      es: 'Guías de técnicas',
+      it: 'Guide alle tecniche',
+      fr: 'Guides techniques',
+      de: 'Technik-Anleitungen'
+    },
+    watchTutorial: {
+      en: 'Watch Tutorial',
+      es: 'Ver tutorial',
+      it: 'Guarda il tutorial',
+      fr: 'Voir le tutoriel',
+      de: 'Tutorial ansehen'
+    },
     winePairing: {
-      en: 'Wine Pairing',
-      es: 'Maridaje de vinos',
-      it: 'Abbinamento vini',
-      fr: 'Accords vins',
-      de: 'Weinempfehlung'
+      en: 'Wine Pairing Suggestions',
+      es: 'Sugerencias de maridaje',
+      it: 'Suggerimenti per l\'abbinamento vini',
+      fr: 'Suggestions d\'accords vins',
+      de: 'Weinempfehlungen'
+    },
+    originalSources: {
+      en: 'Original Sources',
+      es: 'Fuentes originales',
+      it: 'Fonti originali',
+      fr: 'Sources originales',
+      de: 'Originalquellen'
+    },
+    videoTutorials: {
+      en: 'Video Tutorials',
+      es: 'Tutoriales en video',
+      it: 'Video tutorial',
+      fr: 'Tutoriels vidéo',
+      de: 'Video-Tutorials'
+    },
+    watchVideo: {
+      en: 'Watch Video',
+      es: 'Ver video',
+      it: 'Guarda il video',
+      fr: 'Voir la vidéo',
+      de: 'Video ansehen'
+    },
+    recipeAdded: {
+      en: 'Recipe added',
+      es: 'Receta añadida',
+      it: 'Ricetta aggiunta',
+      fr: 'Recette ajoutée',
+      de: 'Rezept hinzugefügt'
+    },
+    source: {
+      en: 'Source',
+      es: 'Fuente',
+      it: 'Fonte',
+      fr: 'Source',
+      de: 'Quelle'
+    },
+    aiGenerated: {
+      en: 'AI Generated',
+      es: 'Generado por IA',
+      it: 'Generato da IA',
+      fr: 'Généré par IA',
+      de: 'KI-generiert'
+    },
+    imported: {
+      en: 'Imported',
+      es: 'Importado',
+      it: 'Importato',
+      fr: 'Importé',
+      de: 'Importiert'
+    },
+    level: {
+      en: 'Level',
+      es: 'Nivel',
+      it: 'Livello',
+      fr: 'Niveau',
+      de: 'Stufe'
+    },
+    official: {
+      en: 'Official/Registered',
+      es: 'Oficial/Registrado',
+      it: 'Ufficiale/Registrato',
+      fr: 'Officiel/Enregistré',
+      de: 'Offiziell/Registriert'
+    },
+    traditional: {
+      en: 'Traditional',
+      es: 'Tradicional',
+      it: 'Tradizionale',
+      fr: 'Traditionnel',
+      de: 'Traditionell'
+    },
+    localSource: {
+      en: 'Local Source',
+      es: 'Fuente local',
+      it: 'Fonte locale',
+      fr: 'Source locale',
+      de: 'Lokale Quelle'
+    },
+    widelyRecognized: {
+      en: 'Widely Recognized',
+      es: 'Ampliamente reconocido',
+      it: 'Ampiamente riconosciuto',
+      fr: 'Largement reconnu',
+      de: 'Weit anerkannt'
+    },
+    modernAdapted: {
+      en: 'Modern/Adapted',
+      es: 'Moderno/Adaptado',
+      it: 'Moderno/Adattato',
+      fr: 'Moderne/Adapté',
+      de: 'Modern/Angepasst'
+    }
+  },
+
+  // ============================================
+  // SEARCH
+  // ============================================
+  search: {
+    placeholder: {
+      en: 'Search authentic recipes...',
+      es: 'Buscar recetas auténticas...',
+      it: 'Cerca ricette autentiche...',
+      fr: 'Rechercher des recettes authentiques...',
+      de: 'Authentische Rezepte suchen...'
+    },
+    button: {
+      en: 'Search',
+      es: 'Buscar',
+      it: 'Cerca',
+      fr: 'Rechercher',
+      de: 'Suchen'
+    },
+    searching: {
+      en: 'Searching...',
+      es: 'Buscando...',
+      it: 'Ricerca in corso...',
+      fr: 'Recherche en cours...',
+      de: 'Suche läuft...'
+    },
+    noResults: {
+      en: 'No recipes found',
+      es: 'No se encontraron recetas',
+      it: 'Nessuna ricetta trovata',
+      fr: 'Aucune recette trouvée',
+      de: 'Keine Rezepte gefunden'
+    },
+    generatedSuccess: {
+      en: 'Recipe generated by Sous-Chef Linguine!',
+      es: '¡Receta generada por Sous-Chef Linguine!',
+      it: 'Ricetta generata da Sous-Chef Linguine!',
+      fr: 'Recette générée par Sous-Chef Linguine !',
+      de: 'Rezept von Sous-Chef Linguine generiert!'
+    },
+    translatedSuccess: {
+      en: 'Recipe translated to your language',
+      es: 'Receta traducida a tu idioma',
+      it: 'Ricetta tradotta nella tua lingua',
+      fr: 'Recette traduite dans votre langue',
+      de: 'Rezept in Ihre Sprache übersetzt'
+    },
+    failed: {
+      en: 'Search failed. Please try again.',
+      es: 'Búsqueda fallida. Por favor, inténtalo de nuevo.',
+      it: 'Ricerca fallita. Riprova.',
+      fr: 'Échec de la recherche. Veuillez réessayer.',
+      de: 'Suche fehlgeschlagen. Bitte erneut versuchen.'
     }
   },
 
