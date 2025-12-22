@@ -539,3 +539,210 @@ SPANISH_RECIPES.extend([
         "source_url": "https://realacademiadegastronomia.com/recetas/cordero-al-chilindron/"
     }
 ])
+
+# Batch 5-8 recipes
+SPANISH_RECIPES.extend([
+    {
+        "name": "Revuelto de Setas",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "setas de temporada", "quantity": 200, "unit": "g"},
+            {"item": "huevo", "quantity": 2, "unit": "unidades"},
+            {"item": "aceite de oliva", "quantity": 2, "unit": "cucharadas"},
+            {"item": "láminas finas de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta negra", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Lavar las setas con la ayuda de un cepillo de dientes levemente mojado con agua tibia.",
+            "Calentar una sartén a fuego vivo con el aceite de oliva. Incorporar las setas y saltear 2 minutos.",
+            "Añadir el ajo. Salpimentar.",
+            "Incorporar el huevo solo revuelto, sin batir.",
+            "Sacar la sartén del fuego y remover la mezcla hasta que empiece a cuajar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/revuelto-de-setas/"
+    },
+    {
+        "name": "Almejas a la Marinera",
+        "origin_region": "Galicia",
+        "ingredients": [
+            {"item": "almejas", "quantity": 1.5, "unit": "kg"},
+            {"item": "vino blanco seco", "quantity": 200, "unit": "g"},
+            {"item": "aceite de oliva virgen extra", "quantity": 85, "unit": "g"},
+            {"item": "cebolla grande", "quantity": 1, "unit": "unidad"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharadita"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Lavar las almejas en agua fría. Poner en un recipiente con 2 cucharadas de sal durante 30 min. Pasar por agua fría y poner en una cazuela a fuego vivo, con un chorrito de vino blanco.",
+            "Tapar la cazuela hasta que las almejas se abran. Colar el caldo de la cocción de las almejas.",
+            "Calentar el aceite en una cazuela de barro y rehogar la cebolla pelada y picada fina, sin que coja color. Agregar el pimentón, el resto del vino y el caldo de la cocción de las almejas. Cocer a fuego suave durante 2 min.",
+            "Agregar las almejas, sazonar. Calentar todo junto y servir en la misma cazuela."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/almejas-a-la-marinera/"
+    },
+    {
+        "name": "Torrijas",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "barra de pan de miga prieta de la víspera", "quantity": 1, "unit": "unidad"},
+            {"item": "leche", "quantity": 1, "unit": "l"},
+            {"item": "piel de limón", "quantity": 0.5, "unit": "unidad"},
+            {"item": "canela en rama", "quantity": None, "unit": "al gusto"},
+            {"item": "azúcar", "quantity": 75, "unit": "g"},
+            {"item": "aceite de oliva o girasol", "quantity": None, "unit": "abundante"},
+            {"item": "huevos", "quantity": 3, "unit": "unidades"},
+            {"item": "azúcar y canela", "quantity": None, "unit": "para rebozar"}
+        ],
+        "instructions": [
+            "Cocer la leche con la piel de limón, el palo de canela y el azúcar. Dejar templar.",
+            "Cortar el pan en rebanadas gruesas y empapar en la leche. Reposar en rejilla, para que escurra bien.",
+            "Rebozar las rebanadas de pan en los huevos batidos. Freír en abundante aceite caliente hasta dorar por ambos lados.",
+            "Escurrir sobre papel absorbente. Rebozar en una mezcla de azúcar y canela."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/torrijas/"
+    },
+    {
+        "name": "Sopa de Ajo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "pan de víspera", "quantity": 150, "unit": "g"},
+            {"item": "dientes de ajo", "quantity": 3, "unit": "unidades"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "al gusto"},
+            {"item": "pimentón dulce", "quantity": 0.5, "unit": "cucharada"},
+            {"item": "agua o caldo", "quantity": 1.5, "unit": "l"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar el pan en lonchas finas y pelar y picar los dientes de ajo.",
+            "Calentar aceite en una sartén y freír el pan hasta que se dore. Agregar los dientes de ajo y antes de que cojan color espolvorear con el pimentón.",
+            "Para que no se queme, poner rápidamente el agua caliente. Sazonar y cocer suavemente durante 10 min.",
+            "Servir la sopa de ajo en cazuelas individuales de barro."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/sopa-de-ajo/"
+    },
+    {
+        "name": "Pisto Manchego",
+        "origin_region": "Castilla-La Mancha",
+        "ingredients": [
+            {"item": "pimientos verdes", "quantity": 500, "unit": "g"},
+            {"item": "calabacines", "quantity": 500, "unit": "g"},
+            {"item": "cebollas", "quantity": 500, "unit": "g"},
+            {"item": "salsa de tomate", "quantity": 400, "unit": "g"},
+            {"item": "diente de ajo", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Pelar las cebollas y lavar los pimientos y los calabacines. Cortar los pimientos, los calabacines y las cebollas en cuadraditos. Picar el ajo.",
+            "En una cazuela con un fondo de aceite, freír las cebollas con los pimientos. Añadir el ajo y el calabacín y cocinar hasta que estén tiernos.",
+            "Una vez hechos, incorporar la salsa de tomate. Dar un hervor todo junto. Sazonar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/pisto-manchego/"
+    },
+    {
+        "name": "Migas",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "pan seco de víspera", "quantity": 600, "unit": "g"},
+            {"item": "aceite de oliva virgen extra", "quantity": 125, "unit": "g"},
+            {"item": "pimiento verde", "quantity": 1, "unit": "unidad"},
+            {"item": "cebolla", "quantity": 1, "unit": "unidad"},
+            {"item": "tomates maduros", "quantity": 2, "unit": "unidades"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharada"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar el pan de víspera en trozos muy pequeños. Poner en un recipiente, humedecer con un poco de agua y tapar con un paño.",
+            "Calentar el aceite en una sartén honda y rehogar el pimiento y la cebolla cortados finos, sin que tomen color. Incorporar los tomates y los ajos, pelados y picados. Continuar la cocción durante 5 minutos.",
+            "Retirar del fuego, agregar el pimentón, dar una vuelta y añadir las migas.",
+            "Mezclar, bajar el fuego y continuar la cocción lentamente. Mover a menudo para que no se agarren y sazonar. Servir las migas calientes."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/migas/"
+    },
+    {
+        "name": "Leche Frita",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "leche", "quantity": 500, "unit": "g"},
+            {"item": "piel de limón", "quantity": 0.5, "unit": "unidad"},
+            {"item": "mantequilla", "quantity": 15, "unit": "g"},
+            {"item": "yemas", "quantity": 2, "unit": "unidades"},
+            {"item": "azúcar", "quantity": 100, "unit": "g"},
+            {"item": "harina fina de maíz", "quantity": 100, "unit": "g"},
+            {"item": "harina de trigo", "quantity": None, "unit": "para rebozar"},
+            {"item": "huevo", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "para freír"},
+            {"item": "azúcar y canela", "quantity": None, "unit": "para rebozar"}
+        ],
+        "instructions": [
+            "Poner en un cazo al fuego la leche con la piel de limón y la mantequilla. Batir las yemas con el azúcar y agregar la harina de maíz. Incorporar la leche hirviendo colada y mezclar bien.",
+            "Volver a poner al fuego suave, sin dejar de remover con las varillas, hasta que espese.",
+            "Verter en una fuente rectangular de fondo bajo. Tapar con papel film pegado a la superficie para que no haga costra. Enfriar en la nevera durante dos horas.",
+            "Cortar la crema en porciones. Pasar por harina y por el huevo batido. Freír en aceite caliente. Escurrir sobre papel absorbente.",
+            "Pasar la leche frita por el azúcar y la canela mezclados."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/leche-frita/"
+    },
+    {
+        "name": "Arroz con Leche",
+        "origin_region": "Principado de Asturias",
+        "ingredients": [
+            {"item": "arroz redondo", "quantity": 175, "unit": "g"},
+            {"item": "leche", "quantity": 1.5, "unit": "l"},
+            {"item": "cáscara de limón", "quantity": 1, "unit": "unidad"},
+            {"item": "canela en rama", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "una pizca"},
+            {"item": "azúcar", "quantity": 250, "unit": "g"},
+            {"item": "canela en polvo", "quantity": 1, "unit": "cucharada"}
+        ],
+        "instructions": [
+            "Poner a hervir la leche con la cáscara de limón, la canela en rama y una pizca de sal. Cuando rompa a hervir, añadir el arroz. Cocer lentamente unos 30 minutos.",
+            "Añadir el azúcar y seguir cociendo hasta que el arroz esté tierno; mover de vez en cuando e ir añadiendo un poco de leche caliente si fuera necesario. Debe quedar un poco líquido porque al enfriarse espesa.",
+            "Servir espolvoreado con canela."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/arroz-con-leche/"
+    },
+    {
+        "name": "Sobrasada con Queso Mahón Fundido",
+        "origin_region": "Illes Balears",
+        "ingredients": [
+            {"item": "sobrasada", "quantity": 25, "unit": "g"},
+            {"item": "queso de Mahón tierno", "quantity": 2, "unit": "lonchas finas"},
+            {"item": "pan de coca tierno", "quantity": 1, "unit": "loncha"}
+        ],
+        "instructions": [
+            "Precalentar el horno a 180º grados.",
+            "Desmenuzar la sobrasada con un tenedor. Untar el pan de coca.",
+            "Cubrir con las lonchas de queso de Mahón.",
+            "Meter en el horno durante 4 minutos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/sobrasada-con-queso-mahon-fundido/"
+    },
+    {
+        "name": "Conejo con Caracoles",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "conejo", "quantity": 2, "unit": "kg"},
+            {"item": "caracoles", "quantity": 1, "unit": "kg"},
+            {"item": "cebollas", "quantity": 2, "unit": "unidades"},
+            {"item": "zanahorias", "quantity": 2, "unit": "unidades"},
+            {"item": "tomate frito", "quantity": 100, "unit": "g"},
+            {"item": "puerro", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva", "quantity": 200, "unit": "ml"},
+            {"item": "tomillo", "quantity": None, "unit": "al gusto"},
+            {"item": "hoja de laurel", "quantity": 1, "unit": "unidad"},
+            {"item": "caldo de carne o ave", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Purgar los caracoles durante varios días. Lavar en agua con sal. Cambiar el agua varias veces hasta que salga limpia.",
+            "Cortar el conejo en trozos y freír una vez pasados por harina; retirar. En el mismo aceite, sofreír las verduras peladas y picadas en trozos pequeños hasta que tomen un ligero color dorado. Volver a incorporar el conejo y añadir el tomate.",
+            "Mientras, hacer la picada machacándola en un mortero. Incorporarla a la cazuela del conejo y rehogar unos minutos; mojar con el caldo y dejar cocer hasta que el conejo esté tierno.",
+            "Cocer caracoles partiendo de agua fría a fuego lento, cuando empiecen a asomar dejar cocer 10 min. Escurrir. Añadir los caracoles al guiso.",
+            "Terminar la cocción cocinándolo todo 10 minutos, rectificar de sal y servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/conejo-con-caracoles/"
+    }
+])
