@@ -74,14 +74,20 @@ const LanguageProviderInner = ({ children }) => {
         }
     }, [initialLang, location.pathname, navigate]);
 
-    // Sync language with URL changes
+    // Sync language with URL changes - this is the SINGLE SOURCE OF TRUTH
     useEffect(() => {
         const urlLang = getLanguageFromPath(location.pathname);
-        if (urlLang && urlLang !== language) {
-            setLanguage(urlLang);
-            i18n.changeLanguage(urlLang);
-            document.documentElement.lang = urlLang;
-            localStorage.setItem('preferred_language', urlLang);
+        if (urlLang) {
+            // Always sync i18n with URL language
+            if (i18n.language !== urlLang) {
+                i18n.changeLanguage(urlLang);
+            }
+            // Update state if different
+            if (urlLang !== language) {
+                setLanguage(urlLang);
+                document.documentElement.lang = urlLang;
+                localStorage.setItem('preferred_language', urlLang);
+            }
         }
     }, [location.pathname, language]);
 
