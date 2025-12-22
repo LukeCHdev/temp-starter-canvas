@@ -328,3 +328,214 @@ SPANISH_RECIPES = [
 ]
 
 # Continue with remaining recipes in part 2...
+
+# Batch 3-4 recipes
+SPANISH_RECIPES.extend([
+    {
+        "name": "Dorada a la Sal",
+        "origin_region": "Región de Murcia",
+        "ingredients": [
+            {"item": "doradas de ración", "quantity": 6, "unit": "unidades"},
+            {"item": "sal gorda", "quantity": None, "unit": "abundante"}
+        ],
+        "instructions": [
+            "Para cocinar las doradas a la sal ni se desescaman, ni se abren para retirar las vísceras. Lavar, escurrir y secar muy bien.",
+            "En una fuente de horno poner una capa de sal.",
+            "Colocar las doradas encima y cubrir totalmente con más sal. Meter en el horno a 200ºC durante 15-20 minutos según el peso.",
+            "Sacar del horno, romper la costra de sal y retirar con cuidado para que no se rompa la piel.",
+            "Para servir desprender la piel y sacar los lomos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/dorada-a-la-sal/"
+    },
+    {
+        "name": "Caldo Gallego",
+        "origin_region": "Galicia",
+        "ingredients": [
+            {"item": "alubias blancas", "quantity": 100, "unit": "g"},
+            {"item": "grelos o nabizas", "quantity": 1, "unit": "kg"},
+            {"item": "patatas grandes", "quantity": 2, "unit": "unidades"},
+            {"item": "unto", "quantity": 30, "unit": "g"},
+            {"item": "lacón", "quantity": 1, "unit": "trozo"},
+            {"item": "huesos de caña", "quantity": 2, "unit": "unidades"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "chorizos", "quantity": None, "unit": "al gusto", "notes": "optional, regional variation (Galicia)"}
+        ],
+        "instructions": [
+            "Poner en remojo las alubias en abundante agua fresca 24 horas antes.",
+            "Lavar los grelos o nabizas y escaldar en agua hirviendo durante unos minutos para que pierda el amargor. Escurrir y reservar.",
+            "Lavar bien las carnes y poner a cocer junto con el unto, en abundante agua. Pasada una hora de cocción añadir las alubias y dejar cocer media hora.",
+            "Añadir los grelos escaldados y las patatas peladas y chascadas. Dejar cocinar media hora más o hasta que las patatas y grelos estén tiernos.",
+            "Salar y dejar reposar, mejor de un día para otro."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/caldo-gallego/"
+    },
+    {
+        "name": "Patatas a la Riojana",
+        "origin_region": "La Rioja",
+        "ingredients": [
+            {"item": "patatas", "quantity": 1, "unit": "kg"},
+            {"item": "aceite de oliva virgen", "quantity": None, "unit": "al gusto"},
+            {"item": "cebolla", "quantity": 1, "unit": "unidad"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharadita"},
+            {"item": "hoja de laurel", "quantity": 1, "unit": "unidad"},
+            {"item": "guindilla", "quantity": 1, "unit": "unidad"},
+            {"item": "chorizo", "quantity": 200, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Pelar la cebolla y cortar en juliana fina. Picar los ajos. En una cazuela poner un fondo de aceite y estofar la cebolla y los ajos. Incorporar el chorizo cortado.",
+            "Pelar las patatas, chascar con cuchillo y agregar a la cazuela. Añadir el pimentón, mezclar para que no se queme e incorporar la hoja de laurel y la guindilla.",
+            "Cubrir con agua y sazonar. Cocer a fuego medio durante unos 30-35 minutos o hasta que las patatas estén tiernas pero enteras."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/patatas-a-la-riojana/"
+    },
+    {
+        "name": "Gambas al Ajillo",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "gambas peladas", "quantity": 300, "unit": "g"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "guindilla", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta blanca", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "En una sartén a fuego fuerte calentar el aceite.",
+            "Incorporar el ajo en láminas, la guindilla e inmediatamente las gambas.",
+            "Cocinar durante un minuto.",
+            "Fuera del fuego incorporar la pimienta y la sal."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/gambas-al-ajillo/"
+    },
+    {
+        "name": "Yemas de Santa Teresa",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "azúcar", "quantity": 85, "unit": "g"},
+            {"item": "agua", "quantity": 50, "unit": "g"},
+            {"item": "corteza de limón", "quantity": 0.5, "unit": "unidad"},
+            {"item": "yemas de huevo", "quantity": 6, "unit": "unidades"},
+            {"item": "azúcar en polvo", "quantity": None, "unit": "para rebozar"}
+        ],
+        "instructions": [
+            "Poner en un cazo el azúcar, el agua y la corteza de limón. Cocer hasta obtener un almíbar de hebra fuerte.",
+            "Batir las yemas en un recipiente y pasar por un colador a un cazo. Agregar el almíbar colado y poner de nuevo al fuego, sin dejar de mover con cuchara de madera hasta que la masa se desprenda de las paredes del cazo.",
+            "Verter en una fuente y dejar enfriar.",
+            "Formar unas bolas pequeñas y pasar por el azúcar en polvo.",
+            "Poner cada una de las yemas en una cápsula de papel y servir."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/yemas/"
+    },
+    {
+        "name": "Bonito en Escabeche",
+        "origin_region": "Toda España",
+        "ingredients": [
+            {"item": "lomo de bonito", "quantity": 500, "unit": "g"},
+            {"item": "cebolla dulce", "quantity": 150, "unit": "g"},
+            {"item": "zanahoria", "quantity": 150, "unit": "g"},
+            {"item": "vinagre blanco", "quantity": 1, "unit": "dl"},
+            {"item": "aceite", "quantity": 1, "unit": "cucharada"},
+            {"item": "agua", "quantity": 1, "unit": "l"},
+            {"item": "granos de pimienta negra", "quantity": 10, "unit": "unidades"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Poner en un puchero las verduras peladas y troceadas, el agua, el vinagre, el aceite, los granos de pimienta y la sal.",
+            "Cocer 10 minutos, agregar el bonito, tapar y cocinar durante 2 minutos.",
+            "Retirar del fuego, dejar reposar 5 minutos.",
+            "Escurrir y dejar enfriar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/bonito-en-escabeche/"
+    },
+    {
+        "name": "Escalivada",
+        "origin_region": "Cataluña",
+        "ingredients": [
+            {"item": "berenjenas", "quantity": 4, "unit": "unidades"},
+            {"item": "pimientos rojos grandes", "quantity": 4, "unit": "unidades"},
+            {"item": "cebollas", "quantity": 4, "unit": "unidades"},
+            {"item": "dientes de ajo", "quantity": 2, "unit": "unidades"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Colocar en una bandeja de horno las berenjenas, los pimientos rojos y las cebollas. Rociar con aceite y meter en el horno a 190ºC de 35 a 40 min o hasta que las verduras estén tiernas.",
+            "Para comprobar el punto de cocción, apretarlas entre los dedos. Dejar enfriar.",
+            "Pelar las verduras y cortar en tiras largas.",
+            "Poner en una bandeja las verduras preparadas. Espolvorear con los dientes de ajo pelados y picados, rociar con aceite y sazonar."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/escalivada/"
+    },
+    {
+        "name": "Fritura de Pescado",
+        "origin_region": "Andalucía",
+        "ingredients": [
+            {"item": "boquerones", "quantity": 300, "unit": "g"},
+            {"item": "chipirones", "quantity": 300, "unit": "g"},
+            {"item": "salmonetes pequeños", "quantity": 6, "unit": "unidades"},
+            {"item": "pescadillas pequeñas", "quantity": 6, "unit": "unidades"},
+            {"item": "anillas de calamar", "quantity": 200, "unit": "g"},
+            {"item": "harina de garbanzo", "quantity": None, "unit": "al gusto"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "abundante"},
+            {"item": "limón", "quantity": 1, "unit": "unidad"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Limpiar los pescados: quitar las cabezas y las tripas a los boquerones; vaciar los chipirones; descamar los salmonetes y retirar las tripas; quitar las cabezas y las vísceras a las pescadillas. Sazonar.",
+            "Pasar por harina, sacudir el exceso y freír las piezas por separado en abundante aceite caliente.",
+            "Cuando estén dorados, sacar de la sartén y escurrir sobre papel absorbente."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/fritura-de-pescado/"
+    },
+    {
+        "name": "Pimientos Rellenos de Carne",
+        "origin_region": "La Rioja",
+        "ingredients": [
+            {"item": "pimientos del piquillo", "quantity": 18, "unit": "unidades"},
+            {"item": "cebolla grande", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva virgen extra", "quantity": None, "unit": "al gusto"},
+            {"item": "carne de ternera picada", "quantity": 250, "unit": "g"},
+            {"item": "magro de cerdo picado", "quantity": 250, "unit": "g"},
+            {"item": "pimentón dulce", "quantity": 1, "unit": "cucharadita"},
+            {"item": "salsa bechamel", "quantity": 200, "unit": "g"},
+            {"item": "harina", "quantity": None, "unit": "para rebozar"},
+            {"item": "huevos", "quantity": 2, "unit": "unidades"},
+            {"item": "salsa de tomate", "quantity": 150, "unit": "g"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Pelar y picar la cebolla fina y rehogar con un poco de aceite sin que coja color. Agregar la carne de ternera y la de cerdo y cocinar el conjunto a fuego lento hasta que las carnes estén hechas.",
+            "Incorporar el pimentón, dar una vuelta y añadir la salsa bechamel. Mezclar, sazonar y dejar templar.",
+            "Poner en una manga pastelera y rellenar los pimientos del piquillo.",
+            "Pasar por harina, sacudir para retirar el exceso y luego por los huevos batidos. Freír en abundante aceite caliente hasta que estén dorados por todos lados. Escurrir sobre papel absorbente.",
+            "Calentar la salsa de tomate y servir con los pimientos."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/pimientos-rellenos/"
+    },
+    {
+        "name": "Cordero al Chilindrón",
+        "origin_region": "Comunidad Foral de Navarra",
+        "ingredients": [
+            {"item": "cordero", "quantity": 1.2, "unit": "kg"},
+            {"item": "cebollas", "quantity": 2, "unit": "unidades"},
+            {"item": "cabeza de ajo", "quantity": 1, "unit": "unidad"},
+            {"item": "vino blanco", "quantity": 1, "unit": "vaso"},
+            {"item": "pimientos choriceros", "quantity": 3, "unit": "unidades"},
+            {"item": "ramita de tomillo", "quantity": 1, "unit": "unidad"},
+            {"item": "aceite de oliva virgen", "quantity": None, "unit": "al gusto"},
+            {"item": "sal", "quantity": None, "unit": "al gusto"},
+            {"item": "pimienta", "quantity": None, "unit": "al gusto"}
+        ],
+        "instructions": [
+            "Cortar el cordero en trozos no muy grandes, salpimentar y dorar en una cazuela en un fondito de aceite. Reservar.",
+            "Pochar en la misma cazuela la cebolla y el ajo picados.",
+            "Cuando el agua que suelta la cebolla esté prácticamente evaporada, añadir la pulpa de los pimientos rojos choriceros.",
+            "Volver a incorporar la carne, y añadir la ramita de tomillo y el vaso de vino blanco.",
+            "Cocinar a fuego suave con tapa, hasta que la carne quede tierna, entre 30 y 45 minutos.",
+            "Si es necesario añadir algo más de líquido puede servir el agua donde hemos dejado a remojo los pimientos choriceros o un poco de caldo."
+        ],
+        "source_url": "https://realacademiadegastronomia.com/recetas/cordero-al-chilindron/"
+    }
+])
