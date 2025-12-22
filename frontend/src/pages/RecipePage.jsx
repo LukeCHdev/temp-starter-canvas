@@ -24,7 +24,7 @@ const RecipePage = () => {
     const { slug } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { language } = useLanguage();
+    const { language, getLocalizedPath } = useLanguage();
     const { t } = useTranslation();
 
     // Memoize language to prevent unnecessary re-fetches
