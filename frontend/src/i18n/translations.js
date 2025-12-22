@@ -898,6 +898,82 @@ export const translations = {
   },
 
   // ============================================
+  // RECIPE TRANSLATION STATUS
+  // ============================================
+  recipe: {
+    translating: {
+      en: 'Translating...',
+      es: 'Traduciendo...',
+      it: 'Traducendo...',
+      fr: 'Traduction en cours...',
+      de: 'Übersetzen...'
+    },
+    translationUnavailable: {
+      en: 'Translation unavailable',
+      es: 'Traducción no disponible',
+      it: 'Traduzione non disponibile',
+      fr: 'Traduction non disponible',
+      de: 'Übersetzung nicht verfügbar'
+    },
+    loadingRecipe: {
+      en: 'Loading recipe...',
+      es: 'Cargando receta...',
+      it: 'Caricamento ricetta...',
+      fr: 'Chargement de la recette...',
+      de: 'Rezept wird geladen...'
+    },
+    ingredients: {
+      en: 'Ingredients',
+      es: 'Ingredientes',
+      it: 'Ingredienti',
+      fr: 'Ingrédients',
+      de: 'Zutaten'
+    },
+    instructions: {
+      en: 'Instructions',
+      es: 'Instrucciones',
+      it: 'Istruzioni',
+      fr: 'Instructions',
+      de: 'Anleitung'
+    },
+    history: {
+      en: 'History',
+      es: 'Historia',
+      it: 'Storia',
+      fr: 'Histoire',
+      de: 'Geschichte'
+    },
+    profile: {
+      en: 'Characteristic Profile',
+      es: 'Perfil característico',
+      it: 'Profilo caratteristico',
+      fr: 'Profil caractéristique',
+      de: 'Charakteristisches Profil'
+    },
+    doNot: {
+      en: 'What NOT to do',
+      es: 'Lo que NO debes hacer',
+      it: 'Cosa NON fare',
+      fr: 'Ce qu\'il NE faut PAS faire',
+      de: 'Was man NICHT tun sollte'
+    },
+    techniques: {
+      en: 'Special Techniques',
+      es: 'Técnicas especiales',
+      it: 'Tecniche speciali',
+      fr: 'Techniques spéciales',
+      de: 'Besondere Techniken'
+    },
+    winePairing: {
+      en: 'Wine Pairing',
+      es: 'Maridaje de vinos',
+      it: 'Abbinamento vini',
+      fr: 'Accords vins',
+      de: 'Weinempfehlung'
+    }
+  },
+
+  // ============================================
   // COUNTRY NAMES
   // ============================================
   countries: {
