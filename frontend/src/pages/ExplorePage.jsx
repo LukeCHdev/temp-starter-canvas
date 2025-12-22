@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { recipeAPI, continentAPI } from '@/utils/api';
@@ -22,6 +22,14 @@ const ExplorePage = () => {
     const { continent, country } = useParams();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    
+    // Helper function to translate country/continent names
+    const translateName = useCallback((name, type = 'countries') => {
+        const key = `${type}.${name}`;
+        const translated = t(key, { defaultValue: name });
+        // If translation returns the key, return original name
+        return translated === key ? name : translated;
+    }, [t]);
     
     const [topRecipes, setTopRecipes] = useState([]);
     const [continents, setContinents] = useState([]);
