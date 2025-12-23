@@ -357,50 +357,59 @@ const RecipePage = () => {
             <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
                 
                 {/* History & Character */}
-                {(recipe.history_summary || recipe.origin_story) && (
+                {(historyContent.content || recipe.origin_story) && (
                     <Card className="card-elegant">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <BookOpen className="h-5 w-5 text-[#6A1F2E]" />
                                 {t('recipe.history')}
+                                {showContentFallback && !historyContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="narrative-text leading-relaxed">
-                                {recipe.history_summary || recipe.origin_story}
+                                {historyContent.content || recipe.origin_story}
                             </p>
                         </CardContent>
                     </Card>
                 )}
 
-                {recipe.characteristic_profile && (
+                {profileContent.content && (
                     <Card className="card-elegant">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <ChefHat className="h-5 w-5 text-[#3F4A3C]" />
                                 {t('recipe.profile')}
+                                {showContentFallback && !profileContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="narrative-text leading-relaxed">
-                                {recipe.characteristic_profile}
+                                {profileContent.content}
                             </p>
                         </CardContent>
                     </Card>
                 )}
 
                 {/* No-No Rules */}
-                {recipe.no_no_rules && recipe.no_no_rules.length > 0 && (
+                {noNoRulesContent.content && noNoRulesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-red-500">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-red-700" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <AlertTriangle className="h-5 w-5" />
                                 {t('recipe.noNoRules')}
+                                {showContentFallback && !noNoRulesContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-2">
-                                {recipe.no_no_rules.map((rule, index) => (
+                                {noNoRulesContent.content.map((rule, index) => (
                                     <li key={index} className="flex items-start gap-2 text-red-800">
                                         <span className="text-red-500 font-bold">✗</span>
                                         <span>{rule}</span>
