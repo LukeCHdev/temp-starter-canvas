@@ -53,6 +53,9 @@ db = client[os.environ['DB_NAME']]
 # Set database for translation routes
 set_translation_db(db)
 
+# Set database for sitemap routes
+set_sitemap_db(db)
+
 # Create the main app
 app = FastAPI(title="Sous Chef Linguini API")
 
