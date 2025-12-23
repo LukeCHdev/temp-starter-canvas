@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { recipeAPI } from '@/utils/api';
+import { recipeAPI, translationAPI } from '@/utils/api';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { RecipeSEO } from '@/components/seo/SEOHelmet';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ReviewSection } from '@/components/recipe/ReviewSection';
+import { FallbackBanner, TranslationPendingBanner, TranslationFailedBanner } from '@/components/common/FallbackBanner';
 import { 
     ChefHat, 
     Globe, 
@@ -24,6 +25,8 @@ const RecipePage = () => {
     const { slug } = useParams();
     const location = useLocation();
     const [recipe, setRecipe] = useState(null);
+    const [translationStatus, setTranslationStatus] = useState(null); // 'ready' | 'pending' | 'failed' | null
+    const [contentLanguage, setContentLanguage] = useState(null); // Actual language of displayed content
     const [loading, setLoading] = useState(true);
     const { language, getLocalizedPath } = useLanguage();
     const { t, i18n } = useTranslation();
@@ -47,14 +50,58 @@ const RecipePage = () => {
         
         const loadRecipe = async () => {
             setLoading(true);
+            setTranslationStatus(null);
+            setContentLanguage(null);
+            
             try {
-                const res = await recipeAPI.getBySlug(slug, currentLang);
+                // First try the translation API for language-aware content
+                const translationRes = await translationAPI.getRecipe(slug, currentLang);
+                const translationData = translationRes.data;
+                
                 if (isMounted) {
-                    setRecipe(res.data);
+                    setTranslationStatus(translationData.status);
+                    
+                    if (translationData.status === 'ready' && translationData.content) {
+                        // Translation is ready - use translated content
+                        setRecipe({
+                            ...translationData.content,
+                            ...translationData.metadata,
+                            slug: translationData.slug
+                        });
+                        setContentLanguage(translationData.lang);
+                    } else {
+                        // Translation not ready - fetch original recipe as fallback
+                        const fallbackRes = await recipeAPI.getBySlug(slug, currentLang);
+                        if (isMounted) {
+                            setRecipe(fallbackRes.data);
+                            // Determine actual content language
+                            const actualLang = fallbackRes.data._display_lang || 
+                                              fallbackRes.data.content_language || 
+                                              'en';
+                            setContentLanguage(actualLang.slice(0, 2).toLowerCase());
+                        }
+                    }
                 }
             } catch (error) {
-                if (isMounted) {
-                    toast.error(t('recipe.notFound'));
+                console.error('Translation API error, falling back:', error);
+                // Fallback to regular recipe API
+                try {
+                    const fallbackRes = await recipeAPI.getBySlug(slug, currentLang);
+                    if (isMounted) {
+                        setRecipe(fallbackRes.data);
+                        const actualLang = fallbackRes.data._display_lang || 
+                                          fallbackRes.data.content_language || 
+                                          'en';
+                        setContentLanguage(actualLang.slice(0, 2).toLowerCase());
+                        // If we had to fallback and got different language, mark it
+                        if (actualLang !== currentLang) {
+                            setTranslationStatus('fallback');
+                        }
+                    }
+                } catch (fallbackError) {
+                    if (isMounted) {
+                        toast.error(t('recipe.notFound'));
+                    }
                 }
             } finally {
                 if (isMounted) {
@@ -91,6 +138,24 @@ const RecipePage = () => {
         }
     };
 
+    // Render appropriate banner based on translation status
+    const renderLanguageBanner = () => {
+        if (!contentLanguage || contentLanguage === currentLang) {
+            return null;
+        }
+        
+        if (translationStatus === 'pending') {
+            return <TranslationPendingBanner requestedLang={currentLang} />;
+        }
+        
+        if (translationStatus === 'failed') {
+            return <TranslationFailedBanner contentLang={contentLanguage} requestedLang={currentLang} />;
+        }
+        
+        // Default fallback banner
+        return <FallbackBanner contentLang={contentLanguage} requestedLang={currentLang} />;
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center" data-testid="loading-state">
@@ -125,11 +190,14 @@ const RecipePage = () => {
     return (
         <div className="min-h-screen" data-testid="recipe-page">
             {/* SEO Metadata */}
-            <RecipeSEO recipe={recipe} url={window.location.href} />
+            <RecipeSEO recipe={recipe} slug={slug} />
             
             {/* Hero Section */}
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
                 <div className="max-w-4xl mx-auto">
+                    {/* Language Fallback Banner */}
+                    {renderLanguageBanner()}
+                    
                     <div className="flex flex-wrap items-center gap-3 mb-4">
                         <Badge className={getAuthenticityBadgeColor(authenticityLevel)}>
                             <Star className="h-3 w-3 mr-1" />
