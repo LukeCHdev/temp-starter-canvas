@@ -19,11 +19,7 @@ const HomePage = () => {
     const [featuredRecipes, setFeaturedRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadData();
-    }, [language]); // Re-fetch when language changes
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         try {
             // Pass language to get translated content
             const [bestRes, featuredRes] = await Promise.all([
@@ -39,7 +35,11 @@ const HomePage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [language]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]); // Re-fetch when language changes
 
     const getAuthenticityLabel = (level) => {
         switch(level) {
