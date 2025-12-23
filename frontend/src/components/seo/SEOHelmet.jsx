@@ -178,11 +178,11 @@ export const PageSEO = ({
                 <link 
                     key={lang}
                     rel="alternate" 
-                    hreflang={lang} 
+                    hrefLang={lang} 
                     href={`${BASE_DOMAIN}/${lang}${path}`} 
                 />
             ))}
-            <link rel="alternate" hreflang="x-default" href={`${BASE_DOMAIN}/en${path}`} />
+            <link rel="alternate" hrefLang="x-default" href={`${BASE_DOMAIN}/en${path}`} />
             
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
@@ -287,11 +287,11 @@ export const ExploreSEO = ({ continent, country, path = '/explore', breadcrumbs 
                 <link 
                     key={lang}
                     rel="alternate" 
-                    hreflang={lang} 
+                    hrefLang={lang} 
                     href={`${BASE_DOMAIN}/${lang}${path}`} 
                 />
             ))}
-            <link rel="alternate" hreflang="x-default" href={`${BASE_DOMAIN}/en${path}`} />
+            <link rel="alternate" hrefLang="x-default" href={`${BASE_DOMAIN}/en${path}`} />
             
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
