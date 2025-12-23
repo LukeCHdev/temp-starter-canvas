@@ -119,11 +119,11 @@ export const RecipeSEO = ({ recipe, slug }) => {
                 <link 
                     key={lang}
                     rel="alternate" 
-                    hreflang={lang} 
+                    hrefLang={lang} 
                     href={`${BASE_DOMAIN}/${lang}/recipe/${slug}`} 
                 />
             ))}
-            <link rel="alternate" hreflang="x-default" href={`${BASE_DOMAIN}/en/recipe/${slug}`} />
+            <link rel="alternate" hrefLang="x-default" href={`${BASE_DOMAIN}/en/recipe/${slug}`} />
             
             {/* Open Graph Tags */}
             <meta property="og:title" content={`${recipeName} - Authentic ${country} Recipe`} />
