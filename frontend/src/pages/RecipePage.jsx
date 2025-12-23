@@ -534,17 +534,20 @@ const RecipePage = () => {
                 )}
 
                 {/* Wine Pairing */}
-                {recipe.wine_pairing && recipe.wine_pairing.recommended_wines && recipe.wine_pairing.recommended_wines.length > 0 && (
+                {winePairingContent.content?.recommended_wines?.length > 0 && (
                     <Card className="card-elegant bg-gradient-to-br from-[#6A1F2E]/5 to-[#6A1F2E]/10">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <Wine className="h-5 w-5" />
                                 {t('recipe.winePairing')}
+                                {showContentFallback && !winePairingContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
-                                {recipe.wine_pairing.recommended_wines.map((wine, index) => (
+                                {winePairingContent.content.recommended_wines.map((wine, index) => (
                                     <div key={index} className="bg-white/80 rounded-lg p-4 shadow-sm">
                                         <h4 className="font-semibold text-[#6A1F2E]">{wine.name}</h4>
                                         <p className="text-sm text-[#1E1E1E]/60 mb-2">{wine.region}</p>
@@ -552,9 +555,9 @@ const RecipePage = () => {
                                     </div>
                                 ))}
                             </div>
-                            {recipe.wine_pairing.notes && (
+                            {winePairingContent.content.notes && (
                                 <p className="mt-4 text-sm text-[#1E1E1E]/70 italic border-t pt-3">
-                                    {recipe.wine_pairing.notes}
+                                    {winePairingContent.content.notes}
                                 </p>
                             )}
                         </CardContent>
