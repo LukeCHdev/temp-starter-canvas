@@ -1628,27 +1628,29 @@ async def get_sitemap(force_rebuild: bool = False):
     
     # Helper to generate URL entry with hreflang
     def url_entry(path: str, priority: str, changefreq: str, lastmod: str = None):
-        entry = "  <url>\n"
-        # Generate entries for each language
+        entries = ""
+        # Generate separate URL entry for each language version
         for lang in SUPPORTED_LANGUAGES:
             lang_path = f"/{lang}{path}" if path != '/' else f"/{lang}"
-            entry += f"    <loc>{base_url}{lang_path}</loc>\n"
+            entries += "  <url>\n"
+            entries += f"    <loc>{base_url}{lang_path}</loc>\n"
+            
+            if lastmod:
+                entries += f"    <lastmod>{lastmod}</lastmod>\n"
+            entries += f"    <changefreq>{changefreq}</changefreq>\n"
+            entries += f"    <priority>{priority}</priority>\n"
+            
+            # Add hreflang annotations for ALL language versions
+            for alt_lang in SUPPORTED_LANGUAGES:
+                alt_path = f"/{alt_lang}{path}" if path != '/' else f"/{alt_lang}"
+                entries += f'    <xhtml:link rel="alternate" hreflang="{alt_lang}" href="{base_url}{alt_path}"/>\n'
+            
+            # x-default points to English
+            default_path = f"/en{path}" if path != '/' else "/en"
+            entries += f'    <xhtml:link rel="alternate" hreflang="x-default" href="{base_url}{default_path}"/>\n'
+            entries += "  </url>\n"
         
-        if lastmod:
-            entry += f"    <lastmod>{lastmod}</lastmod>\n"
-        entry += f"    <changefreq>{changefreq}</changefreq>\n"
-        entry += f"    <priority>{priority}</priority>\n"
-        
-        # Add hreflang annotations
-        for lang in SUPPORTED_LANGUAGES:
-            lang_path = f"/{lang}{path}" if path != '/' else f"/{lang}"
-            entry += f'    <xhtml:link rel="alternate" hreflang="{lang}" href="{base_url}{lang_path}"/>\n'
-        # x-default points to English
-        default_path = f"/en{path}" if path != '/' else "/en"
-        entry += f'    <xhtml:link rel="alternate" hreflang="x-default" href="{base_url}{default_path}"/>\n'
-        
-        entry += "  </url>\n"
-        return entry
+        return entries
     
     # Build XML
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
