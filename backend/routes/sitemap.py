@@ -227,7 +227,7 @@ async def get_sitemap(force_rebuild: bool = False):
     - Regenerates on-demand if cache expired or force_rebuild=true
     - Returns XML with proper Content-Type header
     """
-    from server import db  # Import db from main server
+    global _db
     
     # Check cache first (unless force rebuild)
     if not force_rebuild:
@@ -243,7 +243,7 @@ async def get_sitemap(force_rebuild: bool = False):
             )
     
     # Generate fresh sitemap
-    sitemap_xml = await generate_sitemap_xml(db)
+    sitemap_xml = await generate_sitemap_xml(_db)
     
     # Cache it
     save_sitemap_to_cache(sitemap_xml)
