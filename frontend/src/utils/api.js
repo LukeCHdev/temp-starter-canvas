@@ -22,12 +22,12 @@ export const recipeAPI = {
         params: { q: query, auto_generate: autoGenerate, lang },
         timeout: 90000  // 90 second timeout for search with translation
     }),
-    // Homepage & Explore
-    getBest: () => api.get('/recipes/best'),
-    getFeatured: (limit = 4) => api.get('/recipes/featured', { params: { limit } }),
-    getTopWorldwide: (limit = 10) => api.get('/recipes/top-worldwide', { params: { limit } }),
-    getByContinent: (continent, limit = 10) => api.get(`/recipes/by-continent/${continent}`, { params: { limit } }),
-    getByCountryName: (country, limit = 100) => api.get(`/recipes/by-country/${country}`, { params: { limit } }),
+    // Homepage & Explore - with language support
+    getBest: (lang = 'en') => api.get('/recipes/best', { params: { lang } }),
+    getFeatured: (limit = 4, lang = 'en') => api.get('/recipes/featured', { params: { limit, lang } }),
+    getTopWorldwide: (limit = 10, lang = 'en') => api.get('/recipes/top-worldwide', { params: { limit, lang } }),
+    getByContinent: (continent, limit = 10, lang = 'en') => api.get(`/recipes/by-continent/${continent}`, { params: { limit, lang } }),
+    getByCountryName: (country, limit = 100, lang = 'en') => api.get(`/recipes/by-country/${country}`, { params: { limit, lang } }),
     // Reviews & Ratings
     getReviews: (slug, limit = 50, offset = 0) => api.get(`/recipes/${slug}/reviews`, { params: { limit, offset } }),
     createReview: (slug, data) => api.post(`/recipes/${slug}/review`, data),
