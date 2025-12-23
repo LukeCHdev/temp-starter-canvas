@@ -9,6 +9,7 @@ import { RecipeSEO } from '@/components/seo/SEOHelmet';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ReviewSection } from '@/components/recipe/ReviewSection';
 import { FallbackBanner, TranslationPendingBanner, TranslationFailedBanner } from '@/components/common/FallbackBanner';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
     ChefHat, 
     Globe, 
@@ -21,13 +22,89 @@ import {
     Star
 } from 'lucide-react';
 
+// Skeleton component for recipe loading
+const RecipeSkeleton = ({ language }) => {
+    const loadingMessages = {
+        en: 'Loading recipe...',
+        it: 'Caricamento ricetta...',
+        fr: 'Chargement de la recette...',
+        es: 'Cargando receta...',
+        de: 'Rezept wird geladen...'
+    };
+    
+    const translatingMessages = {
+        en: 'Preparing content in your language...',
+        it: 'Preparazione contenuti nella tua lingua...',
+        fr: 'Préparation du contenu dans votre langue...',
+        es: 'Preparando contenido en tu idioma...',
+        de: 'Inhalte in Ihrer Sprache werden vorbereitet...'
+    };
+    
+    return (
+        <div className="min-h-screen bg-[#FAF7F0]">
+            {/* Hero Section Skeleton */}
+            <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex gap-2 mb-4">
+                        <Skeleton className="h-6 w-32" />
+                        <Skeleton className="h-6 w-24" />
+                    </div>
+                    <Skeleton className="h-12 w-3/4 mb-4" />
+                    <div className="flex gap-4">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-16" />
+                    </div>
+                </div>
+            </section>
+            
+            {/* Content Skeleton */}
+            <section className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+                <div className="text-center py-8">
+                    <ChefHat className="h-12 w-12 mx-auto text-[#6A1F2E] animate-pulse mb-4" />
+                    <p className="text-[#1E1E1E]/70">{loadingMessages[language] || loadingMessages.en}</p>
+                    <p className="text-sm text-[#1E1E1E]/50 mt-2">{translatingMessages[language] || translatingMessages.en}</p>
+                </div>
+                
+                {/* History Card Skeleton */}
+                <Card className="card-elegant">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-48" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-3/4" />
+                    </CardContent>
+                </Card>
+                
+                {/* Ingredients Skeleton */}
+                <Card className="card-elegant">
+                    <CardHeader>
+                        <Skeleton className="h-6 w-32" />
+                    </CardHeader>
+                    <CardContent>
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="flex justify-between py-2 border-b border-dashed border-[#CBA55B]/30">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-4 w-20" />
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            </section>
+        </div>
+    );
+};
+
 const RecipePage = () => {
     const { slug } = useParams();
     const location = useLocation();
     const [recipe, setRecipe] = useState(null);
-    const [translationStatus, setTranslationStatus] = useState(null); // 'ready' | 'pending' | 'failed' | null
-    const [contentLanguage, setContentLanguage] = useState(null); // Actual language of displayed content
+    const [translationStatus, setTranslationStatus] = useState(null);
+    const [contentLanguage, setContentLanguage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isTranslating, setIsTranslating] = useState(false);
     const { language, getLocalizedPath } = useLanguage();
     const { t, i18n } = useTranslation();
 
@@ -37,7 +114,6 @@ const RecipePage = () => {
         const urlLang = pathSegments[0];
         
         if (SUPPORTED_LANGUAGES[urlLang] && urlLang !== i18n.language) {
-            console.log(`RecipePage: Syncing i18n language to ${urlLang} from route`);
             i18n.changeLanguage(urlLang);
         }
     }, [location.pathname, i18n]);
@@ -52,53 +128,70 @@ const RecipePage = () => {
             setLoading(true);
             setTranslationStatus(null);
             setContentLanguage(null);
+            setRecipe(null); // CRITICAL: Clear recipe to prevent English flash
+            setIsTranslating(false);
             
             try {
-                // First try the translation API for language-aware content
+                // Step 1: Try the translation API first (fast, pre-translated content)
                 const translationRes = await translationAPI.getRecipe(slug, currentLang);
                 const translationData = translationRes.data;
                 
-                if (isMounted) {
-                    setTranslationStatus(translationData.status);
-                    
-                    if (translationData.status === 'ready' && translationData.content) {
-                        // Translation is ready - use translated content
-                        setRecipe({
-                            ...translationData.content,
-                            ...translationData.metadata,
-                            slug: translationData.slug
-                        });
-                        setContentLanguage(translationData.lang);
-                    } else {
-                        // Translation not ready - fetch original recipe as fallback
-                        const fallbackRes = await recipeAPI.getBySlug(slug, currentLang);
-                        if (isMounted) {
-                            setRecipe(fallbackRes.data);
-                            // Determine actual content language
-                            const actualLang = fallbackRes.data._display_lang || 
-                                              fallbackRes.data.content_language || 
-                                              'en';
-                            setContentLanguage(actualLang.slice(0, 2).toLowerCase());
-                        }
-                    }
+                if (!isMounted) return;
+                
+                if (translationData.status === 'ready' && translationData.content) {
+                    // Translation is ready - use it immediately
+                    setRecipe({
+                        ...translationData.content,
+                        ...translationData.metadata,
+                        slug: translationData.slug
+                    });
+                    setContentLanguage(translationData.lang);
+                    setTranslationStatus('ready');
+                    setLoading(false);
+                    return;
                 }
+                
+                // Step 2: Translation not ready - show skeleton and fetch with on-the-fly translation
+                setIsTranslating(true);
+                setTranslationStatus(translationData.status || 'pending');
+                
+                // Fetch with lang parameter - this will do on-the-fly translation
+                const translatedRes = await recipeAPI.getBySlug(slug, currentLang);
+                
+                if (!isMounted) return;
+                
+                const recipeData = translatedRes.data;
+                
+                // CRITICAL: Only show recipe if content matches requested language
+                const displayLang = recipeData._display_lang || recipeData.content_language || 'en';
+                const actualLang = displayLang.slice(0, 2).toLowerCase();
+                
+                if (actualLang === currentLang || recipeData._translated) {
+                    // Content is in the requested language
+                    setRecipe(recipeData);
+                    setContentLanguage(actualLang);
+                    setTranslationStatus('ready');
+                } else {
+                    // Content is NOT in the requested language - show fallback banner
+                    setRecipe(recipeData);
+                    setContentLanguage(actualLang);
+                    setTranslationStatus('fallback');
+                }
+                
             } catch (error) {
-                console.error('Translation API error, falling back:', error);
-                // Fallback to regular recipe API
+                console.error('Recipe fetch error:', error);
+                
+                if (!isMounted) return;
+                
+                // Final fallback - try to get any recipe content
                 try {
-                    const fallbackRes = await recipeAPI.getBySlug(slug, currentLang);
+                    const fallbackRes = await recipeAPI.getBySlug(slug, 'en');
                     if (isMounted) {
                         setRecipe(fallbackRes.data);
-                        const actualLang = fallbackRes.data._display_lang || 
-                                          fallbackRes.data.content_language || 
-                                          'en';
-                        setContentLanguage(actualLang.slice(0, 2).toLowerCase());
-                        // If we had to fallback and got different language, mark it
-                        if (actualLang !== currentLang) {
-                            setTranslationStatus('fallback');
-                        }
+                        setContentLanguage('en');
+                        setTranslationStatus('failed');
                     }
-                } catch (fallbackError) {
+                } catch (finalError) {
                     if (isMounted) {
                         toast.error(t('recipe.notFound'));
                     }
@@ -106,6 +199,7 @@ const RecipePage = () => {
             } finally {
                 if (isMounted) {
                     setLoading(false);
+                    setIsTranslating(false);
                 }
             }
         };
@@ -117,7 +211,7 @@ const RecipePage = () => {
         };
     }, [slug, currentLang, t]);
 
-    // Memoized authenticity helpers
+    // Authenticity helpers
     const getAuthenticityBadgeColor = (level) => {
         switch(level) {
             case 1: return 'bg-[#6A1F2E] text-white';
@@ -156,15 +250,10 @@ const RecipePage = () => {
         return <FallbackBanner contentLang={contentLanguage} requestedLang={currentLang} />;
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center" data-testid="loading-state">
-                <div className="text-center">
-                    <ChefHat className="h-12 w-12 mx-auto text-[#6A1F2E] animate-pulse mb-4" />
-                    <p className="text-[#1E1E1E]/70">{t('recipe.loadingRecipe')}</p>
-                </div>
-            </div>
-        );
+    // CRITICAL: Show skeleton while loading OR while translating
+    // This prevents showing English content before translated content is ready
+    if (loading || (isTranslating && !recipe)) {
+        return <RecipeSkeleton language={currentLang} />;
     }
 
     if (!recipe) {
