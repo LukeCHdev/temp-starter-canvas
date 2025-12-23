@@ -42,6 +42,9 @@ from routes.translation import translation_router, set_database as set_translati
 # Import sitemap routes
 from routes.sitemap import router as sitemap_router, set_sitemap_db
 
+# Import search routes
+from routes.search import search_router, set_search_db
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -55,6 +58,9 @@ set_translation_db(db)
 
 # Set database for sitemap routes
 set_sitemap_db(db)
+
+# Set database for search routes
+set_search_db(db)
 
 # Create the main app
 app = FastAPI(title="Sous Chef Linguini API")
