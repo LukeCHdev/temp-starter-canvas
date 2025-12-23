@@ -1,20 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, ChefHat, Globe, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { ChefHat, Globe, Star, AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 
+/**
+ * RecipeCard - Language-aware recipe card that shows content in the current language
+ * 
+ * Features:
+ * - Automatically uses translations if available
+ * - Shows fallback indicator when displaying non-requested language
+ * - Localized badges and labels
+ * - No hardcoded "Test Data" badges
+ */
 export const RecipeCard = ({ recipe }) => {
-    const { getLocalizedPath } = useLanguage();
+    const { t } = useTranslation();
+    const { language, getLocalizedPath } = useLanguage();
+    const currentLang = language || 'en';
     
-    // Handle both old and new schema
-    const title = recipe.recipe_name || recipe.title_translated?.en || recipe.title_original || 'Unknown Recipe';
-    const country = recipe.origin_country || recipe.country || 'Unknown';
-    const region = recipe.origin_region || recipe.region || 'Unknown';
-    const authenticityLevel = recipe.authenticity_level || recipe.source_validation?.authenticity_rank || 3;
-    const description = recipe.history_summary || recipe.characteristic_profile || recipe.origin_story || '';
-    
+    // Authenticity level styling
     const levelColors = {
         1: 'bg-[#6A1F2E] text-white',
         2: 'bg-[#3F4A3C] text-white',
@@ -23,21 +29,89 @@ export const RecipeCard = ({ recipe }) => {
         5: 'bg-gray-400 text-white',
     };
     
+    // Localized authenticity labels
     const levelLabels = {
-        1: 'Official',
-        2: 'Traditional',
-        3: 'Local',
-        4: 'Recognized',
-        5: 'Modern',
+        1: { en: 'Official', es: 'Oficial', it: 'Ufficiale', fr: 'Officiel', de: 'Offiziell' },
+        2: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
+        3: { en: 'Local', es: 'Local', it: 'Locale', fr: 'Local', de: 'Lokal' },
+        4: { en: 'Recognized', es: 'Reconocido', it: 'Riconosciuto', fr: 'Reconnu', de: 'Anerkannt' },
+        5: { en: 'Modern', es: 'Moderno', it: 'Moderno', fr: 'Moderne', de: 'Modern' },
     };
-
+    
+    // Localized ingredient labels
+    const ingredientLabels = {
+        en: 'ingredients',
+        it: 'ingredienti',
+        fr: 'ingrédients',
+        es: 'ingredientes',
+        de: 'Zutaten'
+    };
+    
+    // Fallback content messages
+    const fallbackMessages = {
+        en: 'Shown in English',
+        it: 'Mostrato in inglese',
+        fr: 'Affiché en anglais',
+        es: 'Mostrado en inglés',
+        de: 'Auf Englisch angezeigt'
+    };
+    
+    // Determine content source and language
+    let title, description, contentLang, isTranslated;
+    
+    // Check if recipe has translations structure (from translation API)
+    if (recipe.content && recipe.status === 'ready') {
+        // Using TranslatedRecipeCard format
+        title = recipe.content.recipe_name || recipe.content.title || 'Unknown Recipe';
+        description = recipe.content.history_summary || recipe.content.characteristic_profile || '';
+        contentLang = recipe.lang || currentLang;
+        isTranslated = true;
+    } else if (recipe.translations && recipe.translations[currentLang]?.status === 'ready') {
+        // Recipe has embedded translations
+        const trans = recipe.translations[currentLang];
+        title = trans.recipe_name || trans.title || recipe.recipe_name || 'Unknown Recipe';
+        description = trans.history_summary || trans.characteristic_profile || recipe.history_summary || '';
+        contentLang = currentLang;
+        isTranslated = true;
+    } else if (recipe._translated && recipe._display_lang === currentLang) {
+        // Recipe was translated on-the-fly
+        title = recipe.recipe_name || recipe.title_original || 'Unknown Recipe';
+        description = recipe.history_summary || recipe.characteristic_profile || '';
+        contentLang = currentLang;
+        isTranslated = true;
+    } else {
+        // Use original content (fallback)
+        title = recipe.recipe_name || recipe.title_translated?.en || recipe.title_original || 'Unknown Recipe';
+        description = recipe.history_summary || recipe.characteristic_profile || recipe.origin_story || '';
+        contentLang = recipe.content_language?.slice(0, 2) || 'en';
+        isTranslated = false;
+    }
+    
+    // Get metadata
+    const metadata = recipe.metadata || recipe;
+    const country = metadata.origin_country || recipe.origin_country || recipe.country || 'Unknown';
+    const region = metadata.origin_region || recipe.origin_region || recipe.region || '';
+    const authenticityLevel = metadata.authenticity_level || recipe.authenticity_level || recipe.source_validation?.authenticity_rank || 3;
+    const slug = recipe.slug;
+    const ingredientCount = recipe.content?.ingredients?.length || recipe.ingredients?.length || 0;
+    
+    // Get localized label
+    const levelLabel = levelLabels[authenticityLevel]?.[currentLang] || levelLabels[authenticityLevel]?.en || levelLabels[3][currentLang];
+    
+    // Translate country name
+    const countryName = t(`countries.${country}`, { defaultValue: country });
+    
     // Get photo if available
-    const photoUrl = recipe.photos && recipe.photos.length > 0 && recipe.photos[0].image_url 
-        ? recipe.photos[0].image_url 
+    const photos = metadata.photos || recipe.photos;
+    const photoUrl = photos && photos.length > 0 && photos[0].image_url 
+        ? photos[0].image_url 
         : null;
+    
+    // Determine if we need to show fallback warning
+    const showFallbackWarning = !isTranslated && currentLang !== 'en' && contentLang !== currentLang;
 
     return (
-        <Link to={getLocalizedPath(`/recipe/${recipe.slug}`)} data-testid={`recipe-card-${recipe.slug}`}>
+        <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
             <Card className="card-elegant group cursor-pointer h-full flex flex-col">
                 <div className="relative overflow-hidden rounded-sm mb-4 h-48 bg-[#F5F2E8]">
                     {photoUrl ? (
@@ -53,18 +127,26 @@ export const RecipeCard = ({ recipe }) => {
                     )}
                     <Badge className={`absolute top-3 right-3 ${levelColors[authenticityLevel] || levelColors[3]}`}>
                         <Star className="h-3 w-3 mr-1" />
-                        {levelLabels[authenticityLevel] || 'Traditional'}
+                        {levelLabel}
                     </Badge>
                 </div>
                 
                 <div className="flex-1 flex flex-col">
+                    {/* Fallback warning if showing non-requested language */}
+                    {showFallbackWarning && (
+                        <div className="flex items-center gap-1 text-xs text-amber-600 mb-2">
+                            <AlertCircle className="h-3 w-3" />
+                            <span className="italic">{fallbackMessages[currentLang] || fallbackMessages.en}</span>
+                        </div>
+                    )}
+                    
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
                         {title}
                     </h3>
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
                         <Globe className="h-3 w-3" />
-                        {country} • {region}
+                        {countryName}{region ? ` • ${region}` : ''}
                     </p>
                     
                     {description && (
@@ -74,13 +156,8 @@ export const RecipeCard = ({ recipe }) => {
                     )}
                     
                     <div className="mt-4 pt-4 border-t border-[#E5DCC3] flex items-center justify-between text-sm text-[#1E1E1E]/60">
-                        {recipe.ingredients && (
-                            <span>{recipe.ingredients.length} ingredients</span>
-                        )}
-                        {recipe.gpt_used && (
-                            <Badge variant="outline" className="text-xs">
-                                {recipe.gpt_used}
-                            </Badge>
+                        {ingredientCount > 0 && (
+                            <span>{ingredientCount} {ingredientLabels[currentLang] || ingredientLabels.en}</span>
                         )}
                     </div>
                 </div>
@@ -88,3 +165,5 @@ export const RecipeCard = ({ recipe }) => {
         </Link>
     );
 };
+
+export default RecipeCard;
