@@ -585,8 +585,10 @@ async def get_featured_recipes(limit: int = 4):
     return {"recipes": recipes}
 
 @api_router.get("/recipes/top-worldwide")
-async def get_top_worldwide(limit: int = 10):
-    """Get top 10 recipes worldwide sorted by rating > reviews > favorites."""
+async def get_top_worldwide(limit: int = 10, lang: str = "en"):
+    """Get top 10 recipes worldwide sorted by rating > reviews > favorites.
+    If lang is provided, includes translation data for that language.
+    """
     recipes = await db.recipes.find(
         {"status": "published"},
         {"_id": 0}
@@ -596,7 +598,25 @@ async def get_top_worldwide(limit: int = 10):
         ("favorites_count", -1)
     ]).limit(limit).to_list(limit)
     
-    return {"recipes": recipes}
+    # If non-English language requested, fetch translations
+    if lang != "en":
+        for recipe in recipes:
+            slug = recipe.get("slug")
+            if slug:
+                # Check for pre-existing translation
+                translation = await db.translations.find_one(
+                    {"slug": slug, "lang": lang, "status": "ready"},
+                    {"_id": 0, "content": 1, "status": 1}
+                )
+                if translation and translation.get("content"):
+                    recipe["translations"] = {lang: {
+                        "status": "ready",
+                        "recipe_name": translation["content"].get("recipe_name"),
+                        "history_summary": translation["content"].get("history_summary"),
+                        "characteristic_profile": translation["content"].get("characteristic_profile")
+                    }}
+    
+    return {"recipes": recipes, "lang": lang}
 
 @api_router.get("/recipes/by-continent/{continent}")
 async def get_recipes_by_continent_name(continent: str, limit: int = 10):
