@@ -880,3 +880,23 @@
 - **Agent**: testing
 - **Date**: December 23, 2025
 - **Message**: CREATE MENU FORM FIX VERIFICATION COMPLETE - ALL ACCEPTANCE CRITERIA PASSED. The "Region" → "Country" terminology change has been successfully implemented across all languages (EN/IT/ES). The form correctly shows "Select a Country" headers, country dropdown options (Italy, Japan, Mexico), and proper multilingual translations. Frontend functionality is working perfectly. There is a separate backend issue with menu generation (ObjectId serialization error) that is unrelated to the form fix itself. The UX fix for changing "Region" to "Country" is production-ready and meets all user requirements.
+
+## ISSUE FIX VERIFICATION - December 23, 2025
+
+### Issue #1: Recipe Content Translation (History & Origin)
+**Problem**: "History & Origin" section not translated on recipe pages
+**Fix**: Added translation-aware content extraction in RecipePage.jsx that:
+- Checks `recipe.translations[lang].status === 'ready'`
+- Falls back to English if translation unavailable
+- Shows (EN) indicator on sections still in English
+
+### Issue #2: Menu Builder Country List
+**Problem**: Only 3 countries (Italy, Mexico, Japan) shown in dropdown
+**Fix**: Updated `/api/countries` to dynamically return all countries from recipes collection
+- Returns 25 countries with recipe counts
+- Sorted by recipe count descending
+
+### Test Cases
+1. [ ] Recipe page in Italian shows translated content or (EN) fallback indicator
+2. [ ] Menu Builder dropdown shows 25+ countries
+3. [ ] Menu generation works for any country with 3+ recipes
