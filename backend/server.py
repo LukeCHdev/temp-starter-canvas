@@ -634,7 +634,7 @@ async def get_top_worldwide(limit: int = 10, lang: str = "en"):
         for recipe in recipes:
             slug = recipe.get("slug")
             if slug:
-                # Check for pre-existing translation
+                # Check for ready translation first
                 translation = await db.translations.find_one(
                     {"slug": slug, "lang": lang, "status": "ready"},
                     {"_id": 0, "content": 1, "status": 1}
@@ -646,6 +646,17 @@ async def get_top_worldwide(limit: int = 10, lang: str = "en"):
                         "history_summary": translation["content"].get("history_summary"),
                         "characteristic_profile": translation["content"].get("characteristic_profile")
                     }}
+                else:
+                    # Check if translation is in queue (pending)
+                    queued = await db.translation_queue.find_one(
+                        {"recipe_slug": slug, "target_lang": lang}
+                    )
+                    if queued:
+                        recipe["translations"] = {lang: {
+                            "status": queued.get("status", "pending")
+                        }}
+    
+    return {"recipes": recipes, "lang": lang}
     
     return {"recipes": recipes, "lang": lang}
 
