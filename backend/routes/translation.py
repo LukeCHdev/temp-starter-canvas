@@ -382,7 +382,7 @@ async def pretranslate_top_recipes(limit: int = 100):
                 )
                 stats["translations_queued"] += 1
                 
-            except Exception as e:
+            except Exception:
                 stats["errors"] += 1
     
     return {
