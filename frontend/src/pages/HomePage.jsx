@@ -21,13 +21,14 @@ const HomePage = () => {
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [language]); // Re-fetch when language changes
 
     const loadData = async () => {
         try {
+            // Pass language to get translated content
             const [bestRes, featuredRes] = await Promise.all([
-                recipeAPI.getBest(),
-                recipeAPI.getFeatured(4)
+                recipeAPI.getBest(language),
+                recipeAPI.getFeatured(4, language)
             ]);
             
             setBestRecipe(bestRes.data.recipe);
