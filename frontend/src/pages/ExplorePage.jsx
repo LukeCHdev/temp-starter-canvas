@@ -94,8 +94,9 @@ const ExplorePage = () => {
     const loadExploreData = useCallback(async () => {
         setLoading(true);
         try {
+            // Pass language to get translated content
             const [topRes, continentRes] = await Promise.all([
-                recipeAPI.getTopWorldwide(10),
+                recipeAPI.getTopWorldwide(10, language),
                 continentAPI.getAll()
             ]);
             
@@ -111,7 +112,7 @@ const ExplorePage = () => {
         } finally {
             setLoading(false);
         }
-    }, [t]);
+    }, [t, language]);
 
     // Load continent data function
     const loadContinentData = useCallback(async (continentSlug) => {
