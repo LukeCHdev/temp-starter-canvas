@@ -819,3 +819,20 @@
 - **Agent**: testing
 - **Date**: December 23, 2025
 - **Message**: RECIPE CARD TRANSLATION LOGIC VERIFICATION COMPLETE - ALL ACCEPTANCE CRITERIA PASSED. The multilingual recipe card system is working perfectly. Cards with ready translations show translated content WITHOUT fallback warnings (e.g., Mole Poblano in Italian). Cards without translations show English content WITH localized fallback warnings ("Mostrato in inglese"/"Affiché en anglais"). Click-through navigation maintains language context. All badges are properly localized ("Ufficiale"/"Officiel", "Tradizionale"/"Traditionnel"). No prohibited "Test Data" or "Sous-Chef Linguine" badges found. The translation logic meets all requirements for multilingual recipe card display.
+
+## CREATE MENU FORM FIX VERIFICATION - December 23, 2025
+
+### Testing Focus
+**CRITICAL UX FIX**: Replace "Region" field with "Country" field in Create Menu form
+
+### Required Changes Made
+1. **Frontend API (api.js)**: Changed parameter from `region` to `country`
+2. **Backend API (server.py)**: Changed endpoint parameter from `region` to `country`, updated query to use `origin_country`
+3. **Menu Builder Service**: Updated to use `country` terminology and query recipes by country
+4. **Frontend Component (MenuBuilderPage.jsx)**: Already correctly implemented with country selection
+
+### Acceptance Criteria
+- [ ] "Create Menu" page displays "Country" label (not "Region")
+- [ ] Dropdown options = countries (Italy, Japan, Mexico, etc.), not regions
+- [ ] Countries are localized per UI language
+- [ ] Saving a menu with a selected country stores it correctly in the backend
