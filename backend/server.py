@@ -1771,6 +1771,7 @@ app.include_router(admin_router)
 app.include_router(document_router)
 app.include_router(translation_router)
 app.include_router(sitemap_router, prefix="/api")
+app.include_router(search_router)
 
 # Add CORS middleware
 app.add_middleware(
