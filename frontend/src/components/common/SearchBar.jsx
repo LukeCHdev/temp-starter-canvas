@@ -26,20 +26,28 @@ export const SearchBar = ({ className = '' }) => {
             const res = await recipeAPI.search(query, true, language);
             const data = res.data;
 
-            if (data.recipe && data.recipe.slug) {
+            console.log('Search response:', data);
+
+            if (data.found && data.recipe && data.recipe.slug) {
                 if (data.generated) {
                     toast.success(t('search.generatedSuccess'));
                 }
-                navigate(getLocalizedPath(`/recipe/${data.recipe.slug}`));
+                const recipePath = getLocalizedPath(`/recipe/${data.recipe.slug}`);
+                console.log('Navigating to:', recipePath);
+                navigate(recipePath);
             } else if (data.message) {
                 toast.error(data.message);
             } else {
-                toast.error(t('search.noResults'));
+                toast.info(t('search.noResults'));
             }
 
         } catch (error) {
             console.error("Search error:", error);
-            toast.error(t('search.failed'));
+            if (error.code === 'ECONNABORTED') {
+                toast.error(t('search.timeout', 'Search timed out. Please try again.'));
+            } else {
+                toast.error(t('search.failed'));
+            }
         } finally {
             setLoading(false);
         }
