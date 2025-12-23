@@ -68,7 +68,7 @@ export const countryAPI = {
 
 // Menu Builder API
 export const menuAPI = {
-    build: (region) => api.post('/menu-builder', null, { params: { region } }),
+    build: (country) => api.post('/menu-builder', null, { params: { country } }),
 };
 
 // AI Utilities API

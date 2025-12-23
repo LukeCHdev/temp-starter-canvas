@@ -1051,23 +1051,24 @@ async def get_country(slug: str):
 # ============== MENU BUILDER ROUTES ==============
 
 @api_router.post("/menu-builder")
-async def build_menu(region: str):
-    """Generate a culturally coherent menu."""
+async def build_menu(country: str):
+    """Generate a culturally coherent menu based on a country's recipes."""
     try:
-        # Get available recipes from region
+        # Get available recipes from the selected country
+        # Query by origin_country to match the recipe data model
         recipes = await db.recipes.find(
-            {"region": region, "status": "published"},
+            {"origin_country": {"$regex": f"^{country}$", "$options": "i"}, "status": "published"},
             {"_id": 0}
         ).to_list(50)
         
         if len(recipes) < 3:
             raise HTTPException(
                 status_code=400,
-                detail=f"Not enough recipes for {region}. Need at least 3."
+                detail=f"Not enough recipes for {country}. Need at least 3."
             )
         
         # Generate menu
-        menu = await menu_builder_service.generate_menu(region, recipes)
+        menu = await menu_builder_service.generate_menu(country, recipes)
         
         # Cache menu
         menu['generated_at'] = datetime.now(timezone.utc).isoformat()
