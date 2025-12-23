@@ -40,7 +40,7 @@ from routes.document_import import document_router
 from routes.translation import translation_router, set_database as set_translation_db
 
 # Import sitemap routes
-from routes.sitemap import router as sitemap_router
+from routes.sitemap import router as sitemap_router, set_sitemap_db
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
