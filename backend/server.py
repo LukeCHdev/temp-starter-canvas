@@ -1034,9 +1034,77 @@ async def get_region(slug: str):
 
 @api_router.get("/countries")
 async def get_countries():
-    """Get all countries."""
-    countries = await db.countries.find({}, {"_id": 0}).to_list(200)
+    """Get all countries that have at least one recipe.
+    
+    Returns a dynamic list based on actual recipe data, not a static list.
+    This ensures the Menu Builder shows all available countries.
+    """
+    # Aggregate distinct countries from recipes collection
+    pipeline = [
+        {"$match": {"status": "published", "origin_country": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {
+            "_id": "$origin_country",
+            "recipe_count": {"$sum": 1}
+        }},
+        {"$sort": {"_id": 1}}  # Sort alphabetically by country name
+    ]
+    
+    countries = []
+    async for doc in db.recipes.aggregate(pipeline):
+        country_name = doc["_id"]
+        if country_name:
+            countries.append({
+                "name": country_name,
+                "slug": country_name.lower().replace(" ", "-"),
+                "recipe_count": doc["recipe_count"]
+            })
+    
+    # Also check if there are additional countries in the countries collection
+    # that might not have recipes yet but should be shown
+    static_countries = await db.countries.find({}, {"_id": 0, "name": 1, "slug": 1}).to_list(200)
+    existing_names = {c["name"] for c in countries}
+    
+    for sc in static_countries:
+        if sc.get("name") and sc["name"] not in existing_names:
+            countries.append({
+                "name": sc["name"],
+                "slug": sc.get("slug", sc["name"].lower().replace(" ", "-")),
+                "recipe_count": 0
+            })
+    
+    # Sort by recipe count (descending), then name (ascending)
+    countries.sort(key=lambda x: (-x["recipe_count"], x["name"]))
+    
     return {"countries": countries}
+
+@api_router.get("/countries/with-recipes")
+async def get_countries_with_recipes(min_recipes: int = 1):
+    """Get all countries that have at least min_recipes recipes.
+    
+    Use this endpoint for Menu Builder to ensure only countries
+    with enough recipes for menu generation are shown.
+    """
+    pipeline = [
+        {"$match": {"status": "published", "origin_country": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$group": {
+            "_id": "$origin_country",
+            "recipe_count": {"$sum": 1}
+        }},
+        {"$match": {"recipe_count": {"$gte": min_recipes}}},
+        {"$sort": {"recipe_count": -1, "_id": 1}}
+    ]
+    
+    countries = []
+    async for doc in db.recipes.aggregate(pipeline):
+        country_name = doc["_id"]
+        if country_name:
+            countries.append({
+                "name": country_name,
+                "slug": country_name.lower().replace(" ", "-"),
+                "recipe_count": doc["recipe_count"]
+            })
+    
+    return {"countries": countries, "min_recipes": min_recipes}
 
 @api_router.get("/countries/{slug}")
 async def get_country(slug: str):
