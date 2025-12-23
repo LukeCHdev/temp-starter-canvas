@@ -43,7 +43,7 @@ export const SearchBar = ({ className = '' }) => {
         } finally {
             setLoading(false);
         }
-    }, [searchQuery, navigate, t, getLocalizedPath]);
+    }, [searchQuery, navigate, t, getLocalizedPath, language]);
 
     return (
         <form onSubmit={handleSearch} className={`flex gap-2 ${className}`} data-testid="search-form">
