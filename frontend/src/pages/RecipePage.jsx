@@ -276,6 +276,41 @@ const RecipePage = () => {
     const recipeLanguage = recipe.origin_language || recipe.original_language || 'en';
     const authenticityLevel = recipe.authenticity_level || recipe.source_validation?.authenticity_rank || 3;
 
+    // TRANSLATION-AWARE CONTENT EXTRACTION
+    // Check if translations exist for the current language and are ready
+    const translation = recipe.translations?.[currentLang];
+    const isTranslated = translation?.status === 'ready';
+    
+    // Helper function to get translated content with fallback
+    const getTranslatedContent = (translationKey, fallbackKey) => {
+        if (isTranslated && translation?.[translationKey]) {
+            return { content: translation[translationKey], isTranslated: true };
+        }
+        return { content: recipe[fallbackKey], isTranslated: false };
+    };
+    
+    // Extract content with translation awareness
+    const historyContent = getTranslatedContent('history_and_origin', 'history_summary');
+    const profileContent = getTranslatedContent('characteristic_profile', 'characteristic_profile');
+    const noNoRulesContent = isTranslated && translation?.no_no_rules?.length > 0 
+        ? { content: translation.no_no_rules, isTranslated: true }
+        : { content: recipe.no_no_rules, isTranslated: false };
+    const techniquesContent = isTranslated && translation?.special_techniques?.length > 0
+        ? { content: translation.special_techniques, isTranslated: true }
+        : { content: recipe.special_techniques, isTranslated: false };
+    const ingredientsContent = isTranslated && translation?.ingredients?.length > 0
+        ? { content: translation.ingredients, isTranslated: true }
+        : { content: recipe.ingredients, isTranslated: false };
+    const instructionsContent = isTranslated && translation?.instructions?.length > 0
+        ? { content: translation.instructions, isTranslated: true }
+        : { content: recipe.instructions, isTranslated: false };
+    const winePairingContent = isTranslated && translation?.wine_pairing
+        ? { content: translation.wine_pairing, isTranslated: true }
+        : { content: recipe.wine_pairing, isTranslated: false };
+    
+    // Show fallback warning only if content is not translated and we're not on English
+    const showContentFallback = currentLang !== 'en' && !isTranslated;
+
     return (
         <div className="min-h-screen" data-testid="recipe-page">
             {/* SEO Metadata */}
