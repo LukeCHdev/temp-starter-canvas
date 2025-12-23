@@ -226,17 +226,18 @@ async def get_recipes_translated(
     country: Optional[str] = None,
     continent: Optional[str] = None,
     limit: int = Query(50, ge=1, le=200),
-    page: int = Query(1, ge=1)
+    page: int = Query(1, ge=1),
+    only_translated: bool = Query(False, description="Only return recipes with ready translations")
 ):
-    """Get recipes with content in the requested language - OPTIMIZED.
+    """Get recipes with STRICT language-coherent content.
     
-    Returns recipes immediately with:
-    - Translated content if available (status='ready')
-    - Canonical English content as fallback (status='fallback')
-    - Never blocks waiting for translations
-    - Does NOT auto-queue missing translations (use /queue endpoint for that)
+    LANGUAGE COHERENCE RULES:
+    1. If translation[lang] exists and status='ready' → return translated content
+    2. If no translation → fallback to English (content_language='en') with clear marker
+    3. NEVER return raw original content in IT/ES/PT etc. unless that's the requested lang
+    4. Always include fallback_lang and origin_language for frontend to show markers
     
-    This ensures the Explore page loads instantly.
+    Optional: only_translated=true filters to only translated recipes
     """
     if lang not in SUPPORTED_LANGUAGES:
         raise HTTPException(status_code=400, detail=f"Unsupported language: {lang}")
@@ -248,6 +249,10 @@ async def get_recipes_translated(
     if continent:
         query['continent'] = continent.replace('-', ' ').title()
     
+    # If only_translated, add filter for ready translations
+    if only_translated and lang != 'en':
+        query[f'translations.{lang}.status'] = 'ready'
+    
     skip = (page - 1) * limit
     target_lang = lang[:2].lower()
     
@@ -255,16 +260,18 @@ async def get_recipes_translated(
     recipes = await db.recipes.find(query, {'_id': 0}).skip(skip).limit(limit).to_list(limit)
     total = await db.recipes.count_documents(query)
     
-    # Process recipes FAST - no DB writes, no queueing
+    # Process recipes with STRICT language coherence
     results = []
     for recipe in recipes:
         slug = recipe.get('slug')
         content_lang = recipe.get('content_language', 'en')[:2].lower()
+        origin_lang = recipe.get('origin_language', 'en')[:2].lower() if recipe.get('origin_language') else None
         
         # Get common metadata (never translated)
         metadata = {
             'origin_country': recipe.get('origin_country', ''),
             'origin_region': recipe.get('origin_region', ''),
+            'origin_language': origin_lang,  # Include for frontend markers
             'authenticity_level': recipe.get('authenticity_level', 3),
             'photos': recipe.get('photos', []),
             'youtube_links': recipe.get('youtube_links', []),
@@ -272,12 +279,37 @@ async def get_recipes_translated(
             'ratings_count': recipe.get('ratings_count', 0)
         }
         
-        # If requesting canonical language, return canonical content
-        if target_lang == content_lang:
+        # PRIORITY 1: Check if translation exists for target language
+        translation = recipe.get('translations', {}).get(target_lang, {})
+        
+        if translation.get('status') == 'ready':
+            # ✅ Translation is ready - use it (BEST CASE)
             results.append({
                 'slug': slug,
                 'lang': target_lang,
                 'status': 'ready',
+                'is_translated': True,
+                'content': {
+                    'recipe_name': translation.get('recipe_name', ''),
+                    'history_summary': translation.get('history_summary', translation.get('history_and_origin', '')),
+                    'characteristic_profile': translation.get('characteristic_profile', ''),
+                    'no_no_rules': translation.get('no_no_rules', []),
+                    'special_techniques': translation.get('special_techniques', []),
+                    'instructions': translation.get('instructions', []),
+                    'ingredients': translation.get('ingredients', []),
+                    'wine_pairing': translation.get('wine_pairing', {})
+                },
+                'metadata': metadata
+            })
+            continue
+        
+        # PRIORITY 2: If requesting English (canonical), return canonical content
+        if target_lang == 'en' and content_lang == 'en':
+            results.append({
+                'slug': slug,
+                'lang': 'en',
+                'status': 'ready',
+                'is_translated': False,  # It's canonical, not translated
                 'content': {
                     'recipe_name': recipe.get('recipe_name', ''),
                     'history_summary': recipe.get('history_summary', ''),
@@ -292,54 +324,53 @@ async def get_recipes_translated(
             })
             continue
         
-        # Check for existing translation
-        translation = recipe.get('translations', {}).get(target_lang, {})
+        # PRIORITY 3: Fallback to English canonical content (with clear marker)
+        # NEVER return raw original content in IT/ES/PT etc.
+        # Always use English as the fallback language
+        en_translation = recipe.get('translations', {}).get('en', {})
         
-        if translation.get('status') == 'ready':
-            # Translation is ready - use it
-            results.append({
-                'slug': slug,
-                'lang': target_lang,
-                'status': 'ready',
-                'content': {
-                    'recipe_name': translation.get('recipe_name', ''),
-                    'history_summary': translation.get('history_summary', translation.get('history_and_origin', '')),
-                    'characteristic_profile': translation.get('characteristic_profile', ''),
-                    'no_no_rules': translation.get('no_no_rules', []),
-                    'special_techniques': translation.get('special_techniques', []),
-                    'instructions': translation.get('instructions', []),
-                    'ingredients': translation.get('ingredients', []),
-                    'wine_pairing': translation.get('wine_pairing', {})
-                },
-                'metadata': metadata
-            })
+        # Use English translation if available, otherwise canonical content
+        if en_translation.get('status') == 'ready':
+            fallback_content = {
+                'recipe_name': en_translation.get('recipe_name', ''),
+                'history_summary': en_translation.get('history_summary', en_translation.get('history_and_origin', '')),
+                'characteristic_profile': en_translation.get('characteristic_profile', ''),
+                'no_no_rules': en_translation.get('no_no_rules', []),
+                'special_techniques': en_translation.get('special_techniques', []),
+                'instructions': en_translation.get('instructions', []),
+                'ingredients': en_translation.get('ingredients', []),
+                'wine_pairing': en_translation.get('wine_pairing', {})
+            }
         else:
-            # No ready translation - return FALLBACK with English content
-            # This allows the page to render immediately
-            results.append({
-                'slug': slug,
-                'lang': target_lang,
-                'status': 'fallback',  # Frontend can show warning
-                'content': {
-                    'recipe_name': recipe.get('recipe_name', ''),
-                    'history_summary': recipe.get('history_summary', ''),
-                    'characteristic_profile': recipe.get('characteristic_profile', ''),
-                    'no_no_rules': recipe.get('no_no_rules', []),
-                    'special_techniques': recipe.get('special_techniques', []),
-                    'instructions': recipe.get('instructions', []),
-                    'ingredients': recipe.get('ingredients', []),
-                    'wine_pairing': recipe.get('wine_pairing', {})
-                },
-                'metadata': metadata,
-                'fallback_lang': content_lang  # Indicate what language the fallback is in
-            })
+            # Use canonical content (should be English for generated recipes)
+            fallback_content = {
+                'recipe_name': recipe.get('recipe_name', ''),
+                'history_summary': recipe.get('history_summary', ''),
+                'characteristic_profile': recipe.get('characteristic_profile', ''),
+                'no_no_rules': recipe.get('no_no_rules', []),
+                'special_techniques': recipe.get('special_techniques', []),
+                'instructions': recipe.get('instructions', []),
+                'ingredients': recipe.get('ingredients', []),
+                'wine_pairing': recipe.get('wine_pairing', {})
+            }
+        
+        results.append({
+            'slug': slug,
+            'lang': target_lang,
+            'status': 'fallback',
+            'is_translated': False,
+            'fallback_lang': 'en',  # Always English fallback
+            'content': fallback_content,
+            'metadata': metadata
+        })
     
     return {
         'recipes': results,
         'total': total,
         'page': page,
         'limit': limit,
-        'lang': lang
+        'lang': lang,
+        'only_translated': only_translated
     }
 
 
