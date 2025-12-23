@@ -1594,65 +1594,142 @@ async def get_countries_by_continent(continent: str):
 # ============== SEO ROUTES ==============
 
 @api_router.get("/sitemap.xml")
-async def get_sitemap():
-    """Generate sitemap.xml for SEO."""
+async def get_sitemap(force_rebuild: bool = False):
+    """Generate multilingual sitemap.xml with hreflang annotations for SEO."""
     from fastapi.responses import Response
+    import os
+    import json
+    from datetime import timedelta
     
-    base_url = "https://souschef-linguine.com"  # Replace with actual URL
+    # Supported languages
+    SUPPORTED_LANGUAGES = ['en', 'es', 'it', 'fr', 'de']
+    CACHE_FILE = '/tmp/sitemap_cache.xml'
+    CACHE_META = '/tmp/sitemap_cache_meta.json'
+    CACHE_TTL_HOURS = 24
     
-    # Static pages
-    static_pages = [
-        {"loc": "/", "priority": "1.0", "changefreq": "daily"},
-        {"loc": "/explore", "priority": "0.9", "changefreq": "daily"},
-        {"loc": "/about", "priority": "0.6", "changefreq": "monthly"},
-        {"loc": "/contact", "priority": "0.5", "changefreq": "monthly"},
-        {"loc": "/privacy", "priority": "0.3", "changefreq": "monthly"},
-        {"loc": "/terms", "priority": "0.3", "changefreq": "monthly"},
-        {"loc": "/cookies", "priority": "0.3", "changefreq": "monthly"},
-    ]
+    base_url = os.environ.get('SITE_URL', 'https://souscheflinguine.com')
     
-    # Get continents
-    continents = ["europe", "asia", "americas", "africa", "middle-east", "oceania"]
+    # Check cache first
+    def is_cache_valid():
+        try:
+            if os.path.exists(CACHE_META):
+                with open(CACHE_META, 'r') as f:
+                    meta = json.load(f)
+                    generated_at = datetime.fromisoformat(meta.get('generated_at', ''))
+                    return datetime.now(timezone.utc) < generated_at + timedelta(hours=CACHE_TTL_HOURS)
+        except:
+            pass
+        return False
     
-    # Get all recipes
-    recipes = await db.recipes.find(
-        {"status": "published"},
-        {"slug": 1, "date_fetched": 1, "_id": 0}
-    ).to_list(1000)
+    if not force_rebuild and is_cache_valid() and os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, 'r') as f:
+            return Response(content=f.read(), media_type="application/xml",
+                          headers={"Cache-Control": "public, max-age=3600", "X-Sitemap-Cached": "true"})
+    
+    # Helper to generate URL entry with hreflang
+    def url_entry(path: str, priority: str, changefreq: str, lastmod: str = None):
+        entry = "  <url>\n"
+        # Generate entries for each language
+        for lang in SUPPORTED_LANGUAGES:
+            lang_path = f"/{lang}{path}" if path != '/' else f"/{lang}"
+            entry += f"    <loc>{base_url}{lang_path}</loc>\n"
+        
+        if lastmod:
+            entry += f"    <lastmod>{lastmod}</lastmod>\n"
+        entry += f"    <changefreq>{changefreq}</changefreq>\n"
+        entry += f"    <priority>{priority}</priority>\n"
+        
+        # Add hreflang annotations
+        for lang in SUPPORTED_LANGUAGES:
+            lang_path = f"/{lang}{path}" if path != '/' else f"/{lang}"
+            entry += f'    <xhtml:link rel="alternate" hreflang="{lang}" href="{base_url}{lang_path}"/>\n'
+        # x-default points to English
+        default_path = f"/en{path}" if path != '/' else "/en"
+        entry += f'    <xhtml:link rel="alternate" hreflang="x-default" href="{base_url}{default_path}"/>\n'
+        
+        entry += "  </url>\n"
+        return entry
     
     # Build XML
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n'
+    xml_content += '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
     
-    # Add static pages
-    for page in static_pages:
-        xml_content += f'''  <url>
-    <loc>{base_url}{page["loc"]}</loc>
-    <changefreq>{page["changefreq"]}</changefreq>
-    <priority>{page["priority"]}</priority>
-  </url>\n'''
+    # Static pages
+    static_pages = [
+        ("/", "1.0", "daily"),
+        ("/explore", "0.9", "daily"),
+        ("/about", "0.6", "monthly"),
+        ("/editorial-policy", "0.5", "monthly"),
+        ("/techniques", "0.7", "weekly"),
+    ]
     
-    # Add continent pages
-    for continent in continents:
-        xml_content += f'''  <url>
-    <loc>{base_url}/explore/{continent}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>\n'''
+    for path, priority, changefreq in static_pages:
+        xml_content += url_entry(path, priority, changefreq)
     
-    # Add recipe pages
-    for recipe in recipes:
-        lastmod = recipe.get("date_fetched", datetime.now(timezone.utc).isoformat())[:10]
-        xml_content += f'''  <url>
-    <loc>{base_url}/recipe/{recipe["slug"]}</loc>
-    <lastmod>{lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>\n'''
+    # Get continents
+    try:
+        continents = await db.continents.find({}, {"slug": 1, "_id": 0}).to_list(100)
+        for continent in continents:
+            slug = continent.get('slug')
+            if slug:
+                xml_content += url_entry(f"/explore/{slug}", "0.8", "weekly")
+                
+                # Get countries for this continent
+                countries = await db.countries.find({"continent_slug": slug}, {"slug": 1, "_id": 0}).to_list(100)
+                for country in countries:
+                    country_slug = country.get('slug')
+                    if country_slug:
+                        xml_content += url_entry(f"/explore/{slug}/{country_slug}", "0.7", "weekly")
+    except Exception as e:
+        logger.error(f"Error fetching continents: {e}")
+        # Fallback to hardcoded continents
+        for continent in ["europe", "asia", "americas", "africa", "middle-east", "oceania"]:
+            xml_content += url_entry(f"/explore/{continent}", "0.8", "weekly")
+    
+    # Get all published recipes
+    try:
+        recipes = await db.recipes.find(
+            {"status": "published"},
+            {"slug": 1, "date_fetched": 1, "average_rating": 1, "_id": 0}
+        ).to_list(10000)
+        
+        # Sort by rating for priority assignment
+        recipes_sorted = sorted(recipes, key=lambda x: x.get('average_rating', 0), reverse=True)
+        
+        for idx, recipe in enumerate(recipes_sorted):
+            slug = recipe.get('slug')
+            if not slug:
+                continue
+            
+            # Higher priority for top recipes
+            if idx < 10:
+                priority = "0.9"
+            elif idx < 50:
+                priority = "0.8"
+            elif idx < 100:
+                priority = "0.7"
+            else:
+                priority = "0.6"
+            
+            lastmod = recipe.get("date_fetched", "")[:10] if recipe.get("date_fetched") else None
+            xml_content += url_entry(f"/recipe/{slug}", priority, "weekly", lastmod)
+    except Exception as e:
+        logger.error(f"Error fetching recipes: {e}")
     
     xml_content += '</urlset>'
     
-    return Response(content=xml_content, media_type="application/xml")
+    # Cache the result
+    try:
+        with open(CACHE_FILE, 'w') as f:
+            f.write(xml_content)
+        with open(CACHE_META, 'w') as f:
+            json.dump({'generated_at': datetime.now(timezone.utc).isoformat()}, f)
+    except Exception as e:
+        logger.warning(f"Failed to cache sitemap: {e}")
+    
+    return Response(content=xml_content, media_type="application/xml",
+                   headers={"Cache-Control": "public, max-age=3600", "X-Sitemap-Cached": "false"})
 
 @api_router.get("/robots.txt")
 async def get_robots():
