@@ -109,22 +109,6 @@ class TranslationMemoryService:
         source_hash = self._compute_hash(source_text)
         now = datetime.now(timezone.utc).isoformat()
         
-        doc = {
-            "source_hash": source_hash,
-            "source_text": source_text,
-            "source_lang": source_lang,
-            "target_lang": target_lang,
-            "translated_text": translated_text,
-            "source_length": len(source_text),
-            "confidence": confidence,
-            "verified": verified,
-            "context": context,
-            "source_type": source_type,
-            "created_at": now,
-            "updated_at": now,
-            "usage_count": 1
-        }
-        
         try:
             # Upsert - update if exists, insert if new
             result = await self.collection.update_one(
