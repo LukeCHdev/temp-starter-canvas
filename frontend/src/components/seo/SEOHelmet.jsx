@@ -201,10 +201,68 @@ export const PageSEO = ({
 /**
  * SEO component for explore/category pages with breadcrumbs
  */
-export const ExploreSEO = ({ title, description, path = '/explore', breadcrumbs = [] }) => {
+export const ExploreSEO = ({ continent, country, path = '/explore', breadcrumbs = [] }) => {
     const { language } = useLanguage();
     const canonicalUrl = `${BASE_DOMAIN}/${language}${path}`;
     const languages = ['en', 'it', 'fr', 'es', 'de'];
+    
+    // Localized titles based on context
+    const getTitleAndDescription = () => {
+        if (country) {
+            // Country-specific page
+            const titles = {
+                en: `${country} Recipes - Traditional & Authentic | Sous Chef Linguine`,
+                it: `Ricette ${country} - Tradizionali e Autentiche | Sous Chef Linguine`,
+                fr: `Recettes ${country} - Traditionnelles et Authentiques | Sous Chef Linguine`,
+                es: `Recetas de ${country} - Tradicionales y Auténticas | Sous Chef Linguine`,
+                de: `${country} Rezepte - Traditionell & Authentisch | Sous Chef Linguine`
+            };
+            const descriptions = {
+                en: `Discover authentic traditional recipes from ${country}. Explore the culinary heritage and cooking traditions of this region.`,
+                it: `Scopri ricette tradizionali autentiche da ${country}. Esplora il patrimonio culinario e le tradizioni gastronomiche di questa regione.`,
+                fr: `Découvrez des recettes traditionnelles authentiques de ${country}. Explorez le patrimoine culinaire et les traditions de cette région.`,
+                es: `Descubre recetas tradicionales auténticas de ${country}. Explora el patrimonio culinario y las tradiciones de esta región.`,
+                de: `Entdecken Sie authentische traditionelle Rezepte aus ${country}. Erkunden Sie das kulinarische Erbe und die Kochtraditionen dieser Region.`
+            };
+            return { title: titles[language] || titles.en, description: descriptions[language] || descriptions.en };
+        } else if (continent) {
+            // Continent-specific page
+            const titles = {
+                en: `${continent} Recipes - Explore Regional Cuisines | Sous Chef Linguine`,
+                it: `Ricette ${continent} - Esplora le Cucine Regionali | Sous Chef Linguine`,
+                fr: `Recettes ${continent} - Explorez les Cuisines Régionales | Sous Chef Linguine`,
+                es: `Recetas de ${continent} - Explora Cocinas Regionales | Sous Chef Linguine`,
+                de: `${continent} Rezepte - Regionale Küchen Entdecken | Sous Chef Linguine`
+            };
+            const descriptions = {
+                en: `Browse authentic recipes from ${continent}. Discover traditional dishes and culinary traditions from countries across this region.`,
+                it: `Sfoglia ricette autentiche da ${continent}. Scopri piatti tradizionali e tradizioni culinarie dai paesi di questa regione.`,
+                fr: `Parcourez des recettes authentiques de ${continent}. Découvrez des plats traditionnels et des traditions culinaires des pays de cette région.`,
+                es: `Explora recetas auténticas de ${continent}. Descubre platos tradicionales y tradiciones culinarias de países de esta región.`,
+                de: `Durchstöbern Sie authentische Rezepte aus ${continent}. Entdecken Sie traditionelle Gerichte und kulinarische Traditionen aus Ländern dieser Region.`
+            };
+            return { title: titles[language] || titles.en, description: descriptions[language] || descriptions.en };
+        } else {
+            // Main explore page
+            const titles = {
+                en: 'Explore Recipes - Browse by Region & Country | Sous Chef Linguine',
+                it: 'Esplora Ricette - Sfoglia per Regione e Paese | Sous Chef Linguine',
+                fr: 'Explorer les Recettes - Parcourir par Région et Pays | Sous Chef Linguine',
+                es: 'Explorar Recetas - Buscar por Región y País | Sous Chef Linguine',
+                de: 'Rezepte Entdecken - Nach Region & Land Durchsuchen | Sous Chef Linguine'
+            };
+            const descriptions = {
+                en: 'Explore authentic recipes from around the world. Browse by continent, country, or cuisine to discover traditional dishes.',
+                it: 'Esplora ricette autentiche da tutto il mondo. Sfoglia per continente, paese o cucina per scoprire piatti tradizionali.',
+                fr: 'Explorez des recettes authentiques du monde entier. Parcourez par continent, pays ou cuisine pour découvrir des plats traditionnels.',
+                es: 'Explora recetas auténticas de todo el mundo. Navega por continente, país o cocina para descubrir platos tradicionales.',
+                de: 'Entdecken Sie authentische Rezepte aus aller Welt. Durchsuchen Sie nach Kontinent, Land oder Küche, um traditionelle Gerichte zu finden.'
+            };
+            return { title: titles[language] || titles.en, description: descriptions[language] || descriptions.en };
+        }
+    };
+    
+    const { title, description } = getTitleAndDescription();
     
     const breadcrumbJsonLd = {
         "@context": "https://schema.org",
@@ -220,7 +278,7 @@ export const ExploreSEO = ({ title, description, path = '/explore', breadcrumbs 
     return (
         <Helmet>
             <html lang={language} />
-            <title>{`${title} | Sous Chef Linguine`}</title>
+            <title>{title}</title>
             <meta name="description" content={description} />
             <link rel="canonical" href={canonicalUrl} />
             
@@ -246,9 +304,11 @@ export const ExploreSEO = ({ title, description, path = '/explore', breadcrumbs 
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={description} />
             
-            <script type="application/ld+json">
-                {JSON.stringify(breadcrumbJsonLd)}
-            </script>
+            {breadcrumbs.length > 0 && (
+                <script type="application/ld+json">
+                    {JSON.stringify(breadcrumbJsonLd)}
+                </script>
+            )}
         </Helmet>
     );
 };
