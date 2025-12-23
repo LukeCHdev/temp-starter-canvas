@@ -202,8 +202,38 @@ const ExplorePage = () => {
         t
     }), [continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t]);
 
+    // Build path for SEO
+    const seoPath = useMemo(() => {
+        if (country) return `/explore/${continent}/${country}`;
+        if (continent) return `/explore/${continent}`;
+        return '/explore';
+    }, [continent, country]);
+
+    // Build breadcrumbs for SEO
+    const seoBreadcrumbs = useMemo(() => {
+        const crumbs = [
+            { name: t('common.home'), path: '/' },
+            { name: t('nav.explore'), path: '/explore' }
+        ];
+        if (continent && selectedContinent) {
+            crumbs.push({ name: selectedContinent, path: `/explore/${continent}` });
+        }
+        if (country && pageTitle) {
+            crumbs.push({ name: pageTitle, path: `/explore/${continent}/${country}` });
+        }
+        return crumbs;
+    }, [continent, country, selectedContinent, pageTitle, t]);
+
     return (
         <div className="min-h-screen bg-[#FAF7F0]" data-testid="explore-page">
+            {/* SEO Metadata */}
+            <ExploreSEO 
+                continent={selectedContinent}
+                country={pageTitle}
+                path={seoPath}
+                breadcrumbs={seoBreadcrumbs}
+            />
+            
             {/* Header */}
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
                 <div className="max-w-6xl mx-auto">
