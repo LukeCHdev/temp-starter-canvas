@@ -8,6 +8,7 @@ export const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    timeout: 60000,  // 60 second timeout for AI operations
 });
 
 // Recipe API
@@ -18,7 +19,8 @@ export const recipeAPI = {
     getByRegion: (region) => api.get(`/recipes/region/${region}`),
     generate: (data) => api.post('/recipes/generate', data),
     search: (query, autoGenerate = true, lang = 'en') => api.get('/recipes/search', { 
-        params: { q: query, auto_generate: autoGenerate, lang } 
+        params: { q: query, auto_generate: autoGenerate, lang },
+        timeout: 90000  // 90 second timeout for search with translation
     }),
     // Homepage & Explore
     getBest: () => api.get('/recipes/best'),
