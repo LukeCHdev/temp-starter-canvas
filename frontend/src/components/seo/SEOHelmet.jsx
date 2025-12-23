@@ -348,11 +348,11 @@ export const HomeSEO = () => {
                 <link 
                     key={lang}
                     rel="alternate" 
-                    hreflang={lang} 
+                    hrefLang={lang} 
                     href={`${BASE_DOMAIN}/${lang}/`} 
                 />
             ))}
-            <link rel="alternate" hreflang="x-default" href={`${BASE_DOMAIN}/`} />
+            <link rel="alternate" hrefLang="x-default" href={`${BASE_DOMAIN}/`} />
             
             <meta property="og:title" content={titles[language]} />
             <meta property="og:description" content={descriptions[language]} />
