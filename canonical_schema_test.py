@@ -10,7 +10,7 @@ import time
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://multilingual-fix-12.preview.emergentagent.com/api"
+BACKEND_URL = "https://global-menu-fix.preview.emergentagent.com/api"
 ADMIN_PASSWORD = "SousChefAdmin2024!"
 
 class CanonicalSchemaTester:
