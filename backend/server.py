@@ -1074,6 +1074,9 @@ async def build_menu(country: str):
         menu['generated_at'] = datetime.now(timezone.utc).isoformat()
         await db.menus.insert_one(menu)
         
+        # Remove MongoDB _id before returning (prevents ObjectId serialization error)
+        menu.pop('_id', None)
+        
         return menu
     
     except Exception as e:
