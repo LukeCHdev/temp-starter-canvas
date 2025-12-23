@@ -12,7 +12,7 @@ export const SearchBar = ({ className = '' }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { getLocalizedPath } = useLanguage();
+    const { language, getLocalizedPath } = useLanguage();
     const { t } = useTranslation();
 
     const handleSearch = useCallback(async (e) => {
@@ -22,8 +22,8 @@ export const SearchBar = ({ className = '' }) => {
 
         setLoading(true);
         try {
-            // Use canonical search - no AI translation during search
-            const res = await recipeAPI.search(query, true, 'en');
+            // Use current language from route for search results
+            const res = await recipeAPI.search(query, true, language);
             const data = res.data;
 
             if (data.recipe && data.recipe.slug) {
