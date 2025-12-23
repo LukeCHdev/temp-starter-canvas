@@ -4,7 +4,7 @@ Generates XML sitemap with hreflang annotations for all supported languages.
 Implements caching with periodic rebuild for performance.
 """
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Request
 from fastapi.responses import Response as FastAPIResponse
 from datetime import datetime, timezone, timedelta
 from typing import Optional
@@ -25,6 +25,14 @@ CACHE_TTL_HOURS = 24  # Rebuild daily
 
 # Base URL - should come from environment in production
 BASE_URL = os.environ.get('SITE_URL', 'https://souscheflinguine.com')
+
+# Database reference (set by main server)
+_db = None
+
+def set_sitemap_db(database):
+    """Set the database reference for sitemap generation."""
+    global _db
+    _db = database
 
 
 def get_cache_metadata() -> dict:
