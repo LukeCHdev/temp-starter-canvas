@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChefHat, Globe, MapPin, ChevronRight, Home } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
+import { ExploreSEO } from '@/components/seo/SEOHelmet';
 
 // Continent flags/emojis
 const CONTINENT_INFO = {
