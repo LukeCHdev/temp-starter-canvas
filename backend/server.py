@@ -629,34 +629,8 @@ async def get_top_worldwide(limit: int = 10, lang: str = "en"):
         ("favorites_count", -1)
     ]).limit(limit).to_list(limit)
     
-    # If non-English language requested, fetch translations
-    if lang != "en":
-        for recipe in recipes:
-            slug = recipe.get("slug")
-            if slug:
-                # Check for ready translation first
-                translation = await db.translations.find_one(
-                    {"slug": slug, "lang": lang, "status": "ready"},
-                    {"_id": 0, "content": 1, "status": 1}
-                )
-                if translation and translation.get("content"):
-                    recipe["translations"] = {lang: {
-                        "status": "ready",
-                        "recipe_name": translation["content"].get("recipe_name"),
-                        "history_summary": translation["content"].get("history_summary"),
-                        "characteristic_profile": translation["content"].get("characteristic_profile")
-                    }}
-                else:
-                    # Check if translation is in queue (pending)
-                    queued = await db.translation_queue.find_one(
-                        {"recipe_slug": slug, "target_lang": lang}
-                    )
-                    if queued:
-                        recipe["translations"] = {lang: {
-                            "status": queued.get("status", "pending")
-                        }}
-    
-    return {"recipes": recipes, "lang": lang}
+    # Translations are already embedded in recipe.translations[lang]
+    # No additional processing needed - frontend will access recipe.translations[lang]
     
     return {"recipes": recipes, "lang": lang}
 
