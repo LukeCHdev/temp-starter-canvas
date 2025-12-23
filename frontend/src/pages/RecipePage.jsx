@@ -421,17 +421,20 @@ const RecipePage = () => {
                 )}
 
                 {/* Special Techniques */}
-                {recipe.special_techniques && recipe.special_techniques.length > 0 && (
+                {techniquesContent.content && techniquesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-[#CBA55B]">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <Lightbulb className="h-5 w-5 text-[#CBA55B]" />
                                 {t('recipe.techniques')}
+                                {showContentFallback && !techniquesContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-2">
-                                {recipe.special_techniques.map((technique, index) => (
+                                {techniquesContent.content.map((technique, index) => (
                                     <li key={index} className="flex items-start gap-2">
                                         <span className="text-[#CBA55B] font-bold">★</span>
                                         <span className="italic">{technique}</span>
@@ -478,16 +481,19 @@ const RecipePage = () => {
                 )}
 
                 {/* Ingredients */}
-                {recipe.ingredients && recipe.ingredients.length > 0 && (
+                {ingredientsContent.content && ingredientsContent.content.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                🧺 {t('recipe.ingredients')}
+                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <span>🧺</span> {t('recipe.ingredients')}
+                                {showContentFallback && !ingredientsContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-3">
-                                {recipe.ingredients.map((ing, index) => (
+                                {ingredientsContent.content.map((ing, index) => (
                                     <div key={index} className="flex items-center justify-between py-2 border-b border-dashed border-[#CBA55B]/30 last:border-0">
                                         <span className="font-medium">{ing.item}</span>
                                         <span className="text-[#1E1E1E]/70">
@@ -502,16 +508,19 @@ const RecipePage = () => {
                 )}
 
                 {/* Instructions */}
-                {recipe.instructions && recipe.instructions.length > 0 && (
+                {instructionsContent.content && instructionsContent.content.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                👨‍🍳 {t('recipe.instructions')}
+                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <span>👨‍🍳</span> {t('recipe.instructions')}
+                                {showContentFallback && !instructionsContent.isTranslated && (
+                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
+                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ol className="space-y-4">
-                                {recipe.instructions.map((step, index) => (
+                                {instructionsContent.content.map((step, index) => (
                                     <li key={index} className="flex gap-4">
                                         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-bold text-sm">
                                             {index + 1}
