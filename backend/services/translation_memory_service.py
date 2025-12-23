@@ -110,41 +110,54 @@ class TranslationMemoryService:
         now = datetime.now(timezone.utc).isoformat()
         
         try:
-            # Upsert - update if exists, insert if new
-            result = await self.collection.update_one(
-                {
-                    "source_hash": source_hash,
-                    "source_lang": source_lang,
-                    "target_lang": target_lang
-                },
-                {
-                    "$set": {
-                        "translated_text": translated_text,
-                        "confidence": confidence,
-                        "verified": verified,
-                        "updated_at": now
-                    },
-                    "$setOnInsert": {
-                        "source_text": source_text,
-                        "source_lang": source_lang,
-                        "target_lang": target_lang,
-                        "source_hash": source_hash,
-                        "source_length": len(source_text),
-                        "context": context,
-                        "source_type": source_type,
-                        "created_at": now,
-                        "usage_count": 0
-                    },
-                    "$inc": {"usage_count": 1}
-                },
-                upsert=True
-            )
+            # Check if exists first
+            existing = await self.collection.find_one({
+                "source_hash": source_hash,
+                "source_lang": source_lang,
+                "target_lang": target_lang
+            })
             
-            return {
-                "success": True,
-                "action": "updated" if result.matched_count > 0 else "inserted",
-                "source_hash": source_hash
-            }
+            if existing:
+                # Update existing entry
+                await self.collection.update_one(
+                    {"_id": existing["_id"]},
+                    {
+                        "$set": {
+                            "translated_text": translated_text,
+                            "confidence": confidence,
+                            "verified": verified,
+                            "updated_at": now
+                        },
+                        "$inc": {"usage_count": 1}
+                    }
+                )
+                return {
+                    "success": True,
+                    "action": "updated",
+                    "source_hash": source_hash
+                }
+            else:
+                # Insert new entry
+                await self.collection.insert_one({
+                    "source_hash": source_hash,
+                    "source_text": source_text,
+                    "source_lang": source_lang,
+                    "target_lang": target_lang,
+                    "translated_text": translated_text,
+                    "source_length": len(source_text),
+                    "confidence": confidence,
+                    "verified": verified,
+                    "context": context,
+                    "source_type": source_type,
+                    "created_at": now,
+                    "updated_at": now,
+                    "usage_count": 1
+                })
+                return {
+                    "success": True,
+                    "action": "inserted",
+                    "source_hash": source_hash
+                }
         except Exception as e:
             logger.error(f"TM store error: {e}")
             return {"success": False, "error": str(e)}
