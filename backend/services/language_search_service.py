@@ -35,10 +35,13 @@ class LanguageSearchService:
     
     def __init__(self, db):
         self.db = db
-        self._ensure_text_indexes()
+        self._indexes_created = False
     
     async def _ensure_text_indexes(self):
         """Ensure text indexes exist for search."""
+        if self._indexes_created:
+            return
+        
         try:
             # Create text index on searchable fields
             await self.db.recipes.create_index([
@@ -48,9 +51,11 @@ class LanguageSearchService:
                 ("origin_country", "text"),
                 ("ingredients.item", "text")
             ], name="recipe_text_search", default_language="english")
+            self._indexes_created = True
             logger.info("Text index created/verified for recipes")
         except Exception as e:
             logger.warning(f"Text index creation skipped: {e}")
+            self._indexes_created = True  # Don't retry
     
     def _normalize_text(self, text: str, lang: str = 'en') -> str:
         """Normalize text for search: lowercase, remove accents, remove stop words."""
