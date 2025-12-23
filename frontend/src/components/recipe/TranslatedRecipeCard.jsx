@@ -11,6 +11,7 @@ import { useLanguage } from '@/context/LanguageContext';
  * 
  * Implements approved architecture:
  * - status='ready': Show translated content
+ * - status='fallback': Show fallback content with warning indicator
  * - status='pending': Show localized placeholder
  * - status='failed': Show localized error placeholder
  */
@@ -18,7 +19,7 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     const { t } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
     
-    const { status, content, metadata, slug } = recipe;
+    const { status, content, metadata, slug, fallback_lang } = recipe;
     
     // Authenticity level styling
     const levelColors = {
@@ -45,10 +46,14 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     // Get photo URL
     const photoUrl = metadata?.photos?.[0]?.image_url || null;
     
+    // Check if this is fallback content (not translated)
+    const isFallback = status === 'fallback';
+    
     // Render content based on status
     const renderContent = () => {
-        if (status === 'ready' && content) {
-            // Translation ready - show content
+        // Handle 'ready' AND 'fallback' - both have content to display
+        if ((status === 'ready' || status === 'fallback') && content) {
+            // Show content (translated or fallback)
             const title = content.recipe_name || 'Unknown Recipe';
             const description = content.history_summary || content.characteristic_profile || '';
             const ingredientCount = content.ingredients?.length || 0;
@@ -61,6 +66,9 @@ export const TranslatedRecipeCard = ({ recipe }) => {
                 <>
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
                         {title}
+                        {isFallback && (
+                            <span className="ml-2 text-xs font-normal text-amber-600">(EN)</span>
+                        )}
                     </h3>
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
@@ -113,10 +121,10 @@ export const TranslatedRecipeCard = ({ recipe }) => {
             );
         }
         
-        // Fallback
+        // Fallback for unknown status - should rarely happen now
         return (
             <div className="flex flex-col items-center justify-center h-full py-8">
-                <Loader2 className="h-8 w-8 text-[#6A1F2E] animate-spin mb-3" />
+                <ChefHat className="h-8 w-8 text-[#CBA55B]/50 mb-3" />
                 <p className="text-sm text-[#1E1E1E]/60">
                     {t('recipe.loadingRecipe')}
                 </p>
