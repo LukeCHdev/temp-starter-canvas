@@ -301,3 +301,137 @@ async def get_queue_status():
         'failed': failed,
         'total': pending + processing + completed + failed
     }
+
+
+@translation_router.post("/queue/pretranslate-top")
+async def pretranslate_top_recipes(limit: int = 100):
+    """
+    Queue translations for top-rated recipes.
+    
+    Args:
+        limit: Number of top recipes to pre-translate (default: 100)
+    
+    This endpoint:
+    1. Gets top recipes by rating/reviews
+    2. Queues translation jobs for IT, FR, ES, DE
+    3. Skips already translated recipes
+    """
+    TARGET_LANGUAGES = ['it', 'fr', 'es', 'de']
+    
+    # Get top recipes
+    recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0, "slug": 1, "recipe_name": 1, "average_rating": 1, "ratings_count": 1}
+    ).sort([
+        ("average_rating", -1),
+        ("ratings_count", -1)
+    ]).to_list(limit)
+    
+    stats = {
+        "total_recipes": len(recipes),
+        "translations_queued": 0,
+        "already_exists": 0,
+        "errors": 0
+    }
+    
+    for recipe in recipes:
+        slug = recipe.get('slug')
+        if not slug:
+            continue
+        
+        for lang in TARGET_LANGUAGES:
+            try:
+                # Check if translation exists
+                existing = await db.translations.find_one({
+                    "slug": slug,
+                    "lang": lang
+                })
+                
+                if existing and existing.get('status') == 'ready':
+                    stats["already_exists"] += 1
+                    continue
+                
+                # Check if already queued
+                queued = await db.translation_queue.find_one({
+                    "recipe_slug": slug,
+                    "target_lang": lang,
+                    "status": {"$in": ["pending", "processing"]}
+                })
+                
+                if queued:
+                    stats["already_exists"] += 1
+                    continue
+                
+                # Queue the translation
+                now = datetime.now(timezone.utc).isoformat()
+                await db.translation_queue.update_one(
+                    {"recipe_slug": slug, "target_lang": lang},
+                    {
+                        "$set": {
+                            "status": "pending",
+                            "queued_at": now,
+                            "priority": "batch"
+                        },
+                        "$setOnInsert": {
+                            "recipe_slug": slug,
+                            "target_lang": lang,
+                            "created_at": now
+                        }
+                    },
+                    upsert=True
+                )
+                stats["translations_queued"] += 1
+                
+            except Exception as e:
+                stats["errors"] += 1
+    
+    return {
+        "message": f"Pre-translation queued for top {limit} recipes",
+        "stats": stats,
+        "languages": TARGET_LANGUAGES
+    }
+
+
+@translation_router.get("/queue/coverage")
+async def get_translation_coverage():
+    """
+    Get translation coverage statistics.
+    Shows how many recipes are translated per language.
+    """
+    languages = ['en', 'it', 'fr', 'es', 'de']
+    
+    # Total published recipes
+    total_recipes = await db.recipes.count_documents({"status": "published"})
+    
+    coverage = {}
+    for lang in languages:
+        if lang == 'en':
+            # English is the source language
+            coverage[lang] = {
+                "translated": total_recipes,
+                "pending": 0,
+                "coverage_percent": 100.0
+            }
+        else:
+            # Count translated recipes
+            translated = await db.translations.count_documents({
+                "lang": lang,
+                "status": "ready"
+            })
+            
+            pending = await db.translation_queue.count_documents({
+                "target_lang": lang,
+                "status": {"$in": ["pending", "processing"]}
+            })
+            
+            coverage[lang] = {
+                "translated": translated,
+                "pending": pending,
+                "coverage_percent": round((translated / total_recipes * 100) if total_recipes > 0 else 0, 1)
+            }
+    
+    return {
+        "total_recipes": total_recipes,
+        "coverage_by_language": coverage
+    }
+
