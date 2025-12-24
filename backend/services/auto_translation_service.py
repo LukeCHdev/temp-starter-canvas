@@ -135,7 +135,7 @@ class AutoTranslationService:
         Returns:
             dict: Summary of processing results
         """
-        if not self.db:
+        if self.db is None:
             return {'success': False, 'error': 'Database not configured'}
         
         recipes = await self.db.recipes.find(
