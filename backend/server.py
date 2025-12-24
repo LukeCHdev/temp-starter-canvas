@@ -807,7 +807,11 @@ async def get_reviews(slug: str, limit: int = 50, offset: int = 0):
 
 @api_router.post("/recipes/generate")
 async def generate_recipe(recipe_create: RecipeCreate):
-    """Generate a new recipe using Sous-Chef Linguine GPT."""
+    """Generate a new recipe using Sous-Chef Linguine GPT.
+    
+    After generation, automatically queues translations for all supported languages
+    (fr, it, es, de) to ensure consistent multilingual coverage.
+    """
     try:
         # Generate recipe
         recipe_data = await recipe_generator.generate_recipe(
@@ -819,12 +823,21 @@ async def generate_recipe(recipe_create: RecipeCreate):
         # Save to database
         await db.recipes.insert_one(recipe_data)
         
+        # Get the recipe slug for translation queueing
+        recipe_slug = recipe_data.get('slug')
+        
+        # AUTO-TRANSLATION: Queue translations for all supported languages
+        if recipe_slug:
+            translation_result = await auto_translate_recipe(recipe_slug, source_lang='en')
+            logger.info(f"Auto-translation queued for {recipe_slug}: {translation_result}")
+        
         # Remove _id before returning
         recipe_data.pop('_id', None)
         
         return {
             "message": "Recipe generated successfully by Sous-Chef Linguine",
-            "recipe": recipe_data
+            "recipe": recipe_data,
+            "translations_queued": translation_result.get('queued_languages', []) if recipe_slug else []
         }
     
     except Exception as e:
