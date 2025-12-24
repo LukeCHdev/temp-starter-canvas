@@ -94,7 +94,7 @@ class AutoTranslationService:
         Returns:
             dict: Summary of queued translations
         """
-        if not self.db:
+        if self.db is None:
             logger.error("Database not set for AutoTranslationService")
             return {'success': False, 'error': 'Database not configured'}
         
