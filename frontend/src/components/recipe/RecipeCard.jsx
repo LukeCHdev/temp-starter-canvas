@@ -7,12 +7,16 @@ import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
- * RecipeCard - Language-aware recipe card
+ * RecipeCard - Language-aware recipe card with STRICT fallback indicators
  * 
- * STRICT TRANSLATION LOGIC:
- * - If translations[lang].title exists → use it
- * - Otherwise → use recipe.recipe_name (fallback)
- * - Show fallback warning ONLY when using fallback
+ * TRANSLATION LOGIC:
+ * - If translations[lang].status === 'ready' → use translated content (no marker)
+ * - Otherwise → use English fallback with VISIBLE markers:
+ *   1. (EN) badge on image (top-left)
+ *   2. (EN) next to title
+ *   3. Localized "Translation pending" text at bottom
+ * 
+ * NO SILENT FALLBACK - users always know when viewing English content
  */
 export const RecipeCard = ({ recipe }) => {
     const { t } = useTranslation();
@@ -20,7 +24,7 @@ export const RecipeCard = ({ recipe }) => {
     const lang = language || 'en';
     
     // ======================================
-    // TRANSLATION-FIRST LOGIC (User spec)
+    // TRANSLATION-FIRST LOGIC
     // ======================================
     const translations = recipe.translations || {};
     const langTranslation = translations[lang] || {};
@@ -39,17 +43,8 @@ export const RecipeCard = ({ recipe }) => {
         ? (langTranslation.history_summary || langTranslation.characteristic_profile || langTranslation.description || '')
         : (recipe.history_summary || recipe.characteristic_profile || recipe.origin_story || '');
     
-    // Show fallback banner ONLY when NOT using translation AND lang is not English
-    const showFallbackBanner = !hasTranslation && lang !== 'en';
-    
-    // Debug log (temporary - can be removed in production)
-    // console.log('[CARD]', {
-    //     slug: recipe.slug,
-    //     routeLang: lang,
-    //     titleUsed: title,
-    //     hasTranslation,
-    //     translationStatus: langTranslation.status
-    // });
+    // STRICT: Show fallback indicators when NOT using translation AND lang is not English
+    const showFallbackIndicator = !hasTranslation && lang !== 'en';
     
     // ======================================
     // LOCALIZED UI ELEMENTS
@@ -82,13 +77,13 @@ export const RecipeCard = ({ recipe }) => {
         de: 'Zutaten'
     };
     
-    // Localized fallback messages
-    const fallbackMessages = {
-        en: 'Shown in English',
-        it: 'Mostrato in inglese',
-        fr: 'Affiché en anglais',
-        es: 'Mostrado en inglés',
-        de: 'Auf Englisch angezeigt'
+    // Localized "Translation pending" messages
+    const pendingMessages = {
+        en: 'Translation pending',
+        it: 'Traduzione in corso',
+        fr: 'Traduction en attente',
+        es: 'Traducción pendiente',
+        de: 'Übersetzung ausstehend'
     };
     
     // ======================================
@@ -116,35 +111,45 @@ export const RecipeCard = ({ recipe }) => {
     return (
         <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
             <Card className="card-elegant group cursor-pointer h-full flex flex-col">
+                {/* Image Section with Badges */}
                 <div className="relative overflow-hidden rounded-sm mb-4 h-48 bg-[#F5F2E8]">
                     {photoUrl ? (
                         <img 
                             src={photoUrl} 
                             alt={title}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                         />
                     ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
                             <ChefHat className="h-16 w-16 text-[#CBA55B]/30" />
                         </div>
                     )}
+                    
+                    {/* Authenticity Badge (top-right) */}
                     <Badge className={`absolute top-3 right-3 ${levelColors[authenticityLevel] || levelColors[3]}`}>
                         <Star className="h-3 w-3 mr-1" />
                         {levelLabel}
                     </Badge>
+                    
+                    {/* FALLBACK INDICATOR: (EN) Badge on image (top-left) */}
+                    {showFallbackIndicator && (
+                        <Badge variant="outline" className="absolute top-3 left-3 bg-amber-50 border-amber-300 text-amber-700 text-xs font-medium">
+                            (EN)
+                        </Badge>
+                    )}
                 </div>
                 
+                {/* Content Section */}
                 <div className="flex-1 flex flex-col">
-                    {/* Fallback warning - ONLY shown when NOT using translation */}
-                    {showFallbackBanner && (
-                        <div className="flex items-center gap-1 text-xs text-amber-600 mb-2">
-                            <AlertCircle className="h-3 w-3" />
-                            <span className="italic">{fallbackMessages[lang] || fallbackMessages.en}</span>
-                        </div>
-                    )}
-                    
+                    {/* Title with inline (EN) marker */}
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
                         {title}
+                        {showFallbackIndicator && (
+                            <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                                (EN)
+                            </span>
+                        )}
                     </h3>
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
@@ -158,9 +163,16 @@ export const RecipeCard = ({ recipe }) => {
                         </p>
                     )}
                     
+                    {/* Footer with ingredients and translation status */}
                     <div className="mt-4 pt-4 border-t border-[#E5DCC3] flex items-center justify-between text-sm text-[#1E1E1E]/60">
                         {ingredientCount > 0 && (
                             <span>{ingredientCount} {ingredientLabels[lang] || ingredientLabels.en}</span>
+                        )}
+                        {/* FALLBACK INDICATOR: "Translation pending" text */}
+                        {showFallbackIndicator && (
+                            <span className="text-xs text-amber-600">
+                                {pendingMessages[lang] || pendingMessages.en}
+                            </span>
                         )}
                     </div>
                 </div>
