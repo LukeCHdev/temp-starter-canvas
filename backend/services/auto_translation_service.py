@@ -41,7 +41,7 @@ class AutoTranslationService:
         Returns:
             bool: True if job was queued, False if already exists
         """
-        if not self.db:
+        if self.db is None:
             logger.error("Database not set for AutoTranslationService")
             return False
             
