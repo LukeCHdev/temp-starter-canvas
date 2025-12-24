@@ -1260,6 +1260,43 @@ async def detect_locale(browser_locale: Optional[str] = None, geo_location: Opti
     locale_settings = locale_service.detect_locale(browser_locale, geo_location)
     return locale_settings
 
+# ============== AUTO-TRANSLATION ADMIN ROUTES ==============
+
+@api_router.post("/admin/translations/backfill")
+async def backfill_translations(limit: int = 100):
+    """Backfill translations for existing recipes that are missing translations.
+    
+    This endpoint queues translation jobs for all recipes that don't have
+    ready translations in all supported languages (fr, it, es, de).
+    
+    Use this to ensure all existing content has multilingual coverage.
+    """
+    try:
+        result = await auto_translation_service.ensure_all_recipes_have_translations(limit=limit)
+        return {
+            "success": result['success'],
+            "recipes_processed": result.get('recipes_processed', 0),
+            "translations_queued": result.get('translations_queued', 0),
+            "message": f"Queued {result.get('translations_queued', 0)} translation jobs"
+        }
+    except Exception as e:
+        logger.error(f"Backfill error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/admin/translations/queue-recipe/{slug}")
+async def queue_recipe_translations(slug: str):
+    """Manually queue translations for a specific recipe.
+    
+    Use this to re-queue translations for a recipe that may have failed
+    or needs to be updated.
+    """
+    try:
+        result = await auto_translate_recipe(slug, source_lang='en')
+        return result
+    except Exception as e:
+        logger.error(f"Queue translation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============== AUTHENTICATION ROUTES ==============
 
 @api_router.post("/auth/register", response_model=Token)
