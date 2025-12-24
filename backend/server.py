@@ -26,6 +26,7 @@ from services.substitution_engine import substitution_engine
 from services.translation_engine import translation_engine
 from services.locale_service import locale_service
 from services.csv_importer import csv_importer
+from services.auto_translation_service import auto_translation_service, auto_translate_recipe
 
 # Import auth utilities
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
