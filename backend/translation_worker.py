@@ -216,8 +216,8 @@ class TranslationWorker:
                 # Process the job
                 await self.process_job(job)
                 
-                # Small delay between jobs to avoid rate limits
-                await asyncio.sleep(1)
+                # Delay between jobs to avoid rate limits (increased for stability)
+                await asyncio.sleep(3)
     
     async def run(self):
         """Main worker loop."""
