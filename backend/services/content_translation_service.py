@@ -1,15 +1,16 @@
-"""Content Translation Service - Async Recipe Translation with Storage
+"""Content Translation Service - Async Recipe Translation with Emergent Integration
 
 This service handles:
 1. Translation queue management
 2. Async translation via background worker
 3. Translation status tracking per recipe/language
+
+Uses emergentintegrations library for LLM calls.
 """
 
 import os
 import json
 import logging
-import httpx
 from typing import Dict, Any, Optional, List
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -46,17 +47,25 @@ TRANSLATION_SYSTEM_PROMPT = """You are a professional culinary translator. Your 
    Return ONLY the JSON object.
 """
 
+LANGUAGE_NAMES = {
+    'en': 'English',
+    'es': 'Spanish',
+    'it': 'Italian',
+    'fr': 'French',
+    'de': 'German'
+}
+
 
 class ContentTranslationService:
-    """Service for translating recipe content and storing translations."""
+    """Service for translating recipe content using Emergent Integration."""
     
     def __init__(self):
-        self.api_key = os.environ.get('OPENAI_API_KEY')
+        self.api_key = os.environ.get('EMERGENT_LLM_KEY') or os.environ.get('OPENAI_API_KEY')
         if not self.api_key:
-            logger.warning("OPENAI_API_KEY not found - translation will not work")
+            logger.warning("No LLM API key found - translation will not work")
         
         self.model = "gpt-4o"
-        self.api_url = "https://api.openai.com/v1/chat/completions"
+        self.provider = "openai"
     
     async def translate_recipe_content(self, recipe: Dict[str, Any], target_lang: str) -> Dict[str, Any]:
         """Translate recipe content to target language.
@@ -69,7 +78,7 @@ class ContentTranslationService:
             Dict with translated content fields only (not full recipe)
         """
         if not self.api_key:
-            raise ValueError("OPENAI_API_KEY is required but not configured")
+            raise ValueError("No LLM API key configured")
         
         if target_lang not in SUPPORTED_LANGUAGES:
             raise ValueError(f"Unsupported language: {target_lang}")
@@ -86,85 +95,69 @@ class ContentTranslationService:
             "wine_pairing": recipe.get("wine_pairing", {})
         }
         
-        language_names = {
-            'en': 'English',
-            'es': 'Spanish', 
-            'it': 'Italian',
-            'fr': 'French',
-            'de': 'German'
-        }
-        
-        user_message = f"""Translate this recipe content to {language_names.get(target_lang, target_lang)}.
-Return valid JSON only, no markdown:
+        # Create translation prompt
+        target_language_name = LANGUAGE_NAMES.get(target_lang, target_lang)
+        user_prompt = f"""Translate the following recipe content to {target_language_name}.
 
-{json.dumps(content_to_translate, indent=2, ensure_ascii=False)}"""
-        
+Return the translation as valid JSON with the same structure.
+
+Content to translate:
+{json.dumps(content_to_translate, ensure_ascii=False, indent=2)}"""
+
         try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
-                response = await client.post(
-                    self.api_url,
-                    headers={
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {self.api_key}"
-                    },
-                    json={
-                        "model": self.model,
-                        "messages": [
-                            {
-                                "role": "system",
-                                "content": TRANSLATION_SYSTEM_PROMPT
-                            },
-                            {
-                                "role": "user", 
-                                "content": user_message
-                            }
-                        ],
-                        "temperature": 0.3,  # Lower temp for more consistent translations
-                        "max_tokens": 4000
-                    }
-                )
-                
-                response.raise_for_status()
-                data = response.json()
-                
-                if "choices" in data and len(data["choices"]) > 0:
-                    message_content = data["choices"][0].get("message", {}).get("content", "")
-                    if message_content:
-                        translated = self._parse_json_response(message_content)
-                        logger.info(f"Successfully translated recipe to {target_lang}")
-                        return translated
-                
-                raise ValueError("Unexpected API response format")
-                
-        except httpx.HTTPStatusError as e:
-            logger.error(f"OpenAI API HTTP error: {e.response.status_code} - {e.response.text}")
-            raise
+            # Use emergentintegrations library
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"translation-{recipe.get('slug', 'unknown')}-{target_lang}",
+                system_message=TRANSLATION_SYSTEM_PROMPT
+            ).with_model(self.provider, self.model)
+            
+            user_message = UserMessage(text=user_prompt)
+            response = await chat.send_message(user_message)
+            
+            # Parse the JSON response
+            translated_content = self._parse_json_response(response)
+            
+            # Add metadata
+            translated_content['status'] = 'ready'
+            translated_content['translated_at'] = datetime.now(timezone.utc).isoformat()
+            translated_content['source_lang'] = recipe.get('content_language', 'en')
+            translated_content['target_lang'] = target_lang
+            
+            return translated_content
+            
         except Exception as e:
-            logger.error(f"Error translating recipe: {str(e)}")
+            logger.error(f"Translation failed: {str(e)}")
             raise
     
     def _parse_json_response(self, text: str) -> Dict[str, Any]:
-        """Parse JSON from the LLM response."""
+        """Parse JSON from LLM response, handling markdown code blocks."""
+        # Clean up the response
         text = text.strip()
         
         # Remove markdown code blocks if present
-        if text.startswith("```json"):
-            text = text[7:]
-        elif text.startswith("```"):
-            text = text[3:]
+        if text.startswith("```"):
+            lines = text.split("\n")
+            # Remove first line (```json or ```)
+            lines = lines[1:]
+            # Remove last line (```)
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            text = "\n".join(lines)
         
-        if text.endswith("```"):
-            text = text[:-3]
-        
-        text = text.strip()
-        
+        # Try to parse JSON
         try:
             return json.loads(text)
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse translation JSON: {str(e)}")
-            logger.error(f"Raw text (first 500 chars): {text[:500]}")
-            raise ValueError(f"Invalid JSON response: {str(e)}")
+        except json.JSONDecodeError:
+            # Try to find JSON object in the text
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', text)
+            if json_match:
+                return json.loads(json_match.group())
+            raise ValueError(f"Could not parse JSON from response: {text[:200]}...")
 
 
-# Global service instance
+# Global instance
 content_translation_service = ContentTranslationService()
