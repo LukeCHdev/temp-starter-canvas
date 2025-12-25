@@ -12,8 +12,17 @@ import httpx
 import logging
 from typing import Optional, Tuple
 import re
+import json
 
 logger = logging.getLogger(__name__)
+
+# Database reference (set by server.py)
+_db = None
+
+def set_prerender_db(database):
+    """Set the database reference for recipe lookups"""
+    global _db
+    _db = database
 
 # Known crawler user agents
 CRAWLER_USER_AGENTS = [
