@@ -741,48 +741,38 @@ class PrerenderTester:
         except Exception as e:
             self.log_test("Recipes by Country Spain", False, f"Exception: {str(e)}")
             return False
-            
+        
     def run_all_tests(self):
-        """Run all admin panel test cases based on review request"""
-        print("🧪 Starting Sous Chef Linguine Backend API Tests")
-        print("Testing admin authentication, recipe management, JSON import, and Spanish recipes")
+        """Run all prerendering test cases based on review request"""
+        print("🧪 Starting Sous Chef Linguine Prerendering System Tests")
+        print("Testing prerendering APIs for SEO-optimized content delivery to crawlers")
         print(f"Backend URL: {BACKEND_URL}")
-        print(f"Admin Password: {ADMIN_PASSWORD}")
         print("=" * 70)
         
-        # Test 1: Admin Authentication - Valid Password
-        self.test_admin_login_success()
+        # Test 1: Prerender Status Check
+        self.test_prerender_status()
         
-        # Test 2: Admin Authentication - Invalid Password  
-        self.test_admin_login_failure()
+        # Test 2: Crawler Detection
+        self.test_crawler_detection()
         
-        # Test 3: Admin Token Verification
-        self.test_admin_verify_token()
+        # Test 3: French Recipe Prerender with Full Content
+        self.test_french_recipe_prerender()
         
-        # Test 4: Admin Recipe Management - Get All Recipes
-        self.test_admin_recipes_list()
+        # Test 4: Italian Recipe Prerender
+        self.test_italian_recipe_prerender()
         
-        # Test 5: Admin Recipe Management - Get Single Recipe
-        self.test_admin_single_recipe()
+        # Test 5: German Recipe Prerender
+        self.test_german_recipe_prerender()
         
-        # Test 6: Admin JSON Import & Duplicate Detection
-        self.test_admin_json_import()
+        # Test 6: Explore Page Fallback
+        self.test_explore_page_fallback()
         
-        # Test 7: Admin Dashboard Statistics
-        self.test_admin_stats()
-        
-        # Test 8: CSV Template
-        self.test_csv_template()
-        
-        # Test 9: Spanish Recipes Count (Critical Test)
-        self.test_spanish_recipes_count()
-        
-        # Test 10: Recipes by Country Name - Spain (Critical Test)
-        self.test_recipes_by_country_spain()
+        # Test 7: No Fallback Indicators Verification
+        self.test_no_fallback_indicators()
         
         # Summary
         print("\n" + "=" * 70)
-        print("📊 TEST SUMMARY")
+        print("📊 PRERENDERING TEST SUMMARY")
         print("=" * 70)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -805,13 +795,13 @@ class PrerenderTester:
             for failed in failed_tests:
                 print(f"  - {failed['test']}: {failed['details']}")
         else:
-            print(f"\n✅ ALL TESTS PASSED - Admin Panel APIs working correctly!")
+            print(f"\n✅ ALL TESTS PASSED - Prerendering system working correctly!")
             
         return self.test_results
 
 def main():
     """Main test runner"""
-    tester = AdminPanelTester()
+    tester = PrerenderTester()
     results = tester.run_all_tests()
     
     # Return exit code based on results
