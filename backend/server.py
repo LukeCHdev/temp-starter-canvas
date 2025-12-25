@@ -46,6 +46,9 @@ from routes.sitemap import router as sitemap_router, set_sitemap_db
 # Import search routes
 from routes.search import search_router, set_search_db
 
+# Import prerender routes
+from routes.prerender import router as prerender_router
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
