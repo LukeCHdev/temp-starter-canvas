@@ -52,29 +52,6 @@ const AppLayout = ({ children }) => {
   );
 };
 
-// Public routes component - reused for each language prefix
-const PublicRoutes = () => (
-  <>
-    <Route index element={<HomePage />} />
-    <Route path="explore" element={<ExplorePage />} />
-    <Route path="explore/:continent" element={<ExplorePage />} />
-    <Route path="explore/:continent/:country" element={<ExplorePage />} />
-    <Route path="regions" element={<RegionsPage />} />
-    <Route path="country/:slug" element={<CountryPage />} />
-    <Route path="recipe/:slug" element={<RecipePage />} />
-    <Route path="menu-builder" element={<MenuBuilderPage />} />
-    <Route path="techniques" element={<TechniquesPage />} />
-    <Route path="favorites" element={<FavoritesPage />} />
-    <Route path="about" element={<AboutPage />} />
-    <Route path="contact" element={<ContactPage />} />
-    <Route path="for-ai" element={<ForAIPage />} />
-    <Route path="privacy" element={<PrivacyPage />} />
-    <Route path="terms" element={<TermsPage />} />
-    <Route path="cookies" element={<CookiesPage />} />
-    <Route path="editorial-policy" element={<EditorialPolicyPage />} />
-  </>
-);
-
 function App() {
   return (
     <BrowserRouter>
