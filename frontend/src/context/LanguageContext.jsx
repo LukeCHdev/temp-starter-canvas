@@ -73,9 +73,10 @@ const LanguageProviderInner = ({ children }) => {
         document.documentElement.lang = initialLang;
         localStorage.setItem('preferred_language', initialLang);
         
-        // If URL doesn't have language prefix, add it
+        // If URL doesn't have language prefix and is not an admin route, add it
         const urlLang = getLanguageFromPath(location.pathname);
-        if (!urlLang) {
+        const isAdminRoute = location.pathname.startsWith('/admin');
+        if (!urlLang && !isAdminRoute) {
             const newPath = getLocalizedPath(location.pathname, initialLang);
             navigate(newPath, { replace: true });
         }
