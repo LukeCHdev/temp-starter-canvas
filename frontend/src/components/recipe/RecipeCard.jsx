@@ -117,25 +117,13 @@ export const RecipeCard = ({ recipe }) => {
                         <Star className="h-3 w-3 mr-1" />
                         {levelLabel}
                     </Badge>
-                    
-                    {/* FALLBACK INDICATOR: (EN) Badge on image (top-left) */}
-                    {showFallbackIndicator && (
-                        <Badge variant="outline" className="absolute top-3 left-3 bg-amber-50 border-amber-300 text-amber-700 text-xs font-medium">
-                            (EN)
-                        </Badge>
-                    )}
                 </div>
                 
                 {/* Content Section */}
                 <div className="flex-1 flex flex-col">
-                    {/* Title with inline (EN) marker */}
+                    {/* Title */}
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
                         {title}
-                        {showFallbackIndicator && (
-                            <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-                                (EN)
-                            </span>
-                        )}
                     </h3>
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
@@ -149,16 +137,10 @@ export const RecipeCard = ({ recipe }) => {
                         </p>
                     )}
                     
-                    {/* Footer with ingredients and translation status */}
-                    <div className="mt-4 pt-4 border-t border-[#E5DCC3] flex items-center justify-between text-sm text-[#1E1E1E]/60">
+                    {/* Footer with ingredients */}
+                    <div className="mt-4 pt-4 border-t border-[#E5DCC3] text-sm text-[#1E1E1E]/60">
                         {ingredientCount > 0 && (
                             <span>{ingredientCount} {ingredientLabels[lang] || ingredientLabels.en}</span>
-                        )}
-                        {/* FALLBACK INDICATOR: "Translation pending" text */}
-                        {showFallbackIndicator && (
-                            <span className="text-xs text-amber-600">
-                                {pendingMessages[lang] || pendingMessages.en}
-                            </span>
                         )}
                     </div>
                 </div>
