@@ -82,7 +82,7 @@ function App() {
         <AuthProvider>
           <AppLayout>
             <Routes>
-              {/* Admin Routes - Must be BEFORE language routes */}
+              {/* Admin Routes - Must be BEFORE language routes and use exact matching */}
               <Route path="/admin" element={<AdminLoginPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin/recipes" element={<AdminRecipesPage />} />
@@ -95,7 +95,7 @@ function App() {
               
               {/* 
                 Multilingual URL Structure:
-                - / → Spanish (default)
+                - / → Homepage (default)
                 - /es/* → Spanish (explicit)
                 - /en/* → English
                 - /it/* → Italian
@@ -103,35 +103,23 @@ function App() {
                 - /de/* → German
               */}
               
-              {/* Root routes (Spanish default) */}
-              <Route path="/">
-                {PublicRoutes()}
-              </Route>
+              {/* Root homepage only */}
+              <Route path="/" element={<HomePage />} />
               
               {/* Spanish explicit prefix */}
-              <Route path="/es">
-                {PublicRoutes()}
-              </Route>
+              <Route path="/es/*" element={<LanguageRoutes />} />
               
               {/* English routes */}
-              <Route path="/en">
-                {PublicRoutes()}
-              </Route>
+              <Route path="/en/*" element={<LanguageRoutes />} />
               
               {/* Italian routes */}
-              <Route path="/it">
-                {PublicRoutes()}
-              </Route>
+              <Route path="/it/*" element={<LanguageRoutes />} />
               
               {/* French routes */}
-              <Route path="/fr">
-                {PublicRoutes()}
-              </Route>
+              <Route path="/fr/*" element={<LanguageRoutes />} />
               
               {/* German routes */}
-              <Route path="/de">
-                {PublicRoutes()}
-              </Route>
+              <Route path="/de/*" element={<LanguageRoutes />} />
               
               {/* Catch-all redirect to home */}
               <Route path="*" element={<Navigate to="/" replace />} />
@@ -142,5 +130,28 @@ function App() {
     </BrowserRouter>
   );
 }
+
+// Separate component for language-prefixed routes
+const LanguageRoutes = () => (
+  <Routes>
+    <Route index element={<HomePage />} />
+    <Route path="explore" element={<ExplorePage />} />
+    <Route path="explore/:continent" element={<ExplorePage />} />
+    <Route path="explore/:continent/:country" element={<ExplorePage />} />
+    <Route path="regions" element={<RegionsPage />} />
+    <Route path="country/:slug" element={<CountryPage />} />
+    <Route path="recipe/:slug" element={<RecipePage />} />
+    <Route path="menu-builder" element={<MenuBuilderPage />} />
+    <Route path="techniques" element={<TechniquesPage />} />
+    <Route path="favorites" element={<FavoritesPage />} />
+    <Route path="about" element={<AboutPage />} />
+    <Route path="contact" element={<ContactPage />} />
+    <Route path="for-ai" element={<ForAIPage />} />
+    <Route path="privacy" element={<PrivacyPage />} />
+    <Route path="terms" element={<TermsPage />} />
+    <Route path="cookies" element={<CookiesPage />} />
+    <Route path="editorial-policy" element={<EditorialPolicyPage />} />
+  </Routes>
+);
 
 export default App;
