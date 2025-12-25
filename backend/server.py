@@ -70,6 +70,9 @@ set_search_db(db)
 # Set database for auto-translation service
 auto_translation_service.set_database(db)
 
+# Set database for prerender service
+set_prerender_db(db)
+
 # Create the main app
 app = FastAPI(title="Sous Chef Linguini API")
 
