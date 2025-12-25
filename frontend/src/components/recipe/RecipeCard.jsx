@@ -1,22 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChefHat, Globe, Star, AlertCircle } from 'lucide-react';
+import { ChefHat, Globe, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
- * RecipeCard - Language-aware recipe card with STRICT fallback indicators
+ * RecipeCard - Language-aware recipe card with STRICT LANGUAGE GATING
  * 
- * TRANSLATION LOGIC:
- * - If translations[lang].status === 'ready' → use translated content (no marker)
- * - Otherwise → use English fallback with VISIBLE markers:
- *   1. (EN) badge on image (top-left)
- *   2. (EN) next to title
- *   3. Localized "Translation pending" text at bottom
+ * TRANSLATION LOGIC (SEO-READY):
+ * - Uses translated content when available (status: 'ready')
+ * - Falls back to English content for display
+ * - NO fallback indicators shown (clean UI for production/SEO)
  * 
- * NO SILENT FALLBACK - users always know when viewing English content
+ * Note: Strict gating (hiding untranslated recipes) is handled at the API/data layer
  */
 export const RecipeCard = ({ recipe }) => {
     const { t } = useTranslation();
@@ -33,18 +31,15 @@ export const RecipeCard = ({ recipe }) => {
     const hasTranslation = langTranslation.status === 'ready' && 
                           (langTranslation.recipe_name || langTranslation.title);
     
-    // Get title: translation first, then fallback
+    // Get title: translation first, then fallback to English
     const title = hasTranslation
         ? (langTranslation.recipe_name || langTranslation.title)
         : (recipe.recipe_name || recipe.title_original || recipe.title_translated?.en || 'Unknown Recipe');
     
-    // Get description: translation first, then fallback
+    // Get description: translation first, then fallback to English
     const description = hasTranslation
         ? (langTranslation.history_summary || langTranslation.characteristic_profile || langTranslation.description || '')
         : (recipe.history_summary || recipe.characteristic_profile || recipe.origin_story || '');
-    
-    // STRICT: Show fallback indicators when NOT using translation AND lang is not English
-    const showFallbackIndicator = !hasTranslation && lang !== 'en';
     
     // ======================================
     // LOCALIZED UI ELEMENTS
@@ -75,15 +70,6 @@ export const RecipeCard = ({ recipe }) => {
         fr: 'ingrédients',
         es: 'ingredientes',
         de: 'Zutaten'
-    };
-    
-    // Localized "Translation pending" messages
-    const pendingMessages = {
-        en: 'Translation pending',
-        it: 'Traduzione in corso',
-        fr: 'Traduction en attente',
-        es: 'Traducción pendiente',
-        de: 'Übersetzung ausstehend'
     };
     
     // ======================================
