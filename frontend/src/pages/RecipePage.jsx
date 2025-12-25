@@ -363,9 +363,6 @@ const RecipePage = () => {
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <BookOpen className="h-5 w-5 text-[#6A1F2E]" />
                                 {t('recipe.history')}
-                                {showContentFallback && !historyContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -382,9 +379,6 @@ const RecipePage = () => {
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <ChefHat className="h-5 w-5 text-[#3F4A3C]" />
                                 {t('recipe.profile')}
-                                {showContentFallback && !profileContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -402,9 +396,6 @@ const RecipePage = () => {
                             <CardTitle className="flex items-center gap-2 text-red-700" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <AlertTriangle className="h-5 w-5" />
                                 {t('recipe.noNoRules')}
-                                {showContentFallback && !noNoRulesContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -427,9 +418,6 @@ const RecipePage = () => {
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <Lightbulb className="h-5 w-5 text-[#CBA55B]" />
                                 {t('recipe.techniques')}
-                                {showContentFallback && !techniquesContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
