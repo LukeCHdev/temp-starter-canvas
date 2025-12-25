@@ -474,9 +474,6 @@ const RecipePage = () => {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <span>🧺</span> {t('recipe.ingredients')}
-                                {showContentFallback && !ingredientsContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -501,9 +498,6 @@ const RecipePage = () => {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <span>👨‍🍳</span> {t('recipe.instructions')}
-                                {showContentFallback && !instructionsContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -528,9 +522,6 @@ const RecipePage = () => {
                             <CardTitle className="flex items-center gap-2 text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <Wine className="h-5 w-5" />
                                 {t('recipe.winePairing')}
-                                {showContentFallback && !winePairingContent.isTranslated && (
-                                    <span className="text-xs font-normal text-amber-600 ml-2">(EN)</span>
-                                )}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
