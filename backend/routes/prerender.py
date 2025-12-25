@@ -348,3 +348,33 @@ async def list_crawlers():
         "crawlers": CRAWLER_USER_AGENTS,
         "count": len(CRAWLER_USER_AGENTS)
     }
+
+
+@router.get("/prerender/recipe/{lang}/{slug}")
+async def get_recipe_prerender(lang: str, slug: str):
+    """
+    Get prerendered HTML for a specific recipe with full content from database.
+    This is the SEO-optimized fallback for recipe pages.
+    """
+    recipe_data = await get_recipe_from_db(slug, lang)
+    
+    if recipe_data:
+        html = generate_recipe_html(recipe_data, lang, prerender_service.site_url)
+        return HTMLResponse(
+            content=html,
+            headers={
+                "X-Prerendered": "database",
+                "X-Recipe": slug,
+                "X-Language": lang
+            }
+        )
+    else:
+        # Fallback to basic HTML
+        fallback_html = prerender_service.generate_static_html(f"/{lang}/recipe/{slug}")
+        return HTMLResponse(
+            content=fallback_html,
+            headers={
+                "X-Prerendered": "fallback",
+                "X-Recipe": slug
+            }
+        )
