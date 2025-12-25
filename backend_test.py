@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for Sous Chef Linguine Admin Panel APIs
-Tests admin authentication, recipe management, and JSON import functionality.
+Backend Test Suite for Sous Chef Linguine Prerendering System
+Tests prerendering APIs for SEO-optimized content delivery to crawlers.
 """
 
 import requests
 import json
 import time
-import base64
+import re
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
 BACKEND_URL = "https://seoboost-9.preview.emergentagent.com/api"
-ADMIN_PASSWORD = "SousChefAdmin2024!"
 
 class AdminPanelTester:
     def __init__(self):
