@@ -57,16 +57,6 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     // Get photo URL
     const photoUrl = metadata?.photos?.[0]?.image_url || null;
     
-    /**
-     * Determine if we need to show a language fallback marker
-     * Rules:
-     * - If status='fallback' and currentLang !== 'en' → show (EN)
-     * - If content is ready and matches currentLang → no marker needed
-     * - If currentLang === 'en' and content is English → no marker needed
-     */
-    const showFallbackMarker = status === 'fallback' && currentLang !== 'en';
-    const fallbackMarkerText = fallback_lang ? `(${fallback_lang.toUpperCase()})` : '(EN)';
-    
     // Extract content fields safely
     const title = content?.recipe_name || 'Unknown Recipe';
     const description = content?.history_summary || content?.characteristic_profile || '';
@@ -76,19 +66,14 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     const countryName = t(`countries.${metadata?.origin_country}`, { defaultValue: metadata?.origin_country || 'Unknown' });
     const regionName = metadata?.origin_region || '';
     
-    // Render content based on status
+    // Render content - always show content without fallback indicators
     const renderContent = () => {
-        // CASE 1 & 2: Ready or Fallback with content - render immediately
+        // Show content if available (ready or fallback - no indicators)
         if ((status === 'ready' || status === 'fallback') && content && title) {
             return (
                 <>
                     <h3 className="text-xl font-semibold mb-2 text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors line-clamp-2">
                         {title}
-                        {showFallbackMarker && (
-                            <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-                                {fallbackMarkerText}
-                            </span>
-                        )}
                     </h3>
                     
                     <p className="text-sm text-[#1E1E1E]/60 mb-3 flex items-center gap-1">
@@ -102,51 +87,16 @@ export const TranslatedRecipeCard = ({ recipe }) => {
                         </p>
                     )}
                     
-                    <div className="mt-4 pt-4 border-t border-[#E5DCC3] flex items-center justify-between text-sm text-[#1E1E1E]/60">
+                    <div className="mt-4 pt-4 border-t border-[#E5DCC3] text-sm text-[#1E1E1E]/60">
                         {ingredientCount > 0 && (
                             <span>{ingredientCount} {t('recipe.ingredients', { defaultValue: 'ingredients' })}</span>
-                        )}
-                        {status === 'fallback' && (
-                            <span className="text-xs text-amber-600">
-                                {t('recipe.translationPending', { defaultValue: 'Translation pending' })}
-                            </span>
                         )}
                     </div>
                 </>
             );
         }
         
-        // CASE 3: Pending translation
-        if (status === 'pending') {
-            return (
-                <div className="flex flex-col items-center justify-center h-full py-8">
-                    <Loader2 className="h-8 w-8 text-[#6A1F2E] animate-spin mb-3" />
-                    <p className="text-sm text-[#1E1E1E]/60 text-center">
-                        {t('recipe.translating', { defaultValue: 'Translating...' })}
-                    </p>
-                    <p className="text-xs text-[#1E1E1E]/40 mt-2">
-                        {metadata?.origin_country || ''}
-                    </p>
-                </div>
-            );
-        }
-        
-        // CASE 4: Failed translation
-        if (status === 'failed') {
-            return (
-                <div className="flex flex-col items-center justify-center h-full py-8">
-                    <AlertCircle className="h-8 w-8 text-amber-500/50 mb-3" />
-                    <p className="text-sm text-[#1E1E1E]/60 text-center">
-                        {t('recipe.translationUnavailable', { defaultValue: 'Translation unavailable' })}
-                    </p>
-                    <p className="text-xs text-[#1E1E1E]/40 mt-2">
-                        {metadata?.origin_country || ''}
-                    </p>
-                </div>
-            );
-        }
-        
-        // CASE 5: Unknown status - generic placeholder
+        // For pending/failed/unknown - show minimal placeholder
         return (
             <div className="flex flex-col items-center justify-center h-full py-8">
                 <ChefHat className="h-8 w-8 text-[#CBA55B]/50 mb-3" />
