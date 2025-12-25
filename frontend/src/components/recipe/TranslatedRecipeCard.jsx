@@ -1,23 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChefHat, Globe, Star, Loader2, AlertCircle } from 'lucide-react';
+import { ChefHat, Globe, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 
 /**
- * TranslatedRecipeCard - LANGUAGE-COHERENT Recipe Card Component
+ * TranslatedRecipeCard - LANGUAGE-COHERENT Recipe Card Component (SEO-READY)
  * 
  * STRICT LANGUAGE RULES:
- * 1. status='ready' + is_translated=true → Show translated content in target language
- * 2. status='ready' + is_translated=false → Show canonical English content (no marker needed if en)
- * 3. status='fallback' → Show English content with visible (EN) marker
- * 4. NEVER silently show content in IT/ES/PT etc. without explicit marker
+ * - Uses translated content when available
+ * - Falls back to English content for display
+ * - NO fallback indicators shown (clean UI for production/SEO)
  * 
- * Fallback indicators:
- * - (EN) = English fallback when translation not available
- * - Shows origin language only if explicitly requested
+ * Note: Strict gating (hiding untranslated recipes) is handled at the API/data layer
  */
 export const TranslatedRecipeCard = ({ recipe }) => {
     const { t } = useTranslation();
