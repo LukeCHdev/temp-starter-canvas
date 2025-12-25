@@ -48,6 +48,7 @@ from routes.search import search_router, set_search_db
 
 # Import prerender routes
 from routes.prerender import router as prerender_router
+from services.prerender_service import set_prerender_db
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
