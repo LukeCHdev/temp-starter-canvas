@@ -307,9 +307,6 @@ const RecipePage = () => {
     const winePairingContent = isTranslated && translation?.wine_pairing
         ? { content: translation.wine_pairing, isTranslated: true }
         : { content: recipe.wine_pairing, isTranslated: false };
-    
-    // Show fallback warning only if content is not translated and we're not on English
-    const showContentFallback = currentLang !== 'en' && !isTranslated;
 
     return (
         <div className="min-h-screen" data-testid="recipe-page">
