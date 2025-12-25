@@ -344,8 +344,6 @@ const RecipePage = () => {
                         </span>
                         <span>•</span>
                         <span>{region}</span>
-                        <span>•</span>
-                        <span className="uppercase text-sm">{recipeLanguage}</span>
                     </div>
                 </div>
             </section>
