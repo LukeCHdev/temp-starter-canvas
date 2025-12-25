@@ -6,7 +6,8 @@ These routes help verify that prerendering is working correctly.
 
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import HTMLResponse, JSONResponse
-from services.prerender_service import prerender_service, CRAWLER_USER_AGENTS, _db
+from services.prerender_service import prerender_service, CRAWLER_USER_AGENTS
+import services.prerender_service as prerender_module
 import logging
 import json
 import re
@@ -18,12 +19,14 @@ router = APIRouter(tags=["Prerender"])
 
 async def get_recipe_from_db(slug: str, language: str = 'en'):
     """Fetch recipe data from database for SEO fallback"""
-    if _db is None:
+    db = prerender_module._db
+    if db is None:
+        logger.warning("Database not set for prerender service")
         return None
     
     try:
         # Find recipe - allow published=True or published=None (not explicitly unpublished)
-        recipe = await _db.recipes.find_one(
+        recipe = await db.recipes.find_one(
             {"slug": slug, "published": {"$ne": False}},
             {"_id": 0}
         )
