@@ -22,8 +22,9 @@ async def get_recipe_from_db(slug: str, language: str = 'en'):
         return None
     
     try:
+        # Find recipe - allow published=True or published=None (not explicitly unpublished)
         recipe = await _db.recipes.find_one(
-            {"slug": slug, "published": True},
+            {"slug": slug, "published": {"$ne": False}},
             {"_id": 0}
         )
         
