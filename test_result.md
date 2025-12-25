@@ -1156,3 +1156,72 @@
 - **Agent**: testing
 - **Date**: December 24, 2025
 - **Message**: STRICT FALLBACK INDICATOR VERIFICATION COMPLETE - MOSTLY SUCCESSFUL with 1 minor issue. The fallback indicator system is working correctly for 7/8 fallback cards across French, Spanish, and Italian explore pages. All required indicators are present: (EN) badges on images, (EN) text next to titles, and localized "Translation pending" messages. Translated cards correctly show NO indicators. Minor issue: 1 "Paella Valenciana" card shows silent fallback without proper (EN) markers. The fix for silent fallback rendering is 87.5% effective and meets most acceptance criteria.
+
+## OPTION B IMPLEMENTATION - December 25, 2025
+
+### Phase 1: Language Integrity Cleanup - COMPLETED
+
+**CHANGES MADE:**
+
+1. **RecipeCard.jsx** - Removed all fallback indicators:
+   - Removed (EN) badge on image (top-left corner)
+   - Removed (EN) text next to recipe titles
+   - Removed "Translation pending" localized messages
+   - Removed `showFallbackIndicator` logic and `pendingMessages` object
+
+2. **TranslatedRecipeCard.jsx** - Removed all fallback indicators:
+   - Removed (EN) badge on images
+   - Removed (EN) inline markers next to titles
+   - Removed "Translation pending" text
+   - Removed `showFallbackMarker` logic
+   - Simplified render logic to show content without indicators
+
+3. **RecipePage.jsx** - Removed all (EN) section indicators:
+   - Removed (EN) indicators from History & Origin section
+   - Removed (EN) indicators from Profile section
+   - Removed (EN) indicators from No-No Rules section
+   - Removed (EN) indicators from Techniques section
+   - Removed (EN) indicators from Ingredients section
+   - Removed (EN) indicators from Instructions section
+   - Removed (EN) indicators from Wine Pairing section
+   - Removed language indicator from recipe metadata (previously showed "EN" next to country/region)
+   - Removed unused `showContentFallback` and `recipeLanguage` variables
+
+### Phase 2: Prerendering - PARTIALLY IMPLEMENTED
+
+**CHANGES MADE:**
+- Installed `react-snap` package
+- Updated `index.js` to support hydration (required for prerendering)
+- Added reactSnap configuration to package.json
+
+**BLOCKER:**
+- react-snap requires Puppeteer/Chrome which is not available in this container environment
+- Build completes successfully but prerendering fails due to Chrome not being installed
+
+**RECOMMENDATION FOR USER:**
+For production deployment, implement one of:
+1. Deploy with a prerendering service (prerender.io, rendertron)
+2. Use dynamic rendering middleware on the server
+3. Migrate to Next.js for native SSR/SSG support (Phase 3)
+
+### ACCEPTANCE CRITERIA FOR TESTING
+
+**Language Cleanup Verification:**
+1. Navigate to /fr/explore - NO (EN) badges should appear on any recipe cards
+2. Navigate to /it/explore - NO (EN) badges should appear on any recipe cards
+3. Navigate to /fr/recipe/spaghetti-alla-carbonara-italy - NO (EN) indicators in any section
+4. Navigate to /de/recipe/any-recipe - NO (EN) indicators in any section
+5. No "Translation pending" or localized equivalents should appear anywhere
+
+**What should be tested:**
+- Recipe cards on Explore pages (all languages)
+- Recipe detail pages (all languages)
+- Recipe sections (History, Profile, Ingredients, Instructions, etc.)
+- Recipe metadata (should only show country • region, NOT language)
+
+**Files Changed:**
+- /app/frontend/src/components/recipe/RecipeCard.jsx
+- /app/frontend/src/components/recipe/TranslatedRecipeCard.jsx
+- /app/frontend/src/pages/RecipePage.jsx
+- /app/frontend/src/index.js
+- /app/frontend/package.json
