@@ -273,7 +273,6 @@ const RecipePage = () => {
     const recipeName = recipe.recipe_name || recipe.title_original || recipe.title_translated?.en || 'Unknown Recipe';
     const country = recipe.origin_country || recipe.country || 'Unknown';
     const region = recipe.origin_region || recipe.region || 'Unknown';
-    const recipeLanguage = recipe.origin_language || recipe.original_language || 'en';
     const authenticityLevel = recipe.authenticity_level || recipe.source_validation?.authenticity_rank || 3;
 
     // TRANSLATION-AWARE CONTENT EXTRACTION
