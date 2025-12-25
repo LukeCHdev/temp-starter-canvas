@@ -130,13 +130,6 @@ export const TranslatedRecipeCard = ({ recipe }) => {
                         <Star className="h-3 w-3 mr-1" />
                         {levelLabel}
                     </Badge>
-                    
-                    {/* Fallback Language Indicator (top-left) */}
-                    {showFallbackMarker && (
-                        <Badge variant="outline" className="absolute top-3 left-3 bg-amber-50 border-amber-300 text-amber-700 text-xs">
-                            {fallbackMarkerText}
-                        </Badge>
-                    )}
                 </div>
                 
                 {/* Content Section */}
