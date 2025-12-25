@@ -82,6 +82,17 @@ function App() {
         <AuthProvider>
           <AppLayout>
             <Routes>
+              {/* Admin Routes - Must be BEFORE language routes */}
+              <Route path="/admin" element={<AdminLoginPage />} />
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin/recipes" element={<AdminRecipesPage />} />
+              <Route path="/admin/recipes/new" element={<AdminNewRecipePage />} />
+              <Route path="/admin/recipes/:slug/edit" element={<AdminEditRecipePage />} />
+              <Route path="/admin/import-csv" element={<AdminImportCSVPage />} />
+              <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
+              <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
+              <Route path="/admin/import-document" element={<AdminDocumentImportPage />} />
+              
               {/* 
                 Multilingual URL Structure:
                 - / → Spanish (default)
@@ -121,17 +132,6 @@ function App() {
               <Route path="/de">
                 {PublicRoutes()}
               </Route>
-              
-              {/* Admin Routes (no language prefix) */}
-              <Route path="/admin" element={<AdminLoginPage />} />
-              <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route path="/admin/recipes" element={<AdminRecipesPage />} />
-              <Route path="/admin/recipes/new" element={<AdminNewRecipePage />} />
-              <Route path="/admin/recipes/:slug/edit" element={<AdminEditRecipePage />} />
-              <Route path="/admin/import-csv" element={<AdminImportCSVPage />} />
-              <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
-              <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
-              <Route path="/admin/import-document" element={<AdminDocumentImportPage />} />
               
               {/* Catch-all redirect to home */}
               <Route path="*" element={<Navigate to="/" replace />} />
