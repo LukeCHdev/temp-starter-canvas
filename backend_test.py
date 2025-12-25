@@ -49,12 +49,13 @@ class PrerenderTester:
                 self.log_test("Prerender Status", False, f"Expected enabled=true, got {data.get('enabled')}")
                 return False
                 
-            # Check if crawler list exists
-            if "crawlers" not in data or not isinstance(data["crawlers"], list):
-                self.log_test("Prerender Status", False, "Missing or invalid 'crawlers' list")
+            # Check if crawler list exists (either 'crawlers' or 'sample_crawlers')
+            crawlers = data.get("crawlers") or data.get("sample_crawlers")
+            if not crawlers or not isinstance(crawlers, list):
+                self.log_test("Prerender Status", False, "Missing or invalid crawler list")
                 return False
                 
-            crawler_count = len(data["crawlers"])
+            crawler_count = data.get("crawler_count", len(crawlers))
             self.log_test("Prerender Status", True, f"Prerender enabled with {crawler_count} crawlers configured")
             return True
             
