@@ -47,6 +47,18 @@ class ScrapeRequest(BaseModel):
 class RecipeUpdate(BaseModel):
     recipe_data: Dict[str, Any]
 
+class RecipeStatusUpdate(BaseModel):
+    status: Optional[str] = None
+    archived: Optional[bool] = None
+
+class BulkPublishResponse(BaseModel):
+    success: bool
+    published_count: int
+    blocked_count: int
+    published_slugs: List[str]
+    blocked_slugs: List[str]
+    dry_run: bool
+
 # ============== AUTH HELPERS ==============
 
 def verify_admin_token(authorization: str = Header(None)) -> bool:
