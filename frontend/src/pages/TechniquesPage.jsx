@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Construction } from 'lucide-react';
 
 const TechniquesPage = () => {
+    // Directly modify robots meta tag for SEO safety
+    useEffect(() => {
+        const robotsMeta = document.querySelector('meta[name="robots"]');
+        if (robotsMeta) {
+            robotsMeta.setAttribute('content', 'noindex, nofollow');
+        } else {
+            const meta = document.createElement('meta');
+            meta.name = 'robots';
+            meta.content = 'noindex, nofollow';
+            document.head.appendChild(meta);
+        }
+        
+        // Cleanup: restore on unmount
+        return () => {
+            const robotsMeta = document.querySelector('meta[name="robots"]');
+            if (robotsMeta) {
+                robotsMeta.setAttribute('content', 'index, follow');
+            }
+        };
+    }, []);
+
     return (
         <>
             <Helmet prioritizeSeoTags>
-                <meta name="robots" content="noindex, nofollow" data-rh="true" />
                 <title>Techniques (Coming Soon) | Sous Chef Linguine</title>
             </Helmet>
             <div className="min-h-screen bg-[#FAF7F0]" data-testid="techniques-page">
