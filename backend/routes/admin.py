@@ -643,8 +643,39 @@ async def get_admin_stats(authorized: bool = Depends(verify_admin_token)):
     published_count = await db.recipes.count_documents({"status": "published"})
     unpublished_count = await db.recipes.count_documents({"status": "unpublished"})
     draft_count = await db.recipes.count_documents({"status": "draft"})
-    no_status = await db.recipes.count_documents({"status": {"$exists": False}})
+    no_status = await db.recipes.count_documents({
+        "$or": [
+            {"status": {"$exists": False}},
+            {"status": None}
+        ]
+    })
     other_status = total_recipes - published_count - unpublished_count - draft_count - no_status
+    
+    # Visibility issues for published recipes
+    missing_continent = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [{"continent": {"$exists": False}}, {"continent": None}, {"continent": ""}]
+    })
+    missing_country = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [{"origin_country": {"$exists": False}}, {"origin_country": None}, {"origin_country": ""}]
+    })
+    missing_required = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [
+            {"recipe_name": {"$exists": False}}, {"recipe_name": None}, {"recipe_name": ""},
+            {"ingredients": {"$exists": False}}, {"ingredients": None}, {"ingredients": {"$size": 0}},
+            {"instructions": {"$exists": False}}, {"instructions": None}, {"instructions": {"$size": 0}}
+        ]
+    })
+    
+    # Truly visible on public site
+    truly_visible = await db.recipes.count_documents({
+        "status": "published",
+        "continent": {"$exists": True, "$ne": None, "$ne": ""},
+        "origin_country": {"$exists": True, "$ne": None, "$ne": ""},
+        "recipe_name": {"$exists": True, "$ne": None, "$ne": ""}
+    })
     
     # Test/placeholder detection
     test_placeholder_count = await db.recipes.count_documents({
@@ -693,13 +724,20 @@ async def get_admin_stats(authorized: bool = Depends(verify_admin_token)):
             "no_status": no_status,
             "other": other_status
         },
+        "visibility": {
+            "truly_visible": truly_visible,
+            "missing_continent": missing_continent,
+            "missing_country": missing_country,
+            "missing_required_fields": missing_required,
+            "gap": published_count - truly_visible
+        },
         "test_placeholder_count": test_placeholder_count,
-        "public_site_shows": published_count,  # This matches the public filter
+        "public_site_shows": truly_visible,
         "recipes_by_country": [{"country": c["_id"], "count": c["count"]} for c in countries if c["_id"]],
         "recipes_by_continent": [{"continent": c["_id"], "count": c["count"]} for c in continents if c["_id"]],
         "recent_recipes": recent,
         "db_info": db_info,
-        "filter_explanation": "Public site filters by status='published'. Admin shows ALL recipes."
+        "filter_explanation": "Public site filters by status='published' + required fields (continent, country, name)."
     }
 
 
