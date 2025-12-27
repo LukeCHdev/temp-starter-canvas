@@ -66,6 +66,7 @@ function App() {
               <Route path="/admin/recipes" element={<AdminRecipesPage />} />
               <Route path="/admin/recipes/new" element={<AdminNewRecipePage />} />
               <Route path="/admin/recipes/:slug/edit" element={<AdminEditRecipePage />} />
+              <Route path="/admin/review" element={<AdminReviewPage />} />
               <Route path="/admin/import-csv" element={<AdminImportCSVPage />} />
               <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
               <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
