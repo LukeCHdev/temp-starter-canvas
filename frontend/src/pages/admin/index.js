@@ -6,3 +6,4 @@ export { AdminImportCSVPage } from './AdminImportCSVPage';
 export { AdminImportJSONPage } from './AdminImportJSONPage';
 export { AdminScrapePage } from './AdminScrapePage';
 export { AdminDocumentImportPage } from './AdminDocumentImportPage';
+export { AdminReviewPage } from './AdminReviewPage';
