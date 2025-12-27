@@ -22,10 +22,11 @@ export const Navigation = () => {
     const [showAuthModal, setShowAuthModal] = useState(false);
 
     // All navigation links use getLocalizedPath to preserve language
+    // Note: Techniques page is hidden from nav until ready (SEO: noindex applied)
     const navLinks = [
         { path: '/explore', label: t('nav.explore'), icon: Globe },
         { path: '/menu-builder', label: t('nav.menuBuilder'), icon: MenuIcon },
-        { path: '/techniques', label: t('nav.techniques'), icon: BookOpen },
+        // { path: '/techniques', label: t('nav.techniques'), icon: BookOpen }, // Hidden until ready
         { path: '/about', label: t('nav.about'), icon: null },
     ];
 
