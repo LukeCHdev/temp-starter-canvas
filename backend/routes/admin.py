@@ -596,9 +596,26 @@ async def get_canonical_schema(authorized: bool = Depends(verify_admin_token)):
 
 @admin_router.get("/stats")
 async def get_admin_stats(authorized: bool = Depends(verify_admin_token)):
-    """Get admin dashboard statistics."""
+    """Get admin dashboard statistics with detailed breakdown."""
+    # Total counts
     total_recipes = await db.recipes.count_documents({})
-    published_recipes = await db.recipes.count_documents({"status": "published"})
+    
+    # Status breakdown (the field public site filters on)
+    published_count = await db.recipes.count_documents({"status": "published"})
+    unpublished_count = await db.recipes.count_documents({"status": "unpublished"})
+    draft_count = await db.recipes.count_documents({"status": "draft"})
+    no_status = await db.recipes.count_documents({"status": {"$exists": False}})
+    other_status = total_recipes - published_count - unpublished_count - draft_count - no_status
+    
+    # Test/placeholder detection
+    test_placeholder_count = await db.recipes.count_documents({
+        "$or": [
+            {"recipe_name": {"$regex": "test", "$options": "i"}},
+            {"recipe_name": {"$regex": "placeholder", "$options": "i"}},
+            {"recipe_name": {"$regex": "sample", "$options": "i"}},
+            {"recipe_name": {"$regex": "example", "$options": "i"}}
+        ]
+    })
     
     # Recipes by country
     countries_pipeline = [
@@ -618,13 +635,30 @@ async def get_admin_stats(authorized: bool = Depends(verify_admin_token)):
     # Recent recipes
     recent = await db.recipes.find(
         {},
-        {"_id": 0, "recipe_name": 1, "slug": 1, "date_fetched": 1}
+        {"_id": 0, "recipe_name": 1, "slug": 1, "date_fetched": 1, "status": 1}
     ).sort("date_fetched", -1).limit(5).to_list(5)
+    
+    # Database info
+    db_info = {
+        "database": os.environ.get('DB_NAME', 'unknown'),
+        "collection": "recipes",
+        "mongo_url": os.environ.get('MONGO_URL', 'unknown')[:30] + "..."
+    }
     
     return {
         "total_recipes": total_recipes,
-        "published_recipes": published_recipes,
+        "status_breakdown": {
+            "published": published_count,
+            "unpublished": unpublished_count,
+            "draft": draft_count,
+            "no_status": no_status,
+            "other": other_status
+        },
+        "test_placeholder_count": test_placeholder_count,
+        "public_site_shows": published_count,  # This matches the public filter
         "recipes_by_country": [{"country": c["_id"], "count": c["count"]} for c in countries if c["_id"]],
         "recipes_by_continent": [{"continent": c["_id"], "count": c["count"]} for c in continents if c["_id"]],
-        "recent_recipes": recent
+        "recent_recipes": recent,
+        "db_info": db_info,
+        "filter_explanation": "Public site filters by status='published'. Admin shows ALL recipes."
     }
