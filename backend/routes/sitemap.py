@@ -130,12 +130,13 @@ async def generate_sitemap_xml(db) -> str:
 """
     
     # Static pages with their priorities
+    # Note: /techniques is excluded until page is ready (has noindex)
     static_pages = [
         ('/', 1.0, 'daily'),           # Homepage
         ('/explore', 0.9, 'daily'),    # Explore page
         ('/about', 0.6, 'monthly'),    # About page
         ('/editorial-policy', 0.5, 'monthly'),  # Editorial policy
-        ('/techniques', 0.7, 'weekly'),  # Techniques
+        # ('/techniques', 0.7, 'weekly'),  # EXCLUDED: Under construction, noindex applied
     ]
     
     # Generate entries for static pages in all languages
