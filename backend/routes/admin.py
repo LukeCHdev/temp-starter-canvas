@@ -97,16 +97,41 @@ async def verify_admin(authorized: bool = Depends(verify_admin_token)):
 # ============== RECIPE MANAGEMENT ROUTES ==============
 
 @admin_router.get("/recipes")
-async def get_all_recipes(authorized: bool = Depends(verify_admin_token)):
-    """Get all recipes for admin management."""
+async def get_all_recipes(
+    authorized: bool = Depends(verify_admin_token),
+    status_filter: Optional[str] = None
+):
+    """Get all recipes for admin management with optional status filter.
+    
+    Query params:
+    - status_filter: 'published', 'unpublished', 'draft', or 'all' (default: 'all')
+    """
+    query = {}
+    
+    if status_filter and status_filter != 'all':
+        query["status"] = status_filter
+    
     recipes = await db.recipes.find(
-        {},
+        query,
         {"_id": 0}
     ).sort("date_fetched", -1).to_list(1000)
     
+    # Get counts for UI
+    total_all = await db.recipes.count_documents({})
+    total_published = await db.recipes.count_documents({"status": "published"})
+    total_unpublished = await db.recipes.count_documents({"status": "unpublished"})
+    total_draft = await db.recipes.count_documents({"status": "draft"})
+    
     return {
         "recipes": recipes,
-        "total": len(recipes)
+        "total": len(recipes),
+        "counts": {
+            "all": total_all,
+            "published": total_published,
+            "unpublished": total_unpublished,
+            "draft": total_draft
+        },
+        "current_filter": status_filter or "all"
     }
 
 @admin_router.get("/recipes/{slug}")
