@@ -1060,11 +1060,14 @@ async def get_region(slug: str):
 # ============== COUNTRY ROUTES ==============
 
 @api_router.get("/countries")
-async def get_countries():
+async def get_countries(lang: str = "en"):
     """Get all countries that have at least one recipe.
     
-    Returns a dynamic list based on actual recipe data, not a static list.
-    This ensures the Menu Builder shows all available countries.
+    Returns deduplicated, canonical country list with localized labels.
+    Aggregates by canonical English name, returns localized display label.
+    
+    Query params:
+    - lang: Language for display labels (en, it, fr, es, de)
     """
     # Aggregate distinct countries from recipes collection
     pipeline = [
@@ -1073,36 +1076,45 @@ async def get_countries():
             "_id": "$origin_country",
             "recipe_count": {"$sum": 1}
         }},
-        {"$sort": {"_id": 1}}  # Sort alphabetically by country name
+        {"$sort": {"_id": 1}}
     ]
     
-    countries = []
+    # Aggregate by canonical name (handle Italia -> Italy etc.)
+    canonical_counts = {}
+    
     async for doc in db.recipes.aggregate(pipeline):
-        country_name = doc["_id"]
-        if country_name:
-            countries.append({
-                "name": country_name,
-                "slug": country_name.lower().replace(" ", "-"),
-                "recipe_count": doc["recipe_count"]
-            })
+        raw_country = doc["_id"]
+        if not raw_country:
+            continue
+        
+        # Normalize to canonical English
+        canonical = normalize_country(raw_country)
+        
+        if canonical in canonical_counts:
+            canonical_counts[canonical] += doc["recipe_count"]
+        else:
+            canonical_counts[canonical] = doc["recipe_count"]
     
-    # Also check if there are additional countries in the countries collection
-    # that might not have recipes yet but should be shown
-    static_countries = await db.countries.find({}, {"_id": 0, "name": 1, "slug": 1}).to_list(200)
-    existing_names = {c["name"] for c in countries}
-    
-    for sc in static_countries:
-        if sc.get("name") and sc["name"] not in existing_names:
-            countries.append({
-                "name": sc["name"],
-                "slug": sc.get("slug", sc["name"].lower().replace(" ", "-")),
-                "recipe_count": 0
-            })
+    # Build response with localized labels
+    countries = []
+    for canonical, count in canonical_counts.items():
+        # Get localized label
+        if canonical in COUNTRY_LABELS:
+            localized = COUNTRY_LABELS[canonical].get(lang, canonical)
+        else:
+            localized = canonical
+        
+        countries.append({
+            "canonical": canonical,  # English name for filtering/queries
+            "name": localized,       # Localized display label
+            "slug": canonical.lower().replace(" ", "-"),
+            "recipe_count": count
+        })
     
     # Sort by recipe count (descending), then name (ascending)
-    countries.sort(key=lambda x: (-x["recipe_count"], x["name"]))
+    countries.sort(key=lambda x: (-x["recipe_count"], x["canonical"]))
     
-    return {"countries": countries}
+    return {"countries": countries, "language": lang}
 
 @api_router.get("/countries/with-recipes")
 async def get_countries_with_recipes(min_recipes: int = 1):
