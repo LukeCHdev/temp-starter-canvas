@@ -100,6 +100,11 @@ export const AdminRecipesPage = () => {
     }
 
     return (
+        <>
+        <Helmet>
+            <meta name="robots" content="noindex, nofollow" />
+            <title>Recipe Management - Admin | Sous Chef Linguine</title>
+        </Helmet>
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
             <header className="bg-white shadow-sm border-b">
@@ -109,6 +114,11 @@ export const AdminRecipesPage = () => {
                         <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Link to="/admin/review">
+                            <Button variant="outline" size="sm" className="border-orange-300 text-orange-700 hover:bg-orange-50">
+                                <ClipboardList className="w-4 h-4 mr-2" /> Review Queue
+                            </Button>
+                        </Link>
                         <Link to="/">
                             <Button variant="outline" size="sm">
                                 <Globe className="w-4 h-4 mr-2" /> View Site
