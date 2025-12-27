@@ -132,7 +132,8 @@ export const AdminReviewPage = () => {
         if (filter === 'blocked') return !item.is_safe_to_publish;
         if (filter === 'duplicates') return item.flags.some(f => f.startsWith('POSSIBLE_DUPLICATE'));
         if (filter === 'placeholders') return item.flags.includes('PLACEHOLDER');
-        if (filter === 'needs_review') return item.flags.length > 0 && item.is_safe_to_publish;
+        if (filter === 'hidden_published') return item.category === 'hidden_published';
+        if (filter === 'unpublished') return item.category === 'unpublished';
         return true;
     });
 
