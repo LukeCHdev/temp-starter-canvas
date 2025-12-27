@@ -857,9 +857,15 @@ def detect_flags(recipe: dict, all_recipes: List[dict] = None) -> dict:
 
 
 @admin_router.get("/review-queue")
-async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
+async def get_review_queue(
+    include_hidden_published: int = Query(default=1, description="Include published but hidden recipes (1=yes)"),
+    authorized: bool = Depends(verify_admin_token)
+):
     """
-    Get all recipes that are NOT published, with computed safety flags.
+    Get all recipes that need review:
+    1. status != "published" (unpublished/draft)
+    2. status == "published" but missing required fields (hidden from public)
+    
     Returns recipes with: flags, duplicate_of, is_safe_to_publish, source
     """
     # Get all non-published recipes
@@ -868,17 +874,59 @@ async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
         {"_id": 0}
     ).sort("date_fetched", -1).to_list(1000)
     
+    # Get published but hidden recipes (missing required fields)
+    hidden_published = []
+    if include_hidden_published == 1:
+        published_recipes = await db.recipes.find(
+            {"status": "published"},
+            {"_id": 0}
+        ).to_list(2000)
+        
+        for recipe in published_recipes:
+            origin_country = recipe.get("origin_country", "") or ""
+            continent = recipe.get("continent", "") or ""
+            recipe_name = recipe.get("recipe_name", "") or ""
+            ingredients = recipe.get("ingredients", []) or []
+            instructions = recipe.get("instructions", []) or []
+            
+            is_hidden = (
+                not origin_country or
+                not continent or
+                not recipe_name or
+                not ingredients or len(ingredients) == 0 or
+                not instructions or len(instructions) == 0
+            )
+            
+            if is_hidden:
+                # Check for invalid country
+                invalid_country = False
+                if origin_country and not is_valid_country(origin_country):
+                    normalized = normalize_country(origin_country)
+                    if normalized != origin_country:
+                        invalid_country = True
+                
+                recipe["_hidden_reason"] = {
+                    "missing_country": not origin_country,
+                    "missing_continent": not continent,
+                    "missing_name": not recipe_name,
+                    "missing_ingredients": not ingredients or len(ingredients) == 0,
+                    "missing_instructions": not instructions or len(instructions) == 0,
+                    "invalid_country": invalid_country
+                }
+                hidden_published.append(recipe)
+    
     # Get all recipes for duplicate detection
     all_recipes = await db.recipes.find({}, {"_id": 0, "recipe_name": 1, "slug": 1}).to_list(2000)
     
     # Process each recipe
     queue_items = []
     safe_count = 0
-    needs_review_count = 0
     blocked_count = 0
     duplicate_count = 0
     placeholder_count = 0
+    hidden_published_count = 0
     
+    # Process non-published recipes
     for recipe in non_published:
         detection = detect_flags(recipe, all_recipes)
         
@@ -892,12 +940,12 @@ async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
             'duplicate_of': detection['duplicate_of'],
             'is_safe_to_publish': detection['is_safe_to_publish'],
             'created_at': recipe.get('date_fetched', ''),
-            'authenticity_level': recipe.get('authenticity_level', 0)
+            'authenticity_level': recipe.get('authenticity_level', 0),
+            'category': 'unpublished'
         }
         
         queue_items.append(item)
         
-        # Count categories
         if detection['is_safe_to_publish']:
             safe_count += 1
         else:
@@ -908,10 +956,42 @@ async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
         
         if 'PLACEHOLDER' in detection['flags']:
             placeholder_count += 1
+    
+    # Process hidden published recipes
+    for recipe in hidden_published:
+        hidden_reason = recipe.get("_hidden_reason", {})
+        flags = ["PUBLISHED_BUT_HIDDEN"]
         
-        # Needs review = has flags but might be fixable
-        if detection['flags'] and detection['is_safe_to_publish']:
-            needs_review_count += 1
+        if hidden_reason.get("missing_country"):
+            flags.append("MISSING_FIELDS:origin_country")
+        if hidden_reason.get("missing_continent"):
+            flags.append("MISSING_FIELDS:continent")
+        if hidden_reason.get("missing_name"):
+            flags.append("MISSING_FIELDS:recipe_name")
+        if hidden_reason.get("missing_ingredients"):
+            flags.append("MISSING_FIELDS:ingredients")
+        if hidden_reason.get("missing_instructions"):
+            flags.append("MISSING_FIELDS:instructions")
+        if hidden_reason.get("invalid_country"):
+            flags.append("INVALID_COUNTRY")
+        
+        item = {
+            'slug': recipe.get('slug', ''),
+            'recipe_name': recipe.get('recipe_name', ''),
+            'origin_country': recipe.get('origin_country', ''),
+            'status': 'published (hidden)',
+            'source': recipe.get('collection_method', '') or 'unknown',
+            'flags': flags,
+            'duplicate_of': None,
+            'is_safe_to_publish': False,  # Needs fix, not publish
+            'created_at': recipe.get('date_fetched', ''),
+            'authenticity_level': recipe.get('authenticity_level', 0),
+            'category': 'hidden_published'
+        }
+        
+        queue_items.append(item)
+        hidden_published_count += 1
+        blocked_count += 1
     
     return {
         'queue': queue_items,
@@ -919,9 +999,9 @@ async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
         'counts': {
             'safe': safe_count,
             'blocked': blocked_count,
-            'needs_review': needs_review_count,
             'duplicates': duplicate_count,
-            'placeholders': placeholder_count
+            'placeholders': placeholder_count,
+            'hidden_published': hidden_published_count
         }
     }
 
