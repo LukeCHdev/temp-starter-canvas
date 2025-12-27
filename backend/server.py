@@ -31,6 +31,9 @@ from services.auto_translation_service import auto_translation_service, auto_tra
 # Import auth utilities
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 
+# Import country normalization utilities
+from utils.country_normalization import normalize_country, get_continent, COUNTRY_LABELS, is_valid_country
+
 # Import admin routes
 from routes.admin import admin_router
 
