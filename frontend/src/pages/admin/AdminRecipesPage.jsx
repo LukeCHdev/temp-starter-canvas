@@ -56,9 +56,9 @@ export const AdminRecipesPage = () => {
     };
 
     useEffect(() => {
-        fetchRecipes();
+        fetchRecipes(statusFilter);
         fetchStats();
-    }, []);
+    }, [statusFilter]);
 
     useEffect(() => {
         if (searchQuery) {
