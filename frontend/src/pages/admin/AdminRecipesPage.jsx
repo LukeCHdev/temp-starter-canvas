@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plus, Edit, Trash2, Search, Globe, ChefHat, FileJson, FileSpreadsheet, Link as LinkIcon, LogOut, BarChart3 } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Globe, ChefHat, FileJson, FileSpreadsheet, Link as LinkIcon, LogOut, BarChart3, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { Helmet } from 'react-helmet-async';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
