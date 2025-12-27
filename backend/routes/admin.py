@@ -1047,6 +1047,303 @@ async def patch_recipe_status(
 
 # ============== AUDIT ROUTES ==============
 
+# Import country normalization utilities
+from utils.country_normalization import (
+    normalize_country, get_continent, is_valid_country, 
+    COUNTRY_NORMALIZATION, COUNTRY_TO_CONTINENT, COUNTRY_LABELS
+)
+
+
+@admin_router.get("/audit/visibility")
+async def audit_visibility(authorized: bool = Depends(verify_admin_token)):
+    """
+    Comprehensive visibility audit for published recipes.
+    Returns exact counts and breakdown of why recipes are hidden.
+    """
+    
+    # Total documents
+    total_docs = await db.recipes.count_documents({})
+    
+    # Published total
+    published_total = await db.recipes.count_documents({"status": "published"})
+    
+    # Get all published recipes for detailed analysis
+    published_recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0, "slug": 1, "recipe_name": 1, "origin_country": 1, "continent": 1,
+         "ingredients": 1, "instructions": 1, "history_summary": 1, 
+         "characteristic_profile": 1, "description": 1}
+    ).to_list(2000)
+    
+    # Analyze each recipe for visibility issues
+    reasons = {
+        "missing_origin_country": [],
+        "missing_continent": [],
+        "missing_recipe_name": [],
+        "missing_ingredients": [],
+        "missing_instructions": [],
+        "invalid_country_value": [],  # e.g., "Italia" instead of "Italy"
+    }
+    
+    visible_count = 0
+    hidden_slugs = []
+    
+    for recipe in published_recipes:
+        slug = recipe.get("slug", "")
+        issues = []
+        
+        # Check origin_country
+        origin_country = recipe.get("origin_country", "") or ""
+        if not origin_country:
+            reasons["missing_origin_country"].append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", ""),
+                "current_value": None
+            })
+            issues.append("MISSING_COUNTRY")
+        elif not is_valid_country(origin_country):
+            # Check if it's a localized variant
+            normalized = normalize_country(origin_country)
+            if normalized != origin_country and is_valid_country(normalized):
+                reasons["invalid_country_value"].append({
+                    "slug": slug,
+                    "recipe_name": recipe.get("recipe_name", ""),
+                    "current_value": origin_country,
+                    "should_be": normalized
+                })
+                issues.append("INVALID_COUNTRY")
+        
+        # Check continent
+        continent = recipe.get("continent", "") or ""
+        if not continent:
+            reasons["missing_continent"].append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", ""),
+                "origin_country": origin_country,
+                "derivable_continent": get_continent(origin_country) if origin_country else None
+            })
+            issues.append("MISSING_CONTINENT")
+        
+        # Check recipe_name
+        if not recipe.get("recipe_name"):
+            reasons["missing_recipe_name"].append({
+                "slug": slug,
+                "current_value": recipe.get("recipe_name")
+            })
+            issues.append("MISSING_NAME")
+        
+        # Check ingredients
+        ingredients = recipe.get("ingredients", []) or []
+        if not ingredients or len(ingredients) == 0:
+            reasons["missing_ingredients"].append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", "")
+            })
+            issues.append("MISSING_INGREDIENTS")
+        
+        # Check instructions
+        instructions = recipe.get("instructions", []) or []
+        if not instructions or len(instructions) == 0:
+            reasons["missing_instructions"].append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", "")
+            })
+            issues.append("MISSING_INSTRUCTIONS")
+        
+        if issues:
+            hidden_slugs.append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", ""),
+                "origin_country": origin_country,
+                "issues": issues
+            })
+        else:
+            visible_count += 1
+    
+    hidden_published_total = published_total - visible_count
+    
+    return {
+        "summary": {
+            "total_docs": total_docs,
+            "published_total": published_total,
+            "visible_total": visible_count,
+            "hidden_published_total": hidden_published_total
+        },
+        "breakdown": {
+            "missing_origin_country": len(reasons["missing_origin_country"]),
+            "missing_continent": len(reasons["missing_continent"]),
+            "missing_recipe_name": len(reasons["missing_recipe_name"]),
+            "missing_ingredients": len(reasons["missing_ingredients"]),
+            "missing_instructions": len(reasons["missing_instructions"]),
+            "invalid_country_value": len(reasons["invalid_country_value"])
+        },
+        "details": {
+            "missing_origin_country": reasons["missing_origin_country"][:50],
+            "missing_continent": reasons["missing_continent"][:50],
+            "missing_recipe_name": reasons["missing_recipe_name"][:50],
+            "missing_ingredients": reasons["missing_ingredients"][:50],
+            "missing_instructions": reasons["missing_instructions"][:50],
+            "invalid_country_value": reasons["invalid_country_value"][:50]
+        },
+        "hidden_published_recipes": hidden_slugs[:50]
+    }
+
+
+@admin_router.post("/recipes/fix-visibility")
+async def fix_visibility(
+    dry_run: int = Query(default=1, description="Preview only (1) or execute (0)"),
+    authorized: bool = Depends(verify_admin_token)
+):
+    """
+    Auto-fix visibility issues for published recipes.
+    
+    Fixes:
+    1. Normalize country names (Italia -> Italy)
+    2. Backfill continent from country
+    3. Backfill recipe_name from translations if missing
+    4. Mark incomplete recipes as unpublished
+    
+    Query params:
+    - dry_run=1: Preview what would be fixed
+    - dry_run=0: Execute fixes
+    """
+    
+    # Get all published recipes
+    published_recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 0}
+    ).to_list(2000)
+    
+    fixes = {
+        "country_normalized": [],
+        "continent_backfilled": [],
+        "name_backfilled": [],
+        "unpublished_incomplete": []
+    }
+    
+    for recipe in published_recipes:
+        slug = recipe.get("slug", "")
+        updates = {}
+        
+        # 1. Normalize country
+        origin_country = recipe.get("origin_country", "") or ""
+        if origin_country:
+            normalized = normalize_country(origin_country)
+            if normalized != origin_country and is_valid_country(normalized):
+                updates["origin_country"] = normalized
+                fixes["country_normalized"].append({
+                    "slug": slug,
+                    "from": origin_country,
+                    "to": normalized
+                })
+                origin_country = normalized  # Use normalized for continent lookup
+        
+        # 2. Backfill continent
+        continent = recipe.get("continent", "") or ""
+        if not continent and origin_country:
+            derived_continent = get_continent(origin_country)
+            if derived_continent:
+                updates["continent"] = derived_continent
+                fixes["continent_backfilled"].append({
+                    "slug": slug,
+                    "country": origin_country,
+                    "continent": derived_continent
+                })
+        
+        # 3. Backfill recipe_name
+        recipe_name = recipe.get("recipe_name", "") or ""
+        if not recipe_name:
+            # Try to get from translations
+            translations = recipe.get("translations", {})
+            for lang in ["en", "it", "fr", "es", "de"]:
+                trans = translations.get(lang, {})
+                if trans.get("recipe_name"):
+                    updates["recipe_name"] = trans.get("recipe_name")
+                    fixes["name_backfilled"].append({
+                        "slug": slug,
+                        "from_lang": lang,
+                        "name": trans.get("recipe_name")
+                    })
+                    break
+            
+            # If still no name, try title fields
+            if "recipe_name" not in updates:
+                fallback_name = (recipe.get("title_original") or 
+                                recipe.get("title") or 
+                                slug.replace("-", " ").title())
+                if fallback_name:
+                    updates["recipe_name"] = fallback_name
+                    fixes["name_backfilled"].append({
+                        "slug": slug,
+                        "from_field": "fallback",
+                        "name": fallback_name
+                    })
+        
+        # 4. Check if still incomplete (must unpublish)
+        ingredients = recipe.get("ingredients", []) or []
+        instructions = recipe.get("instructions", []) or []
+        
+        is_incomplete = (
+            (not recipe.get("recipe_name") and "recipe_name" not in updates) or
+            not ingredients or len(ingredients) == 0 or
+            not instructions or len(instructions) == 0
+        )
+        
+        if is_incomplete:
+            updates["status"] = "unpublished"
+            updates["unpublish_reason"] = "incomplete_required_fields"
+            fixes["unpublished_incomplete"].append({
+                "slug": slug,
+                "missing": {
+                    "name": not recipe.get("recipe_name") and "recipe_name" not in updates,
+                    "ingredients": not ingredients or len(ingredients) == 0,
+                    "instructions": not instructions or len(instructions) == 0
+                }
+            })
+        
+        # Apply updates if not dry run
+        if updates and dry_run == 0:
+            updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+            await db.recipes.update_one(
+                {"slug": slug},
+                {"$set": updates}
+            )
+    
+    # Calculate summary
+    total_fixes = (len(fixes["country_normalized"]) + 
+                   len(fixes["continent_backfilled"]) + 
+                   len(fixes["name_backfilled"]))
+    
+    return {
+        "success": True,
+        "dry_run": dry_run == 1,
+        "summary": {
+            "total_recipes_analyzed": len(published_recipes),
+            "total_fixes_applied": total_fixes if dry_run == 0 else 0,
+            "would_fix": total_fixes,
+            "would_unpublish": len(fixes["unpublished_incomplete"])
+        },
+        "fixes": {
+            "country_normalized": {
+                "count": len(fixes["country_normalized"]),
+                "samples": fixes["country_normalized"][:20]
+            },
+            "continent_backfilled": {
+                "count": len(fixes["continent_backfilled"]),
+                "samples": fixes["continent_backfilled"][:20]
+            },
+            "name_backfilled": {
+                "count": len(fixes["name_backfilled"]),
+                "samples": fixes["name_backfilled"][:20]
+            },
+            "unpublished_incomplete": {
+                "count": len(fixes["unpublished_incomplete"]),
+                "samples": fixes["unpublished_incomplete"][:20]
+            }
+        }
+    }
+
+
 @admin_router.get("/audit/public-visibility")
 async def audit_public_visibility(authorized: bool = Depends(verify_admin_token)):
     """
