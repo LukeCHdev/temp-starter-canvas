@@ -298,6 +298,7 @@ export const AdminRecipesPage = () => {
                 </Card>
             </div>
         </div>
+        </>
     );
 };
 
