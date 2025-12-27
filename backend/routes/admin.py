@@ -1005,3 +1005,175 @@ async def patch_recipe_status(
         "slug": slug,
         "updated": update_doc
     }
+
+
+# ============== AUDIT ROUTES ==============
+
+@admin_router.get("/audit/public-visibility")
+async def audit_public_visibility(authorized: bool = Depends(verify_admin_token)):
+    """
+    Audit public visibility of recipes.
+    Returns counts and lists of recipes that are 'published' but may not appear on public site.
+    """
+    
+    # Total documents
+    total_docs = await db.recipes.count_documents({})
+    
+    # Status breakdown
+    status_published = await db.recipes.count_documents({"status": "published"})
+    status_not_published = await db.recipes.count_documents({"status": {"$ne": "published"}})
+    status_missing = await db.recipes.count_documents({
+        "$or": [
+            {"status": {"$exists": False}},
+            {"status": None}
+        ]
+    })
+    
+    # Published with required fields for public visibility
+    published_with_continent = await db.recipes.count_documents({
+        "status": "published",
+        "continent": {"$exists": True, "$ne": None, "$ne": ""}
+    })
+    
+    published_missing_continent = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [
+            {"continent": {"$exists": False}},
+            {"continent": None},
+            {"continent": ""}
+        ]
+    })
+    
+    published_with_country = await db.recipes.count_documents({
+        "status": "published",
+        "origin_country": {"$exists": True, "$ne": None, "$ne": ""}
+    })
+    
+    published_missing_country = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [
+            {"origin_country": {"$exists": False}},
+            {"origin_country": None},
+            {"origin_country": ""}
+        ]
+    })
+    
+    # Check for required fields (name, summary, ingredients, instructions)
+    published_missing_required = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [
+            {"recipe_name": {"$exists": False}},
+            {"recipe_name": None},
+            {"recipe_name": ""},
+            {"ingredients": {"$exists": False}},
+            {"ingredients": None},
+            {"ingredients": {"$size": 0}},
+            {"instructions": {"$exists": False}},
+            {"instructions": None},
+            {"instructions": {"$size": 0}}
+        ]
+    })
+    
+    # Get list of published recipes with visibility issues
+    visibility_issues = []
+    
+    # Missing continent
+    missing_continent_list = await db.recipes.find(
+        {
+            "status": "published",
+            "$or": [
+                {"continent": {"$exists": False}},
+                {"continent": None},
+                {"continent": ""}
+            ]
+        },
+        {"slug": 1, "recipe_name": 1, "origin_country": 1, "_id": 0}
+    ).limit(50).to_list(50)
+    
+    for r in missing_continent_list:
+        visibility_issues.append({
+            "slug": r.get("slug"),
+            "recipe_name": r.get("recipe_name"),
+            "origin_country": r.get("origin_country"),
+            "reason": "MISSING_CONTINENT"
+        })
+    
+    # Missing country
+    missing_country_list = await db.recipes.find(
+        {
+            "status": "published",
+            "$or": [
+                {"origin_country": {"$exists": False}},
+                {"origin_country": None},
+                {"origin_country": ""}
+            ]
+        },
+        {"slug": 1, "recipe_name": 1, "continent": 1, "_id": 0}
+    ).limit(50).to_list(50)
+    
+    for r in missing_country_list:
+        if r.get("slug") not in [v["slug"] for v in visibility_issues]:
+            visibility_issues.append({
+                "slug": r.get("slug"),
+                "recipe_name": r.get("recipe_name"),
+                "continent": r.get("continent"),
+                "reason": "MISSING_COUNTRY"
+            })
+    
+    # Missing required fields
+    missing_required_list = await db.recipes.find(
+        {
+            "status": "published",
+            "$or": [
+                {"recipe_name": {"$exists": False}},
+                {"recipe_name": None},
+                {"recipe_name": ""},
+                {"ingredients": {"$exists": False}},
+                {"ingredients": None},
+                {"ingredients": {"$size": 0}},
+                {"instructions": {"$exists": False}},
+                {"instructions": None},
+                {"instructions": {"$size": 0}}
+            ]
+        },
+        {"slug": 1, "recipe_name": 1, "origin_country": 1, "_id": 0}
+    ).limit(50).to_list(50)
+    
+    for r in missing_required_list:
+        if r.get("slug") not in [v["slug"] for v in visibility_issues]:
+            visibility_issues.append({
+                "slug": r.get("slug"),
+                "recipe_name": r.get("recipe_name"),
+                "origin_country": r.get("origin_country"),
+                "reason": "MISSING_REQUIRED_FIELDS"
+            })
+    
+    # Calculate truly visible (published AND has all required fields)
+    truly_visible = await db.recipes.count_documents({
+        "status": "published",
+        "continent": {"$exists": True, "$ne": None, "$ne": ""},
+        "origin_country": {"$exists": True, "$ne": None, "$ne": ""},
+        "recipe_name": {"$exists": True, "$ne": None, "$ne": ""},
+        "ingredients": {"$exists": True, "$ne": None, "$not": {"$size": 0}},
+        "instructions": {"$exists": True, "$ne": None, "$not": {"$size": 0}}
+    })
+    
+    return {
+        "summary": {
+            "total_docs": total_docs,
+            "status_published": status_published,
+            "status_not_published": status_not_published,
+            "status_missing": status_missing,
+            "truly_visible_on_public": truly_visible,
+            "gap": status_published - truly_visible
+        },
+        "published_breakdown": {
+            "with_continent": published_with_continent,
+            "missing_continent": published_missing_continent,
+            "with_country": published_with_country,
+            "missing_country": published_missing_country,
+            "missing_required_fields": published_missing_required
+        },
+        "visibility_issues": visibility_issues[:50],
+        "visibility_issues_count": len(visibility_issues)
+    }
