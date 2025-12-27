@@ -1804,12 +1804,13 @@ async def get_sitemap(force_rebuild: bool = False):
     xml_content += '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
     
     # Static pages
+    # Note: /techniques is excluded until ready (has noindex, nofollow)
     static_pages = [
         ("/", "1.0", "daily"),
         ("/explore", "0.9", "daily"),
         ("/about", "0.6", "monthly"),
         ("/editorial-policy", "0.5", "monthly"),
-        ("/techniques", "0.7", "weekly"),
+        # ("/techniques", "0.7", "weekly"),  # EXCLUDED: Under construction
     ]
     
     for path, priority, changefreq in static_pages:
