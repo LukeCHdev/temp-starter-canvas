@@ -701,3 +701,307 @@ async def get_admin_stats(authorized: bool = Depends(verify_admin_token)):
         "db_info": db_info,
         "filter_explanation": "Public site filters by status='published'. Admin shows ALL recipes."
     }
+
+
+# ============== REVIEW QUEUE ROUTES ==============
+
+# Placeholder/test patterns to detect unsafe recipes
+PLACEHOLDER_PATTERNS = [
+    r'\btest\b', r'\bplaceholder\b', r'\bsample\b', r'\bexample\b', r'\bdemo\b',
+    r'\btodo\b', r'\bfixme\b', r'\bxxx\b', r'\btemp\b'
+]
+
+# Countries that often indicate placeholder data
+SUSPICIOUS_COUNTRIES = ['south-korea', 'russia', 'latvia', 'test', 'placeholder', 'unknown', '']
+
+
+def detect_flags(recipe: dict, all_recipes: List[dict] = None) -> dict:
+    """
+    Detect issues with a recipe and return flags.
+    Returns: {flags: [], duplicate_of: str|None, is_safe_to_publish: bool}
+    """
+    flags = []
+    duplicate_of = None
+    
+    recipe_name = recipe.get('recipe_name', '') or ''
+    slug = recipe.get('slug', '') or ''
+    country = recipe.get('origin_country', '') or ''
+    
+    # A1. Check required fields
+    required_fields = {
+        'recipe_name': recipe_name,
+        'ingredients': recipe.get('ingredients', []),
+        'instructions': recipe.get('instructions', [])
+    }
+    
+    # Check for description/summary (multiple possible fields)
+    has_description = bool(
+        recipe.get('history_summary') or 
+        recipe.get('characteristic_profile') or 
+        recipe.get('description') or
+        recipe.get('origin_story')
+    )
+    
+    missing_fields = []
+    if not required_fields['recipe_name']:
+        missing_fields.append('recipe_name')
+    if not required_fields['ingredients'] or len(required_fields['ingredients']) == 0:
+        missing_fields.append('ingredients')
+    if not required_fields['instructions'] or len(required_fields['instructions']) == 0:
+        missing_fields.append('instructions')
+    if not has_description:
+        missing_fields.append('description/summary')
+    
+    if missing_fields:
+        flags.append(f"MISSING_FIELDS:{','.join(missing_fields)}")
+    
+    # A2. Check for placeholder/test content
+    text_to_check = f"{recipe_name} {slug} {country}".lower()
+    for pattern in PLACEHOLDER_PATTERNS:
+        if re.search(pattern, text_to_check, re.IGNORECASE):
+            flags.append("PLACEHOLDER")
+            break
+    
+    # Check suspicious countries
+    if slug.lower() in SUSPICIOUS_COUNTRIES or country.lower() in SUSPICIOUS_COUNTRIES:
+        if "PLACEHOLDER" not in flags:
+            flags.append("PLACEHOLDER")
+    
+    # A3. Check for very short content
+    description = recipe.get('history_summary', '') or recipe.get('characteristic_profile', '') or ''
+    instructions = recipe.get('instructions', [])
+    
+    if description and len(description) < 50:
+        flags.append("VERY_SHORT:description")
+    
+    if instructions and len(instructions) < 2:
+        flags.append("VERY_SHORT:instructions")
+    
+    # A4. Duplicate detection (if all_recipes provided)
+    if all_recipes:
+        for other in all_recipes:
+            if other.get('slug') == slug:
+                continue  # Skip self
+            
+            other_name = other.get('recipe_name', '') or ''
+            
+            # Fuzzy match on recipe name
+            if recipe_name and other_name:
+                similarity = fuzz.ratio(recipe_name.lower(), other_name.lower())
+                if similarity >= 88:
+                    flags.append("POSSIBLE_DUPLICATE")
+                    duplicate_of = other.get('slug')
+                    break
+            
+            # Same slug base check
+            slug_base = slug.rsplit('-', 1)[0] if '-' in slug else slug
+            other_slug_base = other.get('slug', '').rsplit('-', 1)[0] if '-' in other.get('slug', '') else other.get('slug', '')
+            
+            if slug_base and other_slug_base and slug_base == other_slug_base and slug != other.get('slug'):
+                if "POSSIBLE_DUPLICATE" not in [f.split(':')[0] for f in flags]:
+                    flags.append("POSSIBLE_DUPLICATE")
+                    duplicate_of = other.get('slug')
+                    break
+    
+    # Determine if safe to publish
+    blocking_flags = ['MISSING_FIELDS', 'PLACEHOLDER', 'POSSIBLE_DUPLICATE']
+    is_safe = not any(f.split(':')[0] in blocking_flags for f in flags)
+    
+    # Bonus: prefer json_import source
+    source = recipe.get('collection_method', '') or recipe.get('gpt_used', '') or 'unknown'
+    
+    return {
+        'flags': flags,
+        'duplicate_of': duplicate_of,
+        'is_safe_to_publish': is_safe,
+        'source': source
+    }
+
+
+@admin_router.get("/review-queue")
+async def get_review_queue(authorized: bool = Depends(verify_admin_token)):
+    """
+    Get all recipes that are NOT published, with computed safety flags.
+    Returns recipes with: flags, duplicate_of, is_safe_to_publish, source
+    """
+    # Get all non-published recipes
+    non_published = await db.recipes.find(
+        {"status": {"$ne": "published"}},
+        {"_id": 0}
+    ).sort("date_fetched", -1).to_list(1000)
+    
+    # Get all recipes for duplicate detection
+    all_recipes = await db.recipes.find({}, {"_id": 0, "recipe_name": 1, "slug": 1}).to_list(2000)
+    
+    # Process each recipe
+    queue_items = []
+    safe_count = 0
+    needs_review_count = 0
+    blocked_count = 0
+    duplicate_count = 0
+    placeholder_count = 0
+    
+    for recipe in non_published:
+        detection = detect_flags(recipe, all_recipes)
+        
+        item = {
+            'slug': recipe.get('slug', ''),
+            'recipe_name': recipe.get('recipe_name', ''),
+            'origin_country': recipe.get('origin_country', ''),
+            'status': recipe.get('status', 'unknown'),
+            'source': detection['source'],
+            'flags': detection['flags'],
+            'duplicate_of': detection['duplicate_of'],
+            'is_safe_to_publish': detection['is_safe_to_publish'],
+            'created_at': recipe.get('date_fetched', ''),
+            'authenticity_level': recipe.get('authenticity_level', 0)
+        }
+        
+        queue_items.append(item)
+        
+        # Count categories
+        if detection['is_safe_to_publish']:
+            safe_count += 1
+        else:
+            blocked_count += 1
+        
+        if 'POSSIBLE_DUPLICATE' in [f.split(':')[0] for f in detection['flags']]:
+            duplicate_count += 1
+        
+        if 'PLACEHOLDER' in detection['flags']:
+            placeholder_count += 1
+        
+        # Needs review = has flags but might be fixable
+        if detection['flags'] and detection['is_safe_to_publish']:
+            needs_review_count += 1
+    
+    return {
+        'queue': queue_items,
+        'total': len(queue_items),
+        'counts': {
+            'safe': safe_count,
+            'blocked': blocked_count,
+            'needs_review': needs_review_count,
+            'duplicates': duplicate_count,
+            'placeholders': placeholder_count
+        }
+    }
+
+
+@admin_router.post("/recipes/bulk-publish")
+async def bulk_publish_recipes(
+    safe: int = Query(default=1, description="Only publish safe recipes (1=yes, 0=no)"),
+    dry_run: int = Query(default=0, description="Preview only, no DB writes (1=yes, 0=no)"),
+    authorized: bool = Depends(verify_admin_token)
+):
+    """
+    Bulk publish recipes.
+    
+    Query params:
+    - safe=1: Only publish recipes that pass all safety checks
+    - dry_run=1: Preview what would be published without making changes
+    """
+    # Get all non-published recipes
+    non_published = await db.recipes.find(
+        {"status": {"$ne": "published"}},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    # Get all recipes for duplicate detection
+    all_recipes = await db.recipes.find({}, {"_id": 0, "recipe_name": 1, "slug": 1}).to_list(2000)
+    
+    would_publish = []
+    blocked = []
+    
+    for recipe in non_published:
+        slug = recipe.get('slug', '')
+        
+        if safe == 1:
+            detection = detect_flags(recipe, all_recipes)
+            if detection['is_safe_to_publish']:
+                would_publish.append(slug)
+            else:
+                blocked.append({
+                    'slug': slug,
+                    'reason': detection['flags']
+                })
+        else:
+            # Publish all (dangerous!)
+            would_publish.append(slug)
+    
+    # If dry run, return preview
+    if dry_run == 1:
+        return {
+            'success': True,
+            'dry_run': True,
+            'would_publish_count': len(would_publish),
+            'blocked_count': len(blocked),
+            'sample_slugs': would_publish[:20],  # First 20 as sample
+            'blocked_samples': blocked[:10]
+        }
+    
+    # Actually publish
+    published_count = 0
+    for slug in would_publish:
+        result = await db.recipes.update_one(
+            {"slug": slug},
+            {"$set": {
+                "status": "published",
+                "published_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        if result.modified_count > 0:
+            published_count += 1
+    
+    logger.info(f"Bulk published {published_count} recipes")
+    
+    return {
+        'success': True,
+        'dry_run': False,
+        'published_count': published_count,
+        'blocked_count': len(blocked),
+        'published_slugs': would_publish,
+        'blocked_slugs': [b['slug'] for b in blocked]
+    }
+
+
+@admin_router.patch("/recipes/{slug}")
+async def patch_recipe_status(
+    slug: str,
+    update: RecipeStatusUpdate,
+    authorized: bool = Depends(verify_admin_token)
+):
+    """
+    Update recipe status or archived flag.
+    
+    Body:
+    - status: 'published', 'unpublished', 'draft', 'archived'
+    - archived: true/false
+    """
+    # Build update document
+    update_doc = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if update.status is not None:
+        update_doc["status"] = update.status
+    
+    if update.archived is not None:
+        update_doc["archived"] = update.archived
+        if update.archived:
+            update_doc["status"] = "archived"
+    
+    if len(update_doc) == 1:  # Only has updated_at
+        raise HTTPException(status_code=400, detail="No valid fields to update")
+    
+    result = await db.recipes.update_one(
+        {"slug": slug},
+        {"$set": update_doc}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    return {
+        "success": True,
+        "slug": slug,
+        "updated": update_doc
+    }
