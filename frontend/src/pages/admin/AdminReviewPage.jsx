@@ -172,7 +172,7 @@ export const AdminReviewPage = () => {
 
                 <div className="max-w-7xl mx-auto px-4 py-6">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
                         <Card 
                             className={`cursor-pointer transition-all ${filter === 'all' ? 'ring-2 ring-amber-500' : ''}`}
                             onClick={() => setFilter('all')}
@@ -189,6 +189,15 @@ export const AdminReviewPage = () => {
                             <CardContent className="p-4">
                                 <div className="text-2xl font-bold text-green-600">{counts.safe}</div>
                                 <div className="text-sm text-gray-500">✅ Safe to Publish</div>
+                            </CardContent>
+                        </Card>
+                        <Card 
+                            className={`cursor-pointer transition-all ${filter === 'hidden_published' ? 'ring-2 ring-purple-500' : ''}`}
+                            onClick={() => setFilter('hidden_published')}
+                        >
+                            <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-purple-600">{counts.hidden_published || 0}</div>
+                                <div className="text-sm text-gray-500">👻 Published Hidden</div>
                             </CardContent>
                         </Card>
                         <Card 
