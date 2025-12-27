@@ -1117,11 +1117,10 @@ async def get_countries(lang: str = "en"):
     return {"countries": countries, "language": lang}
 
 @api_router.get("/countries/with-recipes")
-async def get_countries_with_recipes(min_recipes: int = 1):
+async def get_countries_with_recipes(min_recipes: int = 1, lang: str = "en"):
     """Get all countries that have at least min_recipes recipes.
     
-    Use this endpoint for Menu Builder to ensure only countries
-    with enough recipes for menu generation are shown.
+    Returns deduplicated, canonical countries with localized labels.
     """
     pipeline = [
         {"$match": {"status": "published", "origin_country": {"$exists": True, "$ne": None, "$ne": ""}}},
@@ -1129,21 +1128,43 @@ async def get_countries_with_recipes(min_recipes: int = 1):
             "_id": "$origin_country",
             "recipe_count": {"$sum": 1}
         }},
-        {"$match": {"recipe_count": {"$gte": min_recipes}}},
         {"$sort": {"recipe_count": -1, "_id": 1}}
     ]
     
-    countries = []
+    # Aggregate by canonical name
+    canonical_counts = {}
+    
     async for doc in db.recipes.aggregate(pipeline):
-        country_name = doc["_id"]
-        if country_name:
+        raw_country = doc["_id"]
+        if not raw_country:
+            continue
+        
+        canonical = normalize_country(raw_country)
+        
+        if canonical in canonical_counts:
+            canonical_counts[canonical] += doc["recipe_count"]
+        else:
+            canonical_counts[canonical] = doc["recipe_count"]
+    
+    # Filter by min_recipes and build response
+    countries = []
+    for canonical, count in canonical_counts.items():
+        if count >= min_recipes:
+            if canonical in COUNTRY_LABELS:
+                localized = COUNTRY_LABELS[canonical].get(lang, canonical)
+            else:
+                localized = canonical
+            
             countries.append({
-                "name": country_name,
-                "slug": country_name.lower().replace(" ", "-"),
-                "recipe_count": doc["recipe_count"]
+                "canonical": canonical,
+                "name": localized,
+                "slug": canonical.lower().replace(" ", "-"),
+                "recipe_count": count
             })
     
-    return {"countries": countries, "min_recipes": min_recipes}
+    countries.sort(key=lambda x: (-x["recipe_count"], x["canonical"]))
+    
+    return {"countries": countries, "min_recipes": min_recipes, "language": lang}
 
 @api_router.get("/countries/{slug}")
 async def get_country(slug: str):
