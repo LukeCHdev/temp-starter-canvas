@@ -1071,7 +1071,7 @@ async def get_countries(lang: str = "en"):
     """
     # Aggregate distinct countries from recipes collection
     pipeline = [
-        {"$match": {"status": "published", "origin_country": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$match": {"status": "published", "origin_country": {"$exists": True, "$nin": [None, ""]}}},
         {"$group": {
             "_id": "$origin_country",
             "recipe_count": {"$sum": 1}
@@ -1123,7 +1123,7 @@ async def get_countries_with_recipes(min_recipes: int = 1, lang: str = "en"):
     Returns deduplicated, canonical countries with localized labels.
     """
     pipeline = [
-        {"$match": {"status": "published", "origin_country": {"$exists": True, "$ne": None, "$ne": ""}}},
+        {"$match": {"status": "published", "origin_country": {"$exists": True, "$nin": [None, ""]}}},
         {"$group": {
             "_id": "$origin_country",
             "recipe_count": {"$sum": 1}
