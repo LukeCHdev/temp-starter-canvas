@@ -5,8 +5,8 @@ import { Construction } from 'lucide-react';
 const TechniquesPage = () => {
     return (
         <>
-            <Helmet>
-                <meta name="robots" content="noindex, nofollow" />
+            <Helmet prioritizeSeoTags>
+                <meta name="robots" content="noindex, nofollow" data-rh="true" />
                 <title>Techniques (Coming Soon) | Sous Chef Linguine</title>
             </Helmet>
             <div className="min-h-screen bg-[#FAF7F0]" data-testid="techniques-page">
