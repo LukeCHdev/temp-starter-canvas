@@ -1,6 +1,6 @@
 # Admin Routes for Recipe Management
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Header
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Header, Query
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
@@ -8,9 +8,11 @@ import os
 import json
 import logging
 import httpx
+import re
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
+from rapidfuzz import fuzz
 
 # Import canonical schema validation
 from models.recipe import validate_canonical_recipe, normalize_to_canonical
