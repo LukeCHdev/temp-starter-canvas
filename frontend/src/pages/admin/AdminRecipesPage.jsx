@@ -123,33 +123,63 @@ export const AdminRecipesPage = () => {
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Stats Cards */}
                 {stats && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <Card>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                        <Card className={`cursor-pointer transition-all ${statusFilter === 'all' ? 'ring-2 ring-amber-500' : ''}`} onClick={() => setStatusFilter('all')}>
                             <CardContent className="p-4">
-                                <div className="text-2xl font-bold text-amber-700">{stats.total_recipes}</div>
+                                <div className="text-2xl font-bold text-amber-700">{counts.all}</div>
                                 <div className="text-sm text-gray-500">Total Recipes</div>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className={`cursor-pointer transition-all ${statusFilter === 'published' ? 'ring-2 ring-green-500' : ''}`} onClick={() => setStatusFilter('published')}>
                             <CardContent className="p-4">
-                                <div className="text-2xl font-bold text-green-600">{stats.published_recipes}</div>
-                                <div className="text-sm text-gray-500">Published</div>
+                                <div className="text-2xl font-bold text-green-600">{counts.published}</div>
+                                <div className="text-sm text-gray-500">✅ Published</div>
+                                <div className="text-xs text-gray-400">Public site shows</div>
+                            </CardContent>
+                        </Card>
+                        <Card className={`cursor-pointer transition-all ${statusFilter === 'unpublished' ? 'ring-2 ring-red-500' : ''}`} onClick={() => setStatusFilter('unpublished')}>
+                            <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-red-600">{counts.unpublished}</div>
+                                <div className="text-sm text-gray-500">❌ Unpublished</div>
+                            </CardContent>
+                        </Card>
+                        <Card className={`cursor-pointer transition-all ${statusFilter === 'draft' ? 'ring-2 ring-yellow-500' : ''}`} onClick={() => setStatusFilter('draft')}>
+                            <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-yellow-600">{counts.draft}</div>
+                                <div className="text-sm text-gray-500">📝 Draft</div>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardContent className="p-4">
                                 <div className="text-2xl font-bold text-blue-600">{stats.recipes_by_country?.length || 0}</div>
-                                <div className="text-sm text-gray-500">Countries</div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardContent className="p-4">
-                                <div className="text-2xl font-bold text-purple-600">{stats.recipes_by_continent?.length || 0}</div>
-                                <div className="text-sm text-gray-500">Continents</div>
+                                <div className="text-sm text-gray-500">🌍 Countries</div>
                             </CardContent>
                         </Card>
                     </div>
                 )}
+                
+                {/* Database Info Banner */}
+                {stats?.db_info && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 text-sm">
+                        <span className="font-medium">📊 Database:</span> {stats.db_info.database} | 
+                        <span className="font-medium ml-2">Collection:</span> recipes | 
+                        <span className="text-blue-600 ml-2">{stats.filter_explanation}</span>
+                    </div>
+                )}
+                
+                {/* Current Filter Indicator */}
+                <div className="mb-4 flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Showing:</span>
+                    <Badge variant={statusFilter === 'all' ? 'default' : 'outline'}>
+                        {statusFilter === 'all' ? 'All Recipes' : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}
+                    </Badge>
+                    <span className="text-sm text-gray-500">({filteredRecipes.length} recipes)</span>
+                    {statusFilter !== 'all' && (
+                        <Button variant="ghost" size="sm" onClick={() => setStatusFilter('all')}>
+                            Clear filter
+                        </Button>
+                    )}
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-3 mb-6">
