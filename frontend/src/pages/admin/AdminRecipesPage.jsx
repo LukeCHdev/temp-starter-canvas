@@ -16,6 +16,8 @@ export const AdminRecipesPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [counts, setCounts] = useState({ all: 0, published: 0, unpublished: 0, draft: 0 });
     const navigate = useNavigate();
 
     const getAuthHeaders = () => {
@@ -23,11 +25,15 @@ export const AdminRecipesPage = () => {
         return { Authorization: `Bearer ${token}` };
     };
 
-    const fetchRecipes = async () => {
+    const fetchRecipes = async (filter = 'all') => {
         try {
-            const response = await axios.get(`${API_URL}/api/admin/recipes`, { headers: getAuthHeaders() });
+            const url = filter === 'all' 
+                ? `${API_URL}/api/admin/recipes`
+                : `${API_URL}/api/admin/recipes?status_filter=${filter}`;
+            const response = await axios.get(url, { headers: getAuthHeaders() });
             setRecipes(response.data.recipes);
             setFilteredRecipes(response.data.recipes);
+            setCounts(response.data.counts || { all: 0, published: 0, unpublished: 0, draft: 0 });
         } catch (error) {
             if (error.response?.status === 401) {
                 toast.error('Session expired. Please login again.');
