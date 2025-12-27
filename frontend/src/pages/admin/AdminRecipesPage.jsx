@@ -134,7 +134,7 @@ export const AdminRecipesPage = () => {
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Stats Cards */}
                 {stats && (
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
                         <Card className={`cursor-pointer transition-all ${statusFilter === 'all' ? 'ring-2 ring-amber-500' : ''}`} onClick={() => setStatusFilter('all')}>
                             <CardContent className="p-4">
                                 <div className="text-2xl font-bold text-amber-700">{counts.all}</div>
@@ -145,7 +145,13 @@ export const AdminRecipesPage = () => {
                             <CardContent className="p-4">
                                 <div className="text-2xl font-bold text-green-600">{counts.published}</div>
                                 <div className="text-sm text-gray-500">✅ Published</div>
-                                <div className="text-xs text-gray-400">Public site shows</div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-emerald-600">{stats.visibility?.truly_visible || stats.public_site_shows || 0}</div>
+                                <div className="text-sm text-gray-500">👁️ Truly Visible</div>
+                                <div className="text-xs text-gray-400">On public site</div>
                             </CardContent>
                         </Card>
                         <Card className={`cursor-pointer transition-all ${statusFilter === 'unpublished' ? 'ring-2 ring-red-500' : ''}`} onClick={() => setStatusFilter('unpublished')}>
@@ -154,10 +160,11 @@ export const AdminRecipesPage = () => {
                                 <div className="text-sm text-gray-500">❌ Unpublished</div>
                             </CardContent>
                         </Card>
-                        <Card className={`cursor-pointer transition-all ${statusFilter === 'draft' ? 'ring-2 ring-yellow-500' : ''}`} onClick={() => setStatusFilter('draft')}>
+                        <Card>
                             <CardContent className="p-4">
-                                <div className="text-2xl font-bold text-yellow-600">{counts.draft}</div>
-                                <div className="text-sm text-gray-500">📝 Draft</div>
+                                <div className="text-2xl font-bold text-orange-600">{stats.visibility?.gap || 0}</div>
+                                <div className="text-sm text-gray-500">⚠️ Gap</div>
+                                <div className="text-xs text-gray-400">Published but hidden</div>
                             </CardContent>
                         </Card>
                         <Card>
@@ -166,6 +173,22 @@ export const AdminRecipesPage = () => {
                                 <div className="text-sm text-gray-500">🌍 Countries</div>
                             </CardContent>
                         </Card>
+                    </div>
+                )}
+                
+                {/* Visibility Issues Alert */}
+                {stats?.visibility?.gap > 0 && (
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4 text-sm">
+                        <span className="font-medium text-orange-700">⚠️ Visibility Gap:</span>{' '}
+                        <span className="text-orange-600">
+                            {stats.visibility.gap} recipes are "published" but NOT visible on public site.
+                        </span>
+                        <span className="text-gray-600 ml-2">
+                            (Missing: {stats.visibility.missing_continent > 0 && `continent=${stats.visibility.missing_continent}`}
+                            {stats.visibility.missing_country > 0 && ` country=${stats.visibility.missing_country}`}
+                            {stats.visibility.missing_required_fields > 0 && ` required_fields=${stats.visibility.missing_required_fields}`})
+                        </span>
+                        <a href="/admin/review" className="ml-2 text-blue-600 underline">View in Review Queue →</a>
                     </div>
                 )}
                 
