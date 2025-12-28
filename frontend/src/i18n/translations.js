@@ -1230,6 +1230,231 @@ export const translations = {
       es: 'Saber Más',
       de: 'Mehr Erfahren'
     }
+  },
+
+  // ============================================
+  // BADGES (STANDARDIZED)
+  // ============================================
+  badges: {
+    officiallyRecognized: {
+      en: 'Officially Recognized',
+      it: 'Ufficialmente Riconosciuto',
+      fr: 'Officiellement Reconnu',
+      es: 'Oficialmente Reconocido',
+      de: 'Offiziell Anerkannt'
+    },
+    traditionVerified: {
+      en: 'Tradition-Verified',
+      it: 'Verificato dalla Tradizione',
+      fr: 'Vérifié par la Tradition',
+      es: 'Verificado por Tradición',
+      de: 'Traditions-Verifiziert'
+    },
+    traditional: {
+      en: 'Traditional',
+      it: 'Tradizionale',
+      fr: 'Traditionnel',
+      es: 'Tradicional',
+      de: 'Traditionell'
+    }
+  },
+
+  // ============================================
+  // HOMEPAGE EDITORIAL
+  // ============================================
+  homepage: {
+    valueStrip: {
+      main: {
+        en: 'A curated collection of authentic recipes, selected for tradition — not volume.',
+        it: 'Una collezione curata di ricette autentiche, selezionate per tradizione — non per quantità.',
+        fr: 'Une collection soignée de recettes authentiques, sélectionnées pour la tradition — pas pour le volume.',
+        es: 'Una colección curada de recetas auténticas, seleccionadas por tradición — no por volumen.',
+        de: 'Eine kuratierte Sammlung authentischer Rezepte, ausgewählt nach Tradition — nicht nach Menge.'
+      },
+      curated: {
+        en: 'Curated global recipes',
+        it: 'Ricette globali curate',
+        fr: 'Recettes mondiales sélectionnées',
+        es: 'Recetas globales curadas',
+        de: 'Kuratierte globale Rezepte'
+      },
+      validated: {
+        en: 'Community-validated for authenticity',
+        it: 'Validate dalla comunità per autenticità',
+        fr: 'Validées par la communauté pour authenticité',
+        es: 'Validadas por la comunidad para autenticidad',
+        de: 'Von der Community auf Authentizität geprüft'
+      },
+      accuracy: {
+        en: 'Cultural accuracy over popularity',
+        it: 'Accuratezza culturale prima della popolarità',
+        fr: 'Précision culturelle avant popularité',
+        es: 'Precisión cultural sobre popularidad',
+        de: 'Kulturelle Genauigkeit vor Popularität'
+      }
+    },
+    hero: {
+      title: {
+        en: 'Sous Chef Linguine',
+        it: 'Sous Chef Linguine',
+        fr: 'Sous Chef Linguine',
+        es: 'Sous Chef Linguine',
+        de: 'Sous Chef Linguine'
+      },
+      subtitle: {
+        en: 'The culinary archive of authentic regional recipes',
+        it: 'L\'archivio culinario delle ricette regionali autentiche',
+        fr: 'L\'archive culinaire des recettes régionales authentiques',
+        es: 'El archivo culinario de recetas regionales auténticas',
+        de: 'Das kulinarische Archiv authentischer regionaler Rezepte'
+      },
+      searchPlaceholder: {
+        en: 'Search by recipe, ingredient, region, or dish type',
+        it: 'Cerca per ricetta, ingrediente, regione o tipo di piatto',
+        fr: 'Rechercher par recette, ingrédient, région ou type de plat',
+        es: 'Buscar por receta, ingrediente, región o tipo de plato',
+        de: 'Suche nach Rezept, Zutat, Region oder Gerichtart'
+      },
+      searchHelper: {
+        en: 'Can\'t find what you\'re looking for? Try our cultural search — dishes often have different names across regions.',
+        it: 'Non trovi quello che cerchi? Prova la nostra ricerca culturale — i piatti spesso hanno nomi diversi nelle varie regioni.',
+        fr: 'Vous ne trouvez pas ce que vous cherchez ? Essayez notre recherche culturelle — les plats ont souvent des noms différents selon les régions.',
+        es: '¿No encuentras lo que buscas? Prueba nuestra búsqueda cultural — los platos a menudo tienen nombres diferentes en las regiones.',
+        de: 'Nicht gefunden? Versuchen Sie unsere kulturelle Suche — Gerichte haben oft verschiedene Namen in den Regionen.'
+      },
+      searchButton: {
+        en: 'Search',
+        it: 'Cerca',
+        fr: 'Rechercher',
+        es: 'Buscar',
+        de: 'Suchen'
+      },
+      exploreRecipe: {
+        en: 'Explore recipe',
+        it: 'Esplora ricetta',
+        fr: 'Explorer la recette',
+        es: 'Explorar receta',
+        de: 'Rezept erkunden'
+      }
+    },
+    authenticity: {
+      title: {
+        en: 'How Authenticity Works',
+        it: 'Come Funziona l\'Autenticità',
+        fr: 'Comment Fonctionne l\'Authenticité',
+        es: 'Cómo Funciona la Autenticidad',
+        de: 'Wie Authentizität Funktioniert'
+      },
+      step1Title: {
+        en: 'Curated Selection',
+        it: 'Selezione Curata',
+        fr: 'Sélection Soignée',
+        es: 'Selección Curada',
+        de: 'Kuratierte Auswahl'
+      },
+      step1Text: {
+        en: 'Recipes are selected based on historical and regional authenticity.',
+        it: 'Le ricette sono selezionate in base all\'autenticità storica e regionale.',
+        fr: 'Les recettes sont sélectionnées selon l\'authenticité historique et régionale.',
+        es: 'Las recetas se seleccionan según la autenticidad histórica y regional.',
+        de: 'Rezepte werden nach historischer und regionaler Authentizität ausgewählt.'
+      },
+      step2Title: {
+        en: 'Community Validation',
+        it: 'Validazione della Comunità',
+        fr: 'Validation Communautaire',
+        es: 'Validación Comunitaria',
+        de: 'Community-Validierung'
+      },
+      step2Text: {
+        en: 'Users vote on how faithfully a recipe respects its traditional form.',
+        it: 'Gli utenti votano quanto fedelmente una ricetta rispetta la sua forma tradizionale.',
+        fr: 'Les utilisateurs votent sur la fidélité d\'une recette à sa forme traditionnelle.',
+        es: 'Los usuarios votan qué tan fielmente una receta respeta su forma tradicional.',
+        de: 'Benutzer bewerten, wie treu ein Rezept seiner traditionellen Form entspricht.'
+      },
+      step3Title: {
+        en: 'Cultural Correction',
+        it: 'Correzione Culturale',
+        fr: 'Correction Culturelle',
+        es: 'Corrección Cultural',
+        de: 'Kulturelle Korrektur'
+      },
+      step3Text: {
+        en: 'Users may suggest corrections when a recipe does not meet tradition.',
+        it: 'Gli utenti possono suggerire correzioni quando una ricetta non rispetta la tradizione.',
+        fr: 'Les utilisateurs peuvent suggérer des corrections quand une recette ne respecte pas la tradition.',
+        es: 'Los usuarios pueden sugerir correcciones cuando una receta no cumple con la tradición.',
+        de: 'Benutzer können Korrekturen vorschlagen, wenn ein Rezept der Tradition nicht entspricht.'
+      }
+    },
+    browseContinent: {
+      title: {
+        en: 'Browse by Continent',
+        it: 'Sfoglia per Continente',
+        fr: 'Parcourir par Continent',
+        es: 'Explorar por Continente',
+        de: 'Nach Kontinent Durchsuchen'
+      }
+    },
+    browseDishType: {
+      title: {
+        en: 'Browse by Dish Type',
+        it: 'Sfoglia per Tipo di Piatto',
+        fr: 'Parcourir par Type de Plat',
+        es: 'Explorar por Tipo de Plato',
+        de: 'Nach Gerichtart Durchsuchen'
+      }
+    },
+    dishTypes: {
+      appetizer: { en: 'Appetizers', it: 'Antipasti', fr: 'Entrées', es: 'Aperitivos', de: 'Vorspeisen' },
+      aperitif: { en: 'Aperitif & Small Plates', it: 'Aperitivi e Stuzzichini', fr: 'Apéritifs et Petites Assiettes', es: 'Aperitivos y Tapas', de: 'Aperitifs und Kleine Teller' },
+      firstCourse: { en: 'First Courses', it: 'Primi Piatti', fr: 'Premiers Plats', es: 'Primeros Platos', de: 'Erste Gänge' },
+      mainCourse: { en: 'Main Courses', it: 'Secondi Piatti', fr: 'Plats Principaux', es: 'Platos Principales', de: 'Hauptgerichte' },
+      sideDish: { en: 'Side Dishes', it: 'Contorni', fr: 'Accompagnements', es: 'Guarniciones', de: 'Beilagen' },
+      dessert: { en: 'Desserts', it: 'Dolci', fr: 'Desserts', es: 'Postres', de: 'Desserts' },
+      streetFood: { en: 'Street Food', it: 'Cibo di Strada', fr: 'Street Food', es: 'Comida Callejera', de: 'Straßenessen' },
+      festive: { en: 'Festive & Ritual Dishes', it: 'Piatti Festivi e Rituali', fr: 'Plats Festifs et Rituels', es: 'Platos Festivos y Rituales', de: 'Festliche und Rituelle Gerichte' }
+    },
+    curatedRecipes: {
+      title: {
+        en: 'Recipes selected for authenticity',
+        it: 'Ricette selezionate per autenticità',
+        fr: 'Recettes sélectionnées pour authenticité',
+        es: 'Recetas seleccionadas por autenticidad',
+        de: 'Rezepte ausgewählt für Authentizität'
+      },
+      exploreAll: {
+        en: 'Explore Full Collection',
+        it: 'Esplora Collezione Completa',
+        fr: 'Explorer la Collection Complète',
+        es: 'Explorar Colección Completa',
+        de: 'Vollständige Sammlung Erkunden'
+      },
+      loading: {
+        en: 'Loading...',
+        it: 'Caricamento...',
+        fr: 'Chargement...',
+        es: 'Cargando...',
+        de: 'Wird geladen...'
+      }
+    },
+    footer: {
+      tagline: {
+        en: 'Preserving culinary heritage, one recipe at a time.',
+        it: 'Preservare il patrimonio culinario, una ricetta alla volta.',
+        fr: 'Préserver le patrimoine culinaire, une recette à la fois.',
+        es: 'Preservando el patrimonio culinario, una receta a la vez.',
+        de: 'Kulinarisches Erbe bewahren, ein Rezept nach dem anderen.'
+      },
+      editorialStandards: {
+        en: 'Our Editorial Standards',
+        it: 'I Nostri Standard Editoriali',
+        fr: 'Nos Standards Éditoriaux',
+        es: 'Nuestros Estándares Editoriales',
+        de: 'Unsere Redaktionellen Standards'
+      }
+    }
   }
 };
 
