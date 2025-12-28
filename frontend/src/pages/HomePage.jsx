@@ -5,72 +5,75 @@ import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { recipeAPI, continentAPI } from '@/utils/api';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
-import { t } from '@/i18n';
 import { 
-    Globe, ArrowRight, Search, CheckCircle2, Users, MessageSquare
+    Globe, ArrowRight, CheckCircle2, Users
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-// Dish type categories for browse section
+// Dish type categories
 const DISH_TYPES = [
-    { key: 'appetizer', en: 'Appetizers', it: 'Antipasti', slug: 'appetizer' },
-    { key: 'aperitif', en: 'Aperitif & Small Plates', it: 'Aperitivi e Stuzzichini', slug: 'aperitif' },
-    { key: 'first-course', en: 'First Courses', it: 'Primi Piatti', slug: 'first-course' },
-    { key: 'main-course', en: 'Main Courses', it: 'Secondi Piatti', slug: 'main-course' },
-    { key: 'side-dish', en: 'Side Dishes', it: 'Contorni', slug: 'side-dish' },
-    { key: 'dessert', en: 'Desserts', it: 'Dolci', slug: 'dessert' },
-    { key: 'street-food', en: 'Street Food', it: 'Cibo di Strada', slug: 'street-food' },
-    { key: 'festive', en: 'Festive & Ritual Dishes', it: 'Piatti Festivi e Rituali', slug: 'festive' },
+    { key: 'appetizer', label: 'Appetizers', slug: 'appetizer' },
+    { key: 'aperitif', label: 'Aperitif & Small Plates', slug: 'aperitif' },
+    { key: 'first-course', label: 'First Courses', slug: 'first-course' },
+    { key: 'main-course', label: 'Main Courses', slug: 'main-course' },
+    { key: 'side-dish', label: 'Side Dishes', slug: 'side-dish' },
+    { key: 'dessert', label: 'Desserts', slug: 'dessert' },
+    { key: 'street-food', label: 'Street Food', slug: 'street-food' },
+    { key: 'festive', label: 'Festive & Ritual Dishes', slug: 'festive' },
 ];
 
+// Continents (no counts on homepage)
+const CONTINENTS = [
+    { name: 'Europe', slug: 'europe' },
+    { name: 'Asia', slug: 'asia' },
+    { name: 'Americas', slug: 'americas' },
+    { name: 'Africa', slug: 'africa' },
+    { name: 'Middle East', slug: 'middle-east' },
+    { name: 'Oceania', slug: 'oceania' },
+];
+
+// Standardized authenticity labels (English only)
+const getAuthenticityLabel = (level) => {
+    switch(level) {
+        case 1: return 'Officially Recognized';
+        case 2: return 'Tradition-Verified';
+        case 3: return 'Traditional';
+        default: return 'Traditional';
+    }
+};
+
 const HomePage = () => {
-    const { language, getLocalizedPath } = useLanguage();
+    const { getLocalizedPath } = useLanguage();
     const [featuredRecipe, setFeaturedRecipe] = useState(null);
     const [curatedRecipes, setCuratedRecipes] = useState([]);
-    const [continentStats, setContinentStats] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const loadData = useCallback(async () => {
         try {
-            const [bestRes, featuredRes, continentsRes] = await Promise.all([
-                recipeAPI.getBest(language),
-                recipeAPI.getFeatured(6, language),
-                continentAPI.getAll()
+            const [bestRes, featuredRes] = await Promise.all([
+                recipeAPI.getBest('en'),
+                recipeAPI.getFeatured(6, 'en')
             ]);
             
             setFeaturedRecipe(bestRes.data.recipe);
             setCuratedRecipes(featuredRes.data.recipes || []);
-            setContinentStats(continentsRes.data.continents || []);
         } catch (error) {
             console.error('Error loading data:', error);
             toast.error('Failed to load content');
         } finally {
             setLoading(false);
         }
-    }, [language]);
+    }, []);
 
     useEffect(() => {
         loadData();
     }, [loadData]);
 
-    const getAuthenticityLabel = (level) => {
-        switch(level) {
-            case 1: return 'Officially Recognized';
-            case 2: return 'Tradition-Verified';
-            case 3: return 'Regional Heritage';
-            default: return 'Tradition-Verified';
-        }
-    };
-
-    const getDishTypeName = (type) => {
-        return language === 'it' ? type.it : type.en;
-    };
-
     return (
         <div className="min-h-screen bg-[#FDFBF7]" data-testid="homepage">
             
             {/* ============================================ */}
-            {/* 1. VALUE STRIP - Calm, Editorial Positioning */}
+            {/* VALUE STRIP */}
             {/* ============================================ */}
             <section className="bg-[#FDFBF7] border-b border-[#E8E4DC] py-6">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,7 +98,7 @@ const HomePage = () => {
             </section>
 
             {/* ============================================ */}
-            {/* 2. HERO SEARCH - Clean, Centered, Editorial */}
+            {/* HERO SEARCH */}
             {/* ============================================ */}
             <section className="bg-[#FDFBF7] py-16 px-4">
                 <div className="max-w-3xl mx-auto text-center">
@@ -106,28 +109,23 @@ const HomePage = () => {
                         The culinary archive of authentic regional recipes
                     </p>
                     
-                    {/* Search Bar */}
                     <div className="relative max-w-2xl mx-auto">
                         <SearchBar className="w-full" />
-                        <p className="text-sm text-[#7C7C7C] mt-3 font-light">
-                            Search by recipe, ingredient, region, tradition, or dish type
-                        </p>
-                        <p className="text-xs text-[#9C9C9C] mt-2 italic">
-                            Can't find what you're looking for? Try our cultural search — it often reveals dishes you don't know by name.
+                        <p className="text-xs text-[#9C9C9C] mt-3 font-light">
+                            Can't find what you're looking for? Try our cultural search — dishes often have different names across regions.
                         </p>
                     </div>
                 </div>
             </section>
 
             {/* ============================================ */}
-            {/* 3. FEATURED RECIPE HERO - Single Featured Recipe */}
+            {/* FEATURED RECIPE HERO */}
             {/* ============================================ */}
             {featuredRecipe && !loading && (
                 <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <Link to={getLocalizedPath(`/recipe/${featuredRecipe.slug}`)} className="block group">
                         <div className="bg-white border border-[#E8E4DC] overflow-hidden" data-testid="featured-recipe-hero">
                             <div className="grid md:grid-cols-2">
-                                {/* Image */}
                                 <div className="relative h-72 md:h-[380px] bg-[#F5F2EC] overflow-hidden">
                                     {featuredRecipe.photos && featuredRecipe.photos[0]?.image_url ? (
                                         <img 
@@ -142,7 +140,6 @@ const HomePage = () => {
                                     )}
                                 </div>
 
-                                {/* Content */}
                                 <div className="p-8 md:p-10 flex flex-col justify-center bg-white">
                                     <div className="mb-4">
                                         <span className="inline-block text-xs uppercase tracking-widest text-[#6A1F2E] font-medium border border-[#6A1F2E] px-3 py-1">
@@ -177,7 +174,7 @@ const HomePage = () => {
             )}
 
             {/* ============================================ */}
-            {/* 4. HOW AUTHENTICITY WORKS - Key USP Section */}
+            {/* HOW AUTHENTICITY WORKS */}
             {/* ============================================ */}
             <section className="bg-white py-16 border-t border-b border-[#E8E4DC]">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -187,7 +184,6 @@ const HomePage = () => {
                     <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-10"></div>
 
                     <div className="grid md:grid-cols-3 gap-10">
-                        {/* Step 1 */}
                         <div className="text-center">
                             <div className="w-10 h-10 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-4">
                                 <span className="text-[#6A1F2E] font-medium text-sm">1</span>
@@ -200,7 +196,6 @@ const HomePage = () => {
                             </p>
                         </div>
 
-                        {/* Step 2 */}
                         <div className="text-center">
                             <div className="w-10 h-10 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-4">
                                 <span className="text-[#6A1F2E] font-medium text-sm">2</span>
@@ -213,7 +208,6 @@ const HomePage = () => {
                             </p>
                         </div>
 
-                        {/* Step 3 */}
                         <div className="text-center">
                             <div className="w-10 h-10 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-4">
                                 <span className="text-[#6A1F2E] font-medium text-sm">3</span>
@@ -230,7 +224,7 @@ const HomePage = () => {
             </section>
 
             {/* ============================================ */}
-            {/* 5. BROWSE BY CONTINENT - PRIMARY DISCOVERY (MOVED UP) */}
+            {/* BROWSE BY CONTINENT (NO COUNTS) */}
             {/* ============================================ */}
             <section className="bg-[#FDFBF7] py-16">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -242,41 +236,23 @@ const HomePage = () => {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        {[
-                            { name: 'Europe', slug: 'europe' },
-                            { name: 'Asia', slug: 'asia' },
-                            { name: 'Americas', slug: 'americas' },
-                            { name: 'Africa', slug: 'africa' },
-                            { name: 'Middle East', slug: 'middle-east' },
-                            { name: 'Oceania', slug: 'oceania' },
-                        ].map((continent) => {
-                            const stats = continentStats.find(c => 
-                                c.name?.toLowerCase() === continent.name.toLowerCase() ||
-                                c.continent?.toLowerCase() === continent.name.toLowerCase()
-                            );
-                            const count = stats?.recipe_count || stats?.count || 0;
-                            
-                            return (
-                                <Link 
-                                    key={continent.slug}
-                                    to={getLocalizedPath(`/explore/${continent.slug}`)}
-                                    className="group block p-6 bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors text-center"
-                                >
-                                    <h3 className="text-lg font-light text-[#2C2C2C] mb-1 group-hover:text-[#6A1F2E] transition-colors" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                        {continent.name}
-                                    </h3>
-                                    <p className="text-xs text-[#7C7C7C]">
-                                        {count} recipes
-                                    </p>
-                                </Link>
-                            );
-                        })}
+                        {CONTINENTS.map((continent) => (
+                            <Link 
+                                key={continent.slug}
+                                to={getLocalizedPath(`/explore/${continent.slug}`)}
+                                className="group block p-6 bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors text-center"
+                            >
+                                <h3 className="text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                    {continent.name}
+                                </h3>
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* ============================================ */}
-            {/* 6. BROWSE BY DISH TYPE - ACTIONABLE (MOVED UP) */}
+            {/* BROWSE BY DISH TYPE (NO EXPLANATORY TEXT) */}
             {/* ============================================ */}
             <section className="bg-white py-16 border-t border-[#E8E4DC]">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -284,10 +260,7 @@ const HomePage = () => {
                         <h2 className="text-2xl font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             Browse by Dish Type
                         </h2>
-                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-3"></div>
-                        <p className="text-[#5C5C5C] font-light text-sm">
-                            Explore recipes by their traditional culinary category
-                        </p>
+                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto"></div>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -298,38 +271,29 @@ const HomePage = () => {
                                 className="group block p-4 text-center border border-[#E8E4DC] bg-[#FDFBF7] hover:border-[#6A1F2E] hover:bg-white transition-all"
                             >
                                 <span className="text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors font-light text-sm" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                    {getDishTypeName(type)}
+                                    {type.label}
                                 </span>
                             </Link>
                         ))}
-                    </div>
-
-                    <div className="text-center mt-8">
-                        <p className="text-xs text-[#9C9C9C] font-light italic max-w-xl mx-auto">
-                            You can also search by dish type — appetizer, first course, main dish, dessert — even when names vary by culture.
-                        </p>
                     </div>
                 </div>
             </section>
 
             {/* ============================================ */}
-            {/* 7. CURATED RECIPES - Limited, Intentional (MOVED DOWN) */}
+            {/* CURATED RECIPES */}
             {/* ============================================ */}
             <section className="bg-[#FDFBF7] py-16 border-t border-[#E8E4DC]">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-10">
                         <h2 className="text-2xl font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            Curated Recipes
+                            Recipes selected for authenticity
                         </h2>
-                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-3"></div>
-                        <p className="text-[#5C5C5C] font-light text-sm">
-                            Selected for authenticity, verified by tradition
-                        </p>
+                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto"></div>
                     </div>
 
                     {loading ? (
                         <div className="text-center py-12" data-testid="loading-state">
-                            <p className="text-[#7C7C7C] font-light">Loading curated collection...</p>
+                            <p className="text-[#7C7C7C] font-light">Loading...</p>
                         </div>
                     ) : curatedRecipes.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="curated-recipes-grid">
@@ -359,22 +323,19 @@ const HomePage = () => {
             </section>
 
             {/* ============================================ */}
-            {/* 8. FOOTER CTA - Quiet Authority */}
+            {/* FOOTER CTA */}
             {/* ============================================ */}
             <section className="bg-[#2C2C2C] py-14">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-xl font-light text-white mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        Our Editorial Standards
-                    </h2>
-                    <p className="text-white/60 mb-6 font-light text-sm leading-relaxed">
-                        Learn about our commitment to authenticity, our source verification process, and our strict editorial standards for preserving culinary heritage.
+                    <p className="text-white/80 mb-6 font-light text-sm" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        Preserving culinary heritage, one recipe at a time.
                     </p>
                     <Link to={getLocalizedPath('/editorial-policy')}>
                         <Button 
                             variant="outline" 
                             className="border-white/40 text-white hover:bg-white hover:text-[#2C2C2C] rounded-none px-8 font-light tracking-wide text-sm"
                         >
-                            Read Our Policy
+                            Our Editorial Standards
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     </Link>
