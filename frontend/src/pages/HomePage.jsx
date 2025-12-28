@@ -2,33 +2,45 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { SearchBar } from '@/components/common/SearchBar';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
-import { recipeAPI } from '@/utils/api';
+import { recipeAPI, continentAPI } from '@/utils/api';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 import { t } from '@/i18n';
 import { 
-    ChefHat, Globe, Star, ArrowRight, Sparkles, 
-    BookOpen, Shield, Languages, ScrollText, Archive
+    Globe, ArrowRight, Search, CheckCircle2, Users, MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+// Dish type categories for browse section
+const DISH_TYPES = [
+    { key: 'appetizer', en: 'Appetizers', it: 'Antipasti', slug: 'appetizer' },
+    { key: 'aperitif', en: 'Aperitif & Small Plates', it: 'Aperitivi e Stuzzichini', slug: 'aperitif' },
+    { key: 'first-course', en: 'First Courses', it: 'Primi Piatti', slug: 'first-course' },
+    { key: 'main-course', en: 'Main Courses', it: 'Secondi Piatti', slug: 'main-course' },
+    { key: 'side-dish', en: 'Side Dishes', it: 'Contorni', slug: 'side-dish' },
+    { key: 'dessert', en: 'Desserts', it: 'Dolci', slug: 'dessert' },
+    { key: 'street-food', en: 'Street Food', it: 'Cibo di Strada', slug: 'street-food' },
+    { key: 'festive', en: 'Festive & Ritual Dishes', it: 'Piatti Festivi e Rituali', slug: 'festive' },
+];
+
 const HomePage = () => {
     const { language, getLocalizedPath } = useLanguage();
-    const [bestRecipe, setBestRecipe] = useState(null);
-    const [featuredRecipes, setFeaturedRecipes] = useState([]);
+    const [featuredRecipe, setFeaturedRecipe] = useState(null);
+    const [curatedRecipes, setCuratedRecipes] = useState([]);
+    const [continentStats, setContinentStats] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const loadData = useCallback(async () => {
         try {
-            // Pass language to get translated content
-            const [bestRes, featuredRes] = await Promise.all([
+            const [bestRes, featuredRes, continentsRes] = await Promise.all([
                 recipeAPI.getBest(language),
-                recipeAPI.getFeatured(4, language)
+                recipeAPI.getFeatured(6, language),
+                continentAPI.getAll()
             ]);
             
-            setBestRecipe(bestRes.data.recipe);
-            setFeaturedRecipes(featuredRes.data.recipes || []);
+            setFeaturedRecipe(bestRes.data.recipe);
+            setCuratedRecipes(featuredRes.data.recipes || []);
+            setContinentStats(continentsRes.data.continents || []);
         } catch (error) {
             console.error('Error loading data:', error);
             toast.error('Failed to load content');
@@ -39,219 +51,124 @@ const HomePage = () => {
 
     useEffect(() => {
         loadData();
-    }, [loadData]); // Re-fetch when language changes
+    }, [loadData]);
 
     const getAuthenticityLabel = (level) => {
         switch(level) {
-            case 1: return t('common.official', language);
-            case 2: return t('common.traditional', language);
-            case 3: return t('common.local', language);
-            default: return t('common.traditional', language);
+            case 1: return 'Officially Recognized';
+            case 2: return 'Tradition-Verified';
+            case 3: return 'Regional Heritage';
+            default: return 'Tradition-Verified';
         }
     };
 
-    return (
-        <div className="min-h-screen" data-testid="homepage">
-            {/* Banner */}
-            <div className="bg-[#6A1F2E] text-white py-2 px-4 text-center text-sm">
-                <span className="flex items-center justify-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    {t('home.banner', language)}
-                    <Sparkles className="h-4 w-4" />
-                </span>
-            </div>
+    const getDishTypeName = (type) => {
+        return language === 'it' ? type.it : type.en;
+    };
 
-            {/* Hero Search Section */}
-            <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
-                <div className="max-w-4xl mx-auto text-center">
-                    <div className="mb-6">
-                        <ChefHat className="h-12 w-12 mx-auto text-[#6A1F2E]" />
-                    </div>
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        {t('home.title', language)}
-                    </h1>
-                    <p className="text-base sm:text-lg text-[#1E1E1E]/80 mb-8 max-w-2xl mx-auto">
-                        {t('home.subtitle', language)}
+    return (
+        <div className="min-h-screen bg-[#FDFBF7]" data-testid="homepage">
+            
+            {/* ============================================ */}
+            {/* VALUE STRIP - Calm, Editorial Positioning */}
+            {/* ============================================ */}
+            <section className="bg-[#FDFBF7] border-b border-[#E8E4DC] py-6">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <p className="text-center text-[#2C2C2C] text-lg font-light tracking-wide" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        A curated collection of authentic recipes, selected for tradition — not volume.
                     </p>
-                    <SearchBar className="max-w-2xl mx-auto" />
+                    <div className="flex justify-center gap-8 mt-4 text-sm text-[#5C5C5C]">
+                        <span className="flex items-center gap-2">
+                            <Globe className="h-4 w-4 text-[#6A1F2E]" />
+                            Curated global recipes
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-[#6A1F2E]" />
+                            Community-validated for authenticity
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <CheckCircle2 className="h-4 w-4 text-[#6A1F2E]" />
+                            Cultural accuracy over popularity
+                        </span>
+                    </div>
                 </div>
             </section>
 
-            {/* Editorial Mission Section */}
-            <section className="bg-white py-16">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#6A1F2E]/10 mb-4">
-                            <Archive className="h-7 w-7 text-[#6A1F2E]" />
-                        </div>
-                        <h2 className="text-3xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.mission.title', language)}
-                        </h2>
-                        <div className="w-24 h-1 bg-[#CBA55B] mx-auto mb-6"></div>
-                    </div>
-
-                    <div className="prose prose-lg max-w-none mb-12">
-                        <p className="text-[#1E1E1E]/80 text-center leading-relaxed text-lg">
-                            {t('home.mission.intro', language)}
+            {/* ============================================ */}
+            {/* HERO SEARCH - Clean, Centered, Editorial */}
+            {/* ============================================ */}
+            <section className="bg-[#FDFBF7] py-16 px-4">
+                <div className="max-w-3xl mx-auto text-center">
+                    <h1 className="text-5xl sm:text-6xl font-light text-[#2C2C2C] mb-6 tracking-tight" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        Sous Chef Linguine
+                    </h1>
+                    <p className="text-lg text-[#5C5C5C] mb-10 font-light">
+                        The culinary archive of authentic regional recipes
+                    </p>
+                    
+                    {/* Search Bar */}
+                    <div className="relative max-w-2xl mx-auto">
+                        <SearchBar className="w-full" />
+                        <p className="text-sm text-[#7C7C7C] mt-3 font-light">
+                            Search by recipe, ingredient, region, tradition, or dish type
+                        </p>
+                        <p className="text-xs text-[#9C9C9C] mt-2 italic">
+                            Can't find what you're looking for? Try our cultural search — it often reveals dishes you don't know by name.
                         </p>
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {/* Authenticity Without Compromise */}
-                        <div className="bg-[#F5F2E8] rounded-xl p-8">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Shield className="h-6 w-6 text-[#6A1F2E]" />
-                                <h3 className="text-xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                    {t('home.mission.authenticity.title', language)}
-                                </h3>
-                            </div>
-                            <p className="text-[#1E1E1E]/70 leading-relaxed">
-                                {t('home.mission.authenticity.text', language)}
-                            </p>
-                        </div>
-
-                        {/* A Living Archive */}
-                        <div className="bg-[#F5F2E8] rounded-xl p-8">
-                            <div className="flex items-center gap-3 mb-4">
-                                <BookOpen className="h-6 w-6 text-[#6A1F2E]" />
-                                <h3 className="text-xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                    {t('home.mission.purpose.title', language)}
-                                </h3>
-                            </div>
-                            <p className="text-[#1E1E1E]/70 leading-relaxed">
-                                {t('home.mission.purpose.text', language)}
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </section>
 
-            {/* Language Philosophy Section */}
-            <section className="bg-gradient-to-b from-[#FAF7F0] to-white py-16">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#3F4A3C]/10 mb-4">
-                            <Languages className="h-7 w-7 text-[#3F4A3C]" />
-                        </div>
-                        <h2 className="text-3xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.languagePhilosophy.title', language)}
-                        </h2>
-                        <div className="w-24 h-1 bg-[#CBA55B] mx-auto mb-6"></div>
-                    </div>
-
-                    <p className="text-[#1E1E1E]/80 text-center leading-relaxed text-lg mb-10 max-w-3xl mx-auto">
-                        {t('home.languagePhilosophy.intro', language)}
-                    </p>
-
-                    <div className="bg-white rounded-xl shadow-sm border border-[#E5DCC3] p-8">
-                        <ul className="space-y-4">
-                            <li className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-semibold text-sm">1</span>
-                                <p className="text-[#1E1E1E]/80 pt-1">{t('home.languagePhilosophy.point1', language)}</p>
-                            </li>
-                            <li className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-semibold text-sm">2</span>
-                                <p className="text-[#1E1E1E]/80 pt-1">{t('home.languagePhilosophy.point2', language)}</p>
-                            </li>
-                            <li className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-semibold text-sm">3</span>
-                                <p className="text-[#1E1E1E]/80 pt-1">{t('home.languagePhilosophy.point3', language)}</p>
-                            </li>
-                            <li className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-semibold text-sm">4</span>
-                                <p className="text-[#1E1E1E]/80 pt-1">{t('home.languagePhilosophy.point4', language)}</p>
-                            </li>
-                        </ul>
-
-                        <div className="mt-8 pt-6 border-t border-[#E5DCC3]">
-                            <p className="text-[#1E1E1E] text-center font-medium italic">
-                                {t('home.languagePhilosophy.conclusion', language)}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Available Languages */}
-                    <div className="flex justify-center gap-4 mt-8 flex-wrap">
-                        {[
-                            { code: 'en', flag: 'EN', name: 'English' },
-                            { code: 'it', flag: '🇮🇹', name: 'Italiano' },
-                            { code: 'fr', flag: '🇫🇷', name: 'Français' },
-                            { code: 'es', flag: '🇪🇸', name: 'Español' },
-                            { code: 'de', flag: '🇩🇪', name: 'Deutsch' }
-                        ].map((lang) => (
-                            <Badge 
-                                key={lang.code} 
-                                variant="outline" 
-                                className={`px-4 py-2 text-sm ${language === lang.code ? 'bg-[#6A1F2E] text-white border-[#6A1F2E]' : 'border-[#E5DCC3]'}`}
-                            >
-                                {lang.flag} {lang.name}
-                            </Badge>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Best Recipe Worldwide - Hero */}
-            {bestRecipe && (
-                <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            🏆 {t('home.bestRecipe', language)}
-                        </h2>
-                        <div className="w-24 h-1 bg-[#CBA55B] mx-auto"></div>
-                    </div>
-
-                    <Link to={getLocalizedPath(`/recipe/${bestRecipe.slug}`)} className="block">
-                        <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300" data-testid="best-recipe-hero">
-                            <div className="grid md:grid-cols-2 gap-0">
-                                {/* Image/Placeholder */}
-                                <div className="relative h-64 md:h-96 bg-gradient-to-br from-[#6A1F2E] to-[#3F4A3C] flex items-center justify-center">
-                                    {bestRecipe.photos && bestRecipe.photos[0]?.image_url ? (
+            {/* ============================================ */}
+            {/* HERO FEATURE - Single Featured Recipe */}
+            {/* ============================================ */}
+            {featuredRecipe && !loading && (
+                <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <Link to={getLocalizedPath(`/recipe/${featuredRecipe.slug}`)} className="block group">
+                        <div className="bg-white border border-[#E8E4DC] overflow-hidden" data-testid="featured-recipe-hero">
+                            <div className="grid md:grid-cols-2">
+                                {/* Image */}
+                                <div className="relative h-80 md:h-[420px] bg-[#F5F2EC] overflow-hidden">
+                                    {featuredRecipe.photos && featuredRecipe.photos[0]?.image_url ? (
                                         <img 
-                                            src={bestRecipe.photos[0].image_url} 
-                                            alt={bestRecipe.recipe_name}
-                                            className="w-full h-full object-cover"
+                                            src={featuredRecipe.photos[0].image_url} 
+                                            alt={featuredRecipe.recipe_name}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                         />
                                     ) : (
-                                        <ChefHat className="h-24 w-24 text-white/30" />
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <span className="text-[#BFBFBF] text-6xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>SCL</span>
+                                        </div>
                                     )}
-                                    <div className="absolute top-4 left-4 flex gap-2">
-                                        <Badge className="bg-[#CBA55B] text-white">
-                                            <Star className="h-3 w-3 mr-1 fill-current" />
-                                            {bestRecipe.average_rating?.toFixed(1) || '4.5'}
-                                        </Badge>
-                                        <Badge className="bg-[#6A1F2E] text-white">
-                                            {getAuthenticityLabel(bestRecipe.authenticity_level)}
-                                        </Badge>
-                                    </div>
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-8 flex flex-col justify-center">
-                                    <div className="flex items-center gap-2 text-sm text-[#1E1E1E]/60 mb-3">
-                                        <Globe className="h-4 w-4" />
-                                        <span>{bestRecipe.origin_country || bestRecipe.country}</span>
-                                        <span>•</span>
-                                        <span>{bestRecipe.origin_region || bestRecipe.region}</span>
+                                <div className="p-10 md:p-12 flex flex-col justify-center bg-white">
+                                    <div className="mb-4">
+                                        <span className="inline-block text-xs uppercase tracking-widest text-[#6A1F2E] font-medium border border-[#6A1F2E] px-3 py-1">
+                                            {getAuthenticityLabel(featuredRecipe.authenticity_level)}
+                                        </span>
                                     </div>
 
-                                    <h3 className="text-3xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                        {bestRecipe.recipe_name || bestRecipe.title_original}
-                                    </h3>
+                                    <div className="text-sm text-[#7C7C7C] mb-3 tracking-wide">
+                                        {featuredRecipe.origin_country || featuredRecipe.country}
+                                        {(featuredRecipe.origin_region || featuredRecipe.region) && (
+                                            <span> · {featuredRecipe.origin_region || featuredRecipe.region}</span>
+                                        )}
+                                    </div>
 
-                                    <p className="text-[#1E1E1E]/70 mb-6 line-clamp-3">
-                                        {bestRecipe.characteristic_profile || bestRecipe.history_summary || bestRecipe.origin_story}
+                                    <h2 className="text-3xl md:text-4xl font-light text-[#2C2C2C] mb-5 leading-tight" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                        {featuredRecipe.recipe_name || featuredRecipe.title_original}
+                                    </h2>
+
+                                    <p className="text-[#5C5C5C] mb-8 leading-relaxed line-clamp-3 font-light">
+                                        {featuredRecipe.characteristic_profile || featuredRecipe.history_summary || featuredRecipe.origin_story}
                                     </p>
 
-                                    <div className="flex items-center gap-4 text-sm text-[#1E1E1E]/60 mb-6">
-                                        <span>{bestRecipe.ratings_count || 0} {t('home.reviews', language)}</span>
-                                        <span>•</span>
-                                        <span>{bestRecipe.favorites_count || 0} {t('home.favorites', language)}</span>
+                                    <div className="flex items-center text-[#6A1F2E] font-medium group-hover:gap-3 transition-all">
+                                        <span>Explore recipe</span>
+                                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                     </div>
-
-                                    <Button className="btn-elegant w-fit">
-                                        {t('home.viewRecipe', language)} <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -259,107 +176,213 @@ const HomePage = () => {
                 </section>
             )}
 
-            {/* Featured Recipes */}
-            <section className="bg-white py-16">
+            {/* ============================================ */}
+            {/* HOW AUTHENTICITY WORKS - Key USP Section */}
+            {/* ============================================ */}
+            <section className="bg-white py-20 border-t border-b border-[#E8E4DC]">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-light text-center text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        How Authenticity Works
+                    </h2>
+                    <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-12"></div>
+
+                    <div className="grid md:grid-cols-3 gap-12">
+                        {/* Step 1 */}
+                        <div className="text-center">
+                            <div className="w-12 h-12 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-5">
+                                <span className="text-[#6A1F2E] font-medium">1</span>
+                            </div>
+                            <h3 className="text-lg font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                Curated Selection
+                            </h3>
+                            <p className="text-sm text-[#5C5C5C] leading-relaxed font-light">
+                                Recipes are selected based on historical and regional authenticity, not popularity or trends.
+                            </p>
+                        </div>
+
+                        {/* Step 2 */}
+                        <div className="text-center">
+                            <div className="w-12 h-12 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-5">
+                                <span className="text-[#6A1F2E] font-medium">2</span>
+                            </div>
+                            <h3 className="text-lg font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                Community Validation
+                            </h3>
+                            <p className="text-sm text-[#5C5C5C] leading-relaxed font-light">
+                                Users vote on how faithfully a recipe respects its traditional form and cultural origins.
+                            </p>
+                        </div>
+
+                        {/* Step 3 */}
+                        <div className="text-center">
+                            <div className="w-12 h-12 rounded-full border-2 border-[#6A1F2E] flex items-center justify-center mx-auto mb-5">
+                                <span className="text-[#6A1F2E] font-medium">3</span>
+                            </div>
+                            <h3 className="text-lg font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                Cultural Correction
+                            </h3>
+                            <p className="text-sm text-[#5C5C5C] leading-relaxed font-light">
+                                Users may suggest corrections when a recipe does not meet its traditional standards.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============================================ */}
+            {/* CURATED RECIPES - Limited, Intentional */}
+            {/* ============================================ */}
+            <section className="bg-[#FDFBF7] py-20">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.featured', language)}
+                        <h2 className="text-3xl font-light text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            Curated Recipes
                         </h2>
-                        <div className="w-24 h-1 bg-[#CBA55B] mx-auto"></div>
+                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-4"></div>
+                        <p className="text-[#5C5C5C] font-light">
+                            Selected for authenticity, verified by tradition
+                        </p>
                     </div>
 
                     {loading ? (
-                        <div className="text-center py-12" data-testid="loading-state">
-                            <ChefHat className="h-12 w-12 mx-auto text-[#6A1F2E] animate-pulse mb-4" />
-                            <p className="text-[#1E1E1E]/60">{t('home.loading', language)}</p>
+                        <div className="text-center py-16" data-testid="loading-state">
+                            <p className="text-[#7C7C7C] font-light">Loading curated collection...</p>
                         </div>
-                    ) : featuredRecipes.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="featured-recipes-grid">
-                            {featuredRecipes.map((recipe) => (
-                                <RecipeCard key={recipe.slug} recipe={recipe} />
+                    ) : curatedRecipes.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-testid="curated-recipes-grid">
+                            {curatedRecipes.slice(0, 6).map((recipe) => (
+                                <RecipeCard key={recipe.slug} recipe={recipe} variant="editorial" />
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12 card-elegant" data-testid="no-recipes-state">
-                            <p className="text-[#1E1E1E]/60 mb-4">{t('home.noRecipes', language)}</p>
+                        <div className="text-center py-16" data-testid="no-recipes-state">
+                            <p className="text-[#7C7C7C] font-light">Curating our collection...</p>
                         </div>
                     )}
 
-                    {/* View More Button */}
                     <div className="text-center mt-12">
                         <Link to={getLocalizedPath('/explore')}>
-                            <Button className="btn-elegant" size="lg" data-testid="view-more-btn">
-                                {t('home.viewMore', language)} <ArrowRight className="ml-2 h-4 w-4" />
+                            <Button 
+                                variant="outline" 
+                                className="border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white px-8 py-3 rounded-none font-light tracking-wide"
+                                data-testid="explore-all-btn"
+                            >
+                                Explore Full Collection
+                                <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
                         </Link>
                     </div>
                 </div>
             </section>
 
-            {/* Features Section */}
-            <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#6A1F2E] text-white mb-4">
-                            <Star className="h-6 w-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.features.authenticity.title', language)}
-                        </h3>
-                        <p className="text-sm text-[#1E1E1E]/70">
-                            {t('home.features.authenticity.description', language)}
-                        </p>
+            {/* ============================================ */}
+            {/* BROWSE BY CONTINENT - Refined, Editorial */}
+            {/* ============================================ */}
+            <section className="bg-white py-20 border-t border-[#E8E4DC]">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-light text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            Browse by Continent
+                        </h2>
+                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto"></div>
                     </div>
 
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#3F4A3C] text-white mb-4">
-                            <Globe className="h-6 w-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.features.global.title', language)}
-                        </h3>
-                        <p className="text-sm text-[#1E1E1E]/70">
-                            {t('home.features.global.description', language)}
-                        </p>
-                    </div>
-
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#CBA55B] text-white mb-4">
-                            <ChefHat className="h-6 w-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            {t('home.features.ai.title', language)}
-                        </h3>
-                        <p className="text-sm text-[#1E1E1E]/70">
-                            {t('home.features.ai.description', language)}
-                        </p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                        {[
+                            { name: 'Europe', slug: 'europe' },
+                            { name: 'Asia', slug: 'asia' },
+                            { name: 'Americas', slug: 'americas' },
+                            { name: 'Africa', slug: 'africa' },
+                            { name: 'Middle East', slug: 'middle-east' },
+                            { name: 'Oceania', slug: 'oceania' },
+                        ].map((continent) => {
+                            const stats = continentStats.find(c => 
+                                c.name?.toLowerCase() === continent.name.toLowerCase() ||
+                                c.continent?.toLowerCase() === continent.name.toLowerCase()
+                            );
+                            const count = stats?.recipe_count || stats?.count || 0;
+                            
+                            return (
+                                <Link 
+                                    key={continent.slug}
+                                    to={getLocalizedPath(`/explore/${continent.slug}`)}
+                                    className="group block p-8 bg-[#FDFBF7] border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors"
+                                >
+                                    <h3 className="text-xl font-light text-[#2C2C2C] mb-2 group-hover:text-[#6A1F2E] transition-colors" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                        {continent.name}
+                                    </h3>
+                                    <p className="text-sm text-[#7C7C7C]">
+                                        {count} authentic recipes
+                                    </p>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
 
-            {/* Editorial Policy CTA */}
-            <section className="bg-[#1E1E1E] text-white py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <ScrollText className="h-10 w-10 mx-auto mb-4 text-[#CBA55B]" />
-                    <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        {t('footer.editorial', language)}
+            {/* ============================================ */}
+            {/* BROWSE BY DISH TYPE - New Section */}
+            {/* ============================================ */}
+            <section className="bg-[#FDFBF7] py-20 border-t border-[#E8E4DC]">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-light text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            Browse by Dish Type
+                        </h2>
+                        <div className="w-16 h-px bg-[#6A1F2E] mx-auto mb-4"></div>
+                        <p className="text-[#5C5C5C] font-light text-sm">
+                            Explore recipes by their traditional culinary category
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {DISH_TYPES.map((type) => (
+                            <Link 
+                                key={type.key}
+                                to={getLocalizedPath(`/explore?type=${type.slug}`)}
+                                className="group block p-5 text-center border border-[#E8E4DC] bg-white hover:border-[#6A1F2E] transition-colors"
+                            >
+                                <span className="text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                    {getDishTypeName(type)}
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-10">
+                        <p className="text-xs text-[#9C9C9C] font-light italic max-w-xl mx-auto">
+                            You can also search by dish type — appetizer, aperitif, first course, main dish, dessert — even when names vary by culture.
+                        </p>
+                        <Link 
+                            to={getLocalizedPath('/explore')}
+                            className="inline-flex items-center text-sm text-[#6A1F2E] mt-4 hover:underline font-light"
+                        >
+                            <Search className="h-4 w-4 mr-2" />
+                            Try the search
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============================================ */}
+            {/* FOOTER CTA - Quiet Authority */}
+            {/* ============================================ */}
+            <section className="bg-[#2C2C2C] py-16">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-2xl font-light text-white mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        Our Editorial Standards
                     </h2>
-                    <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-                        {language === 'en' 
-                            ? 'Learn about our commitment to authenticity, our source verification process, and our strict editorial standards.'
-                            : language === 'it'
-                            ? 'Scopri il nostro impegno per l\'autenticità, il nostro processo di verifica delle fonti e i nostri rigorosi standard editoriali.'
-                            : language === 'fr'
-                            ? 'Découvrez notre engagement envers l\'authenticité, notre processus de vérification des sources et nos normes éditoriales strictes.'
-                            : language === 'es'
-                            ? 'Conozca nuestro compromiso con la autenticidad, nuestro proceso de verificación de fuentes y nuestros estrictos estándares editoriales.'
-                            : 'Erfahren Sie mehr über unser Engagement für Authentizität, unseren Quellenverifizierungsprozess und unsere strengen redaktionellen Standards.'
-                        }
+                    <p className="text-white/60 mb-8 font-light leading-relaxed">
+                        Learn about our commitment to authenticity, our source verification process, and our strict editorial standards for preserving culinary heritage.
                     </p>
                     <Link to={getLocalizedPath('/editorial-policy')}>
-                        <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E1E1E]">
-                            {t('common.learnMore', language)} <ArrowRight className="ml-2 h-4 w-4" />
+                        <Button 
+                            variant="outline" 
+                            className="border-white/40 text-white hover:bg-white hover:text-[#2C2C2C] rounded-none px-8 font-light tracking-wide"
+                        >
+                            Read Our Policy
+                            <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     </Link>
                 </div>
