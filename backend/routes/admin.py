@@ -1522,6 +1522,105 @@ async def audit_public_visibility(authorized: bool = Depends(verify_admin_token)
                 {"origin_country": None},
                 {"origin_country": ""}
             ]
+
+
+@admin_router.post("/recipes/deduplicate")
+async def deduplicate_recipes(
+    dry_run: int = Query(default=1, description="Preview only (1) or execute (0)"),
+    authorized: bool = Depends(verify_admin_token)
+):
+    """
+    Find and remove duplicate recipes by slug.
+    Keeps the recipe with the most ingredients and deletes the rest.
+    
+    Query params:
+    - dry_run=1: Preview what would be deleted
+    - dry_run=0: Execute deletions
+    """
+    
+    # Find all duplicate slugs
+    pipeline = [
+        {"$group": {
+            "_id": "$slug",
+            "count": {"$sum": 1},
+            "docs": {"$push": {
+                "recipe_name": "$recipe_name",
+                "ingredients_count": {"$size": {"$ifNull": ["$ingredients", []]}},
+                "instructions_count": {"$size": {"$ifNull": ["$instructions", []]}},
+                "status": "$status",
+                "date_fetched": "$date_fetched"
+            }}
+        }},
+        {"$match": {"count": {"$gt": 1}}},
+        {"$sort": {"count": -1}}
+    ]
+    
+    duplicates = await db.recipes.aggregate(pipeline).to_list(100)
+    
+    deletions = []
+    kept = []
+    
+    for dup in duplicates:
+        slug = dup["_id"]
+        docs = dup["docs"]
+        
+        # Sort by ingredients count (descending), then by instructions count
+        docs_sorted = sorted(docs, key=lambda x: (x.get("ingredients_count", 0), x.get("instructions_count", 0)), reverse=True)
+        
+        # Keep the best one (most complete)
+        best = docs_sorted[0]
+        kept.append({
+            "slug": slug,
+            "kept": {
+                "recipe_name": best.get("recipe_name"),
+                "ingredients_count": best.get("ingredients_count"),
+                "instructions_count": best.get("instructions_count")
+            }
+        })
+        
+        # Mark others for deletion
+        for doc in docs_sorted[1:]:
+            deletions.append({
+                "slug": slug,
+                "recipe_name": doc.get("recipe_name"),
+                "ingredients_count": doc.get("ingredients_count"),
+                "instructions_count": doc.get("instructions_count"),
+                "reason": "duplicate_slug"
+            })
+    
+    # Execute deletions if not dry run
+    deleted_count = 0
+    if dry_run == 0 and deletions:
+        for slug in set(d["slug"] for d in deletions):
+            # Get all docs with this slug, sorted by completeness
+            docs = await db.recipes.find(
+                {"slug": slug},
+                {"_id": 1, "ingredients": 1, "instructions": 1}
+            ).to_list(100)
+            
+            # Sort by completeness
+            docs_sorted = sorted(docs, key=lambda x: (
+                len(x.get("ingredients", []) or []),
+                len(x.get("instructions", []) or [])
+            ), reverse=True)
+            
+            # Delete all except the first (most complete)
+            for doc in docs_sorted[1:]:
+                result = await db.recipes.delete_one({"_id": doc["_id"]})
+                deleted_count += result.deleted_count
+    
+    return {
+        "success": True,
+        "dry_run": dry_run == 1,
+        "summary": {
+            "duplicate_slugs_found": len(duplicates),
+            "total_duplicates_to_delete": len(deletions),
+            "deleted_count": deleted_count if dry_run == 0 else 0
+        },
+        "kept": kept[:20],
+        "deletions": deletions[:50]
+    }
+
         },
         {"slug": 1, "recipe_name": 1, "continent": 1, "_id": 0}
     ).limit(50).to_list(50)
