@@ -7,13 +7,15 @@ import { useTranslation } from 'react-i18next';
 import { recipeAPI } from '@/utils/api';
 import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
+import { t } from '@/i18n/translations';
 
 export const SearchBar = ({ className = '' }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { language, getLocalizedPath } = useLanguage();
-    const { t } = useTranslation();
+    const { t: i18nT } = useTranslation();
+    const lang = language || 'en';
 
     const handleSearch = useCallback(async (e) => {
         e.preventDefault();
@@ -30,7 +32,7 @@ export const SearchBar = ({ className = '' }) => {
 
             if (data.found && data.recipe && data.recipe.slug) {
                 if (data.generated) {
-                    toast.success(t('search.generatedSuccess'));
+                    toast.success(i18nT('search.generatedSuccess'));
                 }
                 const recipePath = getLocalizedPath(`/recipe/${data.recipe.slug}`);
                 console.log('Navigating to:', recipePath);
@@ -38,20 +40,20 @@ export const SearchBar = ({ className = '' }) => {
             } else if (data.message) {
                 toast.error(data.message);
             } else {
-                toast.info(t('search.noResults'));
+                toast.info(i18nT('search.noResults'));
             }
 
         } catch (error) {
             console.error("Search error:", error);
             if (error.code === 'ECONNABORTED') {
-                toast.error(t('search.timeout', 'Search timed out. Please try again.'));
+                toast.error(i18nT('search.timeout', 'Search timed out. Please try again.'));
             } else {
-                toast.error(t('search.failed'));
+                toast.error(i18nT('search.failed'));
             }
         } finally {
             setLoading(false);
         }
-    }, [searchQuery, navigate, t, getLocalizedPath, language]);
+    }, [searchQuery, navigate, i18nT, getLocalizedPath, language]);
 
     return (
         <form onSubmit={handleSearch} className={`flex gap-2 ${className}`} data-testid="search-form">
@@ -59,7 +61,7 @@ export const SearchBar = ({ className = '' }) => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#9C9C9C]" />
                 <Input
                     type="text"
-                    placeholder="Search by recipe, ingredient, region, or dish type"
+                    placeholder={t('homepage.hero.searchPlaceholder', lang)}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-12 bg-white border-[#E8E4DC] focus:border-[#6A1F2E] focus:ring-[#6A1F2E]/20 h-14 text-base font-light"
@@ -76,10 +78,10 @@ export const SearchBar = ({ className = '' }) => {
                 {loading ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Searching...
+                        {t('search.searching', lang)}
                     </>
                 ) : (
-                    'Search'
+                    t('search.button', lang)
                 )}
             </Button>
         </form>
