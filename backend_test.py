@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for Sous Chef Linguine Prerendering System
-Tests prerendering APIs for SEO-optimized content delivery to crawlers.
+Backend Test Suite for Sous Chef Linguine Master Data Migration Verification
+Tests data migration fixes for recipe visibility issues.
 """
 
 import requests
@@ -13,7 +13,7 @@ from typing import Dict, Any, List
 # Backend URL from frontend/.env
 BACKEND_URL = "https://datamigration.preview.emergentagent.com/api"
 
-class PrerenderTester:
+class MasterDataMigrationTester:
     def __init__(self):
         self.session = requests.Session()
         self.test_results = []
