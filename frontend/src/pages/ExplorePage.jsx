@@ -6,6 +6,7 @@ import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { TranslatedRecipeCard } from '@/components/recipe/TranslatedRecipeCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
     ChefHat, Globe, MapPin, ChevronRight, Home, Star, 
     Filter, X, ChevronDown
@@ -14,16 +15,14 @@ import { toast } from 'sonner';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ExploreSEO } from '@/components/seo/SEOHelmet';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Dish types for filtering
 const DISH_TYPES = [
-    { value: 'all', label: 'All Dish Types' },
     { value: 'appetizer', label: 'Appetizers' },
     { value: 'aperitif', label: 'Aperitif & Small Plates' },
     { value: 'first-course', label: 'First Courses' },
@@ -36,18 +35,17 @@ const DISH_TYPES = [
 
 // Continent options
 const CONTINENTS = [
-    { value: 'all', label: 'All Continents', slug: '' },
-    { value: 'europe', label: 'Europe', slug: 'europe' },
-    { value: 'asia', label: 'Asia', slug: 'asia' },
-    { value: 'americas', label: 'Americas', slug: 'americas' },
-    { value: 'africa', label: 'Africa', slug: 'africa' },
-    { value: 'middle-east', label: 'Middle East', slug: 'middle-east' },
-    { value: 'oceania', label: 'Oceania', slug: 'oceania' },
+    { value: 'europe', label: 'Europe' },
+    { value: 'asia', label: 'Asia' },
+    { value: 'americas', label: 'Americas' },
+    { value: 'africa', label: 'Africa' },
+    { value: 'middle-east', label: 'Middle East' },
+    { value: 'oceania', label: 'Oceania' },
 ];
 
 // Breadcrumb component
 const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t }) => (
-    <nav className="flex items-center gap-2 text-sm text-[#5C5C5C] mb-4" aria-label="Breadcrumb">
+    <nav className="flex items-center gap-2 text-xs text-[#5C5C5C] mb-3" aria-label="Breadcrumb">
         <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
             <Home className="h-3 w-3" />
             Home
@@ -80,32 +78,28 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
 
 // Ranking Sidebar Component
 const RankingSidebar = ({ recipes, getLocalizedPath }) => (
-    <div className="bg-white border border-[#E8E4DC] p-5 sticky top-24">
-        <h3 className="text-base font-medium text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+    <div className="bg-white border border-[#E8E4DC] p-4 sticky top-20">
+        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
             Highest Rated for Tradition
         </h3>
-        <div className="space-y-3">
+        <div className="space-y-2">
             {recipes.slice(0, 8).map((recipe, index) => (
                 <Link 
                     key={recipe.slug}
                     to={getLocalizedPath(`/recipe/${recipe.slug}`)}
-                    className="flex items-start gap-3 group"
+                    className="flex items-start gap-2 group py-1"
                 >
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#6A1F2E] text-white text-xs flex items-center justify-center font-medium">
+                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#6A1F2E] text-white text-[10px] flex items-center justify-center font-medium">
                         {index + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 leading-tight">
+                        <p className="text-xs text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 leading-tight">
                             {recipe.recipe_name || recipe.title_original}
                         </p>
-                        <div className="flex items-center gap-1 mt-1">
-                            <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
-                            <span className="text-xs text-[#7C7C7C]">
+                        <div className="flex items-center gap-1 mt-0.5">
+                            <Star className="h-2.5 w-2.5 fill-[#CBA55B] text-[#CBA55B]" />
+                            <span className="text-[10px] text-[#7C7C7C]">
                                 {recipe.average_rating?.toFixed(1) || '4.5'}
-                            </span>
-                            <span className="text-xs text-[#9C9C9C]">·</span>
-                            <span className="text-xs text-[#9C9C9C]">
-                                {recipe.origin_country}
                             </span>
                         </div>
                     </div>
@@ -115,21 +109,62 @@ const RankingSidebar = ({ recipes, getLocalizedPath }) => (
     </div>
 );
 
-// Mobile Filter Button
-const MobileFilterButton = ({ activeFilters, onClick }) => (
-    <button 
-        onClick={onClick}
-        className="md:hidden flex items-center gap-2 px-4 py-2 border border-[#E8E4DC] bg-white text-sm text-[#2C2C2C]"
-    >
-        <Filter className="h-4 w-4" />
-        Refine
-        {activeFilters > 0 && (
-            <Badge className="bg-[#6A1F2E] text-white text-xs px-1.5 py-0">
-                {activeFilters}
-            </Badge>
-        )}
-    </button>
-);
+// Filter Popover with Checkboxes
+const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon }) => {
+    const selectedCount = selectedValues.length;
+    
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-[#E8E4DC] bg-white hover:border-[#6A1F2E] transition-colors">
+                    {Icon && <Icon className="h-3 w-3 text-[#6A1F2E]" />}
+                    <span className="text-[#2C2C2C]">{title}</span>
+                    {selectedCount > 0 && (
+                        <Badge className="bg-[#6A1F2E] text-white text-[10px] px-1.5 py-0 h-4 min-w-4">
+                            {selectedCount}
+                        </Badge>
+                    )}
+                    <ChevronDown className="h-3 w-3 text-[#7C7C7C]" />
+                </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-0" align="start">
+                <ScrollArea className="h-64">
+                    <div className="p-3 space-y-2">
+                        {options.map((option) => (
+                            <label 
+                                key={option.value}
+                                className="flex items-center gap-2 cursor-pointer hover:bg-[#F5F2EC] p-1.5 rounded transition-colors"
+                            >
+                                <Checkbox 
+                                    checked={selectedValues.includes(option.value)}
+                                    onCheckedChange={(checked) => {
+                                        if (checked) {
+                                            onChange([...selectedValues, option.value]);
+                                        } else {
+                                            onChange(selectedValues.filter(v => v !== option.value));
+                                        }
+                                    }}
+                                    className="h-4 w-4 border-[#E8E4DC] data-[state=checked]:bg-[#6A1F2E] data-[state=checked]:border-[#6A1F2E]"
+                                />
+                                <span className="text-xs text-[#2C2C2C]">{option.label}</span>
+                            </label>
+                        ))}
+                    </div>
+                </ScrollArea>
+                {selectedCount > 0 && (
+                    <div className="border-t border-[#E8E4DC] p-2">
+                        <button 
+                            onClick={() => onChange([])}
+                            className="text-xs text-[#6A1F2E] hover:underline w-full text-left"
+                        >
+                            Clear {title.toLowerCase()}
+                        </button>
+                    </div>
+                )}
+            </PopoverContent>
+        </Popover>
+    );
+};
 
 const ExplorePage = () => {
     const { continent, country } = useParams();
@@ -149,15 +184,20 @@ const ExplorePage = () => {
     const [pageTitle, setPageTitle] = useState('Explore');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     
-    // Filter states
-    const [dishTypeFilter, setDishTypeFilter] = useState(searchParams.get('dishType') || 'all');
-    const [continentFilter, setContinentFilter] = useState(continent || 'all');
+    // Filter states - now arrays for multi-select
+    const [selectedDishTypes, setSelectedDishTypes] = useState(() => {
+        const param = searchParams.get('dishType');
+        return param ? param.split(',') : [];
+    });
+    const [selectedContinents, setSelectedContinents] = useState(() => {
+        return continent ? [continent] : [];
+    });
     
     // Sync URL params with filter state
     useEffect(() => {
         const dishType = searchParams.get('dishType');
         if (dishType) {
-            setDishTypeFilter(dishType);
+            setSelectedDishTypes(dishType.split(','));
         }
     }, [searchParams]);
     
@@ -265,29 +305,30 @@ const ExplorePage = () => {
             loadCountryData(country, continent);
         } else if (continent) {
             loadContinentData(continent);
-            setContinentFilter(continent);
+            setSelectedContinents([continent]);
         } else {
             loadExploreData();
         }
     }, [continent, country, loadCountryData, loadContinentData, loadExploreData]);
 
-    // Handle filter changes
-    const handleDishTypeChange = (value) => {
-        setDishTypeFilter(value);
-        if (value === 'all') {
+    // Handle dish type filter changes
+    const handleDishTypeChange = (values) => {
+        setSelectedDishTypes(values);
+        if (values.length === 0) {
             searchParams.delete('dishType');
         } else {
-            searchParams.set('dishType', value);
+            searchParams.set('dishType', values.join(','));
         }
         setSearchParams(searchParams);
     };
 
-    const handleContinentChange = (value) => {
-        setContinentFilter(value);
-        if (value === 'all') {
+    // Handle continent filter changes
+    const handleContinentChange = (values) => {
+        setSelectedContinents(values);
+        if (values.length === 1) {
+            navigate(getLocalizedPath(`/explore/${values[0]}`));
+        } else if (values.length === 0) {
             navigate(getLocalizedPath('/explore'));
-        } else {
-            navigate(getLocalizedPath(`/explore/${value}`));
         }
     };
 
@@ -296,16 +337,16 @@ const ExplorePage = () => {
     }, [navigate, getLocalizedPath]);
 
     // Clear all filters
-    const clearFilters = () => {
-        setDishTypeFilter('all');
-        setContinentFilter('all');
+    const clearAllFilters = () => {
+        setSelectedDishTypes([]);
+        setSelectedContinents([]);
         searchParams.delete('dishType');
         setSearchParams(searchParams);
         navigate(getLocalizedPath('/explore'));
     };
 
     // Active filters count
-    const activeFiltersCount = (dishTypeFilter !== 'all' ? 1 : 0) + (continentFilter !== 'all' ? 1 : 0);
+    const activeFiltersCount = selectedDishTypes.length + selectedContinents.length;
 
     // Breadcrumb props
     const breadcrumbProps = useMemo(() => ({
@@ -351,175 +392,153 @@ const ExplorePage = () => {
             />
             
             {/* Header */}
-            <section className="bg-white border-b border-[#E8E4DC] py-8 px-4">
-                <div className="max-w-7xl mx-auto">
+            <section className="bg-white border-b border-[#E8E4DC] py-6 px-4">
+                <div className="max-w-6xl mx-auto">
                     <Breadcrumb {...breadcrumbProps} />
-                    <h1 className="text-3xl sm:text-4xl font-light text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-2xl sm:text-3xl font-light text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                         {country ? translateName(pageTitle, 'countries') : 
                          continent ? translateName(pageTitle, 'continents') : 
                          'Explore Recipes'}
                     </h1>
-                    {!country && !continent && (
-                        <p className="text-[#5C5C5C] mt-2 font-light">
-                            Discover authentic recipes from around the world
-                        </p>
-                    )}
                 </div>
             </section>
 
-            {/* Main Content - 3 Column Layout */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    
-                    {/* LEFT: Filters */}
-                    <aside className={`lg:w-56 flex-shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
-                        <div className="bg-white border border-[#E8E4DC] p-5 sticky top-24">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-medium text-[#2C2C2C] uppercase tracking-wide">
-                                    Filters
-                                </h3>
-                                {activeFiltersCount > 0 && (
-                                    <button 
-                                        onClick={clearFilters}
-                                        className="text-xs text-[#6A1F2E] hover:underline"
+            {/* TOP FILTER BAR */}
+            <section className="bg-[#F9F7F3] border-b border-[#E8E4DC] py-3 px-4 sticky top-16 z-40">
+                <div className="max-w-6xl mx-auto">
+                    <div className="flex items-center gap-3 flex-wrap">
+                        {/* Filter Label */}
+                        <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">Filters:</span>
+                        
+                        {/* Dish Type Filter */}
+                        <FilterPopover 
+                            title="Dish Type"
+                            options={DISH_TYPES}
+                            selectedValues={selectedDishTypes}
+                            onChange={handleDishTypeChange}
+                            icon={ChefHat}
+                        />
+                        
+                        {/* Continent Filter */}
+                        <FilterPopover 
+                            title="Continent"
+                            options={CONTINENTS}
+                            selectedValues={selectedContinents}
+                            onChange={handleContinentChange}
+                            icon={Globe}
+                        />
+                        
+                        {/* Active Filter Tags */}
+                        {activeFiltersCount > 0 && (
+                            <>
+                                <div className="h-4 w-px bg-[#E8E4DC] mx-1 hidden sm:block"></div>
+                                
+                                {selectedDishTypes.map(dt => (
+                                    <Badge 
+                                        key={dt}
+                                        variant="secondary" 
+                                        className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
                                     >
-                                        Clear all
-                                    </button>
-                                )}
-                            </div>
-                            
-                            {/* Dish Type Filter */}
-                            <div className="mb-5">
-                                <label className="block text-xs text-[#7C7C7C] mb-2 uppercase tracking-wide">
-                                    Dish Type
-                                </label>
-                                <Select value={dishTypeFilter} onValueChange={handleDishTypeChange}>
-                                    <SelectTrigger className="w-full border-[#E8E4DC] text-sm">
-                                        <SelectValue placeholder="All Dish Types" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {DISH_TYPES.map((type) => (
-                                            <SelectItem key={type.value} value={type.value}>
-                                                {type.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            
-                            {/* Continent Filter */}
-                            <div className="mb-5">
-                                <label className="block text-xs text-[#7C7C7C] mb-2 uppercase tracking-wide">
-                                    Continent
-                                </label>
-                                <Select value={continentFilter} onValueChange={handleContinentChange}>
-                                    <SelectTrigger className="w-full border-[#E8E4DC] text-sm">
-                                        <SelectValue placeholder="All Continents" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {CONTINENTS.map((c) => (
-                                            <SelectItem key={c.value} value={c.value}>
-                                                {c.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            
-                            {/* Active Filters Display */}
-                            {activeFiltersCount > 0 && (
-                                <div className="pt-4 border-t border-[#E8E4DC]">
-                                    <p className="text-xs text-[#7C7C7C] mb-2">Active filters:</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {dishTypeFilter !== 'all' && (
-                                            <Badge variant="secondary" className="bg-[#F5F2EC] text-[#2C2C2C] text-xs">
-                                                {DISH_TYPES.find(d => d.value === dishTypeFilter)?.label}
-                                                <button onClick={() => handleDishTypeChange('all')} className="ml-1">
-                                                    <X className="h-3 w-3" />
-                                                </button>
-                                            </Badge>
-                                        )}
-                                        {continentFilter !== 'all' && (
-                                            <Badge variant="secondary" className="bg-[#F5F2EC] text-[#2C2C2C] text-xs">
-                                                {CONTINENTS.find(c => c.value === continentFilter)?.label}
-                                                <button onClick={() => handleContinentChange('all')} className="ml-1">
-                                                    <X className="h-3 w-3" />
-                                                </button>
-                                            </Badge>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </aside>
+                                        {DISH_TYPES.find(d => d.value === dt)?.label}
+                                        <button onClick={() => handleDishTypeChange(selectedDishTypes.filter(v => v !== dt))}>
+                                            <X className="h-2.5 w-2.5" />
+                                        </button>
+                                    </Badge>
+                                ))}
+                                
+                                {selectedContinents.map(c => (
+                                    <Badge 
+                                        key={c}
+                                        variant="secondary" 
+                                        className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                    >
+                                        {CONTINENTS.find(cont => cont.value === c)?.label}
+                                        <button onClick={() => handleContinentChange(selectedContinents.filter(v => v !== c))}>
+                                            <X className="h-2.5 w-2.5" />
+                                        </button>
+                                    </Badge>
+                                ))}
+                                
+                                <button 
+                                    onClick={clearAllFilters}
+                                    className="text-[10px] text-[#6A1F2E] hover:underline ml-1"
+                                >
+                                    Clear all
+                                </button>
+                            </>
+                        )}
+                        
+                        {/* Recipe Count */}
+                        <span className="text-xs text-[#7C7C7C] ml-auto">
+                            {allRecipes.length} recipes
+                        </span>
+                    </div>
+                </div>
+            </section>
 
+            {/* Main Content */}
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="flex gap-6">
+                    
                     {/* CENTER: Main Content */}
                     <main className="flex-1 min-w-0">
-                        {/* Mobile Filter Button */}
-                        <div className="lg:hidden mb-4">
-                            <MobileFilterButton 
-                                activeFilters={activeFiltersCount} 
-                                onClick={() => setShowMobileFilters(!showMobileFilters)} 
-                            />
-                        </div>
-
                         {loading ? (
-                            <div className="text-center py-16">
-                                <ChefHat className="h-10 w-10 mx-auto text-[#6A1F2E] animate-pulse mb-4" />
-                                <p className="text-[#7C7C7C] font-light">Loading recipes...</p>
+                            <div className="text-center py-12">
+                                <ChefHat className="h-8 w-8 mx-auto text-[#6A1F2E] animate-pulse mb-3" />
+                                <p className="text-sm text-[#7C7C7C] font-light">Loading recipes...</p>
                             </div>
                         ) : country ? (
                             /* Country Recipes View */
                             <>
-                                <div className="flex items-center gap-2 mb-6 text-sm text-[#5C5C5C]">
-                                    <MapPin className="h-4 w-4 text-[#6A1F2E]" />
+                                <div className="flex items-center gap-2 mb-4 text-xs text-[#5C5C5C]">
+                                    <MapPin className="h-3 w-3 text-[#6A1F2E]" />
                                     <span>{countryRecipes.length} recipes from {translateName(pageTitle, 'countries')}</span>
                                 </div>
 
                                 {countryRecipes.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {countryRecipes.map((recipe) => (
                                             <TranslatedRecipeCard key={recipe.slug} recipe={recipe} />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-16 bg-white border border-[#E8E4DC]">
-                                        <p className="text-[#7C7C7C] font-light">No recipes found</p>
+                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
+                                        <p className="text-sm text-[#7C7C7C] font-light">No recipes found</p>
                                     </div>
                                 )}
                             </>
                         ) : continent ? (
                             /* Continent Countries View */
                             <>
-                                <h2 className="text-xl font-light mb-6 text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <h2 className="text-lg font-light mb-4 text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                     Countries in {translateName(selectedContinent, 'continents')}
                                 </h2>
 
                                 {countries.length > 0 ? (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
                                         {countries.map((c) => (
                                             <Link
                                                 key={c.slug}
                                                 to={getLocalizedPath(`/explore/${continent}/${c.slug}`)}
-                                                className="bg-white border border-[#E8E4DC] p-4 hover:border-[#6A1F2E] transition-colors flex items-center gap-3"
+                                                className="bg-white border border-[#E8E4DC] p-3 hover:border-[#6A1F2E] transition-colors flex items-center gap-2"
                                             >
-                                                <Globe className="h-6 w-6 text-[#6A1F2E]" />
+                                                <Globe className="h-4 w-4 text-[#6A1F2E]" />
                                                 <div>
                                                     <h3 className="font-medium text-[#2C2C2C] text-sm">{translateName(c.name, 'countries')}</h3>
-                                                    <p className="text-xs text-[#7C7C7C]">{c.recipe_count} recipes</p>
+                                                    <p className="text-[10px] text-[#7C7C7C]">{c.recipe_count} recipes</p>
                                                 </div>
                                             </Link>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-16 bg-white border border-[#E8E4DC]">
-                                        <p className="text-[#7C7C7C] font-light">No countries found</p>
+                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
+                                        <p className="text-sm text-[#7C7C7C] font-light">No countries found</p>
                                     </div>
                                 )}
 
                                 {/* Other Continents */}
-                                <div className="mt-10 pt-6 border-t border-[#E8E4DC]">
-                                    <h3 className="text-sm font-medium text-[#5C5C5C] mb-3 uppercase tracking-wide">Other Continents</h3>
+                                <div className="pt-6 border-t border-[#E8E4DC]">
+                                    <h3 className="text-xs font-medium text-[#5C5C5C] mb-2 uppercase tracking-wide">Other Continents</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {continents.filter(c => c.slug !== continent).map((c) => (
                                             <Button
@@ -527,7 +546,7 @@ const ExplorePage = () => {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => handleContinentSelect(c.slug)}
-                                                className="border-[#E8E4DC] text-[#2C2C2C] hover:border-[#6A1F2E] hover:text-[#6A1F2E] text-xs"
+                                                className="border-[#E8E4DC] text-[#2C2C2C] hover:border-[#6A1F2E] hover:text-[#6A1F2E] text-xs h-7 px-3"
                                             >
                                                 {c.name}
                                             </Button>
@@ -538,41 +557,35 @@ const ExplorePage = () => {
                         ) : (
                             /* Main Explore View - Recipe Grid */
                             <>
-                                <div className="flex items-center justify-between mb-6">
-                                    <p className="text-sm text-[#5C5C5C]">
-                                        {allRecipes.length} authentic recipes
-                                    </p>
-                                </div>
-
                                 {allRecipes.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {allRecipes.map((recipe) => (
                                             <RecipeCard key={recipe.slug} recipe={recipe} variant="editorial" />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-16 bg-white border border-[#E8E4DC]">
-                                        <p className="text-[#7C7C7C] font-light">No recipes found</p>
+                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
+                                        <p className="text-sm text-[#7C7C7C] font-light">No recipes found</p>
                                     </div>
                                 )}
 
                                 {/* Continent Quick Links */}
-                                <div className="mt-12 pt-8 border-t border-[#E8E4DC]">
-                                    <h3 className="text-lg font-light text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <div className="mt-10 pt-6 border-t border-[#E8E4DC]">
+                                    <h3 className="text-base font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                         Browse by Continent
                                     </h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                                         {continents.map((c) => (
                                             <button
                                                 key={c.slug}
                                                 onClick={() => handleContinentSelect(c.slug)}
-                                                className="bg-white border border-[#E8E4DC] p-4 hover:border-[#6A1F2E] transition-colors text-center group"
+                                                className="bg-white border border-[#E8E4DC] p-3 hover:border-[#6A1F2E] transition-colors text-center group"
                                             >
-                                                <h4 className="font-medium text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors text-sm">
+                                                <h4 className="font-medium text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors text-xs">
                                                     {translateName(c.name, 'continents')}
                                                 </h4>
-                                                <p className="text-xs text-[#7C7C7C] mt-1">
-                                                    {c.recipe_count} recipes
+                                                <p className="text-[10px] text-[#7C7C7C] mt-0.5">
+                                                    {c.recipe_count}
                                                 </p>
                                             </button>
                                         ))}
@@ -582,35 +595,35 @@ const ExplorePage = () => {
                         )}
                     </main>
 
-                    {/* RIGHT: Ranking Sidebar */}
-                    <aside className="hidden lg:block w-64 flex-shrink-0">
+                    {/* RIGHT: Ranking Sidebar (Desktop only) */}
+                    <aside className="hidden lg:block w-56 flex-shrink-0">
                         <RankingSidebar recipes={topRecipes} getLocalizedPath={getLocalizedPath} />
                     </aside>
                 </div>
 
                 {/* Mobile Rankings (below content) */}
-                <div className="lg:hidden mt-10">
-                    <div className="bg-white border border-[#E8E4DC] p-5">
-                        <h3 className="text-base font-medium text-[#2C2C2C] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                <div className="lg:hidden mt-8">
+                    <div className="bg-white border border-[#E8E4DC] p-4">
+                        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             Highest Rated for Tradition
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-2">
                             {topRecipes.slice(0, 6).map((recipe, index) => (
                                 <Link 
                                     key={recipe.slug}
                                     to={getLocalizedPath(`/recipe/${recipe.slug}`)}
-                                    className="flex items-start gap-3 p-3 bg-[#FDFBF7] hover:bg-[#F5F2EC] transition-colors"
+                                    className="flex items-start gap-2 p-2 bg-[#FDFBF7] hover:bg-[#F5F2EC] transition-colors"
                                 >
-                                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#6A1F2E] text-white text-xs flex items-center justify-center font-medium">
+                                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#6A1F2E] text-white text-[10px] flex items-center justify-center font-medium">
                                         {index + 1}
                                     </span>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm text-[#2C2C2C] line-clamp-2">
+                                        <p className="text-xs text-[#2C2C2C] line-clamp-2">
                                             {recipe.recipe_name || recipe.title_original}
                                         </p>
-                                        <div className="flex items-center gap-1 mt-1">
-                                            <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
-                                            <span className="text-xs text-[#7C7C7C]">
+                                        <div className="flex items-center gap-1 mt-0.5">
+                                            <Star className="h-2.5 w-2.5 fill-[#CBA55B] text-[#CBA55B]" />
+                                            <span className="text-[10px] text-[#7C7C7C]">
                                                 {recipe.average_rating?.toFixed(1) || '4.5'}
                                             </span>
                                         </div>
