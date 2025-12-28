@@ -147,7 +147,7 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
                         {recipe.average_rating && (
                             <div className="flex items-center gap-2 text-xs text-[#7C7C7C]">
                                 <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
-                                <span>{recipe.average_rating.toFixed(1)} authenticity score</span>
+                                <span>{recipe.average_rating.toFixed(1)} {t('explore.authenticityScore', lang)}</span>
                             </div>
                         )}
                     </div>
