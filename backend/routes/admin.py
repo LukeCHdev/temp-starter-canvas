@@ -1692,3 +1692,214 @@ async def deduplicate_recipes(
         "deletions": deletions[:50]
     }
 
+
+
+@admin_router.post("/recipes/normalize-continents")
+async def normalize_continents(
+    dry_run: int = Query(default=1, description="Preview only (1) or execute (0)"),
+    authorized: bool = Depends(verify_admin_token)
+):
+    """
+    Normalize all continent values to canonical set:
+    Europe, Asia, Americas, Africa, Middle East, Oceania
+    
+    - Converts North/South America -> Americas
+    - Converts compound values (Europe / Oceania) -> primary
+    - Infers continent from country when Unknown
+    
+    Query params:
+    - dry_run=1: Preview what would be changed
+    - dry_run=0: Execute changes
+    """
+    
+    VALID_CONTINENTS = ["Europe", "Asia", "Americas", "Africa", "Middle East", "Oceania"]
+    
+    # Continent normalization map
+    CONTINENT_NORMALIZATION = {
+        "North America": "Americas",
+        "South America": "Americas",
+        "Central America": "Americas",
+        "Caribbean": "Americas",
+        "Latin America": "Americas",
+        "Europe / Oceania": "Europe",
+        "Nord Africa / Medio Oriente": "Africa",
+        "Middle East / North Africa": "Middle East",
+        "MENA": "Middle East",
+        "North Africa": "Africa",
+        "Southeast Asia": "Asia",
+        "East Asia": "Asia",
+        "South Asia": "Asia",
+        "Central Asia": "Asia",
+        "Western Europe": "Europe",
+        "Eastern Europe": "Europe",
+        "Southern Europe": "Europe",
+        "Northern Europe": "Europe",
+        "Sub-Saharan Africa": "Africa",
+        "West Africa": "Africa",
+        "East Africa": "Africa",
+        "Oceana": "Oceania",
+        "Australasia": "Oceania",
+        "Pacific": "Oceania",
+    }
+    
+    # Country to continent for inference
+    COUNTRY_TO_CONTINENT = {
+        # Europe
+        "Italy": "Europe", "France": "Europe", "Spain": "Europe", "Germany": "Europe",
+        "Portugal": "Europe", "Greece": "Europe", "United Kingdom": "Europe",
+        "Ireland": "Europe", "Belgium": "Europe", "Netherlands": "Europe",
+        "Switzerland": "Europe", "Austria": "Europe", "Poland": "Europe",
+        "Czech Republic": "Europe", "Hungary": "Europe", "Romania": "Europe",
+        "Bulgaria": "Europe", "Croatia": "Europe", "Slovenia": "Europe",
+        "Slovakia": "Europe", "Serbia": "Europe", "Albania": "Europe",
+        "Ukraine": "Europe", "Russia": "Europe", "Finland": "Europe",
+        "Sweden": "Europe", "Norway": "Europe", "Denmark": "Europe",
+        "Malta": "Europe", "Cyprus": "Europe",
+        
+        # Americas
+        "United States": "Americas", "Mexico": "Americas", "Canada": "Americas",
+        "Brazil": "Americas", "Argentina": "Americas", "Peru": "Americas",
+        "Chile": "Americas", "Colombia": "Americas", "Venezuela": "Americas",
+        "Ecuador": "Americas", "Bolivia": "Americas", "Cuba": "Americas",
+        "Dominican Republic": "Americas", "Puerto Rico": "Americas",
+        "Jamaica": "Americas", "Guatemala": "Americas", "Honduras": "Americas",
+        "Costa Rica": "Americas", "Panama": "Americas",
+        
+        # Asia
+        "Japan": "Asia", "China": "Asia", "India": "Asia", "Thailand": "Asia",
+        "Vietnam": "Asia", "South Korea": "Asia", "Indonesia": "Asia",
+        "Malaysia": "Asia", "Philippines": "Asia", "Singapore": "Asia",
+        "Taiwan": "Asia", "Myanmar": "Asia", "Cambodia": "Asia",
+        "Bangladesh": "Asia", "Pakistan": "Asia", "Sri Lanka": "Asia",
+        "Nepal": "Asia", "Afghanistan": "Asia", "Kazakhstan": "Asia",
+        "Mongolia": "Asia",
+        
+        # Middle East
+        "Turkey": "Middle East", "Iran": "Middle East", "Iraq": "Middle East",
+        "Syria": "Middle East", "Lebanon": "Middle East", "Jordan": "Middle East",
+        "Israel": "Middle East", "Palestine": "Middle East",
+        "Saudi Arabia": "Middle East", "United Arab Emirates": "Middle East",
+        "Qatar": "Middle East", "Kuwait": "Middle East", "Bahrain": "Middle East",
+        "Oman": "Middle East", "Yemen": "Middle East",
+        "Armenia": "Middle East", "Georgia": "Middle East", "Azerbaijan": "Middle East",
+        
+        # Africa
+        "Morocco": "Africa", "Egypt": "Africa", "Tunisia": "Africa",
+        "Algeria": "Africa", "Libya": "Africa", "South Africa": "Africa",
+        "Nigeria": "Africa", "Kenya": "Africa", "Ethiopia": "Africa",
+        "Ghana": "Africa", "Senegal": "Africa", "Tanzania": "Africa",
+        
+        # Oceania
+        "Australia": "Oceania", "New Zealand": "Oceania", "Fiji": "Oceania",
+        "Papua New Guinea": "Oceania",
+    }
+    
+    def get_canonical_continent(current: str, country: str) -> str:
+        """Get canonical continent value."""
+        if current in VALID_CONTINENTS:
+            return current
+        
+        if current in CONTINENT_NORMALIZATION:
+            return CONTINENT_NORMALIZATION[current]
+        
+        # Check for keywords
+        if current:
+            lower = current.lower()
+            if "america" in lower:
+                return "Americas"
+            if "africa" in lower:
+                return "Africa"
+            if "asia" in lower:
+                return "Asia"
+            if "europe" in lower:
+                return "Europe"
+            if "oceania" in lower or "australia" in lower or "pacific" in lower:
+                return "Oceania"
+            if "middle east" in lower or "levant" in lower:
+                return "Middle East"
+        
+        # Infer from country
+        if country and country in COUNTRY_TO_CONTINENT:
+            return COUNTRY_TO_CONTINENT[country]
+        
+        return None
+    
+    # Get all published recipes
+    published_recipes = await db.recipes.find(
+        {"status": "published"},
+        {"_id": 1, "slug": 1, "recipe_name": 1, "continent": 1, "origin_country": 1}
+    ).to_list(2000)
+    
+    changes = []
+    failed = []
+    already_valid = 0
+    
+    for recipe in published_recipes:
+        recipe_id = recipe.get("_id")
+        slug = recipe.get("slug", "")
+        current_continent = recipe.get("continent", "") or ""
+        country = recipe.get("origin_country", "") or ""
+        
+        if current_continent in VALID_CONTINENTS:
+            already_valid += 1
+            continue
+        
+        new_continent = get_canonical_continent(current_continent, country)
+        
+        if new_continent and new_continent in VALID_CONTINENTS:
+            changes.append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", ""),
+                "old_continent": current_continent or "(empty)",
+                "new_continent": new_continent,
+                "country": country,
+                "inference": "country" if not current_continent or current_continent == "Unknown" else "mapping"
+            })
+            
+            if dry_run == 0:
+                await db.recipes.update_one(
+                    {"_id": recipe_id},
+                    {"$set": {
+                        "continent": new_continent,
+                        "updated_at": datetime.now(timezone.utc).isoformat(),
+                        "migration_applied": "continent_normalization_v1"
+                    }}
+                )
+        else:
+            failed.append({
+                "slug": slug,
+                "recipe_name": recipe.get("recipe_name", ""),
+                "current_continent": current_continent,
+                "country": country
+            })
+    
+    # Get post-migration counts
+    continent_counts = {}
+    for continent in VALID_CONTINENTS:
+        count = await db.recipes.count_documents({
+            "status": "published",
+            "continent": continent
+        })
+        continent_counts[continent] = count
+    
+    invalid_remaining = await db.recipes.count_documents({
+        "status": "published",
+        "continent": {"$nin": VALID_CONTINENTS}
+    })
+    
+    return {
+        "success": True,
+        "dry_run": dry_run == 1,
+        "summary": {
+            "total_published": len(published_recipes),
+            "already_valid": already_valid,
+            "normalized": len(changes) if dry_run == 0 else 0,
+            "would_normalize": len(changes),
+            "failed": len(failed),
+            "invalid_remaining": invalid_remaining
+        },
+        "continent_counts": continent_counts,
+        "changes": changes[:50],
+        "failed": failed[:20]
+    }
+
