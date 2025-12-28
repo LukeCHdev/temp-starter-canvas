@@ -894,6 +894,69 @@ export const translations = {
       fr: 'Chargement...',
       es: 'Cargando...',
       de: 'Wird geladen...'
+    },
+    loadingRecipes: {
+      en: 'Loading recipes...',
+      it: 'Caricamento ricette...',
+      fr: 'Chargement des recettes...',
+      es: 'Cargando recetas...',
+      de: 'Rezepte werden geladen...'
+    },
+    noRecipesFound: {
+      en: 'No recipes found',
+      it: 'Nessuna ricetta trovata',
+      fr: 'Aucune recette trouvée',
+      es: 'No se encontraron recetas',
+      de: 'Keine Rezepte gefunden'
+    },
+    noCountriesFound: {
+      en: 'No countries found',
+      it: 'Nessun paese trovato',
+      fr: 'Aucun pays trouvé',
+      es: 'No se encontraron países',
+      de: 'Keine Länder gefunden'
+    },
+    filters: {
+      en: 'Filters',
+      it: 'Filtri',
+      fr: 'Filtres',
+      es: 'Filtros',
+      de: 'Filter'
+    },
+    dishType: {
+      en: 'Dish Type',
+      it: 'Tipo di Piatto',
+      fr: 'Type de Plat',
+      es: 'Tipo de Plato',
+      de: 'Gerichtart'
+    },
+    continent: {
+      en: 'Continent',
+      it: 'Continente',
+      fr: 'Continent',
+      es: 'Continente',
+      de: 'Kontinent'
+    },
+    clearAll: {
+      en: 'Clear all',
+      it: 'Cancella tutto',
+      fr: 'Tout effacer',
+      es: 'Borrar todo',
+      de: 'Alle löschen'
+    },
+    highestRated: {
+      en: 'Highest Rated for Tradition',
+      it: 'Più Votati per Tradizione',
+      fr: 'Les Mieux Notés pour la Tradition',
+      es: 'Mejor Valorados por Tradición',
+      de: 'Bestbewertet für Tradition'
+    },
+    authenticityScore: {
+      en: 'authenticity score',
+      it: 'punteggio di autenticità',
+      fr: 'score d\'authenticité',
+      es: 'puntuación de autenticidad',
+      de: 'Authentizitätswert'
     }
   },
 
