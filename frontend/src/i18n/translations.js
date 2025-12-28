@@ -1460,9 +1460,14 @@ export const translations = {
 
 /**
  * Get translated text by key path
+ * 
+ * CRITICAL: NO SILENT FALLBACK TO ENGLISH
+ * - In DEV mode: Returns [MISSING_TRANSLATION: key] for missing translations
+ * - In PROD mode: Still returns the visible marker (build should fail with missing keys)
+ * 
  * @param {string} path - Dot-separated path to the translation key (e.g., 'home.title')
  * @param {string} lang - Language code (en, it, fr, es, de)
- * @returns {string} Translated text or the key if not found
+ * @returns {string} Translated text or visible error marker if not found
  */
 export const t = (path, lang = 'en') => {
   const keys = path.split('.');
@@ -1472,20 +1477,25 @@ export const t = (path, lang = 'en') => {
     if (result && typeof result === 'object' && key in result) {
       result = result[key];
     } else {
-      console.warn(`Translation not found: ${path}`);
-      return path;
+      // KEY NOT FOUND - show visible marker
+      console.error(`[i18n] Translation key not found: ${path}`);
+      return `[MISSING_KEY: ${path}]`;
     }
   }
   
+  // Check if translation exists for requested language
   if (typeof result === 'object' && lang in result) {
     return result[lang];
   }
   
-  if (typeof result === 'object' && 'en' in result) {
-    return result['en'];
+  // CRITICAL: NO SILENT FALLBACK
+  // If the key exists but translation for this language is missing
+  if (typeof result === 'object') {
+    console.error(`[i18n] Missing ${lang.toUpperCase()} translation for: ${path}`);
+    return `[MISSING_${lang.toUpperCase()}: ${path}]`;
   }
   
-  return path;
+  return `[INVALID_KEY: ${path}]`;
 };
 
 export default translations;
