@@ -54,13 +54,23 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
         5: 'bg-gray-400 text-white',
     };
     
-    // Localized authenticity labels
+    // STANDARDIZED English authenticity labels (consistent across all pages)
+    const getStandardLabel = (level) => {
+        switch(level) {
+            case 1: return 'Officially Recognized';
+            case 2: return 'Tradition-Verified';
+            case 3: return 'Traditional';
+            default: return 'Traditional';
+        }
+    };
+    
+    // For legacy compat
     const levelLabels = {
-        1: { en: 'Official', es: 'Oficial', it: 'Ufficiale', fr: 'Officiel', de: 'Offiziell' },
-        2: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
-        3: { en: 'Local', es: 'Local', it: 'Locale', fr: 'Local', de: 'Lokal' },
-        4: { en: 'Recognized', es: 'Reconocido', it: 'Riconosciuto', fr: 'Reconnu', de: 'Anerkannt' },
-        5: { en: 'Modern', es: 'Moderno', it: 'Moderno', fr: 'Moderne', de: 'Modern' },
+        1: { en: 'Officially Recognized', es: 'Oficialmente Reconocido', it: 'Ufficialmente Riconosciuto', fr: 'Officiellement Reconnu', de: 'Offiziell Anerkannt' },
+        2: { en: 'Tradition-Verified', es: 'Verificado por Tradición', it: 'Verificato dalla Tradizione', fr: 'Vérifié par la Tradition', de: 'Tradition-Verifiziert' },
+        3: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
+        4: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
+        5: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
     };
     
     // Localized "ingredients" label
