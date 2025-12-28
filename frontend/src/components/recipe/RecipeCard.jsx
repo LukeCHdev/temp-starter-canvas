@@ -5,6 +5,7 @@ import { ChefHat, Globe, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
+import { t } from '@/i18n/translations';
 
 /**
  * RecipeCard - Language-aware recipe card with STRICT LANGUAGE GATING
@@ -17,7 +18,7 @@ import { useLanguage } from '@/context/LanguageContext';
  * Note: Strict gating (hiding untranslated recipes) is handled at the API/data layer
  */
 export const RecipeCard = ({ recipe, variant = 'default' }) => {
-    const { t } = useTranslation();
+    const { t: i18nT } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
     const lang = language || 'en';
     
