@@ -22,30 +22,21 @@
 - **Truly Visible:** 161
 - **Gap:** 0 ✅
 
-### Continent Breakdown:
-- Europe: 129
-- Asia: 18
-- Americas: 11
-- Africa: 2
-- Oceania: 1
+## Homepage Editorial Redesign Tests Required
 
-### Countries (21 unique, no duplicates):
-Spain (74), Italy (42), Thailand (10), Chile (8), France (5), Albania (3), Japan (3), Mexico (2), South Korea (2), Australia (1), Canada (1), Germany (1), Greece (1), Hungary (1), India (1), Lebanon (1), Morocco (1), Romania (1), Tunisia (1), Turkey (1), Vietnam (1)
+### Frontend Tests Required
+1. **Value Strip Section** - Verify editorial positioning and trust indicators
+2. **Search Section** - Verify centered search bar with correct placeholder text
+3. **Featured Recipe Hero** - Verify single featured recipe with authenticity badge
+4. **How Authenticity Works** - Verify three-step process display
+5. **Curated Recipes** - Verify 6 recipe cards with authenticity badges
+6. **Browse by Continent** - Verify 6 continents with recipe counts
+7. **Browse by Dish Type** - Verify 8 dish type categories
+8. **Footer CTA** - Verify editorial standards section and policy link
 
-## Backend Tests Required
-1. `GET /api/admin/audit/visibility` - Verify hidden_published_total = 0
-2. `GET /api/countries` - Verify no duplicate country names
-3. `GET /api/recipes/europe` - Verify Europe recipes accessible
-4. `GET /api/recipes/asia` - Verify Asia recipes accessible
-
-## Frontend Tests Required
-1. Admin dashboard at `/admin` shows:
-   - Published = 161
-   - Truly Visible = 161
-   - Gap = 0
-2. Explore page shows correct recipe counts
-3. Browse by continent pages work correctly
-4. Country filter shows deduplicated countries
+### Test URL
+- **Frontend URL:** https://datamigration.preview.emergentagent.com/en
+- **Note:** Using preview environment URL from .env file
 
 ## Incorporate User Feedback
 - User confirmed: PROCEED with migration
