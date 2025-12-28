@@ -35,7 +35,7 @@
 8. **Footer CTA** - Verify editorial standards section and policy link
 
 ### Test URL
-- **Frontend URL:** https://datamigration.preview.emergentagent.com/en
+- **Frontend URL:** https://cuisine-babel.preview.emergentagent.com/en
 - **Note:** Using preview environment URL from .env file
 
 ## Testing Status
@@ -45,7 +45,7 @@
 ## Homepage Editorial Redesign Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://datamigration.preview.emergentagent.com/en)
+**Environment:** Preview (https://cuisine-babel.preview.emergentagent.com/en)
 
 ### Test Summary
 - **Total Tests:** 8 test scenarios
@@ -129,7 +129,7 @@ The homepage editorial redesign has been successfully implemented and verified. 
 ## Frontend Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://datamigration.preview.emergentagent.com)
+**Environment:** Preview (https://cuisine-babel.preview.emergentagent.com)
 
 ### Frontend Test Summary
 - **Total Tests:** 5 test scenarios
@@ -190,7 +190,7 @@ The master data migration has been successfully verified from the frontend persp
 ## Backend Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://datamigration.preview.emergentagent.com)
+**Environment:** Preview (https://cuisine-babel.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 9
