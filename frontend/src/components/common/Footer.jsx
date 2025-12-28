@@ -22,9 +22,6 @@ export const Footer = () => {
                         <p className="text-[#FAF7F0]/70 text-sm max-w-md mb-4">
                             {t('footer.tagline', language)}
                         </p>
-                        <p className="text-[#FAF7F0]/50 text-xs italic">
-                            {t('footer.aiDisclaimer', language)}
-                        </p>
                     </div>
 
                     {/* Quick Links */}
