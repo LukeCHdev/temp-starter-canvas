@@ -33,7 +33,6 @@ class MasterDataMigrationTester:
         print(f"{status} {test_name}: {details}")
         
     def admin_login(self):
-    def admin_login(self):
         """Login as admin and get token"""
         print("\n=== Admin Login ===")
         
