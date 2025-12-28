@@ -1,46 +1,75 @@
-# Test Results for Homepage Editorial Redesign
+# Test Results for i18n Enforcement Pass
 
 ## Test Context
-- **Feature:** Homepage Editorial Redesign Verification
+- **Feature:** Systemic i18n Enforcement - Eliminate Hardcoded Strings
 - **Date:** 2024-12-28
 - **Environment:** Preview
-- **Previous Task:** Master Data Migration (COMPLETED ✅)
+- **Previous Task:** Homepage Editorial Redesign (COMPLETED ✅)
 
-## Test Objectives - Homepage Editorial Redesign
-1. Verify Value Strip Section displays correctly with trust indicators
-2. Verify Search Section is centered and prominent with correct placeholder text
-3. Verify Featured Recipe Hero displays with authenticity badge and proper links
-4. Verify How Authenticity Works Section shows three steps correctly
-5. Verify Curated Recipes Section displays 6 recipe cards with proper badges
-6. Verify Browse by Continent Section shows 6 continents with recipe counts
-7. Verify Browse by Dish Type Section displays 8 dish types
-8. Verify Footer CTA section with editorial standards and policy link
+## i18n Architecture Fix Summary
 
-## Previous Migration Results (COMPLETED ✅)
-- **Total Recipes:** 194
-- **Published:** 161
-- **Truly Visible:** 161
-- **Gap:** 0 ✅
+### Root Cause Identified
+The `t()` function in `/app/frontend/src/i18n/translations.js` was silently falling back to English when translations were missing. This caused mixed-language UI across non-English locales.
 
-## Homepage Editorial Redesign Tests Required
+### Fix Applied
+1. **Modified t() function** to show `[MISSING_KEY: path]` or `[MISSING_XX: path]` instead of silent English fallback
+2. **Added missing translation keys** for explore page filters (dishType, continent, clearAll, highestRated, etc.)
+3. **Updated HomePage.jsx** to use t() for all user-visible strings
+4. **Updated ExplorePage.jsx** to use t() for all user-visible strings  
+5. **Updated SearchBar.jsx** to use t() for placeholder and button text
+6. **Updated RecipeCard.jsx** to use t() for authenticity badges and score label
 
-### Frontend Tests Required
-1. **Value Strip Section** - Verify editorial positioning and trust indicators
-2. **Search Section** - Verify centered search bar with correct placeholder text
-3. **Featured Recipe Hero** - Verify single featured recipe with authenticity badge
-4. **How Authenticity Works** - Verify three-step process display
-5. **Curated Recipes** - Verify 6 recipe cards with authenticity badges
-6. **Browse by Continent** - Verify 6 continents with recipe counts
-7. **Browse by Dish Type** - Verify 8 dish type categories
-8. **Footer CTA** - Verify editorial standards section and policy link
+### Components Updated (Priority Order)
+1. ✅ HomePage.jsx - All strings now use t()
+2. ✅ ExplorePage.jsx - All strings now use t()
+3. ✅ RecipeCard.jsx - Authenticity badges and score use t()
+4. ✅ SearchBar.jsx - Placeholder and button use t()
+5. ✅ Footer.jsx - Already using t() correctly
+6. ✅ Navigation.jsx - Already using useTranslation() correctly
 
-### Test URL
-- **Frontend URL:** https://cuisine-babel.preview.emergentagent.com/en
-- **Note:** Using preview environment URL from .env file
+## Test Objectives
+1. Verify homepage displays correctly in all locales (EN, IT, FR, ES, DE)
+2. Verify explore page displays correctly in all locales
+3. Verify NO English strings appear on non-English pages
+4. Verify authenticity badges are translated
+5. Verify search placeholder is translated
+6. Verify filter labels are translated
 
-## Testing Status
-- Previous migration verification: COMPLETE ✅
-- Homepage editorial redesign testing: COMPLETE ✅
+## Screenshot Tests Required
+
+### Homepage Tests
+- /en - English homepage
+- /it - Italian homepage  
+- /fr - French homepage
+- /es - Spanish homepage
+- /de - German homepage
+
+### Explore Page Tests
+- /it/explore - Italian explore page
+- /fr/explore - French explore page
+- /de/explore - German explore page
+
+### Recipe Page Tests
+- Recipe detail pages in each locale
+
+## Manual Verification Checklist
+- [ ] Value strip text translated
+- [ ] Search placeholder translated
+- [ ] Search button translated
+- [ ] Authenticity badges translated
+- [ ] Country names translated
+- [ ] Filter labels translated
+- [ ] Breadcrumb labels translated
+- [ ] Footer text translated
+- [ ] Navigation links translated
+
+## Agent Communication
+- **Agent:** Main Agent
+- **Date:** 2024-12-28
+- **Message:** Completed initial i18n enforcement pass. Fixed t() function to not silently fallback to English. Updated HomePage.jsx, ExplorePage.jsx, SearchBar.jsx, and RecipeCard.jsx to use translation keys. Initial screenshot tests show Italian, French, Spanish, and German homepages are now properly translated with no English leakage detected.
+
+## Known Issues
+- Fixed: recipeAPI.getTopTen() → recipeAPI.getTopWorldwide() in ExplorePage.jsx
 
 ## Homepage Editorial Redesign Test Results (Testing Agent)
 **Date:** 2024-12-28  
