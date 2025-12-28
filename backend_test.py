@@ -17,6 +17,7 @@ class MasterDataMigrationTester:
     def __init__(self):
         self.session = requests.Session()
         self.test_results = []
+        self.admin_token = None
         
     def log_test(self, test_name: str, success: bool, details: str, response_data: Dict = None):
         """Log test results"""
@@ -31,7 +32,7 @@ class MasterDataMigrationTester:
         status = "✅ PASS" if success else "❌ FAIL"
         print(f"{status} {test_name}: {details}")
         
-    def test_prerender_status(self):
+    def admin_login(self):
         """Test Case 1: Prerender Status Check"""
         print("\n=== Test 1: Prerender Status Check ===")
         
