@@ -93,11 +93,11 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
     const slug = recipe.slug;
     const ingredientCount = recipe.content?.ingredients?.length || recipe.ingredients?.length || 0;
     
-    // Get localized label
-    const levelLabel = levelLabels[authenticityLevel]?.[lang] || levelLabels[authenticityLevel]?.en || levelLabels[3][lang];
+    // Get localized label - use translation function
+    const levelLabel = t(`badges.${authenticityLevel === 1 ? 'officiallyRecognized' : authenticityLevel === 2 ? 'traditionVerified' : 'traditional'}`, lang);
     
     // Translate country name
-    const countryName = t(`countries.${country}`, { defaultValue: country });
+    const countryName = i18nT(`countries.${country}`, { defaultValue: country });
     
     // Get photo if available
     const photos = metadata.photos || recipe.photos;
