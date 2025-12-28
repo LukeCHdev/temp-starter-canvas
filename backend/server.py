@@ -1747,11 +1747,29 @@ async def get_continents():
 
 @api_router.get("/continents/{continent}/countries")
 async def get_countries_by_continent(continent: str):
-    """Get all countries in a continent that have recipes."""
+    """Get all countries in a continent that have recipes.
+    
+    Returns deduplicated, canonical country list with correct recipe counts.
+    """
     continent_name = continent.replace("-", " ").title()
     
+    # Valid continents for matching
+    valid_continents = ["Europe", "Asia", "Americas", "Africa", "Middle East", "Oceania"]
+    
+    # Handle case variations
+    if continent_name not in valid_continents:
+        # Try exact match variations
+        for vc in valid_continents:
+            if vc.lower() == continent_name.lower():
+                continent_name = vc
+                break
+    
     pipeline = [
-        {"$match": {"continent": continent_name, "status": "published"}},
+        {"$match": {
+            "continent": continent_name, 
+            "status": "published",
+            "origin_country": {"$exists": True, "$nin": [None, ""]}
+        }},
         {"$group": {
             "_id": "$origin_country",
             "recipe_count": {"$sum": 1}
@@ -1759,18 +1777,37 @@ async def get_countries_by_continent(continent: str):
         {"$sort": {"recipe_count": -1}}
     ]
     
-    countries = []
+    # Aggregate by canonical country name
+    canonical_counts = {}
     async for doc in db.recipes.aggregate(pipeline):
-        if doc["_id"]:
-            countries.append({
-                "name": doc["_id"],
-                "slug": doc["_id"].lower().replace(" ", "-"),
-                "recipe_count": doc["recipe_count"]
-            })
+        raw_country = doc["_id"]
+        if not raw_country:
+            continue
+        
+        # Normalize to canonical English
+        canonical = normalize_country(raw_country)
+        
+        if canonical in canonical_counts:
+            canonical_counts[canonical] += doc["recipe_count"]
+        else:
+            canonical_counts[canonical] = doc["recipe_count"]
+    
+    # Build response
+    countries = []
+    for canonical, count in canonical_counts.items():
+        countries.append({
+            "name": canonical,
+            "slug": canonical.lower().replace(" ", "-"),
+            "recipe_count": count
+        })
+    
+    # Sort by recipe count (descending), then name (ascending)
+    countries.sort(key=lambda x: (-x["recipe_count"], x["name"]))
     
     return {
         "continent": continent_name,
-        "countries": countries
+        "countries": countries,
+        "total_recipes": sum(c["recipe_count"] for c in countries)
     }
 
 # ============== SEO ROUTES ==============
