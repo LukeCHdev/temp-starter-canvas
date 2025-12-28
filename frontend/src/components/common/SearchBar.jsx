@@ -56,30 +56,30 @@ export const SearchBar = ({ className = '' }) => {
     return (
         <form onSubmit={handleSearch} className={`flex gap-2 ${className}`} data-testid="search-form">
             <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#1E1E1E]/40" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#9C9C9C]" />
                 <Input
                     type="text"
-                    placeholder={t('search.placeholder')}
+                    placeholder="Search by recipe, ingredient, region, or dish type..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white border-[#E5DCC3] focus:border-[#CBA55B] rounded-none h-12"
+                    className="pl-12 bg-white border-[#E8E4DC] focus:border-[#6A1F2E] focus:ring-[#6A1F2E]/20 h-14 text-base font-light"
                     data-testid="search-input"
                     disabled={loading}
                 />
             </div>
             <Button
                 type="submit"
-                className="bg-[#6A1F2E] hover:bg-[#8B2840] text-white rounded-none h-12 px-8"
+                className="bg-[#6A1F2E] hover:bg-[#8B2840] text-white h-14 px-8 font-light tracking-wide"
                 data-testid="search-button"
                 disabled={loading}
             >
                 {loading ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t('search.searching')}
+                        Searching...
                     </>
                 ) : (
-                    t('search.button')
+                    'Search'
                 )}
             </Button>
         </form>
