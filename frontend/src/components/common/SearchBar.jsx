@@ -59,7 +59,7 @@ export const SearchBar = ({ className = '' }) => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#9C9C9C]" />
                 <Input
                     type="text"
-                    placeholder="Search by recipe, ingredient, region, or dish type..."
+                    placeholder="Search by recipe, ingredient, region, or dish type"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-12 bg-white border-[#E8E4DC] focus:border-[#6A1F2E] focus:ring-[#6A1F2E]/20 h-14 text-base font-light"
