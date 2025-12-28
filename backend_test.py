@@ -33,314 +33,268 @@ class MasterDataMigrationTester:
         print(f"{status} {test_name}: {details}")
         
     def admin_login(self):
-        """Test Case 1: Prerender Status Check"""
-        print("\n=== Test 1: Prerender Status Check ===")
+    def admin_login(self):
+        """Login as admin and get token"""
+        print("\n=== Admin Login ===")
         
         try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/status")
+            response = self.session.post(f"{BACKEND_URL}/admin/login", json={
+                "password": "SousChefAdmin2024!"
+            })
             
             if response.status_code != 200:
-                self.log_test("Prerender Status", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("Admin Login", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
             data = response.json()
             
-            # Check if prerendering is enabled
-            if not data.get("enabled"):
-                self.log_test("Prerender Status", False, f"Expected enabled=true, got {data.get('enabled')}")
+            if not data.get("success"):
+                self.log_test("Admin Login", False, f"Login failed: {data}")
                 return False
                 
-            # Check if crawler list exists (either 'crawlers' or 'sample_crawlers')
-            crawlers = data.get("crawlers") or data.get("sample_crawlers")
-            if not crawlers or not isinstance(crawlers, list):
-                self.log_test("Prerender Status", False, "Missing or invalid crawler list")
+            self.admin_token = data.get("token")
+            if not self.admin_token:
+                self.log_test("Admin Login", False, "No token received")
                 return False
                 
-            crawler_count = data.get("crawler_count", len(crawlers))
-            self.log_test("Prerender Status", True, f"Prerender enabled with {crawler_count} crawlers configured")
+            self.log_test("Admin Login", True, "Successfully logged in as admin")
             return True
             
         except Exception as e:
-            self.log_test("Prerender Status", False, f"Exception: {str(e)}")
+            self.log_test("Admin Login", False, f"Exception: {str(e)}")
             return False
             
-    def test_crawler_detection(self):
-        """Test Case 2: Crawler Detection"""
-        print("\n=== Test 2: Crawler Detection ===")
+    def test_audit_visibility_endpoint(self):
+        """Test Case 1: Admin Audit Visibility Endpoint"""
+        print("\n=== Test 1: Admin Audit Visibility Endpoint ===")
+        
+        if not self.admin_token:
+            self.log_test("Audit Visibility", False, "No admin token available")
+            return False
         
         try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/test/fr/explore?simulate_bot=true")
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/audit/visibility", headers=headers)
             
             if response.status_code != 200:
-                self.log_test("Crawler Detection", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("Audit Visibility", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
             data = response.json()
             
-            # Check if crawler is detected
-            if not data.get("is_crawler"):
-                self.log_test("Crawler Detection", False, f"Expected is_crawler=true, got {data.get('is_crawler')}")
+            # Check required fields in response
+            if "summary" not in data:
+                self.log_test("Audit Visibility", False, "Missing 'summary' field in response")
                 return False
                 
-            # Check if should prerender
-            if not data.get("should_prerender"):
-                self.log_test("Crawler Detection", False, f"Expected should_prerender=true, got {data.get('should_prerender')}")
+            summary = data["summary"]
+            required_fields = ["total_docs", "published_total", "visible_total", "hidden_published_total"]
+            
+            for field in required_fields:
+                if field not in summary:
+                    self.log_test("Audit Visibility", False, f"Missing '{field}' in summary")
+                    return False
+            
+            # Check the critical migration success criteria
+            published_total = summary.get("published_total", 0)
+            visible_total = summary.get("visible_total", 0)
+            hidden_published_total = summary.get("hidden_published_total", 0)
+            
+            # EXPECTED: hidden_published_total should be 0, published_total should equal visible_total
+            if hidden_published_total != 0:
+                self.log_test("Audit Visibility", False, 
+                    f"CRITICAL: hidden_published_total = {hidden_published_total}, expected 0. Migration incomplete!")
                 return False
                 
-            # Check prerender status (should be either "success" or "fallback")
-            prerender_status = data.get("prerender_status")
-            if prerender_status not in ["success", "fallback"]:
-                self.log_test("Crawler Detection", False, f"Invalid prerender_status: {prerender_status}")
+            if published_total != visible_total:
+                self.log_test("Audit Visibility", False, 
+                    f"CRITICAL: published_total ({published_total}) != visible_total ({visible_total}). Gap = {published_total - visible_total}")
                 return False
                 
-            self.log_test("Crawler Detection", True, f"Crawler detected, prerender_status: {prerender_status}")
+            self.log_test("Audit Visibility", True, 
+                f"Migration SUCCESS: published_total = visible_total = {visible_total}, hidden = 0")
             return True
             
         except Exception as e:
-            self.log_test("Crawler Detection", False, f"Exception: {str(e)}")
+            self.log_test("Audit Visibility", False, f"Exception: {str(e)}")
             return False
             
-    def test_french_recipe_prerender(self):
-        """Test Case 3: French Recipe Prerender with Full Content"""
-        print("\n=== Test 3: French Recipe Prerender ===")
+    def test_countries_deduplication(self):
+        """Test Case 2: Countries Deduplication"""
+        print("\n=== Test 2: Countries Deduplication Test ===")
         
         try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/recipe/fr/spaghetti-alla-carbonara-italy")
+            response = self.session.get(f"{BACKEND_URL}/countries")
             
             if response.status_code != 200:
-                self.log_test("French Recipe Prerender", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("Countries Deduplication", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
-            html_content = response.text
+            data = response.json()
             
-            # Check for H1 tag with recipe name
-            if not re.search(r'<h1[^>]*>.*spaghetti.*carbonara.*</h1>', html_content, re.IGNORECASE):
-                self.log_test("French Recipe Prerender", False, "Missing H1 tag with recipe name")
+            if "countries" not in data:
+                self.log_test("Countries Deduplication", False, "Missing 'countries' field in response")
                 return False
                 
-            # Check for French content sections
-            french_sections = ["Histoire et Origine", "Ingrédients", "Instructions"]
-            missing_sections = []
-            for section in french_sections:
-                if section not in html_content:
-                    missing_sections.append(section)
-                    
-            if missing_sections:
-                self.log_test("French Recipe Prerender", False, f"Missing French sections: {missing_sections}")
+            countries = data["countries"]
+            
+            # Check for duplicates by canonical name
+            canonical_names = []
+            duplicates = []
+            
+            for country in countries:
+                canonical = country.get("canonical", "")
+                if canonical in canonical_names:
+                    duplicates.append(canonical)
+                else:
+                    canonical_names.append(canonical)
+            
+            if duplicates:
+                self.log_test("Countries Deduplication", False, 
+                    f"Found duplicate countries: {duplicates}")
+                return False
+            
+            # Specific check for Italy/Italia issue
+            italy_variants = [c for c in countries if "ital" in c.get("canonical", "").lower()]
+            if len(italy_variants) > 1:
+                variant_names = [c.get("canonical") for c in italy_variants]
+                self.log_test("Countries Deduplication", False, 
+                    f"Found multiple Italy variants: {variant_names}")
                 return False
                 
-            # Check for JSON-LD with Recipe type
-            if '"@type": "Recipe"' not in html_content and '"@type":"Recipe"' not in html_content:
-                self.log_test("French Recipe Prerender", False, "Missing JSON-LD Recipe schema")
-                return False
-                
-            # Check for hreflang tags (should have all 5 languages)
-            hreflang_count = len(re.findall(r'hreflang="[^"]*"', html_content))
-            if hreflang_count < 5:
-                self.log_test("French Recipe Prerender", False, f"Expected 5+ hreflang tags, found {hreflang_count}")
-                return False
-                
-            # Check for canonical URL
-            if 'rel="canonical"' not in html_content:
-                self.log_test("French Recipe Prerender", False, "Missing canonical URL")
-                return False
-                
-            # Check for no fallback indicators
-            fallback_indicators = ["(EN)", "Translation pending", "Affiché en anglais"]
-            found_indicators = [indicator for indicator in fallback_indicators if indicator in html_content]
-            if found_indicators:
-                self.log_test("French Recipe Prerender", False, f"Found fallback indicators: {found_indicators}")
-                return False
-                
-            self.log_test("French Recipe Prerender", True, "French recipe prerender contains all required elements")
+            self.log_test("Countries Deduplication", True, 
+                f"No duplicates found. Total unique countries: {len(countries)}")
             return True
             
         except Exception as e:
-            self.log_test("French Recipe Prerender", False, f"Exception: {str(e)}")
+            self.log_test("Countries Deduplication", False, f"Exception: {str(e)}")
             return False
             
-    def test_italian_recipe_prerender(self):
-        """Test Case 4: Italian Recipe Prerender"""
-        print("\n=== Test 4: Italian Recipe Prerender ===")
+    def test_continent_endpoints(self):
+        """Test Case 3: Continent Endpoints"""
+        print("\n=== Test 3: Continent Endpoints Test ===")
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/recipe/it/spaghetti-alla-carbonara-italy")
-            
-            if response.status_code != 200:
-                self.log_test("Italian Recipe Prerender", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-            html_content = response.text
-            
-            # Check for Italian content sections
-            italian_sections = ["Storia e Origine", "Ingredienti", "Istruzioni"]
-            missing_sections = []
-            for section in italian_sections:
-                if section not in html_content:
-                    missing_sections.append(section)
-                    
-            if missing_sections:
-                self.log_test("Italian Recipe Prerender", False, f"Missing Italian sections: {missing_sections}")
-                return False
-                
-            # Check for JSON-LD Recipe schema
-            if '"@type": "Recipe"' not in html_content and '"@type":"Recipe"' not in html_content:
-                self.log_test("Italian Recipe Prerender", False, "Missing JSON-LD Recipe schema")
-                return False
-                
-            # Check for no fallback indicators
-            fallback_indicators = ["(EN)", "Translation pending", "Mostrato in inglese"]
-            found_indicators = [indicator for indicator in fallback_indicators if indicator in html_content]
-            if found_indicators:
-                self.log_test("Italian Recipe Prerender", False, f"Found fallback indicators: {found_indicators}")
-                return False
-                
-            self.log_test("Italian Recipe Prerender", True, "Italian recipe prerender contains required content")
-            return True
-            
-        except Exception as e:
-            self.log_test("Italian Recipe Prerender", False, f"Exception: {str(e)}")
-            return False
-            
-    def test_german_recipe_prerender(self):
-        """Test Case 5: German Recipe Prerender"""
-        print("\n=== Test 5: German Recipe Prerender ===")
+        continents = ["europe", "asia", "americas", "africa", "oceania"]
+        all_passed = True
         
-        try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/recipe/de/spaghetti-alla-carbonara-italy")
-            
-            if response.status_code != 200:
-                self.log_test("German Recipe Prerender", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-            html_content = response.text
-            
-            # Check for German content sections
-            german_sections = ["Geschichte und Herkunft", "Zutaten", "Anweisungen"]
-            missing_sections = []
-            for section in german_sections:
-                if section not in html_content:
-                    missing_sections.append(section)
-                    
-            if missing_sections:
-                self.log_test("German Recipe Prerender", False, f"Missing German sections: {missing_sections}")
-                return False
-                
-            # Check for no fallback indicators
-            fallback_indicators = ["(EN)", "Translation pending", "Auf Englisch angezeigt"]
-            found_indicators = [indicator for indicator in fallback_indicators if indicator in html_content]
-            if found_indicators:
-                self.log_test("German Recipe Prerender", False, f"Found fallback indicators: {found_indicators}")
-                return False
-                
-            self.log_test("German Recipe Prerender", True, "German recipe prerender contains required content")
-            return True
-            
-        except Exception as e:
-            self.log_test("German Recipe Prerender", False, f"Exception: {str(e)}")
-            return False
-            
-    def test_explore_page_fallback(self):
-        """Test Case 6: Explore Page Fallback"""
-        print("\n=== Test 6: Explore Page Fallback ===")
-        
-        try:
-            response = self.session.get(f"{BACKEND_URL}/prerender/fallback/fr/explore")
-            
-            if response.status_code != 200:
-                self.log_test("Explore Page Fallback", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-            html_content = response.text
-            
-            # Check for French H1
-            if "Explorer les Recettes" not in html_content:
-                self.log_test("Explore Page Fallback", False, "Missing French H1: 'Explorer les Recettes'")
-                return False
-                
-            # Check for JSON-LD CollectionPage
-            if '"@type": "CollectionPage"' not in html_content and '"@type":"CollectionPage"' not in html_content:
-                self.log_test("Explore Page Fallback", False, "Missing JSON-LD CollectionPage schema")
-                return False
-                
-            # Check for internal links (should have some navigation links)
-            link_count = len(re.findall(r'<a[^>]*href="[^"]*"[^>]*>', html_content))
-            if link_count < 3:
-                self.log_test("Explore Page Fallback", False, f"Expected multiple internal links, found {link_count}")
-                return False
-                
-            self.log_test("Explore Page Fallback", True, f"Explore page fallback contains required elements with {link_count} links")
-            return True
-            
-        except Exception as e:
-            self.log_test("Explore Page Fallback", False, f"Exception: {str(e)}")
-            return False
-            
-    def test_no_fallback_indicators(self):
-        """Test Case 7: No Fallback Indicators in Prerendered Content"""
-        print("\n=== Test 7: No Fallback Indicators Verification ===")
-        
-        # Test multiple prerendered pages to ensure no fallback indicators
-        test_urls = [
-            f"{BACKEND_URL}/prerender/recipe/fr/spaghetti-alla-carbonara-italy",
-            f"{BACKEND_URL}/prerender/recipe/it/spaghetti-alla-carbonara-italy", 
-            f"{BACKEND_URL}/prerender/recipe/de/spaghetti-alla-carbonara-italy",
-            f"{BACKEND_URL}/prerender/fallback/fr/explore"
-        ]
-        
-        prohibited_indicators = ["(EN)", "Translation pending"]
-        
-        for url in test_urls:
+        for continent in continents:
             try:
-                response = self.session.get(url)
+                response = self.session.get(f"{BACKEND_URL}/recipes/{continent}?page=1&limit=5")
+                
                 if response.status_code != 200:
+                    self.log_test(f"Continent {continent.title()}", False, 
+                        f"HTTP {response.status_code}: {response.text}")
+                    all_passed = False
                     continue
                     
-                html_content = response.text
-                found_indicators = [indicator for indicator in prohibited_indicators if indicator in html_content]
+                data = response.json()
                 
-                if found_indicators:
-                    self.log_test("No Fallback Indicators", False, f"Found prohibited indicators in {url}: {found_indicators}")
-                    return False
+                # Check response structure
+                if "recipes" not in data:
+                    self.log_test(f"Continent {continent.title()}", False, 
+                        "Missing 'recipes' field in response")
+                    all_passed = False
+                    continue
+                
+                recipes = data["recipes"]
+                
+                # Check that recipes have valid data
+                if recipes:
+                    sample_recipe = recipes[0]
+                    required_fields = ["recipe_name", "slug", "origin_country"]
                     
+                    missing_fields = [field for field in required_fields 
+                                    if not sample_recipe.get(field)]
+                    
+                    if missing_fields:
+                        self.log_test(f"Continent {continent.title()}", False, 
+                            f"Sample recipe missing fields: {missing_fields}")
+                        all_passed = False
+                        continue
+                
+                self.log_test(f"Continent {continent.title()}", True, 
+                    f"Returned {len(recipes)} recipes with valid data")
+                
             except Exception as e:
-                self.log_test("No Fallback Indicators", False, f"Exception testing {url}: {str(e)}")
+                self.log_test(f"Continent {continent.title()}", False, f"Exception: {str(e)}")
+                all_passed = False
+        
+        return all_passed
+        
+    def test_admin_stats_endpoint(self):
+        """Test Case 4: Admin Stats Endpoint"""
+        print("\n=== Test 4: Admin Stats Endpoint Test ===")
+        
+        if not self.admin_token:
+            self.log_test("Admin Stats", False, "No admin token available")
+            return False
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            response = self.session.get(f"{BACKEND_URL}/admin/recipes", headers=headers)
+            
+            if response.status_code != 200:
+                self.log_test("Admin Stats", False, f"HTTP {response.status_code}: {response.text}")
                 return False
                 
-        self.log_test("No Fallback Indicators", True, "No prohibited fallback indicators found in any prerendered content")
-        return True
-        
+            data = response.json()
+            
+            # Check required fields
+            if "counts" not in data:
+                self.log_test("Admin Stats", False, "Missing 'counts' field in response")
+                return False
+                
+            counts = data["counts"]
+            
+            if "published" not in counts:
+                self.log_test("Admin Stats", False, "Missing 'published' count in response")
+                return False
+            
+            published_count = counts["published"]
+            
+            # Cross-check with audit endpoint if we have that data
+            if hasattr(self, '_audit_data'):
+                expected_published = self._audit_data.get("summary", {}).get("published_total", 0)
+                if published_count != expected_published:
+                    self.log_test("Admin Stats", False, 
+                        f"Published count mismatch: admin/recipes={published_count}, audit={expected_published}")
+                    return False
+            
+            self.log_test("Admin Stats", True, 
+                f"Admin stats endpoint working. Published count: {published_count}")
+            return True
+            
+        except Exception as e:
+            self.log_test("Admin Stats", False, f"Exception: {str(e)}")
+            return False
+            
     def run_all_tests(self):
-        """Run all prerendering test cases based on review request"""
-        print("🧪 Starting Sous Chef Linguine Prerendering System Tests")
-        print("Testing prerendering APIs for SEO-optimized content delivery to crawlers")
+        """Run all master data migration verification tests"""
+        print("🧪 Starting Sous Chef Linguine Master Data Migration Verification Tests")
+        print("Testing data migration fixes for recipe visibility issues")
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 70)
         
-        # Test 1: Prerender Status Check
-        self.test_prerender_status()
+        # Step 1: Admin Login
+        if not self.admin_login():
+            print("\n❌ CRITICAL: Admin login failed. Cannot proceed with admin tests.")
+            return self.test_results
         
-        # Test 2: Crawler Detection
-        self.test_crawler_detection()
+        # Step 2: Test Audit Visibility Endpoint (most critical)
+        audit_success = self.test_audit_visibility_endpoint()
         
-        # Test 3: French Recipe Prerender with Full Content
-        self.test_french_recipe_prerender()
+        # Step 3: Test Countries Deduplication
+        countries_success = self.test_countries_deduplication()
         
-        # Test 4: Italian Recipe Prerender
-        self.test_italian_recipe_prerender()
+        # Step 4: Test Continent Endpoints
+        continents_success = self.test_continent_endpoints()
         
-        # Test 5: German Recipe Prerender
-        self.test_german_recipe_prerender()
-        
-        # Test 6: Explore Page Fallback
-        self.test_explore_page_fallback()
-        
-        # Test 7: No Fallback Indicators Verification
-        self.test_no_fallback_indicators()
+        # Step 5: Test Admin Stats Endpoint
+        stats_success = self.test_admin_stats_endpoint()
         
         # Summary
         print("\n" + "=" * 70)
-        print("📊 PRERENDERING TEST SUMMARY")
+        print("📊 MASTER DATA MIGRATION TEST SUMMARY")
         print("=" * 70)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -363,13 +317,13 @@ class MasterDataMigrationTester:
             for failed in failed_tests:
                 print(f"  - {failed['test']}: {failed['details']}")
         else:
-            print(f"\n✅ ALL TESTS PASSED - Prerendering system working correctly!")
+            print(f"\n✅ ALL TESTS PASSED - Master data migration successful!")
             
         return self.test_results
 
 def main():
     """Main test runner"""
-    tester = PrerenderTester()
+    tester = MasterDataMigrationTester()
     results = tester.run_all_tests()
     
     # Return exit code based on results
