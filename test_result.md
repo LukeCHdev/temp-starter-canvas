@@ -6,15 +6,17 @@
 - **Environment:** Preview
 - **Previous Task:** Master Data Migration (COMPLETED ✅)
 
-## Test Objectives
-1. Verify `published_total == visible_total` (gap = 0)
-2. Verify `/api/admin/audit/visibility` returns correct data
-3. Verify admin dashboard shows accurate stats
-4. Verify public explore pages show correct recipe counts
-5. Verify country dropdown shows no duplicates
-6. Verify all continents are browsable with correct counts
+## Test Objectives - Homepage Editorial Redesign
+1. Verify Value Strip Section displays correctly with trust indicators
+2. Verify Search Section is centered and prominent with correct placeholder text
+3. Verify Featured Recipe Hero displays with authenticity badge and proper links
+4. Verify How Authenticity Works Section shows three steps correctly
+5. Verify Curated Recipes Section displays 6 recipe cards with proper badges
+6. Verify Browse by Continent Section shows 6 continents with recipe counts
+7. Verify Browse by Dish Type Section displays 8 dish types
+8. Verify Footer CTA section with editorial standards and policy link
 
-## Current State (Verified by Agent)
+## Previous Migration Results (COMPLETED ✅)
 - **Total Recipes:** 194
 - **Published:** 161
 - **Truly Visible:** 161
