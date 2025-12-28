@@ -14,6 +14,7 @@ import {
 import { toast } from 'sonner';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ExploreSEO } from '@/components/seo/SEOHelmet';
+import { t as translate } from '@/i18n/translations';
 import {
     Popover,
     PopoverContent,
@@ -21,38 +22,38 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Dish types for filtering
-const DISH_TYPES = [
-    { value: 'appetizer', label: 'Appetizers' },
-    { value: 'aperitif', label: 'Aperitif & Small Plates' },
-    { value: 'first-course', label: 'First Courses' },
-    { value: 'main-course', label: 'Main Courses' },
-    { value: 'side-dish', label: 'Side Dishes' },
-    { value: 'dessert', label: 'Desserts' },
-    { value: 'street-food', label: 'Street Food' },
-    { value: 'festive', label: 'Festive & Ritual Dishes' },
+// Dish types for filtering - keys for translation lookup
+const DISH_TYPE_KEYS = [
+    { value: 'appetizer', key: 'appetizer' },
+    { value: 'aperitif', key: 'aperitif' },
+    { value: 'first-course', key: 'firstCourse' },
+    { value: 'main-course', key: 'mainCourse' },
+    { value: 'side-dish', key: 'sideDish' },
+    { value: 'dessert', key: 'dessert' },
+    { value: 'street-food', key: 'streetFood' },
+    { value: 'festive', key: 'festive' },
 ];
 
-// Continent options
-const CONTINENTS = [
-    { value: 'europe', label: 'Europe' },
-    { value: 'asia', label: 'Asia' },
-    { value: 'americas', label: 'Americas' },
-    { value: 'africa', label: 'Africa' },
-    { value: 'middle-east', label: 'Middle East' },
-    { value: 'oceania', label: 'Oceania' },
+// Continent options - keys for translation lookup
+const CONTINENT_KEYS = [
+    { value: 'europe', key: 'Europe' },
+    { value: 'asia', key: 'Asia' },
+    { value: 'americas', key: 'Americas' },
+    { value: 'africa', key: 'Africa' },
+    { value: 'middle-east', key: 'Middle East' },
+    { value: 'oceania', key: 'Oceania' },
 ];
 
-// Breadcrumb component
-const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t }) => (
+// Breadcrumb component with translations
+const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, lang }) => (
     <nav className="flex items-center gap-2 text-xs text-[#5C5C5C] mb-3" aria-label="Breadcrumb">
         <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
             <Home className="h-3 w-3" />
-            Home
+            {translate('common.home', lang)}
         </Link>
         <ChevronRight className="h-3 w-3" />
         <Link to={getLocalizedPath('/explore')} className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
-            Explore
+            {translate('nav.explore', lang)}
         </Link>
         {continent && (
             <>
@@ -76,11 +77,11 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
     </nav>
 );
 
-// Ranking Sidebar Component
-const RankingSidebar = ({ recipes, getLocalizedPath }) => (
+// Ranking Sidebar Component with translations
+const RankingSidebar = ({ recipes, getLocalizedPath, lang }) => (
     <div className="bg-white border border-[#E8E4DC] p-4 sticky top-20">
         <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-            Highest Rated for Tradition
+            {translate('explore.highestRated', lang)}
         </h3>
         <div className="space-y-2">
             {recipes.slice(0, 8).map((recipe, index) => (
@@ -109,8 +110,8 @@ const RankingSidebar = ({ recipes, getLocalizedPath }) => (
     </div>
 );
 
-// Filter Popover with Checkboxes
-const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon }) => {
+// Filter Popover with Checkboxes and translations
+const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, lang, clearLabel }) => {
     const selectedCount = selectedValues.length;
     
     return (
@@ -157,7 +158,7 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon })
                             onClick={() => onChange([])}
                             className="text-xs text-[#6A1F2E] hover:underline w-full text-left"
                         >
-                            Clear {title.toLowerCase()}
+                            {clearLabel}
                         </button>
                     </div>
                 )}
@@ -173,6 +174,7 @@ const ExplorePage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { t, i18n } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
+    const lang = language || 'en';
     
     const [topRecipes, setTopRecipes] = useState([]);
     const [allRecipes, setAllRecipes] = useState([]);
@@ -192,6 +194,22 @@ const ExplorePage = () => {
     const [selectedContinents, setSelectedContinents] = useState(() => {
         return continent ? [continent] : [];
     });
+
+    // Get translated dish types
+    const dishTypeOptions = useMemo(() => 
+        DISH_TYPE_KEYS.map(dt => ({
+            value: dt.value,
+            label: translate(`homepage.dishTypes.${dt.key}`, lang)
+        })), [lang]
+    );
+
+    // Get translated continents
+    const continentOptions = useMemo(() => 
+        CONTINENT_KEYS.map(c => ({
+            value: c.value,
+            label: translate(`continents.${c.key}`, lang)
+        })), [lang]
+    );
     
     // Sync URL params with filter state
     useEffect(() => {
@@ -220,49 +238,53 @@ const ExplorePage = () => {
     // Load explore data
     const loadExploreData = useCallback(async () => {
         setLoading(true);
+        const currentLang = language || 'en';
+        
         try {
-            const [topRes, continentRes, allRes] = await Promise.all([
-                recipeAPI.getTopWorldwide(10, language),
-                continentAPI.getAll(),
-                recipeAPI.getAll({ limit: 50, lang: language })
+            // Fetch all data in parallel
+            const [topRes, recipesRes, continentsRes] = await Promise.all([
+                recipeAPI.getTopTen(),
+                recipeAPI.getFeatured(50, currentLang),
+                continentAPI.getAll()
             ]);
             
             setTopRecipes(topRes.data.recipes || []);
-            setContinents(continentRes.data.continents || []);
-            setAllRecipes(allRes.data.recipes || allRes.data || []);
-            setPageTitle('Explore');
-            setSelectedContinent(null);
-            setCountries([]);
-            setCountryRecipes([]);
+            
+            // Apply dish type filter if needed
+            let filteredRecipes = recipesRes.data.recipes || [];
+            if (selectedDishTypes.length > 0) {
+                filteredRecipes = filteredRecipes.filter(r => 
+                    selectedDishTypes.includes(r.dish_type)
+                );
+            }
+            setAllRecipes(filteredRecipes);
+            
+            setContinents(continentsRes.data.continents || []);
+            setPageTitle(translate('explore.title', currentLang));
         } catch (error) {
             console.error('Error loading explore data:', error);
-            toast.error('Failed to load data');
+            toast.error(translate('search.failed', currentLang));
         } finally {
             setLoading(false);
         }
-    }, [language]);
+    }, [language, selectedDishTypes]);
 
     // Load continent data
     const loadContinentData = useCallback(async (continentSlug) => {
         setLoading(true);
         try {
-            const [countriesRes, continentRes] = await Promise.all([
-                continentAPI.getCountries(continentSlug),
-                continentAPI.getAll()
-            ]);
-            
+            const countriesRes = await continentAPI.getCountries(continentSlug);
             setCountries(countriesRes.data.countries || []);
-            setContinents(continentRes.data.continents || []);
             setSelectedContinent(countriesRes.data.continent);
             setPageTitle(countriesRes.data.continent);
             setCountryRecipes([]);
         } catch (error) {
             console.error('Error loading continent data:', error);
-            toast.error('Failed to load countries');
+            toast.error(translate('search.failed', lang));
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [lang]);
 
     // Load country data
     const loadCountryData = useCallback(async (countrySlug, continentSlug) => {
@@ -292,7 +314,7 @@ const ExplorePage = () => {
                 setSelectedContinent(fallbackRes.data.continent);
                 setPageTitle(fallbackRes.data.country);
             } catch (fallbackError) {
-                toast.error('Failed to load recipes');
+                toast.error(translate('search.failed', currentLang));
             }
         } finally {
             setLoading(false);
@@ -356,8 +378,8 @@ const ExplorePage = () => {
         pageTitle,
         getLocalizedPath,
         translateName,
-        t
-    }), [continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, t]);
+        lang
+    }), [continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, lang]);
 
     // SEO path
     const seoPath = useMemo(() => {
@@ -369,8 +391,8 @@ const ExplorePage = () => {
     // SEO breadcrumbs
     const seoBreadcrumbs = useMemo(() => {
         const crumbs = [
-            { name: 'Home', path: '/' },
-            { name: 'Explore', path: '/explore' }
+            { name: translate('common.home', lang), path: '/' },
+            { name: translate('nav.explore', lang), path: '/explore' }
         ];
         if (continent && selectedContinent) {
             crumbs.push({ name: selectedContinent, path: `/explore/${continent}` });
@@ -379,7 +401,7 @@ const ExplorePage = () => {
             crumbs.push({ name: pageTitle, path: `/explore/${continent}/${country}` });
         }
         return crumbs;
-    }, [continent, country, selectedContinent, pageTitle]);
+    }, [continent, country, selectedContinent, pageTitle, lang]);
 
     return (
         <div className="min-h-screen bg-[#FDFBF7]" data-testid="explore-page">
@@ -398,7 +420,7 @@ const ExplorePage = () => {
                     <h1 className="text-2xl sm:text-3xl font-light text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                         {country ? translateName(pageTitle, 'countries') : 
                          continent ? translateName(pageTitle, 'continents') : 
-                         'Explore Recipes'}
+                         translate('explore.title', lang)}
                     </h1>
                 </div>
             </section>
@@ -408,24 +430,30 @@ const ExplorePage = () => {
                 <div className="max-w-6xl mx-auto">
                     <div className="flex items-center gap-3 flex-wrap">
                         {/* Filter Label */}
-                        <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">Filters:</span>
+                        <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">
+                            {translate('explore.filters', lang)}:
+                        </span>
                         
                         {/* Dish Type Filter */}
                         <FilterPopover 
-                            title="Dish Type"
-                            options={DISH_TYPES}
+                            title={translate('explore.dishType', lang)}
+                            options={dishTypeOptions}
                             selectedValues={selectedDishTypes}
                             onChange={handleDishTypeChange}
                             icon={ChefHat}
+                            lang={lang}
+                            clearLabel={translate('explore.clearAll', lang)}
                         />
                         
                         {/* Continent Filter */}
                         <FilterPopover 
-                            title="Continent"
-                            options={CONTINENTS}
+                            title={translate('explore.continent', lang)}
+                            options={continentOptions}
                             selectedValues={selectedContinents}
                             onChange={handleContinentChange}
                             icon={Globe}
+                            lang={lang}
+                            clearLabel={translate('explore.clearAll', lang)}
                         />
                         
                         {/* Active Filter Tags */}
@@ -439,7 +467,7 @@ const ExplorePage = () => {
                                         variant="secondary" 
                                         className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
                                     >
-                                        {DISH_TYPES.find(d => d.value === dt)?.label}
+                                        {dishTypeOptions.find(d => d.value === dt)?.label}
                                         <button onClick={() => handleDishTypeChange(selectedDishTypes.filter(v => v !== dt))}>
                                             <X className="h-2.5 w-2.5" />
                                         </button>
@@ -452,7 +480,7 @@ const ExplorePage = () => {
                                         variant="secondary" 
                                         className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
                                     >
-                                        {CONTINENTS.find(cont => cont.value === c)?.label}
+                                        {continentOptions.find(cont => cont.value === c)?.label}
                                         <button onClick={() => handleContinentChange(selectedContinents.filter(v => v !== c))}>
                                             <X className="h-2.5 w-2.5" />
                                         </button>
@@ -463,14 +491,14 @@ const ExplorePage = () => {
                                     onClick={clearAllFilters}
                                     className="text-[10px] text-[#6A1F2E] hover:underline ml-1"
                                 >
-                                    Clear all
+                                    {translate('explore.clearAll', lang)}
                                 </button>
                             </>
                         )}
                         
                         {/* Recipe Count */}
                         <span className="text-xs text-[#7C7C7C] ml-auto">
-                            {allRecipes.length} recipes
+                            {allRecipes.length} {translate('explore.recipes', lang)}
                         </span>
                     </div>
                 </div>
@@ -485,14 +513,14 @@ const ExplorePage = () => {
                         {loading ? (
                             <div className="text-center py-12">
                                 <ChefHat className="h-8 w-8 mx-auto text-[#6A1F2E] animate-pulse mb-3" />
-                                <p className="text-sm text-[#7C7C7C] font-light">Loading recipes...</p>
+                                <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.loadingRecipes', lang)}</p>
                             </div>
                         ) : country ? (
                             /* Country Recipes View */
                             <>
                                 <div className="flex items-center gap-2 mb-4 text-xs text-[#5C5C5C]">
                                     <MapPin className="h-3 w-3 text-[#6A1F2E]" />
-                                    <span>{countryRecipes.length} recipes from {translateName(pageTitle, 'countries')}</span>
+                                    <span>{countryRecipes.length} {translate('explore.recipesFrom', lang)} {translateName(pageTitle, 'countries')}</span>
                                 </div>
 
                                 {countryRecipes.length > 0 ? (
@@ -503,7 +531,7 @@ const ExplorePage = () => {
                                     </div>
                                 ) : (
                                     <div className="text-center py-12 bg-white border border-[#E8E4DC]">
-                                        <p className="text-sm text-[#7C7C7C] font-light">No recipes found</p>
+                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>
                                     </div>
                                 )}
                             </>
@@ -511,7 +539,7 @@ const ExplorePage = () => {
                             /* Continent Countries View */
                             <>
                                 <h2 className="text-lg font-light mb-4 text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                    Countries in {translateName(selectedContinent, 'continents')}
+                                    {translate('explore.countriesIn', lang)} {translateName(selectedContinent, 'continents')}
                                 </h2>
 
                                 {countries.length > 0 ? (
@@ -525,20 +553,22 @@ const ExplorePage = () => {
                                                 <Globe className="h-4 w-4 text-[#6A1F2E]" />
                                                 <div>
                                                     <h3 className="font-medium text-[#2C2C2C] text-sm">{translateName(c.name, 'countries')}</h3>
-                                                    <p className="text-[10px] text-[#7C7C7C]">{c.recipe_count} recipes</p>
+                                                    <p className="text-[10px] text-[#7C7C7C]">{c.recipe_count} {translate('explore.recipes', lang)}</p>
                                                 </div>
                                             </Link>
                                         ))}
                                     </div>
                                 ) : (
                                     <div className="text-center py-12 bg-white border border-[#E8E4DC]">
-                                        <p className="text-sm text-[#7C7C7C] font-light">No countries found</p>
+                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noCountriesFound', lang)}</p>
                                     </div>
                                 )}
 
                                 {/* Other Continents */}
                                 <div className="pt-6 border-t border-[#E8E4DC]">
-                                    <h3 className="text-xs font-medium text-[#5C5C5C] mb-2 uppercase tracking-wide">Other Continents</h3>
+                                    <h3 className="text-xs font-medium text-[#5C5C5C] mb-2 uppercase tracking-wide">
+                                        {translate('explore.otherContinents', lang)}
+                                    </h3>
                                     <div className="flex flex-wrap gap-2">
                                         {continents.filter(c => c.slug !== continent).map((c) => (
                                             <Button
@@ -548,7 +578,7 @@ const ExplorePage = () => {
                                                 onClick={() => handleContinentSelect(c.slug)}
                                                 className="border-[#E8E4DC] text-[#2C2C2C] hover:border-[#6A1F2E] hover:text-[#6A1F2E] text-xs h-7 px-3"
                                             >
-                                                {c.name}
+                                                {translateName(c.name, 'continents')}
                                             </Button>
                                         ))}
                                     </div>
@@ -565,14 +595,14 @@ const ExplorePage = () => {
                                     </div>
                                 ) : (
                                     <div className="text-center py-12 bg-white border border-[#E8E4DC]">
-                                        <p className="text-sm text-[#7C7C7C] font-light">No recipes found</p>
+                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>
                                     </div>
                                 )}
 
                                 {/* Continent Quick Links */}
                                 <div className="mt-10 pt-6 border-t border-[#E8E4DC]">
                                     <h3 className="text-base font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                        Browse by Continent
+                                        {translate('explore.byContinent', lang)}
                                     </h3>
                                     <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                                         {continents.map((c) => (
@@ -597,7 +627,7 @@ const ExplorePage = () => {
 
                     {/* RIGHT: Ranking Sidebar (Desktop only) */}
                     <aside className="hidden lg:block w-56 flex-shrink-0">
-                        <RankingSidebar recipes={topRecipes} getLocalizedPath={getLocalizedPath} />
+                        <RankingSidebar recipes={topRecipes} getLocalizedPath={getLocalizedPath} lang={lang} />
                     </aside>
                 </div>
 
@@ -605,7 +635,7 @@ const ExplorePage = () => {
                 <div className="lg:hidden mt-8">
                     <div className="bg-white border border-[#E8E4DC] p-4">
                         <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                            Highest Rated for Tradition
+                            {translate('explore.highestRated', lang)}
                         </h3>
                         <div className="grid grid-cols-2 gap-2">
                             {topRecipes.slice(0, 6).map((recipe, index) => (
