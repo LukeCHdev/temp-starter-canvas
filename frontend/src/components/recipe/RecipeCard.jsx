@@ -16,7 +16,7 @@ import { useLanguage } from '@/context/LanguageContext';
  * 
  * Note: Strict gating (hiding untranslated recipes) is handled at the API/data layer
  */
-export const RecipeCard = ({ recipe }) => {
+export const RecipeCard = ({ recipe, variant = 'default' }) => {
     const { t } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
     const lang = language || 'en';
