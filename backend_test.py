@@ -178,7 +178,7 @@ class MasterDataMigrationTester:
         
         for continent in continents:
             try:
-                response = self.session.get(f"{BACKEND_URL}/recipes/{continent}?page=1&limit=5")
+                response = self.session.get(f"{BACKEND_URL}/recipes/by-continent/{continent}?limit=5")
                 
                 if response.status_code != 200:
                     self.log_test(f"Continent {continent.title()}", False, 
