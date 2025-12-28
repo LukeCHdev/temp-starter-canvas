@@ -243,7 +243,7 @@ const ExplorePage = () => {
         try {
             // Fetch all data in parallel
             const [topRes, recipesRes, continentsRes] = await Promise.all([
-                recipeAPI.getTopTen(),
+                recipeAPI.getTopWorldwide(10, currentLang),
                 recipeAPI.getFeatured(50, currentLang),
                 continentAPI.getAll()
             ]);
