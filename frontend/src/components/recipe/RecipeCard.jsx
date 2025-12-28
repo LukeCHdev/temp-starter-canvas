@@ -94,6 +94,59 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
         ? photos[0].image_url 
         : null;
 
+    // Editorial variant - cleaner, more refined design
+    if (variant === 'editorial') {
+        return (
+            <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
+                <article className="group h-full bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors">
+                    {/* Image */}
+                    <div className="relative overflow-hidden h-56 bg-[#F5F2EC]">
+                        {photoUrl ? (
+                            <img 
+                                src={photoUrl} 
+                                alt={title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-[#BFBFBF] text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>SCL</span>
+                            </div>
+                        )}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-6">
+                        {/* Authenticity Badge */}
+                        <span className="inline-block text-xs uppercase tracking-widest text-[#6A1F2E] mb-3">
+                            {levelLabel}
+                        </span>
+                        
+                        {/* Origin */}
+                        <p className="text-xs text-[#7C7C7C] mb-2 tracking-wide">
+                            {countryName}{region ? ` · ${region}` : ''}
+                        </p>
+                        
+                        {/* Title */}
+                        <h3 className="text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            {title}
+                        </h3>
+                        
+                        {/* Rating/Authenticity Score */}
+                        {recipe.average_rating && (
+                            <div className="flex items-center gap-2 text-xs text-[#7C7C7C]">
+                                <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
+                                <span>{recipe.average_rating.toFixed(1)} authenticity score</span>
+                            </div>
+                        )}
+                    </div>
+                </article>
+            </Link>
+        );
+    }
+
+    // Default variant
+
     return (
         <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
             <Card className="card-elegant group cursor-pointer h-full flex flex-col">
