@@ -77,6 +77,9 @@ function App() {
               <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
               <Route path="/admin/import-document" element={<AdminDocumentImportPage />} />
               
+              {/* Auth Callback Route (no language prefix) */}
+              <Route path="/auth/callback" element={<AuthCallbackPage />} />
+              
               {/* 
                 Multilingual URL Structure:
                 - / → Homepage (default)
