@@ -1,138 +1,192 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChefHat, Globe, BookOpen, Menu as MenuIcon, Heart, User, LogOut } from 'lucide-react';
+import { ChefHat, Globe, Menu as MenuIcon, User, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { AuthModal } from '@/components/auth/AuthModal';
 import { LanguageSelector } from '@/components/common/LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
+import { t } from '@/i18n/translations';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 export const Navigation = () => {
-    const { user, logout } = useAuth();
-    const { t } = useTranslation();
-    const { getLocalizedPath } = useLanguage();
-    const [showAuthModal, setShowAuthModal] = useState(false);
+    const { user, isAuthenticated, logout } = useAuth();
+    const { t: i18nT } = useTranslation();
+    const { language, getLocalizedPath } = useLanguage();
+    const location = useLocation();
+    const lang = language || 'en';
 
     // All navigation links use getLocalizedPath to preserve language
-    // Note: Techniques page is hidden from nav until ready (SEO: noindex applied)
     const navLinks = [
-        { path: '/explore', label: t('nav.explore'), icon: Globe },
-        { path: '/menu-builder', label: t('nav.menuBuilder'), icon: MenuIcon },
-        // { path: '/techniques', label: t('nav.techniques'), icon: BookOpen }, // Hidden until ready
-        { path: '/about', label: t('nav.about'), icon: null },
+        { path: '/explore', label: i18nT('nav.explore'), icon: Globe },
+        { path: '/menu-builder', label: i18nT('nav.menuBuilder'), icon: MenuIcon },
+        { path: '/about', label: i18nT('nav.about'), icon: null },
     ];
 
-    return (
-        <>
-            <nav className="bg-white border-b border-[#E5DCC3] sticky top-0 z-50" data-testid="main-navigation">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        {/* Logo - also preserves language */}
-                        <Link to={getLocalizedPath('/')} className="flex items-center space-x-2" data-testid="logo-link">
-                            <ChefHat className="h-8 w-8 text-[#6A1F2E]" />
-                            <span className="text-2xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                Sous Chef Linguine
-                            </span>
-                        </Link>
+    const handleLogout = async () => {
+        await logout();
+        toast.success(t('auth.logoutSuccess', lang));
+    };
 
-                        {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-6">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.path}
-                                    to={getLocalizedPath(link.path)}
-                                    className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
-                                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                                    data-testid={`nav-${link.path.replace('/', '')}`}
-                                >
-                                    {link.icon && <link.icon className="h-4 w-4" />}
-                                    <span>{link.label}</span>
-                                </Link>
-                            ))}
-                            
-                            {/* Language Selector */}
-                            <LanguageSelector />
-                            
-                            {/* Auth Section */}
-                            {user ? (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
-                                            <User className="h-5 w-5" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem asChild>
-                                            <Link to={getLocalizedPath('/favorites')} className="flex items-center">
-                                                <Heart className="h-4 w-4 mr-2" />
-                                                {t('nav.favorites')}
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={logout}>
-                                            <LogOut className="h-4 w-4 mr-2" />
-                                            {t('nav.logout')}
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            ) : (
+    // Get current path for redirect after login
+    const currentPath = location.pathname;
+
+    return (
+        <nav className="bg-white border-b border-[#E5DCC3] sticky top-0 z-50" data-testid="main-navigation">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16">
+                    {/* Logo - also preserves language */}
+                    <Link to={getLocalizedPath('/')} className="flex items-center space-x-2" data-testid="logo-link">
+                        <ChefHat className="h-8 w-8 text-[#6A1F2E]" />
+                        <span className="text-2xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            Sous Chef Linguine
+                        </span>
+                    </Link>
+
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.path}
+                                to={getLocalizedPath(link.path)}
+                                className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
+                                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                                data-testid={`nav-${link.path.replace('/', '')}`}
+                            >
+                                {link.icon && <link.icon className="h-4 w-4" />}
+                                <span>{link.label}</span>
+                            </Link>
+                        ))}
+                        
+                        {/* Language Selector */}
+                        <LanguageSelector />
+                        
+                        {/* Auth Section */}
+                        {isAuthenticated && user ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="flex items-center gap-2">
+                                        {user.avatar_url ? (
+                                            <img 
+                                                src={user.avatar_url} 
+                                                alt={user.username} 
+                                                className="w-7 h-7 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-7 h-7 rounded-full bg-[#6A1F2E] flex items-center justify-center">
+                                                <span className="text-white text-xs font-medium">
+                                                    {user.username?.[0]?.toUpperCase() || 'U'}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <span className="text-sm">{user.username}</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                    <div className="px-2 py-1.5">
+                                        <p className="text-sm font-medium">{user.name || user.username}</p>
+                                        <p className="text-xs text-gray-500">{user.email}</p>
+                                    </div>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
+                                        <LogOut className="h-4 w-4 mr-2" />
+                                        {t('auth.logout', lang)}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <Link to={getLocalizedPath(`/login?redirect=${encodeURIComponent(currentPath)}`)}>
                                 <Button 
-                                    onClick={() => setShowAuthModal(true)}
                                     variant="outline"
                                     size="sm"
+                                    className="border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white"
                                     style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                                 >
-                                    {t('nav.login')}
+                                    {t('auth.login', lang)}
                                 </Button>
-                            )}
-                        </div>
-
-                        {/* Mobile Navigation */}
-                        <Sheet>
-                            <SheetTrigger asChild className="md:hidden">
-                                <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger">
-                                    <MenuIcon className="h-6 w-6" />
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent>
-                                <div className="flex flex-col space-y-4 mt-8">
-                                    {navLinks.map((link) => (
-                                        <Link
-                                            key={link.path}
-                                            to={getLocalizedPath(link.path)}
-                                            className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
-                                            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-                                        >
-                                            {link.icon && <link.icon className="h-5 w-5" />}
-                                            <span>{link.label}</span>
-                                        </Link>
-                                    ))}
-                                    {user && (
-                                        <Link to={getLocalizedPath('/favorites')} className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors">
-                                            <Heart className="h-5 w-5" />
-                                            <span>{t('nav.favorites')}</span>
-                                        </Link>
-                                    )}
-                                    
-                                    {/* Mobile Language Selector */}
-                                    <div className="pt-4 border-t border-[#E5DCC3]">
-                                        <LanguageSelector />
-                                    </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                            </Link>
+                        )}
                     </div>
+
+                    {/* Mobile Navigation */}
+                    <Sheet>
+                        <SheetTrigger asChild className="md:hidden">
+                            <Button variant="ghost" size="icon" data-testid="mobile-menu-trigger">
+                                <MenuIcon className="h-6 w-6" />
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <div className="flex flex-col space-y-4 mt-8">
+                                {navLinks.map((link) => (
+                                    <Link
+                                        key={link.path}
+                                        to={getLocalizedPath(link.path)}
+                                        className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
+                                        style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                                    >
+                                        {link.icon && <link.icon className="h-5 w-5" />}
+                                        <span>{link.label}</span>
+                                    </Link>
+                                ))}
+                                
+                                {/* Mobile Auth */}
+                                {isAuthenticated && user ? (
+                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            {user.avatar_url ? (
+                                                <img 
+                                                    src={user.avatar_url} 
+                                                    alt={user.username} 
+                                                    className="w-10 h-10 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-10 h-10 rounded-full bg-[#6A1F2E] flex items-center justify-center">
+                                                    <span className="text-white font-medium">
+                                                        {user.username?.[0]?.toUpperCase() || 'U'}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <div>
+                                                <p className="font-medium">{user.name || user.username}</p>
+                                                <p className="text-sm text-gray-500">{user.email}</p>
+                                            </div>
+                                        </div>
+                                        <Button 
+                                            variant="outline" 
+                                            className="w-full text-red-600 border-red-200"
+                                            onClick={handleLogout}
+                                        >
+                                            <LogOut className="h-4 w-4 mr-2" />
+                                            {t('auth.logout', lang)}
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                        <Link to={getLocalizedPath(`/login?redirect=${encodeURIComponent(currentPath)}`)}>
+                                            <Button className="w-full bg-[#6A1F2E] hover:bg-[#8B2840]">
+                                                {t('auth.login', lang)}
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                )}
+                                
+                                {/* Mobile Language Selector */}
+                                <div className="pt-4 border-t border-[#E5DCC3]">
+                                    <LanguageSelector />
+                                </div>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                 </div>
-            </nav>
-            
-            <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
-        </>
+            </div>
+        </nav>
     );
 };
