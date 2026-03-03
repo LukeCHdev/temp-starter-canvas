@@ -1,23 +1,30 @@
-# Rating and Comment models
+# Rating and Review models - Authentication Required
 
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
 class ReviewCreate(BaseModel):
-    """Model for creating a new review."""
+    """Model for creating a new review (authenticated users only)."""
     rating: int = Field(..., ge=1, le=5, description="Rating from 1 to 5 stars")
     comment: Optional[str] = Field(None, max_length=2000, description="Optional review comment")
-    language: Optional[str] = Field("en", description="Language of the comment")
+
+class ReviewUpdate(BaseModel):
+    """Model for updating an existing review."""
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    comment: Optional[str] = Field(None, max_length=2000)
 
 class Review(BaseModel):
     """Model for a recipe review."""
     id: str
     recipe_slug: str
+    user_id: str
+    username: str
+    avatar_url: Optional[str] = None
     rating: int
     comment: Optional[str] = None
-    language: str = "en"
     created_at: str
+    updated_at: Optional[str] = None
 
 class ReviewsResponse(BaseModel):
     """Response model for getting reviews."""
@@ -25,6 +32,7 @@ class ReviewsResponse(BaseModel):
     total: int
     average_rating: float
     ratings_count: int
+    user_review: Optional[Review] = None  # Current user's review if logged in
 
 # Legacy models for backward compatibility
 class RatingCreate(BaseModel):
