@@ -112,6 +112,14 @@ const RecipePage = () => {
     const [isTranslating, setIsTranslating] = useState(false);
     const { language, getLocalizedPath } = useLanguage();
     const { t, i18n } = useTranslation();
+    
+    // Scaling state
+    const DEFAULT_SERVINGS = 4;
+    const [servings, setServings] = useState(DEFAULT_SERVINGS);
+    const [baseServings, setBaseServings] = useState(DEFAULT_SERVINGS);
+    const [scaledIngredients, setScaledIngredients] = useState(null);
+    const [isScaling, setIsScaling] = useState(false);
+    const [originalIngredients, setOriginalIngredients] = useState(null);
 
     // CRITICAL: Sync i18n with route language on every route change
     useEffect(() => {
