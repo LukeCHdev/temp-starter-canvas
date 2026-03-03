@@ -53,6 +53,9 @@ from routes.search import search_router, set_search_db
 from routes.prerender import router as prerender_router
 from services.prerender_service import set_prerender_db
 
+# Import auth routes
+from routes.auth import auth_router, set_auth_db, get_session_user, require_auth
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
