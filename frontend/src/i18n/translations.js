@@ -1180,6 +1180,138 @@ export const translations = {
       it: 'Moderno/Adattato',
       fr: 'Moderne/Adapté',
       de: 'Modern/Angepasst'
+    },
+    ingredients: {
+      en: 'ingredients',
+      es: 'ingredientes',
+      it: 'ingredienti',
+      fr: 'ingrédients',
+      de: 'Zutaten'
+    }
+  },
+
+  // ============================================
+  // REVIEWS
+  // ============================================
+  review: {
+    title: {
+      en: 'Ratings & Reviews',
+      es: 'Calificaciones y Reseñas',
+      it: 'Valutazioni e Recensioni',
+      fr: 'Notes et Avis',
+      de: 'Bewertungen und Rezensionen'
+    },
+    rating: {
+      en: 'rating',
+      es: 'calificación',
+      it: 'valutazione',
+      fr: 'note',
+      de: 'Bewertung'
+    },
+    ratings: {
+      en: 'ratings',
+      es: 'calificaciones',
+      it: 'valutazioni',
+      fr: 'notes',
+      de: 'Bewertungen'
+    },
+    beFirstToRate: {
+      en: 'Be the first to rate this recipe!',
+      es: '¡Sé el primero en calificar esta receta!',
+      it: 'Sii il primo a valutare questa ricetta!',
+      fr: 'Soyez le premier à noter cette recette !',
+      de: 'Sei der Erste, der dieses Rezept bewertet!'
+    },
+    shareExperience: {
+      en: 'Share your experience with this recipe',
+      es: 'Comparte tu experiencia con esta receta',
+      it: 'Condividi la tua esperienza con questa ricetta',
+      fr: 'Partagez votre expérience avec cette recette',
+      de: 'Teile deine Erfahrung mit diesem Rezept'
+    },
+    yourRating: {
+      en: 'Your Rating',
+      es: 'Tu Calificación',
+      it: 'La Tua Valutazione',
+      fr: 'Votre Note',
+      de: 'Deine Bewertung'
+    },
+    yourReview: {
+      en: 'Your Review (optional)',
+      es: 'Tu Reseña (opcional)',
+      it: 'La Tua Recensione (opzionale)',
+      fr: 'Votre Avis (facultatif)',
+      de: 'Deine Rezension (optional)'
+    },
+    placeholder: {
+      en: 'Share your thoughts about this recipe...',
+      es: 'Comparte tus pensamientos sobre esta receta...',
+      it: 'Condividi i tuoi pensieri su questa ricetta...',
+      fr: 'Partagez vos impressions sur cette recette...',
+      de: 'Teile deine Gedanken zu diesem Rezept...'
+    },
+    submit: {
+      en: 'Submit Review',
+      es: 'Enviar Reseña',
+      it: 'Invia Recensione',
+      fr: 'Soumettre l\'Avis',
+      de: 'Bewertung Abschicken'
+    },
+    submitting: {
+      en: 'Submitting...',
+      es: 'Enviando...',
+      it: 'Invio in corso...',
+      fr: 'Envoi en cours...',
+      de: 'Wird gesendet...'
+    },
+    recentReviews: {
+      en: 'Recent Reviews',
+      es: 'Reseñas Recientes',
+      it: 'Recensioni Recenti',
+      fr: 'Avis Récents',
+      de: 'Neueste Bewertungen'
+    },
+    noReviews: {
+      en: 'No reviews yet. Be the first to share your thoughts!',
+      es: '¡Aún no hay reseñas. Sé el primero en compartir tus pensamientos!',
+      it: 'Ancora nessuna recensione. Sii il primo a condividere i tuoi pensieri!',
+      fr: 'Pas encore d\'avis. Soyez le premier à partager vos impressions !',
+      de: 'Noch keine Bewertungen. Sei der Erste, der seine Gedanken teilt!'
+    },
+    thankYou: {
+      en: 'Thank you for your review!',
+      es: '¡Gracias por tu reseña!',
+      it: 'Grazie per la tua recensione!',
+      fr: 'Merci pour votre avis !',
+      de: 'Vielen Dank für deine Bewertung!'
+    },
+    selectRating: {
+      en: 'Please select a rating',
+      es: 'Por favor selecciona una calificación',
+      it: 'Per favore seleziona una valutazione',
+      fr: 'Veuillez sélectionner une note',
+      de: 'Bitte wähle eine Bewertung'
+    },
+    submitError: {
+      en: 'Failed to submit review. Please try again.',
+      es: 'Error al enviar la reseña. Por favor, inténtalo de nuevo.',
+      it: 'Invio della recensione fallito. Per favore riprova.',
+      fr: 'Échec de l\'envoi de l\'avis. Veuillez réessayer.',
+      de: 'Bewertung konnte nicht gesendet werden. Bitte versuche es erneut.'
+    },
+    star: {
+      en: 'star',
+      es: 'estrella',
+      it: 'stella',
+      fr: 'étoile',
+      de: 'Stern'
+    },
+    stars: {
+      en: 'stars',
+      es: 'estrellas',
+      it: 'stelle',
+      fr: 'étoiles',
+      de: 'Sterne'
     }
   },
 
