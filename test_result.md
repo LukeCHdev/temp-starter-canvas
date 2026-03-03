@@ -1,36 +1,34 @@
-# Test Results for Scaling Implementation
+# Test Results for Translation Leaks Fix
 
 ## Test Context
-- **Feature:** Recipe Ingredient Scaling
+- **Feature:** Fix Translation Leaks in Review Section and Recipe Header
 - **Date:** 2024-12-28
 - **Environment:** Preview
 
 ## Implementation Summary
-1. **Backend:** Fixed scaling_engine.py to safely parse string amounts (including fractions like "1/2")
-2. **Frontend:** Added serving selector UI (+/- buttons, reset button, scaling indicator)
-3. **i18n:** Added translation keys for servings, scaling messages
+1. **Added translation keys** for all Review Section strings (title, ratings, yourRating, yourReview, placeholder, submit, etc.)
+2. **Updated ReviewSection.jsx** to use `t()` function for all user-visible strings
+3. **Updated RecipeCard.jsx** to remove hardcoded `levelLabels` and `ingredientLabels` objects
+4. **All 5 locales** (EN, IT, FR, ES, DE) now have complete translation coverage
 
 ## Test Objectives
-1. Verify serving selector UI displays correctly
-2. Test scaling from 4 → 2 servings (halving)
-3. Test scaling from 4 → 8 servings (doubling)
-4. Verify fraction quantities display correctly (0.5 → "1/2")
-5. Verify decimal rounding
-6. Verify unit consistency
-7. Test with Italian locale (translations + scaling)
+1. Verify Review Section displays in correct locale
+2. Verify authenticity badges are translated
+3. Verify no English text on non-English pages
+4. Verify language switch updates instantly
 
-## API Test Results
-- Scale to 8 servings: ✅ PASS (380g → 760g)
-- Scale to 2 servings: ✅ PASS (380g → 190g, 1 → 1/2)
-- Scale to 5 servings: ✅ PASS (380g → 475g, 150g → 187.5)
+## Test Scenarios Required
+- Italian recipe page (/it/recipe/...)
+- French recipe page (/fr/recipe/...)
+- Spanish recipe page (/es/recipe/...)
+- German recipe page (/de/recipe/...)
 
-## Frontend Test Requirements
-- Serving selector UI with +/- buttons
-- Scaling indicator ("Scaled from X → Y servings")
-- Reset button when scaled
-- Visual highlight for scaled ingredients
-- Mobile responsive design
-- Italian locale translations ("Porzioni:", "Ingredienti")
+## Expected Translations
+### Review Section
+- EN: "Ratings & Reviews" | IT: "Valutazioni e Recensioni" | FR: "Notes et Avis"
+- EN: "Your Rating" | IT: "La Tua Valutazione" | FR: "Votre Note"
+- EN: "Submit Review" | IT: "Invia Recensione" | FR: "Soumettre l'Avis"
+- EN: "Recent Reviews" | IT: "Recensioni Recenti" | FR: "Avis Récents"
 
 ## i18n Architecture Fix Summary
 
