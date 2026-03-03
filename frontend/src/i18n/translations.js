@@ -1312,6 +1312,201 @@ export const translations = {
       it: 'stelle',
       fr: 'étoiles',
       de: 'Sterne'
+    },
+    loginRequired: {
+      en: 'You must be logged in to leave a review.',
+      es: 'Debes iniciar sesión para dejar una reseña.',
+      it: 'Devi effettuare l\'accesso per lasciare una recensione.',
+      fr: 'Vous devez être connecté pour laisser un avis.',
+      de: 'Du musst angemeldet sein, um eine Bewertung zu hinterlassen.'
+    },
+    editReview: {
+      en: 'Edit Review',
+      es: 'Editar Reseña',
+      it: 'Modifica Recensione',
+      fr: 'Modifier l\'Avis',
+      de: 'Bewertung Bearbeiten'
+    },
+    deleteReview: {
+      en: 'Delete Review',
+      es: 'Eliminar Reseña',
+      it: 'Elimina Recensione',
+      fr: 'Supprimer l\'Avis',
+      de: 'Bewertung Löschen'
+    },
+    deleteConfirm: {
+      en: 'Are you sure you want to delete your review?',
+      es: '¿Estás seguro de que quieres eliminar tu reseña?',
+      it: 'Sei sicuro di voler eliminare la tua recensione?',
+      fr: 'Êtes-vous sûr de vouloir supprimer votre avis ?',
+      de: 'Bist du sicher, dass du deine Bewertung löschen möchtest?'
+    },
+    updating: {
+      en: 'Updating...',
+      es: 'Actualizando...',
+      it: 'Aggiornamento...',
+      fr: 'Mise à jour...',
+      de: 'Wird aktualisiert...'
+    }
+  },
+
+  // ============================================
+  // AUTHENTICATION
+  // ============================================
+  auth: {
+    login: {
+      en: 'Login',
+      es: 'Iniciar Sesión',
+      it: 'Accedi',
+      fr: 'Connexion',
+      de: 'Anmelden'
+    },
+    logout: {
+      en: 'Logout',
+      es: 'Cerrar Sesión',
+      it: 'Esci',
+      fr: 'Déconnexion',
+      de: 'Abmelden'
+    },
+    signUp: {
+      en: 'Sign Up',
+      es: 'Registrarse',
+      it: 'Registrati',
+      fr: 'S\'inscrire',
+      de: 'Registrieren'
+    },
+    email: {
+      en: 'Email',
+      es: 'Correo Electrónico',
+      it: 'Email',
+      fr: 'E-mail',
+      de: 'E-Mail'
+    },
+    password: {
+      en: 'Password',
+      es: 'Contraseña',
+      it: 'Password',
+      fr: 'Mot de passe',
+      de: 'Passwort'
+    },
+    confirmPassword: {
+      en: 'Confirm Password',
+      es: 'Confirmar Contraseña',
+      it: 'Conferma Password',
+      fr: 'Confirmer le Mot de passe',
+      de: 'Passwort Bestätigen'
+    },
+    username: {
+      en: 'Username',
+      es: 'Nombre de Usuario',
+      it: 'Nome Utente',
+      fr: 'Nom d\'utilisateur',
+      de: 'Benutzername'
+    },
+    forgotPassword: {
+      en: 'Forgot password?',
+      es: '¿Olvidaste tu contraseña?',
+      it: 'Password dimenticata?',
+      fr: 'Mot de passe oublié ?',
+      de: 'Passwort vergessen?'
+    },
+    noAccount: {
+      en: 'Don\'t have an account?',
+      es: '¿No tienes una cuenta?',
+      it: 'Non hai un account?',
+      fr: 'Vous n\'avez pas de compte ?',
+      de: 'Noch kein Konto?'
+    },
+    haveAccount: {
+      en: 'Already have an account?',
+      es: '¿Ya tienes una cuenta?',
+      it: 'Hai già un account?',
+      fr: 'Vous avez déjà un compte ?',
+      de: 'Bereits ein Konto?'
+    },
+    continueWithGoogle: {
+      en: 'Continue with Google',
+      es: 'Continuar con Google',
+      it: 'Continua con Google',
+      fr: 'Continuer avec Google',
+      de: 'Mit Google fortfahren'
+    },
+    orContinueWith: {
+      en: 'or continue with',
+      es: 'o continúa con',
+      it: 'o continua con',
+      fr: 'ou continuer avec',
+      de: 'oder fortfahren mit'
+    },
+    loginSuccess: {
+      en: 'Login successful!',
+      es: '¡Inicio de sesión exitoso!',
+      it: 'Accesso effettuato!',
+      fr: 'Connexion réussie !',
+      de: 'Anmeldung erfolgreich!'
+    },
+    registerSuccess: {
+      en: 'Account created successfully!',
+      es: '¡Cuenta creada exitosamente!',
+      it: 'Account creato con successo!',
+      fr: 'Compte créé avec succès !',
+      de: 'Konto erfolgreich erstellt!'
+    },
+    logoutSuccess: {
+      en: 'Logged out successfully',
+      es: 'Sesión cerrada exitosamente',
+      it: 'Disconnessione effettuata',
+      fr: 'Déconnexion réussie',
+      de: 'Erfolgreich abgemeldet'
+    },
+    invalidCredentials: {
+      en: 'Invalid email or password',
+      es: 'Correo o contraseña inválidos',
+      it: 'Email o password non validi',
+      fr: 'E-mail ou mot de passe invalide',
+      de: 'Ungültige E-Mail oder Passwort'
+    },
+    passwordMismatch: {
+      en: 'Passwords do not match',
+      es: 'Las contraseñas no coinciden',
+      it: 'Le password non corrispondono',
+      fr: 'Les mots de passe ne correspondent pas',
+      de: 'Passwörter stimmen nicht überein'
+    },
+    emailExists: {
+      en: 'Email already registered',
+      es: 'El correo ya está registrado',
+      it: 'Email già registrata',
+      fr: 'E-mail déjà enregistré',
+      de: 'E-Mail bereits registriert'
+    },
+    usernameExists: {
+      en: 'Username already taken',
+      es: 'El nombre de usuario ya está en uso',
+      it: 'Nome utente già in uso',
+      fr: 'Nom d\'utilisateur déjà pris',
+      de: 'Benutzername bereits vergeben'
+    },
+    welcomeBack: {
+      en: 'Welcome back!',
+      es: '¡Bienvenido de nuevo!',
+      it: 'Bentornato!',
+      fr: 'Bon retour !',
+      de: 'Willkommen zurück!'
+    },
+    createAccount: {
+      en: 'Create your account',
+      es: 'Crea tu cuenta',
+      it: 'Crea il tuo account',
+      fr: 'Créez votre compte',
+      de: 'Erstelle dein Konto'
+    },
+    passwordRequirements: {
+      en: 'Password must be at least 8 characters with letters and numbers',
+      es: 'La contraseña debe tener al menos 8 caracteres con letras y números',
+      it: 'La password deve contenere almeno 8 caratteri con lettere e numeri',
+      fr: 'Le mot de passe doit contenir au moins 8 caractères avec des lettres et des chiffres',
+      de: 'Passwort muss mindestens 8 Zeichen mit Buchstaben und Zahlen enthalten'
     }
   },
 
