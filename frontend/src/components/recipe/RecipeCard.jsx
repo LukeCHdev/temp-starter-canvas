@@ -74,14 +74,7 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
         5: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
     };
     
-    // Localized "ingredients" label
-    const ingredientLabels = {
-        en: 'ingredients',
-        it: 'ingredienti',
-        fr: 'ingrédients',
-        es: 'ingredientes',
-        de: 'Zutaten'
-    };
+    // Ingredients label now uses translation function t('common.ingredients', lang)
     
     // ======================================
     // METADATA
