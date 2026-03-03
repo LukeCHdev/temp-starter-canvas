@@ -1,7 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '@/utils/api';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { authAPI } from '@/utils/api';
 
+// Auth Context
 const AuthContext = createContext(null);
+
+// Emergent Auth URL for Google OAuth
+const EMERGENT_AUTH_URL = 'https://demobackend.emergentagent.com/auth/v1/env/oauth/google';
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
@@ -13,57 +17,117 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
+    const [initialized, setInitialized] = useState(false);
 
+    // Check if user is logged in on mount
     useEffect(() => {
-        if (token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            loadUser();
-        } else {
-            setLoading(false);
-        }
-    }, [token]);
+        const checkAuth = async () => {
+            try {
+                const response = await authAPI.me();
+                if (response.data?.success && response.data?.user) {
+                    setUser(response.data.user);
+                }
+            } catch (error) {
+                // Not logged in - that's fine
+                setUser(null);
+            } finally {
+                setLoading(false);
+                setInitialized(true);
+            }
+        };
 
-    const loadUser = async () => {
+        checkAuth();
+    }, []);
+
+    // Login with email/password
+    const login = useCallback(async (email, password) => {
+        const response = await authAPI.login({ email, password });
+        if (response.data?.success && response.data?.user) {
+            setUser(response.data.user);
+            return response.data;
+        }
+        throw new Error(response.data?.detail || 'Login failed');
+    }, []);
+
+    // Register new user
+    const register = useCallback(async (email, username, password, confirmPassword) => {
+        const response = await authAPI.register({
+            email,
+            username,
+            password,
+            confirm_password: confirmPassword
+        });
+        if (response.data?.success && response.data?.user) {
+            setUser(response.data.user);
+            return response.data;
+        }
+        throw new Error(response.data?.detail || 'Registration failed');
+    }, []);
+
+    // Logout
+    const logout = useCallback(async () => {
         try {
-            const res = await api.get('/auth/me');
-            setUser(res.data);
+            await authAPI.logout();
         } catch (error) {
-            logout();
+            console.error('Logout error:', error);
         } finally {
-            setLoading(false);
+            setUser(null);
         }
-    };
+    }, []);
 
-    const login = async (email, password) => {
-        const res = await api.post('/auth/login', { email, password });
-        const newToken = res.data.access_token;
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
-        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-        await loadUser();
-    };
+    // Google OAuth - redirect to Emergent Auth
+    const loginWithGoogle = useCallback((redirectPath = '/') => {
+        // Get the current origin for redirect
+        const currentOrigin = window.location.origin;
+        const redirectUri = `${currentOrigin}/auth/callback?redirect=${encodeURIComponent(redirectPath)}`;
+        
+        // Redirect to Emergent Auth
+        window.location.href = `${EMERGENT_AUTH_URL}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    }, []);
 
-    const register = async (email, password) => {
-        const res = await api.post('/auth/register', { email, password });
-        const newToken = res.data.access_token;
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
-        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-        await loadUser();
-    };
+    // Handle Google OAuth callback
+    const handleGoogleCallback = useCallback(async (sessionId) => {
+        const response = await authAPI.googleAuth(sessionId);
+        if (response.data?.success && response.data?.user) {
+            setUser(response.data.user);
+            return response.data;
+        }
+        throw new Error(response.data?.detail || 'Google login failed');
+    }, []);
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setToken(null);
-        setUser(null);
-        delete api.defaults.headers.common['Authorization'];
+    // Refresh user data
+    const refreshUser = useCallback(async () => {
+        try {
+            const response = await authAPI.me();
+            if (response.data?.success && response.data?.user) {
+                setUser(response.data.user);
+                return response.data.user;
+            }
+        } catch (error) {
+            setUser(null);
+        }
+        return null;
+    }, []);
+
+    const value = {
+        user,
+        isAuthenticated: !!user,
+        loading,
+        initialized,
+        login,
+        register,
+        logout,
+        loginWithGoogle,
+        handleGoogleCallback,
+        refreshUser,
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export default AuthContext;
