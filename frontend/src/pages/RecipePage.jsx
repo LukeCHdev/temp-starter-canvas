@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { recipeAPI, translationAPI } from '@/utils/api';
+import { recipeAPI, translationAPI, aiAPI } from '@/utils/api';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { RecipeSEO } from '@/components/seo/SEOHelmet';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
@@ -19,7 +20,11 @@ import {
     BookOpen,
     ExternalLink,
     Youtube,
-    Star
+    Star,
+    Minus,
+    Plus,
+    Loader2,
+    RotateCcw
 } from 'lucide-react';
 
 // Skeleton component for recipe loading
