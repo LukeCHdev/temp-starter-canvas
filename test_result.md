@@ -1,34 +1,38 @@
-# Test Results for Translation Leaks Fix
+# Test Results for Authentication System
 
 ## Test Context
-- **Feature:** Fix Translation Leaks in Review Section and Recipe Header
+- **Feature:** User Authentication & Protected Reviews
 - **Date:** 2024-12-28
 - **Environment:** Preview
 
 ## Implementation Summary
-1. **Added translation keys** for all Review Section strings (title, ratings, yourRating, yourReview, placeholder, submit, etc.)
-2. **Updated ReviewSection.jsx** to use `t()` function for all user-visible strings
-3. **Updated RecipeCard.jsx** to remove hardcoded `levelLabels` and `ingredientLabels` objects
-4. **All 5 locales** (EN, IT, FR, ES, DE) now have complete translation coverage
+1. **Backend:** Created auth routes with HTTP-only cookie sessions
+2. **Backend:** Protected review endpoints (POST, PUT, DELETE)
+3. **Frontend:** Created Login/Signup pages with Google OAuth support
+4. **Frontend:** Updated ReviewSection to show login prompt for unauthenticated users
+5. **i18n:** Added all auth-related translation keys
 
-## Test Objectives
-1. Verify Review Section displays in correct locale
-2. Verify authenticity badges are translated
-3. Verify no English text on non-English pages
-4. Verify language switch updates instantly
+## Test Checklist
+- [ ] Register/login local account
+- [ ] Google login works (Emergent Auth)
+- [ ] Cookie is set HTTP-only
+- [ ] Logged-out user cannot submit review (UI + API)
+- [ ] Logged-in user can submit/update/delete own review
+- [ ] One-review-per-user-per-recipe enforced
+- [ ] Redirect-back-to-recipe works after login
 
-## Test Scenarios Required
-- Italian recipe page (/it/recipe/...)
-- French recipe page (/fr/recipe/...)
-- Spanish recipe page (/es/recipe/...)
-- German recipe page (/de/recipe/...)
+## API Test Results (Manual)
+- Registration: ✅ PASS (user created, session cookie set)
+- Login: ✅ PASS (session cookie set)
+- Review without auth: ✅ PASS (returns 401)
+- Review with auth: ✅ PASS (review created)
 
-## Expected Translations
-### Review Section
-- EN: "Ratings & Reviews" | IT: "Valutazioni e Recensioni" | FR: "Notes et Avis"
-- EN: "Your Rating" | IT: "La Tua Valutazione" | FR: "Votre Note"
-- EN: "Submit Review" | IT: "Invia Recensione" | FR: "Soumettre l'Avis"
-- EN: "Recent Reviews" | IT: "Recensioni Recenti" | FR: "Avis Récents"
+## Frontend Test Requirements
+- Login page displays correctly
+- Signup page displays correctly
+- Review section shows "login required" message for guests
+- Review form shows for authenticated users
+- User can edit/delete their own review
 
 ## i18n Architecture Fix Summary
 
