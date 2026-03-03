@@ -1998,7 +1998,7 @@ async def get_sitemap(force_rebuild: bool = False):
                     meta = json.load(f)
                     generated_at = datetime.fromisoformat(meta.get('generated_at', ''))
                     return datetime.now(timezone.utc) < generated_at + timedelta(hours=CACHE_TTL_HOURS)
-        except:
+        except Exception:
             pass
         return False
     
