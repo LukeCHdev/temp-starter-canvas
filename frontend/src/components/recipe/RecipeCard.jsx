@@ -55,27 +55,6 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
         5: 'bg-gray-400 text-white',
     };
     
-    // STANDARDIZED English authenticity labels (consistent across all pages)
-    const getStandardLabel = (level) => {
-        switch(level) {
-            case 1: return 'Officially Recognized';
-            case 2: return 'Tradition-Verified';
-            case 3: return 'Traditional';
-            default: return 'Traditional';
-        }
-    };
-    
-    // For legacy compat
-    const levelLabels = {
-        1: { en: 'Officially Recognized', es: 'Oficialmente Reconocido', it: 'Ufficialmente Riconosciuto', fr: 'Officiellement Reconnu', de: 'Offiziell Anerkannt' },
-        2: { en: 'Tradition-Verified', es: 'Verificado por Tradición', it: 'Verificato dalla Tradizione', fr: 'Vérifié par la Tradition', de: 'Tradition-Verifiziert' },
-        3: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
-        4: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
-        5: { en: 'Traditional', es: 'Tradicional', it: 'Tradizionale', fr: 'Traditionnel', de: 'Traditionell' },
-    };
-    
-    // Ingredients label now uses translation function t('common.ingredients', lang)
-    
     // ======================================
     // METADATA
     // ======================================
