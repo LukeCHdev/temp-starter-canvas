@@ -1503,70 +1503,8 @@ async def queue_recipe_translations(slug: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============== AUTHENTICATION ROUTES ==============
-
-@api_router.post("/auth/register", response_model=Token)
-async def register(user_create: UserCreate):
-    """Register a new user."""
-    try:
-        # Check if user exists
-        existing_user = await db.users.find_one({"email": user_create.email})
-        if existing_user:
-            raise HTTPException(status_code=400, detail="Email already registered")
-        
-        # Hash password
-        hashed_password = hash_password(user_create.password)
-        
-        # Create user document
-        user_doc = {
-            "email": user_create.email,
-            "password_hash": hashed_password,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
-        
-        await db.users.insert_one(user_doc)
-        
-        # Create access token
-        access_token = create_access_token(data={"sub": user_create.email})
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Registration error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.post("/auth/login", response_model=Token)
-async def login(user_login: UserLogin):
-    """Login user."""
-    try:
-        # Find user
-        user = await db.users.find_one({"email": user_login.email})
-        if not user:
-            raise HTTPException(status_code=401, detail="Invalid email or password")
-        
-        # Verify password
-        if not verify_password(user_login.password, user["password_hash"]):
-            raise HTTPException(status_code=401, detail="Invalid email or password")
-        
-        # Create access token
-        access_token = create_access_token(data={"sub": user_login.email})
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Login error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.get("/auth/me", response_model=User)
-async def get_current_user_info(current_user: str = Security(get_current_user)):
-    """Get current user info."""
-    user = await db.users.find_one({"email": current_user}, {"_id": 0, "password_hash": 0})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+# NOTE: Auth routes are now in routes/auth.py with HTTP-only cookie support
+# The old JWT-based routes have been removed
 
 # ============== FAVORITES ROUTES ==============
 
