@@ -23,6 +23,11 @@ import CookiesPage from '@/pages/CookiesPage';
 import FavoritesPage from '@/pages/FavoritesPage';
 import EditorialPolicyPage from '@/pages/EditorialPolicyPage';
 
+// Auth Pages
+import LoginPage from '@/pages/LoginPage';
+import SignupPage from '@/pages/SignupPage';
+import AuthCallbackPage from '@/pages/AuthCallbackPage';
+
 // Admin Pages
 import {
   AdminLoginPage,
