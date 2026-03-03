@@ -2090,10 +2090,24 @@ app.include_router(prerender_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")  # Auth routes
 
 # Add CORS middleware
+# When credentials=True, we cannot use "*" for origins
+# Use the CORS_ORIGINS env variable or fallback to common development/production URLs
+cors_origins_str = os.environ.get('CORS_ORIGINS', '')
+if cors_origins_str:
+    cors_origins = [o.strip() for o in cors_origins_str.split(',') if o.strip()]
+else:
+    # Default origins for development and production
+    cors_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://cuisine-babel.preview.emergentagent.com",
+        "https://cuisine-babel.emergent.sh"
+    ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
