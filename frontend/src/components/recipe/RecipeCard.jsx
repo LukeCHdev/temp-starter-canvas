@@ -204,7 +204,7 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
                     {/* Footer with ingredients */}
                     <div className="mt-4 pt-4 border-t border-[#E5DCC3] text-sm text-[#1E1E1E]/60">
                         {ingredientCount > 0 && (
-                            <span>{ingredientCount} {ingredientLabels[lang] || ingredientLabels.en}</span>
+                            <span>{ingredientCount} {t('common.ingredients', lang)}</span>
                         )}
                     </div>
                 </div>
