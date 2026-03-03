@@ -1006,6 +1006,34 @@ export const translations = {
       fr: 'Ingrédients',
       de: 'Zutaten'
     },
+    servings: {
+      en: 'Servings',
+      es: 'Porciones',
+      it: 'Porzioni',
+      fr: 'Portions',
+      de: 'Portionen'
+    },
+    scalingIngredients: {
+      en: 'Scaling ingredients...',
+      es: 'Ajustando ingredientes...',
+      it: 'Scalando ingredienti...',
+      fr: 'Ajustement des ingrédients...',
+      de: 'Zutaten werden angepasst...'
+    },
+    scaledFrom: {
+      en: 'Scaled from',
+      es: 'Escalado de',
+      it: 'Scalato da',
+      fr: 'Mis à l\'échelle de',
+      de: 'Skaliert von'
+    },
+    originalRecipe: {
+      en: 'Original recipe',
+      es: 'Receta original',
+      it: 'Ricetta originale',
+      fr: 'Recette originale',
+      de: 'Originalrezept'
+    },
     instructions: {
       en: 'Instructions',
       es: 'Instrucciones',
