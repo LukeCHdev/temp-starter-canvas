@@ -713,34 +713,84 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
 
 # ============== REVIEWS & RATINGS ==============
 
-from models.rating import ReviewCreate, Review, ReviewsResponse
+from models.rating import ReviewCreate, ReviewUpdate, Review, ReviewsResponse
 from uuid import uuid4
 
 @api_router.post("/recipes/{slug}/review")
-async def create_review(slug: str, review: ReviewCreate):
-    """Create a new review for a recipe.
+async def create_review(slug: str, review: ReviewCreate, request: Request):
+    """Create or update a review for a recipe.
     
-    No authentication required for MVP.
-    Updates the recipe's average_rating and ratings_count.
+    AUTHENTICATION REQUIRED.
+    One review per user per recipe - if user has existing review, it will be updated.
     """
     try:
+        # Require authentication
+        user = await get_session_user(request)
+        if not user:
+            raise HTTPException(
+                status_code=401, 
+                detail="You must be logged in to leave a review"
+            )
+        
+        user_id = user["user_id"]
+        username = user.get("username", "Anonymous")
+        avatar_url = user.get("avatar_url")
+        
         # Verify recipe exists
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"})
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
         
-        # Create review document
-        review_doc = {
-            "id": str(uuid4()),
-            "recipe_slug": slug,
-            "rating": review.rating,
-            "comment": review.comment.strip() if review.comment else None,
-            "language": review.language or "en",
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
+        # Check if user already has a review for this recipe
+        existing_review = await db.recipe_reviews.find_one(
+            {"recipe_slug": slug, "user_id": user_id},
+            {"_id": 0}
+        )
         
-        # Save review to recipe_reviews collection
-        await db.recipe_reviews.insert_one(review_doc)
+        now = datetime.now(timezone.utc).isoformat()
+        
+        if existing_review:
+            # Update existing review
+            await db.recipe_reviews.update_one(
+                {"recipe_slug": slug, "user_id": user_id},
+                {
+                    "$set": {
+                        "rating": review.rating,
+                        "comment": review.comment.strip() if review.comment else None,
+                        "updated_at": now,
+                        "username": username,
+                        "avatar_url": avatar_url
+                    }
+                }
+            )
+            review_doc = {
+                "id": existing_review["id"],
+                "recipe_slug": slug,
+                "user_id": user_id,
+                "username": username,
+                "avatar_url": avatar_url,
+                "rating": review.rating,
+                "comment": review.comment.strip() if review.comment else None,
+                "created_at": existing_review["created_at"],
+                "updated_at": now
+            }
+            logger.info(f"Updated review for {slug} by user {user_id}")
+        else:
+            # Create new review
+            review_doc = {
+                "id": str(uuid4()),
+                "recipe_slug": slug,
+                "user_id": user_id,
+                "username": username,
+                "avatar_url": avatar_url,
+                "rating": review.rating,
+                "comment": review.comment.strip() if review.comment else None,
+                "created_at": now,
+                "updated_at": None
+            }
+            await db.recipe_reviews.insert_one(review_doc)
+            review_doc.pop('_id', None)
+            logger.info(f"New review for {slug} by user {user_id}: {review.rating} stars")
         
         # Calculate new average rating
         all_reviews = await db.recipe_reviews.find(
@@ -759,15 +809,10 @@ async def create_review(slug: str, review: ReviewCreate):
                 "$set": {
                     "average_rating": round(new_average, 2),
                     "ratings_count": new_count,
-                    "updated_at": datetime.now(timezone.utc).isoformat()
+                    "updated_at": now
                 }
             }
         )
-        
-        logger.info(f"New review for {slug}: {review.rating} stars (new avg: {new_average:.2f}, count: {new_count})")
-        
-        # Return the created review (without MongoDB _id)
-        review_doc.pop('_id', None)
         
         return {
             "success": True,
