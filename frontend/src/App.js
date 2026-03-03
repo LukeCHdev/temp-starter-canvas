@@ -138,6 +138,8 @@ const LanguageRoutes = () => (
     <Route path="terms" element={<TermsPage />} />
     <Route path="cookies" element={<CookiesPage />} />
     <Route path="editorial-policy" element={<EditorialPolicyPage />} />
+    <Route path="login" element={<LoginPage />} />
+    <Route path="signup" element={<SignupPage />} />
   </Routes>
 );
 
