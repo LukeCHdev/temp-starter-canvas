@@ -9,6 +9,7 @@ export const api = axios.create({
         'Content-Type': 'application/json',
     },
     timeout: 60000,  // 60 second timeout for AI operations
+    withCredentials: true,  // Important: Send cookies with requests
 });
 
 // Recipe API
@@ -31,6 +32,20 @@ export const recipeAPI = {
     // Reviews & Ratings
     getReviews: (slug, limit = 50, offset = 0) => api.get(`/recipes/${slug}/reviews`, { params: { limit, offset } }),
     createReview: (slug, data) => api.post(`/recipes/${slug}/review`, data),
+    updateReview: (slug, data) => api.put(`/recipes/${slug}/review`, data),
+    deleteReview: (slug) => api.delete(`/recipes/${slug}/review`),
+};
+
+// Auth API
+export const authAPI = {
+    register: (data) => api.post('/auth/register', data),
+    login: (data) => api.post('/auth/login', data),
+    logout: () => api.post('/auth/logout'),
+    me: () => api.get('/auth/me'),
+    googleAuth: (sessionId) => api.post('/auth/social/google', { session_id: sessionId }),
+    verifyEmail: (token) => api.post('/auth/verify-email', { token }),
+    requestPasswordReset: (email) => api.post('/auth/reset-password', { email }),
+    confirmPasswordReset: (data) => api.post('/auth/reset-password/confirm', data),
 };
 
 // Translation API - Language-aware recipe content
