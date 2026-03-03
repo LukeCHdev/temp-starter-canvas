@@ -829,10 +829,11 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
 
 
 @api_router.get("/recipes/{slug}/reviews")
-async def get_reviews(slug: str, limit: int = 50, offset: int = 0):
+async def get_reviews(slug: str, request: Request, limit: int = 50, offset: int = 0):
     """Get all reviews for a recipe.
     
     Returns reviews sorted by newest first.
+    If user is authenticated, also returns their review (if any).
     """
     try:
         # Verify recipe exists
@@ -852,17 +853,157 @@ async def get_reviews(slug: str, limit: int = 50, offset: int = 0):
         # Get total count
         total = await db.recipe_reviews.count_documents({"recipe_slug": slug})
         
+        # Check if current user has a review
+        user_review = None
+        user = await get_session_user(request)
+        if user:
+            user_review = await db.recipe_reviews.find_one(
+                {"recipe_slug": slug, "user_id": user["user_id"]},
+                {"_id": 0}
+            )
+        
         return {
             "reviews": reviews,
             "total": total,
             "average_rating": recipe.get("average_rating", 0),
-            "ratings_count": recipe.get("ratings_count", 0)
+            "ratings_count": recipe.get("ratings_count", 0),
+            "user_review": user_review
         }
     
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error fetching reviews for {slug}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.put("/recipes/{slug}/review")
+async def update_review(slug: str, review: ReviewUpdate, request: Request):
+    """Update the current user's review for a recipe.
+    
+    AUTHENTICATION REQUIRED.
+    """
+    try:
+        # Require authentication
+        user = await get_session_user(request)
+        if not user:
+            raise HTTPException(status_code=401, detail="You must be logged in to update a review")
+        
+        user_id = user["user_id"]
+        
+        # Find existing review
+        existing = await db.recipe_reviews.find_one(
+            {"recipe_slug": slug, "user_id": user_id},
+            {"_id": 0}
+        )
+        
+        if not existing:
+            raise HTTPException(status_code=404, detail="You haven't reviewed this recipe yet")
+        
+        # Build update document
+        update_fields = {"updated_at": datetime.now(timezone.utc).isoformat()}
+        if review.rating is not None:
+            update_fields["rating"] = review.rating
+        if review.comment is not None:
+            update_fields["comment"] = review.comment.strip() if review.comment else None
+        
+        # Update review
+        await db.recipe_reviews.update_one(
+            {"recipe_slug": slug, "user_id": user_id},
+            {"$set": update_fields}
+        )
+        
+        # Recalculate average if rating changed
+        if review.rating is not None:
+            all_reviews = await db.recipe_reviews.find(
+                {"recipe_slug": slug},
+                {"rating": 1, "_id": 0}
+            ).to_list(10000)
+            
+            ratings = [r["rating"] for r in all_reviews]
+            new_average = sum(ratings) / len(ratings) if ratings else 0
+            
+            await db.recipes.update_one(
+                {"slug": slug},
+                {"$set": {"average_rating": round(new_average, 2)}}
+            )
+        
+        # Get updated review
+        updated_review = await db.recipe_reviews.find_one(
+            {"recipe_slug": slug, "user_id": user_id},
+            {"_id": 0}
+        )
+        
+        logger.info(f"Updated review for {slug} by user {user_id}")
+        
+        return {"success": True, "review": updated_review}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating review for {slug}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.delete("/recipes/{slug}/review")
+async def delete_review(slug: str, request: Request):
+    """Delete the current user's review for a recipe.
+    
+    AUTHENTICATION REQUIRED.
+    """
+    try:
+        # Require authentication
+        user = await get_session_user(request)
+        if not user:
+            raise HTTPException(status_code=401, detail="You must be logged in to delete a review")
+        
+        user_id = user["user_id"]
+        
+        # Find existing review
+        existing = await db.recipe_reviews.find_one(
+            {"recipe_slug": slug, "user_id": user_id},
+            {"_id": 0}
+        )
+        
+        if not existing:
+            raise HTTPException(status_code=404, detail="You haven't reviewed this recipe")
+        
+        # Delete review
+        await db.recipe_reviews.delete_one({"recipe_slug": slug, "user_id": user_id})
+        
+        # Recalculate average
+        all_reviews = await db.recipe_reviews.find(
+            {"recipe_slug": slug},
+            {"rating": 1, "_id": 0}
+        ).to_list(10000)
+        
+        ratings = [r["rating"] for r in all_reviews]
+        new_average = sum(ratings) / len(ratings) if ratings else 0
+        new_count = len(ratings)
+        
+        await db.recipes.update_one(
+            {"slug": slug},
+            {
+                "$set": {
+                    "average_rating": round(new_average, 2),
+                    "ratings_count": new_count
+                }
+            }
+        )
+        
+        logger.info(f"Deleted review for {slug} by user {user_id}")
+        
+        return {
+            "success": True,
+            "message": "Review deleted",
+            "average_rating": round(new_average, 2),
+            "ratings_count": new_count
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting review for {slug}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
