@@ -544,20 +544,87 @@ const RecipePage = () => {
                     </Card>
                 )}
 
-                {/* Ingredients */}
+                {/* Ingredients with Serving Selector */}
                 {ingredientsContent.content && ingredientsContent.content.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <span>🧺</span> {t('recipe.ingredients')}
-                            </CardTitle>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                    <span>🧺</span> {t('recipe.ingredients')}
+                                </CardTitle>
+                                
+                                {/* Serving Selector */}
+                                <div className="flex items-center gap-3 bg-[#F5F2E8] rounded-lg px-3 py-2">
+                                    <span className="text-sm text-[#5C5C5C] font-medium">
+                                        {t('recipe.servings')}:
+                                    </span>
+                                    <div className="flex items-center gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-8 w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50"
+                                            onClick={decrementServings}
+                                            disabled={servings <= 1 || isScaling}
+                                            aria-label="Decrease servings"
+                                        >
+                                            <Minus className="h-4 w-4" />
+                                        </Button>
+                                        
+                                        <span className="w-10 text-center font-semibold text-[#2C2C2C] text-lg">
+                                            {isScaling ? (
+                                                <Loader2 className="h-5 w-5 animate-spin mx-auto text-[#6A1F2E]" />
+                                            ) : (
+                                                servings
+                                            )}
+                                        </span>
+                                        
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-8 w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50"
+                                            onClick={incrementServings}
+                                            disabled={servings >= 50 || isScaling}
+                                            aria-label="Increase servings"
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    
+                                    {/* Reset button - only show when scaled */}
+                                    {servings !== baseServings && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 px-2 text-[#6A1F2E] hover:bg-[#6A1F2E]/10"
+                                            onClick={resetServings}
+                                            disabled={isScaling}
+                                            aria-label="Reset to original"
+                                        >
+                                            <RotateCcw className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* Scaling indicator */}
+                            {servings !== baseServings && !isScaling && (
+                                <p className="text-xs text-[#6A1F2E] mt-2">
+                                    {t('recipe.scaledFrom')} {baseServings} → {servings} {t('recipe.servings').toLowerCase()}
+                                </p>
+                            )}
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-3">
-                                {ingredientsContent.content.map((ing, index) => (
-                                    <div key={index} className="flex items-center justify-between py-2 border-b border-dashed border-[#CBA55B]/30 last:border-0">
+                                {/* Use scaled ingredients if available, otherwise original */}
+                                {(scaledIngredients || ingredientsContent.content).map((ing, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`flex items-center justify-between py-2 border-b border-dashed border-[#CBA55B]/30 last:border-0 transition-all duration-200 ${
+                                            ing._scaled ? 'bg-[#6A1F2E]/5 -mx-2 px-2 rounded' : ''
+                                        }`}
+                                    >
                                         <span className="font-medium">{ing.item}</span>
-                                        <span className="text-[#1E1E1E]/70">
+                                        <span className={`text-[#1E1E1E]/70 ${ing._scaled ? 'font-semibold text-[#6A1F2E]' : ''}`}>
                                             {ing.amount} {ing.unit}
                                             {ing.notes && <span className="italic text-sm ml-2">({ing.notes})</span>}
                                         </span>
