@@ -224,6 +224,75 @@ const RecipePage = () => {
         };
     }, [slug, currentLang, t]);
 
+    // Reset scaling when recipe changes
+    useEffect(() => {
+        if (recipe) {
+            const recipeBaseServings = recipe.servings_default || recipe.servings || DEFAULT_SERVINGS;
+            setBaseServings(recipeBaseServings);
+            setServings(recipeBaseServings);
+            setScaledIngredients(null);
+            setOriginalIngredients(null);
+        }
+    }, [recipe?.slug]);
+
+    // Scaling function
+    const handleScale = useCallback(async (targetServings) => {
+        if (!recipe?.slug || targetServings < 1 || targetServings > 50) return;
+        
+        // If returning to base servings, reset to original
+        if (targetServings === baseServings && originalIngredients) {
+            setServings(baseServings);
+            setScaledIngredients(null);
+            return;
+        }
+        
+        setIsScaling(true);
+        setServings(targetServings);
+        
+        try {
+            const response = await aiAPI.scale(recipe.slug, targetServings);
+            
+            if (response.data?.success && response.data?.recipe) {
+                const scaledRecipe = response.data.recipe;
+                
+                // Store original ingredients on first scale
+                if (!originalIngredients) {
+                    setOriginalIngredients(recipe.ingredients);
+                }
+                
+                // Get the appropriate ingredients (translated or base)
+                const scaledIngs = scaledRecipe.translations?.[currentLang]?.ingredients 
+                    || scaledRecipe.ingredients;
+                
+                setScaledIngredients(scaledIngs);
+            }
+        } catch (error) {
+            console.error('Scaling error:', error);
+            toast.error(t('recipe.scalingError') || 'Failed to scale recipe');
+            // Revert servings on error
+            setServings(baseServings);
+        } finally {
+            setIsScaling(false);
+        }
+    }, [recipe?.slug, baseServings, originalIngredients, currentLang, t]);
+
+    // Increment/decrement servings
+    const incrementServings = useCallback(() => {
+        const newServings = Math.min(servings + 1, 50);
+        handleScale(newServings);
+    }, [servings, handleScale]);
+
+    const decrementServings = useCallback(() => {
+        const newServings = Math.max(servings - 1, 1);
+        handleScale(newServings);
+    }, [servings, handleScale]);
+
+    // Reset to original
+    const resetServings = useCallback(() => {
+        setServings(baseServings);
+        setScaledIngredients(null);
+    }, [baseServings]);
+
     // Authenticity helpers
     const getAuthenticityBadgeColor = (level) => {
         switch(level) {
