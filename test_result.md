@@ -1,10 +1,36 @@
-# Test Results for i18n Enforcement Pass
+# Test Results for Scaling Implementation
 
 ## Test Context
-- **Feature:** Systemic i18n Enforcement - Eliminate Hardcoded Strings
+- **Feature:** Recipe Ingredient Scaling
 - **Date:** 2024-12-28
 - **Environment:** Preview
-- **Previous Task:** Homepage Editorial Redesign (COMPLETED ✅)
+
+## Implementation Summary
+1. **Backend:** Fixed scaling_engine.py to safely parse string amounts (including fractions like "1/2")
+2. **Frontend:** Added serving selector UI (+/- buttons, reset button, scaling indicator)
+3. **i18n:** Added translation keys for servings, scaling messages
+
+## Test Objectives
+1. Verify serving selector UI displays correctly
+2. Test scaling from 4 → 2 servings (halving)
+3. Test scaling from 4 → 8 servings (doubling)
+4. Verify fraction quantities display correctly (0.5 → "1/2")
+5. Verify decimal rounding
+6. Verify unit consistency
+7. Test with Italian locale (translations + scaling)
+
+## API Test Results
+- Scale to 8 servings: ✅ PASS (380g → 760g)
+- Scale to 2 servings: ✅ PASS (380g → 190g, 1 → 1/2)
+- Scale to 5 servings: ✅ PASS (380g → 475g, 150g → 187.5)
+
+## Frontend Test Requirements
+- Serving selector UI with +/- buttons
+- Scaling indicator ("Scaled from X → Y servings")
+- Reset button when scaled
+- Visual highlight for scaled ingredients
+- Mobile responsive design
+- Italian locale translations ("Porzioni:", "Ingredienti")
 
 ## i18n Architecture Fix Summary
 
