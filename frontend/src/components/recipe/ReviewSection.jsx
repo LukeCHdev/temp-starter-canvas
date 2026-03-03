@@ -7,9 +7,10 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { recipeAPI } from '@/utils/api';
 import { useLanguage } from '@/context/LanguageContext';
+import { t } from '@/i18n/translations';
 
 // Star Rating Input Component
-const StarRatingInput = ({ rating, onRatingChange, disabled = false }) => {
+const StarRatingInput = ({ rating, onRatingChange, disabled = false, lang = 'en' }) => {
     const [hoverRating, setHoverRating] = useState(0);
 
     return (
@@ -35,7 +36,7 @@ const StarRatingInput = ({ rating, onRatingChange, disabled = false }) => {
             ))}
             {rating > 0 && (
                 <span className="ml-2 text-sm text-gray-600">
-                    {rating} star{rating !== 1 ? 's' : ''}
+                    {rating} {rating === 1 ? t('review.star', lang) : t('review.stars', lang)}
                 </span>
             )}
         </div>
@@ -67,8 +68,17 @@ const StarRatingDisplay = ({ rating, size = 'md' }) => {
 };
 
 // Single Review Card
-const ReviewCard = ({ review }) => {
-    const formattedDate = new Date(review.created_at).toLocaleDateString('en-US', {
+const ReviewCard = ({ review, lang = 'en' }) => {
+    // Format date according to locale
+    const dateLocales = {
+        en: 'en-US',
+        es: 'es-ES',
+        it: 'it-IT',
+        fr: 'fr-FR',
+        de: 'de-DE'
+    };
+    
+    const formattedDate = new Date(review.created_at).toLocaleDateString(dateLocales[lang] || 'en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -86,7 +96,7 @@ const ReviewCard = ({ review }) => {
                         <p className="text-xs text-gray-500 mt-0.5">{formattedDate}</p>
                     </div>
                 </div>
-                {review.language && review.language !== 'en' && (
+                {review.language && review.language !== lang && (
                     <span className="text-xs bg-gray-100 px-2 py-0.5 rounded uppercase">
                         {review.language}
                     </span>
@@ -114,6 +124,7 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
     const [userComment, setUserComment] = useState('');
     
     const { language } = useLanguage();
+    const lang = language || 'en';
 
     useEffect(() => {
         loadReviews();
@@ -136,21 +147,21 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
         e.preventDefault();
         
         if (userRating === 0) {
-            toast.error('Please select a rating');
+            toast.error(t('review.selectRating', lang));
             return;
         }
 
         setSubmitting(true);
         try {
-            const lang = language?.split('-')[0] || 'en';
+            const reviewLang = language?.split('-')[0] || 'en';
             const res = await recipeAPI.createReview(slug, {
                 rating: userRating,
                 comment: userComment.trim() || null,
-                language: lang
+                language: reviewLang
             });
 
             if (res.data.success) {
-                toast.success('Thank you for your review!');
+                toast.success(t('review.thankYou', lang));
                 setUserRating(0);
                 setUserComment('');
                 setAverageRating(res.data.average_rating);
@@ -159,7 +170,7 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                 loadReviews();
             }
         } catch (error) {
-            toast.error('Failed to submit review. Please try again.');
+            toast.error(t('review.submitError', lang));
             console.error('Review submission error:', error);
         } finally {
             setSubmitting(false);
@@ -171,7 +182,7 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#1E1E1E]">
                     <MessageSquare className="h-5 w-5 text-[#6A1F2E]" />
-                    Ratings & Reviews
+                    {t('review.title', lang)}
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -183,15 +194,15 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                         </div>
                         <StarRatingDisplay rating={averageRating} />
                         <p className="text-sm text-gray-500 mt-1">
-                            {ratingsCount} {ratingsCount === 1 ? 'rating' : 'ratings'}
+                            {ratingsCount} {ratingsCount === 1 ? t('review.rating', lang) : t('review.ratings', lang)}
                         </p>
                     </div>
                     <Separator orientation="vertical" className="h-20" />
                     <div className="flex-1">
                         <p className="text-sm text-gray-600">
                             {ratingsCount === 0 
-                                ? 'Be the first to rate this recipe!'
-                                : 'Share your experience with this recipe'}
+                                ? t('review.beFirstToRate', lang)
+                                : t('review.shareExperience', lang)}
                         </p>
                     </div>
                 </div>
@@ -200,21 +211,22 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                 <form onSubmit={handleSubmitReview} className="mb-6">
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Your Rating *
+                            {t('review.yourRating', lang)} *
                         </label>
                         <StarRatingInput
                             rating={userRating}
                             onRatingChange={setUserRating}
                             disabled={submitting}
+                            lang={lang}
                         />
                     </div>
                     
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Your Review (optional)
+                            {t('review.yourReview', lang)}
                         </label>
                         <Textarea
-                            placeholder="Share your thoughts about this recipe..."
+                            placeholder={t('review.placeholder', lang)}
                             value={userComment}
                             onChange={(e) => setUserComment(e.target.value)}
                             disabled={submitting}
@@ -235,12 +247,12 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                         {submitting ? (
                             <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Submitting...
+                                {t('review.submitting', lang)}
                             </>
                         ) : (
                             <>
                                 <Send className="w-4 h-4 mr-2" />
-                                Submit Review
+                                {t('review.submit', lang)}
                             </>
                         )}
                     </Button>
@@ -251,7 +263,7 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                 {/* Reviews List */}
                 <div>
                     <h4 className="font-medium text-gray-900 mb-4">
-                        Recent Reviews ({reviews.length})
+                        {t('review.recentReviews', lang)} ({reviews.length})
                     </h4>
                     
                     {loading ? (
@@ -261,12 +273,12 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                     ) : reviews.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">
                             <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                            <p>No reviews yet. Be the first to share your thoughts!</p>
+                            <p>{t('review.noReviews', lang)}</p>
                         </div>
                     ) : (
                         <div className="max-h-[400px] overflow-y-auto pr-2">
                             {reviews.map((review) => (
-                                <ReviewCard key={review.id} review={review} />
+                                <ReviewCard key={review.id} review={review} lang={lang} />
                             ))}
                         </div>
                     )}
