@@ -675,14 +675,20 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
     
     If lang parameter differs from the recipe's content_language,
     the recipe will be translated on-the-fly (not saved to DB).
+    
+    AUTO-IMAGE: If recipe has no image, automatically fetches from Unsplash.
     """
     from services.sous_chef_ai import sous_chef_ai
+    from services.unsplash_service import auto_assign_image
     
     try:
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
         
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # AUTO-IMAGE: Assign image if recipe doesn't have one
+        recipe = await auto_assign_image(db, recipe)
         
         # Normalize language code
         target_lang = lang.lower()[:2] if lang else "en"
@@ -694,11 +700,16 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
             logger.info(f"Translating recipe '{slug}' from {content_lang} to {target_lang}")
             try:
                 translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
-                # Preserve original metadata
+                # Preserve original metadata including image
                 translated_recipe["slug"] = recipe["slug"]
                 translated_recipe["_translated"] = True
                 translated_recipe["_original_lang"] = content_lang
                 translated_recipe["_display_lang"] = target_lang
+                # Preserve image data
+                if recipe.get("image_url"):
+                    translated_recipe["image_url"] = recipe["image_url"]
+                    translated_recipe["image_alt"] = recipe.get("image_alt")
+                    translated_recipe["image_source"] = recipe.get("image_source")
                 return translated_recipe
             except Exception as e:
                 logger.warning(f"Translation failed, returning canonical: {str(e)}")
