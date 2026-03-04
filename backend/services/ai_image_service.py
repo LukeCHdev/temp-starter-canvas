@@ -1,12 +1,11 @@
 """
-AI Image Generation Service — Dish-Accurate Recipe Images (OpenAI Direct)
+AI Image Generation Service — Dish-Accurate Recipe Images
 
-Uses OpenAI gpt-image-1 directly for realistic food photography.
+Uses gpt-image-1 via Emergent integrations library.
 Images generated lazily on first view, saved as WebP, served locally.
 """
 
 import os
-import base64
 import logging
 import time
 from io import BytesIO
@@ -46,8 +45,8 @@ def _build_prompt(recipe: Dict[str, Any]) -> str:
     if ingredient_text:
         prompt += f". Key ingredients: {ingredient_text}"
     prompt += (
-        ". Authentic plating. Natural lighting. "
-        "No text. No watermark. No logo. No people."
+        ". Authentic plating, natural lighting, high detail. "
+        "No text, no watermark, no logo, no people."
     )
     return prompt
 
@@ -70,38 +69,28 @@ async def generate_recipe_image(recipe: Dict[str, Any]) -> Optional[Dict[str, st
     _gen_locks[slug] = now
 
     try:
-        from openai import OpenAI
+        from emergentintegrations.llm.openai.image_generation import OpenAIImageGeneration
 
-        api_key = os.environ.get("OPENAI_API_KEY")
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
         if not api_key:
-            logger.warning("OPENAI_API_KEY not set")
+            logger.warning("EMERGENT_LLM_KEY not set")
             return None
 
         prompt = _build_prompt(recipe)
         logger.info(f"Generating AI image for {slug}")
 
-        client = OpenAI(api_key=api_key)
-
-        response = client.images.generate(
-            model="gpt-image-1",
+        gen = OpenAIImageGeneration(api_key=api_key)
+        images = await gen.generate_images(
             prompt=prompt,
-            n=1,
-            size="1024x1024",
+            model="gpt-image-1",
+            number_of_images=1,
         )
 
-        image_data = response.data[0]
-
-        # gpt-image-1 returns b64_json by default
-        if hasattr(image_data, "b64_json") and image_data.b64_json:
-            image_bytes = base64.b64decode(image_data.b64_json)
-        elif hasattr(image_data, "url") and image_data.url:
-            import httpx
-            r = httpx.get(image_data.url, timeout=30)
-            r.raise_for_status()
-            image_bytes = r.content
-        else:
-            logger.error(f"No image data returned for {slug}")
+        if not images or len(images) == 0:
+            logger.warning(f"No image returned for {slug}")
             return None
+
+        image_bytes = images[0]
 
         # Save as WebP
         try:
