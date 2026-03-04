@@ -54,8 +54,10 @@ export const TranslatedRecipeCard = ({ recipe }) => {
     const authenticityLevel = metadata?.authenticity_level || 3;
     const levelLabel = levelLabels[authenticityLevel]?.[currentLang] || levelLabels[authenticityLevel]?.en || 'Traditional';
     
-    // Get photo URL
-    const photoUrl = metadata?.photos?.[0]?.image_url || null;
+    // Get photo URL — check photos array first, then top-level image_url (Unsplash)
+    const photoUrl = (metadata?.photos && metadata.photos.length > 0 && metadata.photos[0]?.image_url)
+        ? metadata.photos[0].image_url
+        : (metadata?.image_url || null);
     
     // Extract content fields safely
     const title = content?.recipe_name || 'Unknown Recipe';

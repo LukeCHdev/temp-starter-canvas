@@ -429,6 +429,37 @@ const RecipePage = () => {
                 </div>
             </section>
 
+            {/* Recipe Hero Image */}
+            {recipe.image_url && (
+                <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 mb-4" data-testid="recipe-hero-image">
+                    <div className="relative overflow-hidden rounded-lg shadow-md aspect-video bg-[#F5F2E8]">
+                        <img
+                            src={recipe.image_url}
+                            alt={recipe.image_alt || recipeName}
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                        />
+                        {recipe.image_metadata?.photographer && (
+                            <div className="absolute bottom-0 right-0 bg-black/50 text-white text-xs px-2 py-1 rounded-tl">
+                                {recipe.image_metadata.photographer_url ? (
+                                    <a
+                                        href={recipe.image_metadata.photographer_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:underline"
+                                        data-testid="photographer-credit"
+                                    >
+                                        {recipe.image_metadata.photographer} / Unsplash
+                                    </a>
+                                ) : (
+                                    <span>{recipe.image_metadata.photographer} / Unsplash</span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
+
             {/* Main Content */}
             <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
                 

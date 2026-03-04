@@ -71,11 +71,11 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
     // Translate country name
     const countryName = i18nT(`countries.${country}`, { defaultValue: country });
     
-    // Get photo if available
+    // Get photo if available — check photos array first, then top-level image_url (Unsplash)
     const photos = metadata.photos || recipe.photos;
-    const photoUrl = photos && photos.length > 0 && photos[0].image_url 
+    const photoUrl = (photos && photos.length > 0 && photos[0].image_url)
         ? photos[0].image_url 
-        : null;
+        : (recipe.image_url || null);
 
     // Editorial variant - cleaner, more refined design
     if (variant === 'editorial') {

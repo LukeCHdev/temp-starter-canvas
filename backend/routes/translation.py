@@ -65,6 +65,10 @@ async def get_recipe_with_language(recipe: dict, lang: str) -> dict:
                 'origin_region': recipe.get('origin_region', ''),
                 'authenticity_level': recipe.get('authenticity_level', 3),
                 'photos': recipe.get('photos', []),
+                'image_url': recipe.get('image_url'),
+                'image_alt': recipe.get('image_alt'),
+                'image_source': recipe.get('image_source'),
+                'image_metadata': recipe.get('image_metadata'),
                 'youtube_links': recipe.get('youtube_links', []),
                 'average_rating': recipe.get('average_rating', 0),
                 'ratings_count': recipe.get('ratings_count', 0)
@@ -96,6 +100,10 @@ async def get_recipe_with_language(recipe: dict, lang: str) -> dict:
                 'origin_region': recipe.get('origin_region', ''),
                 'authenticity_level': recipe.get('authenticity_level', 3),
                 'photos': recipe.get('photos', []),
+                'image_url': recipe.get('image_url'),
+                'image_alt': recipe.get('image_alt'),
+                'image_source': recipe.get('image_source'),
+                'image_metadata': recipe.get('image_metadata'),
                 'youtube_links': recipe.get('youtube_links', []),
                 'average_rating': recipe.get('average_rating', 0),
                 'ratings_count': recipe.get('ratings_count', 0)
@@ -274,6 +282,10 @@ async def get_recipes_translated(
             'origin_language': origin_lang,  # Include for frontend markers
             'authenticity_level': recipe.get('authenticity_level', 3),
             'photos': recipe.get('photos', []),
+            'image_url': recipe.get('image_url'),
+            'image_alt': recipe.get('image_alt'),
+            'image_source': recipe.get('image_source'),
+            'image_metadata': recipe.get('image_metadata'),
             'youtube_links': recipe.get('youtube_links', []),
             'average_rating': recipe.get('average_rating', 0),
             'ratings_count': recipe.get('ratings_count', 0)
