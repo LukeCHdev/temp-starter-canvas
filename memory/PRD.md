@@ -19,6 +19,16 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - All auth keys translated in EN/IT/FR/ES/DE — no leaks
 - 18/18 backend tests + all frontend translation checks passed
 
+### Phase 2 Favorites (DONE - Mar 2026)
+- Favorites CRUD: POST/DELETE /api/recipes/{slug}/favorite, GET favorite-status, GET /users/me/favorites
+- Unique index on (user_id, recipe_slug), idempotent operations
+- FavoriteButton component with optimistic update + revert on error
+- Heart toggle on RecipePage (next to title) and all RecipeCard variants
+- FavoritesPage with guest login prompt, empty state, and recipe grid
+- Favorites nav link conditionally shown when logged in
+- All translated in EN/IT/FR/ES/DE
+- 13/13 backend + all frontend tests passed
+
 ## What's Been Implemented
 
 ### Core Features (DONE)
