@@ -80,14 +80,16 @@ async def get_search_suggestions(
     Get search suggestions based on partial query.
     Returns recipe names that match the query prefix.
     """
-    if not _db:
+    if _db is None:
         return {"suggestions": []}
     
     try:
-        # Search in recipe names
+        # Search in recipe names (safely escaped)
+        import re as _re
+        q_escaped = _re.escape(q)
         cursor = _db.recipes.find(
             {
-                "recipe_name": {"$regex": f"^{q}", "$options": "i"},
+                "recipe_name": {"$regex": f"^{q_escaped}", "$options": "i"},
                 "status": "published"
             },
             {"_id": 0, "recipe_name": 1, "slug": 1, "origin_country": 1}

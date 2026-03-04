@@ -19,9 +19,9 @@ export const recipeAPI = {
     getByCountry: (country) => api.get(`/recipes/country/${country}`),
     getByRegion: (region) => api.get(`/recipes/region/${region}`),
     generate: (data) => api.post('/recipes/generate', data),
-    search: (query, autoGenerate = true, lang = 'en') => api.get('/recipes/search', { 
-        params: { q: query, auto_generate: autoGenerate, lang },
-        timeout: 90000  // 90 second timeout for search with translation
+    search: (query, lang = 'en', limit = 10) => api.get('/recipes/search', { 
+        params: { q: query, lang, limit },
+        timeout: 15000  // 15 second timeout for DB-only search
     }),
     // Homepage & Explore - with language support
     getBest: (lang = 'en') => api.get('/recipes/best', { params: { lang } }),

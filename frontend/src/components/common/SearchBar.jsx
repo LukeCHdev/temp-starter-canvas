@@ -20,32 +20,25 @@ export const SearchBar = ({ className = '' }) => {
     const handleSearch = useCallback(async (e) => {
         e.preventDefault();
         const query = searchQuery.trim();
-        if (!query) return;
+        if (!query || query.length < 2) return;
 
         setLoading(true);
         try {
-            // Use current language from route for search results
-            const res = await recipeAPI.search(query, true, language);
+            const res = await recipeAPI.search(query, lang);
             const data = res.data;
 
-            console.log('Search response:', data);
-
-            if (data.found && data.recipe && data.recipe.slug) {
-                if (data.generated) {
-                    toast.success(i18nT('search.generatedSuccess'));
-                }
-                const recipePath = getLocalizedPath(`/recipe/${data.recipe.slug}`);
-                console.log('Navigating to:', recipePath);
+            if (data.found && data.recipes && data.recipes.length > 0) {
+                // Navigate to the first (best) match
+                const recipePath = getLocalizedPath(`/recipe/${data.recipes[0].slug}`);
                 navigate(recipePath);
-            } else if (data.message) {
-                toast.error(data.message);
             } else {
                 toast.info(i18nT('search.noResults'));
             }
 
         } catch (error) {
-            console.error("Search error:", error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.response && error.response.status === 429) {
+                toast.error(i18nT('search.rateLimited', 'Too many searches. Please wait.'));
+            } else if (error.code === 'ECONNABORTED') {
                 toast.error(i18nT('search.timeout', 'Search timed out. Please try again.'));
             } else {
                 toast.error(i18nT('search.failed'));
@@ -53,7 +46,7 @@ export const SearchBar = ({ className = '' }) => {
         } finally {
             setLoading(false);
         }
-    }, [searchQuery, navigate, i18nT, getLocalizedPath, language]);
+    }, [searchQuery, navigate, i18nT, getLocalizedPath, lang]);
 
     return (
         <form onSubmit={handleSearch} className={`flex gap-2 ${className}`} data-testid="search-form">
@@ -64,6 +57,7 @@ export const SearchBar = ({ className = '' }) => {
                     placeholder={t('homepage.hero.searchPlaceholder', lang)}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    maxLength={80}
                     className="pl-12 bg-white border-[#E8E4DC] focus:border-[#6A1F2E] focus:ring-[#6A1F2E]/20 h-14 text-base font-light"
                     data-testid="search-input"
                     disabled={loading}
@@ -73,7 +67,7 @@ export const SearchBar = ({ className = '' }) => {
                 type="submit"
                 className="bg-[#6A1F2E] hover:bg-[#8B2840] text-white h-14 px-8 font-light tracking-wide"
                 data-testid="search-button"
-                disabled={loading}
+                disabled={loading || searchQuery.trim().length < 2}
             >
                 {loading ? (
                     <>

@@ -6,9 +6,8 @@ import os
 import logging
 import re
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from datetime import datetime, timezone
-from thefuzz import fuzz, process
 
 # Import models
 from models.recipe import Recipe, RecipeCreate, RecipeReject
@@ -97,443 +96,89 @@ logger = logging.getLogger(__name__)
 
 # ============== RECIPE ROUTES ==============
 
+# In-memory rate limiter for search
+_search_rate_limits = {}
+
+def _check_search_rate_limit(client_ip: str, max_requests: int = 30, window_seconds: int = 600) -> bool:
+    """Check if client IP has exceeded search rate limit. Returns True if allowed."""
+    import time
+    now = time.time()
+    if client_ip not in _search_rate_limits:
+        _search_rate_limits[client_ip] = []
+    # Prune old entries
+    _search_rate_limits[client_ip] = [t for t in _search_rate_limits[client_ip] if now - t < window_seconds]
+    if len(_search_rate_limits[client_ip]) >= max_requests:
+        return False
+    _search_rate_limits[client_ip].append(now)
+    return True
+
+
 @api_router.get("/recipes/search")
 async def search_recipes(
-    q: str,
-    lang: Optional[str] = "en",  # Target language (en, it, es, fr, de, etc.)
-    auto_generate: bool = True
+    request: Request,
+    q: str = Query(..., min_length=2, max_length=80),
+    lang: Optional[str] = "en",
+    limit: int = Query(10, ge=1, le=50),
 ):
-    """Search for recipes with on-demand generation and translation support.
-    
-    Flow:
-    1. First try fuzzy matching to find similar existing recipes
-    2. If match found with score >= 75, return that recipe
-    3. If target language differs from content language, translate dynamically (NOT saved)
-    4. If no match and auto_generate=True:
-       - Generate new recipe in ENGLISH (canonical)
-       - Save to DB with content_language='en'
-       - Translate if needed (NOT saved)
-    
-    This prevents duplicate recipes for similar queries like:
-    - "Carbonara" vs "Pasta Carbonara" → returns same recipe
-    
-    IMPORTANT: origin_language = the dish's native language (e.g., 'it' for Italian dishes)
-               content_language = the language the recipe content is written in (always 'en' for generated recipes)
+    """Search for recipes in the database. Read-only, no AI generation.
+
+    Uses indexed regex matching on recipe_name, origin_country, and slug.
+    Returns a list of matching recipes sorted by relevance (exact > partial).
     """
-    from services.sous_chef_ai import sous_chef_ai
-    
+    # Rate limit: 30 searches per 10 minutes per IP
+    client_ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown").split(",")[0].strip()
+    if not _check_search_rate_limit(client_ip):
+        raise HTTPException(status_code=429, detail="Too many searches. Please wait before trying again.")
+
     try:
-        # Normalize language code
-        target_lang = lang.lower()[:2] if lang else "en"
-        
-        # STEP 1: Try fuzzy matching first (this prevents duplicates!)
-        similar_recipe = await _find_similar_recipe(db, q, threshold=75)
-        
-        if similar_recipe:
-            logger.info(f"Similar recipe found via fuzzy matching for '{q}': {similar_recipe.get('slug')}")
-            
-            # Update analytics
-            await db.recipe_analytics.update_one(
-                {"recipe_slug": similar_recipe["slug"]},
-                {
-                    "$inc": {"search_count": 1},
-                    "$set": {
-                        "last_searched_at": datetime.now(timezone.utc).isoformat(),
-                        "last_lang_used": target_lang
-                    },
-                    "$push": {
-                        "search_history": {
-                            "query": q,
-                            "lang": target_lang,
-                            "timestamp": datetime.now(timezone.utc).isoformat()
-                        }
-                    }
-                },
-                upsert=True
-            )
-            
-            # Check if translation is needed
-            # Use content_language (what the content is actually written in), NOT origin_language
-            # Generated recipes are always in English, so content_language defaults to 'en'
-            content_lang = similar_recipe.get("content_language", "en")[:2].lower()
-            
-            if target_lang != content_lang:
-                logger.info(f"Translating recipe '{similar_recipe['slug']}' from {content_lang} to {target_lang}")
-                try:
-                    translated_recipe = await sous_chef_ai.translate_recipe(similar_recipe, target_lang)
-                    # Preserve original metadata
-                    translated_recipe["slug"] = similar_recipe["slug"]
-                    translated_recipe["_translated"] = True
-                    translated_recipe["_original_lang"] = content_lang
-                    translated_recipe["_display_lang"] = target_lang
-                    
-                    return {
-                        "found": True,
-                        "generated": False,
-                        "translated": True,
-                        "recipe": translated_recipe
-                    }
-                except Exception as e:
-                    logger.warning(f"Translation failed, returning canonical: {str(e)}")
-            
-            return {
-                "found": True,
-                "generated": False,
-                "translated": False,
-                "recipe": similar_recipe
-            }
-        
-        # STEP 2: Try exact regex match as fallback (for edge cases)
-        search_query = {
+        q_stripped = q.strip()
+        q_escaped = re.escape(q_stripped)
+        q_slug = re.escape(q_stripped.lower().replace(" ", "-"))
+
+        # Build indexed query: match recipe_name, origin_country, or slug
+        search_filter = {
+            "status": "published",
             "$or": [
-                {"recipe_name": {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
-                {"slug": {"$regex": f"^{re.escape(q.lower().replace(' ', '-'))}$", "$options": "i"}}
+                {"recipe_name": {"$regex": q_escaped, "$options": "i"}},
+                {"origin_country": {"$regex": q_escaped, "$options": "i"}},
+                {"slug": {"$regex": q_slug, "$options": "i"}},
             ],
-            "status": "published"
         }
-        
-        recipe = await db.recipes.find_one(search_query, {"_id": 0})
-        
-        if recipe:
-            logger.info(f"Exact recipe found for query '{q}': {recipe['slug']}")
-            
-            # Update analytics
-            await db.recipe_analytics.update_one(
-                {"recipe_slug": recipe["slug"]},
-                {
-                    "$inc": {"search_count": 1},
-                    "$set": {
-                        "last_searched_at": datetime.now(timezone.utc).isoformat(),
-                        "last_lang_used": target_lang
-                    },
-                    "$push": {
-                        "search_history": {
-                            "query": q,
-                            "lang": target_lang,
-                            "timestamp": datetime.now(timezone.utc).isoformat()
-                        }
-                    }
-                },
-                upsert=True
-            )
-            
-            # Check if translation is needed
-            # Use content_language (defaults to 'en' for generated recipes)
-            content_lang = recipe.get("content_language", "en")[:2].lower()
-            
-            if target_lang != content_lang:
-                logger.info(f"Translating recipe '{recipe['slug']}' from {content_lang} to {target_lang}")
-                try:
-                    translated_recipe = await sous_chef_ai.translate_recipe(recipe, target_lang)
-                    # Preserve original metadata
-                    translated_recipe["slug"] = recipe["slug"]
-                    translated_recipe["_translated"] = True
-                    translated_recipe["_original_lang"] = content_lang
-                    translated_recipe["_display_lang"] = target_lang
-                    
-                    return {
-                        "found": True,
-                        "generated": False,
-                        "translated": True,
-                        "recipe": translated_recipe
-                    }
-                except Exception as e:
-                    logger.warning(f"Translation failed, returning canonical: {str(e)}")
-            
+
+        recipes = await db.recipes.find(search_filter, {"_id": 0}).limit(limit).to_list(limit)
+
+        if recipes:
+            # Sort: exact name matches first, then partial
+            q_lower = q_stripped.lower()
+            def sort_key(r):
+                name = (r.get("recipe_name") or "").lower()
+                if name == q_lower:
+                    return 0  # exact match
+                if name.startswith(q_lower):
+                    return 1  # prefix match
+                return 2  # partial match
+            recipes.sort(key=sort_key)
+
+            logger.info(f"Search '{q_stripped}': {len(recipes)} results")
             return {
                 "found": True,
-                "generated": False,
-                "translated": False,
-                "recipe": recipe
+                "recipes": recipes,
+                "total": len(recipes),
             }
-        
-        # STEP 3: Recipe not found - generate if enabled
-        if not auto_generate:
-            return {
-                "found": False,
-                "generated": False,
-                "translated": False,
-                "message": f"No recipe found for '{q}'"
-            }
-        
-        logger.info(f"Recipe not found for '{q}' - generating on-demand using Sous-Chef Linguine GPT")
-        
-        # Determine country and region from query (may return None to let AI decide)
-        country, region = _infer_country_region(q)
-        
-        # Generate recipe in ENGLISH (canonical version)
-        recipe_data = await recipe_generator.generate_recipe(
-            dish_name=q,
-            country=country,
-            region=region
-        )
-        
-        # Save canonical recipe to database
-        await db.recipes.insert_one(recipe_data)
-        
-        # Remove _id before returning
-        recipe_data.pop('_id', None)
-        
-        # Initialize analytics
-        await db.recipe_analytics.insert_one({
-            "recipe_slug": recipe_data["slug"],
-            "search_count": 1,
-            "last_searched_at": datetime.now(timezone.utc).isoformat(),
-            "last_lang_used": target_lang,
-            "search_history": [{
-                "query": q,
-                "lang": target_lang,
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            }],
-            "generated_on_demand": True,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-        
-        logger.info(f"Recipe generated and saved for '{q}': {recipe_data['slug']}")
-        
-        # If requested language is not English, translate the response (but don't save)
-        if target_lang != "en":
-            logger.info(f"Translating newly generated recipe to {target_lang}")
-            try:
-                translated_recipe = await sous_chef_ai.translate_recipe(recipe_data, target_lang)
-                translated_recipe["slug"] = recipe_data["slug"]
-                translated_recipe["_translated"] = True
-                translated_recipe["_original_lang"] = "en"
-                translated_recipe["_display_lang"] = target_lang
-                
-                return {
-                    "found": False,
-                    "generated": True,
-                    "translated": True,
-                    "recipe": translated_recipe,
-                    "message": f"Recipe for '{q}' generated and translated to {target_lang}!"
-                }
-            except Exception as e:
-                logger.warning(f"Translation of new recipe failed: {str(e)}")
-        
+
+        # No results
+        logger.info(f"Search '{q_stripped}': 0 results")
         return {
             "found": False,
-            "generated": True,
-            "translated": False,
-            "recipe": recipe_data,
-            "message": f"Recipe for '{q}' generated successfully by Sous-Chef Linguine!"
+            "recipes": [],
+            "suggestion": "No recipes found. Try browsing by country or continent.",
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Search error for '{q}': {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-def _infer_country_region(dish_name: str) -> Tuple[Optional[str], Optional[str]]:
-    """Infer country and region from dish name.
-    
-    Returns (None, None) if the dish cannot be identified, allowing the AI to determine origin.
-    This prevents incorrect country attribution like "Peking Duck" -> Italy.
-    """
-    dish_lower = dish_name.lower()
-    
-    # Comprehensive keyword mapping - expanded to cover more cuisines
-    cuisine_patterns = {
-        # Italian dishes
-        ("Italy", "Mediterranean"): [
-            'pasta', 'pizza', 'risotto', 'carbonara', 'amatriciana', 'parmigiana', 
-            'tiramisu', 'osso', 'gnocchi', 'lasagna', 'lasagne', 'ravioli', 'tortellini',
-            'pesto', 'bolognese', 'milanese', 'marinara', 'margherita', 'cacio e pepe',
-            'arancini', 'bruschetta', 'focaccia', 'prosciutto', 'ribollita', 'cotoletta',
-            'plin', 'polenta', 'saltimbocca', 'carpaccio', 'vitello', 'ossobuco'
-        ],
-        # Japanese dishes
-        ("Japan", "East Asia"): [
-            'sushi', 'ramen', 'tempura', 'teriyaki', 'miso', 'udon', 'soba', 'yakitori',
-            'tonkatsu', 'tonkotsu', 'gyudon', 'okonomiyaki', 'takoyaki', 'onigiri',
-            'bento', 'edamame', 'gyoza', 'matcha', 'sake', 'wasabi', 'dashi', 'nigiri',
-            'sashimi', 'maki', 'donburi', 'katsu', 'shabu', 'sukiyaki', 'kaiseki'
-        ],
-        # Chinese dishes
-        ("China", "East Asia"): [
-            'peking', 'beijing', 'kung pao', 'kung-pao', 'dim sum', 'wonton', 'chow mein',
-            'lo mein', 'fried rice', 'spring roll', 'dumplings', 'mapo tofu', 'char siu',
-            'hoisin', 'szechuan', 'sichuan', 'cantonese', 'hakka', 'jiaozi', 'baozi',
-            'congee', 'hot pot', 'xiaolongbao', 'xiao long bao', 'dan dan', 'gongbao'
-        ],
-        # Korean dishes
-        ("South Korea", "East Asia"): [
-            'kimchi', 'bibimbap', 'bulgogi', 'korean', 'gochujang', 'jjigae', 'samgyeopsal',
-            'tteokbokki', 'japchae', 'sundubu', 'galbi', 'kalbi', 'banchan', 'kimbap',
-            'gimbap', 'soju', 'makgeolli', 'dakgalbi', 'bossam', 'naengmyeon', '찌개',
-            '김치', '불고기', '비빔밥'
-        ],
-        # Vietnamese dishes
-        ("Vietnam", "Southeast Asia"): [
-            'pho', 'phở', 'banh mi', 'bánh mì', 'spring roll', 'vietnamese', 'goi cuon',
-            'bun', 'bún', 'nuoc mam', 'cao lau', 'com tam', 'che', 'nem'
-        ],
-        # Thai dishes
-        ("Thailand", "Southeast Asia"): [
-            'pad thai', 'tom yum', 'green curry', 'red curry', 'thai', 'massaman',
-            'satay', 'som tam', 'khao pad', 'panang', 'basil chicken', 'pad krapow',
-            'larb', 'mango sticky rice', 'tom kha'
-        ],
-        # Mexican dishes
-        ("Mexico", "Latin America"): [
-            'taco', 'burrito', 'enchilada', 'mole', 'pozole', 'tamale', 'quesadilla',
-            'guacamole', 'salsa', 'fajita', 'churro', 'ceviche', 'carnitas', 'barbacoa',
-            'elote', 'tostada', 'chilaquiles', 'huevos rancheros', 'chiles', 'pastor'
-        ],
-        # French dishes
-        ("France", "Western Europe"): [
-            'coq au vin', 'bouillabaisse', 'ratatouille', 'quiche', 'croissant', 
-            'cassoulet', 'baguette', 'escargot', 'soufflé', 'souffle', 'crepe',
-            'crème brûlée', 'creme brulee', 'foie gras', 'confit', 'bourguignon',
-            'béarnaise', 'bearnaise', 'hollandaise', 'béchamel', 'macaron', 'eclair',
-            'tarte tatin', 'provençal', 'provencal', 'niçoise', 'nicoise', 'french'
-        ],
-        # Spanish dishes
-        ("Spain", "Mediterranean"): [
-            'paella', 'gazpacho', 'spanish tortilla', 'tortilla española', 'tapas',
-            'patatas bravas', 'jamon', 'jamón', 'croquetas', 'sangria', 'fabada',
-            'pimientos', 'manchego', 'spanish', 'valenciana', 'catalán', 'catalan'
-        ],
-        # Indian dishes
-        ("India", "South Asia"): [
-            'curry', 'tikka', 'masala', 'biryani', 'samosa', 'naan', 'roti', 'dosa',
-            'paneer', 'dal', 'daal', 'tandoori', 'vindaloo', 'korma', 'butter chicken',
-            'chutney', 'pakora', 'paratha', 'idli', 'vada', 'lassi', 'chai'
-        ],
-        # Greek dishes
-        ("Greece", "Mediterranean"): [
-            'moussaka', 'souvlaki', 'gyro', 'tzatziki', 'spanakopita', 'greek salad',
-            'feta', 'dolma', 'baklava', 'greek', 'horiatiki', 'fasolada'
-        ],
-        # Middle Eastern dishes
-        ("Lebanon", "Middle East"): [
-            'hummus', 'falafel', 'tabbouleh', 'baba ganoush', 'shawarma', 'kibbeh',
-            'fattoush', 'labneh', 'lebanese', 'levantine'
-        ],
-        # North African dishes
-        ("Morocco", "North Africa"): [
-            'tagine', 'couscous', 'moroccan', 'harira', 'bastilla', 'pastilla', 'rfissa'
-        ],
-        ("Tunisia", "North Africa"): [
-            'shakshuka', 'brik', 'lablabi', 'tunisian'
-        ],
-        # Swedish/Nordic dishes
-        ("Sweden", "Nordic"): [
-            'köttbullar', 'kottbullar', 'swedish meatball', 'gravlax', 'semla',
-            'kanelbulle', 'surströmming', 'janssons frestelse', 'smörgåsbord', 
-            'smorgasbord', 'swedish'
-        ],
-        # German dishes
-        ("Germany", "Central Europe"): [
-            'schnitzel', 'bratwurst', 'sauerkraut', 'pretzel', 'strudel', 'spätzle',
-            'spaetzle', 'currywurst', 'rouladen', 'sauerbraten', 'german'
-        ],
-        # Hungarian dishes
-        ("Hungary", "Central Europe"): [
-            'goulash', 'gulyás', 'gulyas', 'paprikash', 'dobos', 'hungarian', 'pörkölt'
-        ],
-        # British dishes
-        ("United Kingdom", "Western Europe"): [
-            'fish and chips', 'shepherd\'s pie', 'cottage pie', 'sunday roast',
-            'yorkshire pudding', 'bangers and mash', 'full english', 'british',
-            'beef wellington', 'wellington', 'cornish pasty', 'trifle', 'scones'
-        ],
-        # Australian dishes
-        ("Australia", "Oceania"): [
-            'meat pie', 'lamington', 'vegemite', 'pavlova', 'australian', 'barramundi',
-            'anzac biscuit', 'tim tam'
-        ]
-    }
-    
-    # Check each cuisine pattern
-    for (country, region), keywords in cuisine_patterns.items():
-        if any(keyword in dish_lower for keyword in keywords):
-            return (country, region)
-    
-    # IMPORTANT: Return None if we can't identify the cuisine
-    # Let the AI determine the correct country of origin
-    return (None, None)
-
-
-async def _find_similar_recipe(db, search_query: str, threshold: int = 75) -> Optional[dict]:
-    """Find an existing recipe that matches the search query using fuzzy matching.
-    
-    This prevents duplicate recipes from being created for similar queries like:
-    - "Carbonara" vs "Pasta Carbonara" vs "Spaghetti alla Carbonara"
-    - "Beef Wellington" vs "Wellington"
-    
-    Args:
-        db: Database connection
-        search_query: The user's search query
-        threshold: Minimum fuzzy match score (0-100) to consider a match
-        
-    Returns:
-        Matching recipe dict or None
-    """
-    # Normalize the search query
-    query_normalized = search_query.lower().strip()
-    
-    # Remove common prefixes/suffixes for better matching
-    common_words = ['pasta', 'alla', 'al', 'di', 'con', 'e', 'the', 'with', 'style', 'homemade', 'authentic', 'traditional']
-    query_words = query_normalized.split()
-    query_core = ' '.join([w for w in query_words if w not in common_words]) or query_normalized
-    
-    # Get all published recipes for matching
-    all_recipes = await db.recipes.find(
-        {"status": "published"},
-        {"_id": 0, "recipe_name": 1, "slug": 1}
-    ).to_list(1000)
-    
-    if not all_recipes:
-        return None
-    
-    # Build list of recipe names for fuzzy matching
-    recipe_names = []
-    recipe_map = {}
-    
-    for r in all_recipes:
-        name = r.get("recipe_name") or ""
-        if name:
-            recipe_names.append(name)
-            recipe_map[name] = r["slug"]
-    
-    if not recipe_names:
-        return None
-    
-    # Use fuzzy matching to find best match
-    # Try full query first
-    matches = process.extract(search_query, recipe_names, scorer=fuzz.token_set_ratio, limit=3)
-    
-    # Also try core query (without common words)
-    if query_core != query_normalized:
-        core_matches = process.extract(query_core, recipe_names, scorer=fuzz.token_set_ratio, limit=3)
-        matches.extend(core_matches)
-    
-    # Also try partial matching for shorter queries
-    partial_matches = process.extract(search_query, recipe_names, scorer=fuzz.partial_ratio, limit=3)
-    matches.extend(partial_matches)
-    
-    # Find the best match above threshold
-    best_match = None
-    best_score = 0
-    
-    for match_name, score in matches:
-        if score >= threshold and score > best_score:
-            best_match = match_name
-            best_score = score
-    
-    if best_match:
-        # Get the full recipe
-        slug = recipe_map[best_match]
-        recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
-        if recipe:
-            logger.info(f"Fuzzy match found: '{search_query}' -> '{best_match}' (score: {best_score})")
-            return recipe
-    
-    # No match found
-    logger.info(f"No fuzzy match found for '{search_query}' (best score: {best_score})")
-    return None
+        logger.error(f"Search error for '{q}': {type(e).__name__}")
+        raise HTTPException(status_code=500, detail="Search failed. Please try again.")
 
 @api_router.get("/recipes")
 async def get_recipes(
@@ -551,10 +196,11 @@ async def get_recipes(
     if country:
         query["$or"] = [{"country": country}, {"origin_country": country}]
     if search:
+        search_escaped = re.escape(search)
         query["$or"] = [
-            {"recipe_name": {"$regex": search, "$options": "i"}},
-            {"title_original": {"$regex": search, "$options": "i"}},
-            {"title_translated.en": {"$regex": search, "$options": "i"}}
+            {"recipe_name": {"$regex": search_escaped, "$options": "i"}},
+            {"title_original": {"$regex": search_escaped, "$options": "i"}},
+            {"title_translated.en": {"$regex": search_escaped, "$options": "i"}}
         ]
     
     skip = (page - 1) * limit
@@ -2149,6 +1795,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def create_indexes():
     try:
+        # Favorites & reviews unique indexes
         await db.favorites.create_index(
             [("user_id", 1), ("recipe_slug", 1)],
             unique=True,
@@ -2159,6 +1806,24 @@ async def create_indexes():
             unique=True,
             background=True
         )
+        # Recipe search & query indexes
+        await db.recipes.create_index(
+            [("status", 1), ("slug", 1)],
+            background=True
+        )
+        await db.recipes.create_index(
+            [("status", 1), ("recipe_name", 1)],
+            background=True
+        )
+        await db.recipes.create_index(
+            [("status", 1), ("origin_country", 1)],
+            background=True
+        )
+        await db.recipes.create_index(
+            [("status", 1), ("average_rating", -1), ("ratings_count", -1)],
+            background=True
+        )
+        logger.info("All MongoDB indexes created/verified.")
     except Exception as e:
         logger.warning(f"Index creation warning (may already exist): {e}")
 
