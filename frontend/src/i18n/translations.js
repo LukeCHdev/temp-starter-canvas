@@ -1507,6 +1507,132 @@ export const translations = {
       it: 'La password deve contenere almeno 8 caratteri con lettere e numeri',
       fr: 'Le mot de passe doit contenir au moins 8 caractères avec des lettres et des chiffres',
       de: 'Passwort muss mindestens 8 Zeichen mit Buchstaben und Zahlen enthalten'
+    },
+    resetPassword: {
+      en: 'Reset Password',
+      es: 'Restablecer Contraseña',
+      it: 'Reimposta Password',
+      fr: 'Réinitialiser le Mot de passe',
+      de: 'Passwort zurücksetzen'
+    },
+    resetDescription: {
+      en: 'Enter your email and we\'ll send you a reset link.',
+      es: 'Introduce tu correo y te enviaremos un enlace de restablecimiento.',
+      it: 'Inserisci la tua email e ti invieremo un link per il reset.',
+      fr: 'Entrez votre e-mail et nous vous enverrons un lien de réinitialisation.',
+      de: 'Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Reset-Link.'
+    },
+    resetEmailSent: {
+      en: 'If an account exists with that email, a reset link has been sent.',
+      es: 'Si existe una cuenta con ese correo, se ha enviado un enlace de restablecimiento.',
+      it: 'Se esiste un account con quella email, è stato inviato un link di reset.',
+      fr: 'Si un compte existe avec cet e-mail, un lien de réinitialisation a été envoyé.',
+      de: 'Wenn ein Konto mit dieser E-Mail existiert, wurde ein Reset-Link gesendet.'
+    },
+    checkInbox: {
+      en: 'Check your inbox and spam folder.',
+      es: 'Revisa tu bandeja de entrada y la carpeta de spam.',
+      it: 'Controlla la tua casella di posta e la cartella spam.',
+      fr: 'Vérifiez votre boîte de réception et votre dossier spam.',
+      de: 'Überprüfen Sie Ihren Posteingang und Spam-Ordner.'
+    },
+    sendResetLink: {
+      en: 'Send Reset Link',
+      es: 'Enviar Enlace de Restablecimiento',
+      it: 'Invia Link di Reset',
+      fr: 'Envoyer le Lien de Réinitialisation',
+      de: 'Reset-Link Senden'
+    },
+    backToLogin: {
+      en: 'Back to login',
+      es: 'Volver al inicio de sesión',
+      it: 'Torna al login',
+      fr: 'Retour à la connexion',
+      de: 'Zurück zur Anmeldung'
+    },
+    setNewPassword: {
+      en: 'Set New Password',
+      es: 'Establecer Nueva Contraseña',
+      it: 'Imposta Nuova Password',
+      fr: 'Définir un Nouveau Mot de passe',
+      de: 'Neues Passwort Festlegen'
+    },
+    newPasswordDescription: {
+      en: 'Choose a new password for your account.',
+      es: 'Elige una nueva contraseña para tu cuenta.',
+      it: 'Scegli una nuova password per il tuo account.',
+      fr: 'Choisissez un nouveau mot de passe pour votre compte.',
+      de: 'Wählen Sie ein neues Passwort für Ihr Konto.'
+    },
+    newPassword: {
+      en: 'New Password',
+      es: 'Nueva Contraseña',
+      it: 'Nuova Password',
+      fr: 'Nouveau Mot de passe',
+      de: 'Neues Passwort'
+    },
+    passwordResetSuccess: {
+      en: 'Password has been reset successfully!',
+      es: '¡La contraseña se ha restablecido correctamente!',
+      it: 'La password è stata reimpostata con successo!',
+      fr: 'Le mot de passe a été réinitialisé avec succès !',
+      de: 'Passwort wurde erfolgreich zurückgesetzt!'
+    },
+    resetFailed: {
+      en: 'Password reset failed. The link may have expired.',
+      es: 'El restablecimiento de contraseña falló. El enlace puede haber expirado.',
+      it: 'Reimpostazione della password fallita. Il link potrebbe essere scaduto.',
+      fr: 'La réinitialisation du mot de passe a échoué. Le lien a peut-être expiré.',
+      de: 'Passwort-Reset fehlgeschlagen. Der Link ist möglicherweise abgelaufen.'
+    },
+    invalidResetToken: {
+      en: 'Invalid or missing reset token.',
+      es: 'Token de restablecimiento inválido o faltante.',
+      it: 'Token di reset non valido o mancante.',
+      fr: 'Jeton de réinitialisation invalide ou manquant.',
+      de: 'Ungültiger oder fehlender Reset-Token.'
+    },
+    requestNewReset: {
+      en: 'Request a new reset link',
+      es: 'Solicitar un nuevo enlace de restablecimiento',
+      it: 'Richiedi un nuovo link di reset',
+      fr: 'Demander un nouveau lien de réinitialisation',
+      de: 'Neuen Reset-Link anfordern'
+    },
+    invalidCallback: {
+      en: 'Invalid authentication callback.',
+      es: 'Callback de autenticación inválido.',
+      it: 'Callback di autenticazione non valido.',
+      fr: 'Callback d\'authentification invalide.',
+      de: 'Ungültiger Authentifizierungs-Callback.'
+    },
+    completingSignIn: {
+      en: 'Completing sign in...',
+      es: 'Completando el inicio de sesión...',
+      it: 'Completamento dell\'accesso...',
+      fr: 'Connexion en cours...',
+      de: 'Anmeldung wird abgeschlossen...'
+    },
+    loginFailed: {
+      en: 'Sign in failed.',
+      es: 'Error al iniciar sesión.',
+      it: 'Accesso fallito.',
+      fr: 'La connexion a échoué.',
+      de: 'Anmeldung fehlgeschlagen.'
+    },
+    redirecting: {
+      en: 'Redirecting...',
+      es: 'Redirigiendo...',
+      it: 'Reindirizzamento...',
+      fr: 'Redirection...',
+      de: 'Weiterleitung...'
+    },
+    tooManyAttempts: {
+      en: 'Too many login attempts. Please try again later.',
+      es: 'Demasiados intentos de inicio de sesión. Inténtalo de nuevo más tarde.',
+      it: 'Troppi tentativi di accesso. Riprova più tardi.',
+      fr: 'Trop de tentatives de connexion. Veuillez réessayer plus tard.',
+      de: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
     }
   },
 
@@ -1647,6 +1773,13 @@ export const translations = {
       fr: 'En Savoir Plus',
       es: 'Saber Más',
       de: 'Mehr Erfahren'
+    },
+    cancel: {
+      en: 'Cancel',
+      it: 'Annulla',
+      fr: 'Annuler',
+      es: 'Cancelar',
+      de: 'Abbrechen'
     }
   },
 

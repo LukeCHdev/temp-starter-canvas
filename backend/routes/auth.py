@@ -35,6 +35,30 @@ auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 # Database reference (set by main app)
 db: Optional[AsyncIOMotorDatabase] = None
 
+# Rate limiting: IP -> list of timestamps
+_login_attempts: dict = {}
+_RATE_LIMIT_WINDOW = 300  # 5 minutes
+_RATE_LIMIT_MAX = 10  # 10 attempts per window
+
+def _check_rate_limit(ip: str):
+    """Raise 429 if too many login attempts from this IP."""
+    import time
+    now = time.time()
+    attempts = _login_attempts.get(ip, [])
+    # Prune old entries
+    attempts = [ts for ts in attempts if now - ts < _RATE_LIMIT_WINDOW]
+    if len(attempts) >= _RATE_LIMIT_MAX:
+        raise HTTPException(status_code=429, detail="Too many login attempts. Please try again later.")
+    attempts.append(now)
+    _login_attempts[ip] = attempts
+
+def _get_client_ip(request: Request) -> str:
+    """Get real client IP, accounting for proxies."""
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
 # Session settings
 SESSION_EXPIRE_DAYS = 7
 COOKIE_NAME = "session_token"
@@ -89,7 +113,7 @@ async def get_session_user(request: Request) -> Optional[dict]:
     # Get user
     user = await db.users.find_one(
         {"user_id": session["user_id"]},
-        {"_id": 0, "password_hash": 0}
+        {"_id": 0, "password_hash": 0, "verification_token": 0, "reset_token": 0, "reset_token_expires": 0}
     )
     
     return user
@@ -239,11 +263,16 @@ async def register(user_data: UserCreate, response: Response):
 # ============================================
 
 @auth_router.post("/login")
-async def login(credentials: UserLogin, response: Response):
+async def login(credentials: UserLogin, request: Request, response: Response):
     """
     Login with email and password.
     Sets HTTP-only session cookie on success.
+    Rate-limited: max 10 attempts per 5 minutes per IP.
     """
+    # Rate limit check
+    client_ip = _get_client_ip(request)
+    _check_rate_limit(client_ip)
+
     try:
         # Find user by email
         user = await db.users.find_one(

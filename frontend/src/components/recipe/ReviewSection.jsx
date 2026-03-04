@@ -403,8 +403,9 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                                     variant="outline"
                                     onClick={handleCancelEdit}
                                     disabled={submitting}
+                                    data-testid="cancel-review-btn"
                                 >
-                                    Cancel
+                                    {t('common.cancel', lang)}
                                 </Button>
                             )}
                         </div>
