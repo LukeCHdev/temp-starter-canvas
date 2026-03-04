@@ -55,6 +55,9 @@ from services.prerender_service import set_prerender_db
 # Import auth routes
 from routes.auth import auth_router, set_auth_db, get_session_user, require_auth
 
+# Import techniques routes
+from routes.techniques import techniques_router, set_techniques_db
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -80,6 +83,9 @@ set_prerender_db(db)
 
 # Set database for auth routes
 set_auth_db(db)
+
+# Set database for techniques routes
+set_techniques_db(db)
 
 # Create the main app
 app = FastAPI(title="Sous Chef Linguini API")
@@ -1768,6 +1774,7 @@ app.include_router(sitemap_router, prefix="/api")
 app.include_router(search_router)
 app.include_router(prerender_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")  # Auth routes
+app.include_router(techniques_router)  # Techniques routes
 
 # Add CORS middleware
 # When credentials=True, we cannot use "*" for origins
@@ -1823,6 +1830,10 @@ async def create_indexes():
             [("status", 1), ("average_rating", -1), ("ratings_count", -1)],
             background=True
         )
+        # Techniques indexes
+        await db.techniques.create_index([("slug", 1)], unique=True, background=True)
+        await db.techniques.create_index([("status", 1)], background=True)
+        await db.techniques.create_index([("category", 1)], background=True)
         logger.info("All MongoDB indexes created/verified.")
     except Exception as e:
         logger.warning(f"Index creation warning (may already exist): {e}")
