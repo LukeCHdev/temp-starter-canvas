@@ -1903,3 +1903,221 @@ async def normalize_continents(
         "failed": failed[:20]
     }
 
+
+
+# ============== AI IMAGE BATCH GENERATION ==============
+
+# In-memory job state (single-worker safe)
+_image_job: Dict[str, Any] = {
+    "running": False,
+    "total": 0,
+    "generated": 0,
+    "failed": 0,
+    "skipped": 0,
+    "current_slug": None,
+    "cost_estimate_usd": 0.0,
+    "log": [],
+    "started_at": None,
+    "finished_at": None,
+}
+
+COST_PER_IMAGE = 0.04
+
+
+async def _run_image_batch(batch_size: int):
+    """Background coroutine that generates images for all missing recipes."""
+    from services.ai_image_service import generate_recipe_image, STATIC_DIR, _build_alt
+    import asyncio
+
+    _image_job["running"] = True
+    _image_job["generated"] = 0
+    _image_job["failed"] = 0
+    _image_job["skipped"] = 0
+    _image_job["cost_estimate_usd"] = 0.0
+    _image_job["log"] = []
+    _image_job["started_at"] = datetime.now(timezone.utc).isoformat()
+    _image_job["finished_at"] = None
+
+    missing = await db.recipes.find(
+        {
+            "status": "published",
+            "$or": [
+                {"image_url": {"$exists": False}},
+                {"image_url": None},
+                {"image_url": ""},
+            ],
+        },
+        {"_id": 0, "slug": 1, "recipe_name": 1, "origin_country": 1},
+    ).to_list(500)
+
+    _image_job["total"] = len(missing)
+
+    for i in range(0, len(missing), batch_size):
+        batch = missing[i : i + batch_size]
+
+        for recipe_stub in batch:
+            slug = recipe_stub["slug"]
+            _image_job["current_slug"] = slug
+
+            # Skip if file on disk already
+            found_on_disk = False
+            for ext in (".webp", ".png"):
+                if (STATIC_DIR / f"{slug}{ext}").exists():
+                    url = f"/api/recipe-images/{slug}{ext}"
+                    full_recipe = await db.recipes.find_one({"slug": slug}, {"_id": 0})
+                    await db.recipes.update_one(
+                        {"slug": slug},
+                        {"$set": {
+                            "image_url": url,
+                            "image_alt": _build_alt(full_recipe or recipe_stub),
+                            "image_source": "ai",
+                        }},
+                    )
+                    _image_job["skipped"] += 1
+                    _image_job["log"].append(f"SKIP {slug} (file exists)")
+                    found_on_disk = True
+                    break
+
+            if found_on_disk:
+                continue
+
+            full_recipe = await db.recipes.find_one(
+                {"slug": slug, "status": "published"}, {"_id": 0}
+            )
+            if not full_recipe:
+                _image_job["skipped"] += 1
+                _image_job["log"].append(f"SKIP {slug} (not found)")
+                continue
+
+            try:
+                result = await generate_recipe_image(full_recipe)
+                if result:
+                    await db.recipes.update_one(
+                        {"slug": slug},
+                        {"$set": {
+                            "image_url": result["url"],
+                            "image_alt": result["alt"],
+                            "image_source": result["source"],
+                            "image_metadata": result["metadata"],
+                        }},
+                    )
+                    _image_job["generated"] += 1
+                    _image_job["cost_estimate_usd"] = round(
+                        _image_job["generated"] * COST_PER_IMAGE, 2
+                    )
+                    _image_job["log"].append(f"OK {slug} ~${COST_PER_IMAGE}")
+                    logger.info(f"Batch: generated {slug} (~${COST_PER_IMAGE})")
+                else:
+                    _image_job["failed"] += 1
+                    _image_job["log"].append(f"FAIL {slug} (no image returned)")
+            except Exception as e:
+                _image_job["failed"] += 1
+                _image_job["log"].append(f"FAIL {slug}: {str(e)[:120]}")
+                logger.error(f"Batch image gen failed for {slug}: {e}")
+
+        # Pause between batches
+        if i + batch_size < len(missing):
+            await asyncio.sleep(2)
+
+    _image_job["current_slug"] = None
+    _image_job["running"] = False
+    _image_job["finished_at"] = datetime.now(timezone.utc).isoformat()
+    logger.info(
+        f"Image batch complete: {_image_job['generated']} generated, "
+        f"{_image_job['failed']} failed, {_image_job['skipped']} skipped"
+    )
+
+
+@admin_router.post("/images/generate-batch")
+async def generate_batch_images(
+    authorized: bool = Depends(verify_admin_token),
+    batch_size: int = Query(5, ge=1, le=10, description="Recipes per batch"),
+    dry_run: bool = Query(False, description="Preview without generating"),
+):
+    """
+    Batch-generate AI images for all recipes missing image_url.
+
+    - Admin-only
+    - Runs in background (returns immediately)
+    - Processes in batches (default 5)
+    - Check progress via GET /api/admin/images/status
+    - Skips recipes that already have image_url or file on disk
+    - Graceful failure per recipe (continues on error)
+    """
+    import asyncio
+
+    missing_count = await db.recipes.count_documents({
+        "status": "published",
+        "$or": [
+            {"image_url": {"$exists": False}},
+            {"image_url": None},
+            {"image_url": ""},
+        ],
+    })
+
+    estimated_cost = round(missing_count * COST_PER_IMAGE, 2)
+
+    if dry_run:
+        recipes = await db.recipes.find(
+            {
+                "status": "published",
+                "$or": [
+                    {"image_url": {"$exists": False}},
+                    {"image_url": None},
+                    {"image_url": ""},
+                ],
+            },
+            {"_id": 0, "slug": 1, "recipe_name": 1},
+        ).to_list(500)
+        return {
+            "dry_run": True,
+            "recipes_missing_images": missing_count,
+            "estimated_cost_usd": estimated_cost,
+            "batch_size": batch_size,
+            "recipes": [
+                {"slug": r["slug"], "name": r.get("recipe_name", "?")}
+                for r in recipes
+            ],
+        }
+
+    if _image_job["running"]:
+        return {
+            "started": False,
+            "message": "A batch job is already running. Check GET /api/admin/images/status",
+        }
+
+    # Fire and forget
+    asyncio.create_task(_run_image_batch(batch_size))
+
+    return {
+        "started": True,
+        "recipes_to_process": missing_count,
+        "estimated_cost_usd": estimated_cost,
+        "batch_size": batch_size,
+        "message": "Background job started. Check GET /api/admin/images/status for progress.",
+    }
+
+
+@admin_router.get("/images/status")
+async def get_image_job_status(
+    authorized: bool = Depends(verify_admin_token),
+):
+    """Get current status of the batch image generation job."""
+    progress = 0
+    done = _image_job["generated"] + _image_job["failed"] + _image_job["skipped"]
+    if _image_job["total"] > 0:
+        progress = round(done / _image_job["total"] * 100, 1)
+
+    return {
+        "running": _image_job["running"],
+        "total": _image_job["total"],
+        "progress_pct": progress,
+        "generated": _image_job["generated"],
+        "failed": _image_job["failed"],
+        "skipped": _image_job["skipped"],
+        "cost_estimate_usd": _image_job["cost_estimate_usd"],
+        "current_slug": _image_job["current_slug"],
+        "started_at": _image_job["started_at"],
+        "finished_at": _image_job["finished_at"],
+        "recent_log": _image_job["log"][-20:],
+    }

@@ -70,6 +70,7 @@ async def generate_recipe_image(recipe: Dict[str, Any]) -> Optional[Dict[str, st
     _gen_locks[slug] = now
 
     try:
+        import asyncio
         from openai import OpenAI
 
         api_key = os.environ.get("OPENAI_API_KEY")
@@ -80,14 +81,17 @@ async def generate_recipe_image(recipe: Dict[str, Any]) -> Optional[Dict[str, st
         prompt = _build_prompt(recipe)
         logger.info(f"Generating AI image for {slug}")
 
-        client = OpenAI(api_key=api_key)
+        def _sync_generate():
+            client = OpenAI(api_key=api_key)
+            return client.images.generate(
+                model="gpt-image-1",
+                prompt=prompt,
+                n=1,
+                size="1024x1024",
+            )
 
-        response = client.images.generate(
-            model="gpt-image-1",
-            prompt=prompt,
-            n=1,
-            size="1024x1024",
-        )
+        # Run blocking OpenAI call in thread pool so event loop stays free
+        response = await asyncio.to_thread(_sync_generate)
 
         image_data = response.data[0]
 
