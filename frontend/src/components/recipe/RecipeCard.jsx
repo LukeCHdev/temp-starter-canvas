@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/LanguageContext';
 import { t } from '@/i18n/translations';
+import FavoriteButton from '@/components/common/FavoriteButton';
 
 /**
  * RecipeCard - Language-aware recipe card with STRICT LANGUAGE GATING
@@ -96,6 +97,10 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
                                 <span className="text-[#BFBFBF] text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>SCL</span>
                             </div>
                         )}
+                        {/* Favorite Button */}
+                        <div className="absolute top-3 left-3 z-10">
+                            <FavoriteButton slug={slug} size="sm" />
+                        </div>
                     </div>
                     
                     {/* Content */}
@@ -153,6 +158,11 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
                         <Star className="h-3 w-3 mr-1" />
                         {levelLabel}
                     </Badge>
+
+                    {/* Favorite Button (top-left) */}
+                    <div className="absolute top-3 left-3 z-10">
+                        <FavoriteButton slug={slug} size="sm" />
+                    </div>
                 </div>
                 
                 {/* Content Section */}

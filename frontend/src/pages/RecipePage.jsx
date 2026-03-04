@@ -11,6 +11,7 @@ import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
 import { ReviewSection } from '@/components/recipe/ReviewSection';
 import { FallbackBanner, TranslationPendingBanner, TranslationFailedBanner } from '@/components/common/FallbackBanner';
 import { Skeleton } from '@/components/ui/skeleton';
+import FavoriteButton from '@/components/common/FavoriteButton';
 import { 
     ChefHat, 
     Globe, 
@@ -413,10 +414,13 @@ const RecipePage = () => {
                         )}
                     </div>
                     
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-[#1E1E1E]" 
-                        style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                        {recipeName}
-                    </h1>
+                    <div className="flex items-start justify-between gap-4">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-[#1E1E1E]" 
+                            style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            {recipeName}
+                        </h1>
+                        <FavoriteButton slug={recipe.slug} />
+                    </div>
                     
                     <div className="flex flex-wrap items-center gap-4 text-[#1E1E1E]/70">
                         <span className="flex items-center gap-1">

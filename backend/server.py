@@ -1519,87 +1519,89 @@ async def queue_recipe_translations(slug: str):
 
 # ============== FAVORITES ROUTES ==============
 
-@api_router.post("/favorites/{recipe_slug}")
-async def save_recipe(recipe_slug: str, current_user: str = Security(get_current_user)):
-    """Save a recipe to favorites."""
-    try:
-        # Check if recipe exists
-        recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
-        if not recipe:
-            raise HTTPException(status_code=404, detail="Recipe not found")
-        
-        # Check if already saved
-        existing = await db.saved_recipes.find_one({
-            "user_email": current_user,
-            "recipe_slug": recipe_slug
-        })
-        
-        if existing:
-            return {"message": "Recipe already in favorites"}
-        
-        # Save recipe
-        saved_doc = {
-            "user_email": current_user,
-            "recipe_slug": recipe_slug,
-            "saved_at": datetime.now(timezone.utc).isoformat()
-        }
-        
-        await db.saved_recipes.insert_one(saved_doc)
-        
-        return {"message": "Recipe saved to favorites"}
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Save recipe error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+@api_router.post("/recipes/{recipe_slug}/favorite")
+async def favorite_recipe(recipe_slug: str, request: Request):
+    """Add a recipe to the current user's favorites."""
+    from routes.auth import require_auth
+    user = await require_auth(request)
 
-@api_router.delete("/favorites/{recipe_slug}")
-async def unsave_recipe(recipe_slug: str, current_user: str = Security(get_current_user)):
-    """Remove a recipe from favorites."""
-    try:
-        result = await db.saved_recipes.delete_one({
-            "user_email": current_user,
-            "recipe_slug": recipe_slug
-        })
-        
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Recipe not in favorites")
-        
-        return {"message": "Recipe removed from favorites"}
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Unsave recipe error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+    recipe = await db.recipes.find_one({"slug": recipe_slug, "status": "published"})
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
 
-@api_router.get("/favorites")
-async def get_favorites(current_user: str = Security(get_current_user)):
-    """Get user's saved recipes."""
-    try:
-        # Get saved recipe slugs
-        saved = await db.saved_recipes.find(
-            {"user_email": current_user},
-            {"_id": 0, "recipe_slug": 1}
-        ).to_list(1000)
-        
-        if not saved:
-            return {"recipes": []}
-        
-        slugs = [s["recipe_slug"] for s in saved]
-        
-        # Get full recipe details
-        recipes = await db.recipes.find(
-            {"slug": {"$in": slugs}, "status": "published"},
-            {"_id": 0}
-        ).to_list(1000)
-        
-        return {"recipes": recipes}
-    
-    except Exception as e:
-        logger.error(f"Get favorites error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+    existing = await db.favorites.find_one({
+        "user_id": user["user_id"],
+        "recipe_slug": recipe_slug
+    })
+    if existing:
+        return {"success": True, "favorited": True}
+
+    await db.favorites.insert_one({
+        "user_id": user["user_id"],
+        "recipe_slug": recipe_slug,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+
+    return {"success": True, "favorited": True}
+
+
+@api_router.delete("/recipes/{recipe_slug}/favorite")
+async def unfavorite_recipe(recipe_slug: str, request: Request):
+    """Remove a recipe from the current user's favorites."""
+    from routes.auth import require_auth
+    user = await require_auth(request)
+
+    await db.favorites.delete_one({
+        "user_id": user["user_id"],
+        "recipe_slug": recipe_slug
+    })
+
+    return {"success": True, "favorited": False}
+
+
+@api_router.get("/recipes/{recipe_slug}/favorite-status")
+async def get_favorite_status(recipe_slug: str, request: Request):
+    """Check if the current user has favorited a recipe. Returns false for guests."""
+    from routes.auth import get_session_user
+    user = await get_session_user(request)
+
+    if not user:
+        return {"favorited": False}
+
+    existing = await db.favorites.find_one({
+        "user_id": user["user_id"],
+        "recipe_slug": recipe_slug
+    })
+
+    return {"favorited": bool(existing)}
+
+
+@api_router.get("/users/me/favorites")
+async def get_my_favorites(request: Request):
+    """Get the current user's favorited recipes."""
+    from routes.auth import require_auth
+    user = await require_auth(request)
+
+    favs = await db.favorites.find(
+        {"user_id": user["user_id"]},
+        {"_id": 0, "recipe_slug": 1}
+    ).sort("created_at", -1).to_list(500)
+
+    if not favs:
+        return {"recipes": [], "count": 0}
+
+    slugs = [f["recipe_slug"] for f in favs]
+
+    recipes = await db.recipes.find(
+        {"slug": {"$in": slugs}, "status": "published"},
+        {"_id": 0}
+    ).to_list(500)
+
+    # Preserve favorites order
+    recipe_map = {r["slug"]: r for r in recipes}
+    ordered = [recipe_map[s] for s in slugs if s in recipe_map]
+
+    return {"recipes": ordered, "count": len(ordered)}
 
 # ============== RATINGS & REVIEWS ROUTES ==============
 
@@ -2126,6 +2128,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def create_indexes():
+    await db.favorites.create_index(
+        [("user_id", 1), ("recipe_slug", 1)],
+        unique=True,
+        background=True
+    )
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

@@ -1811,6 +1811,54 @@ export const translations = {
   },
 
   // ============================================
+  // FAVORITES PAGE
+  // ============================================
+  favorites: {
+    title: {
+      en: 'My Favorites',
+      it: 'I Miei Preferiti',
+      fr: 'Mes Favoris',
+      es: 'Mis Favoritos',
+      de: 'Meine Favoriten'
+    },
+    loginRequired: {
+      en: 'Sign in to save favorites',
+      it: 'Accedi per salvare i preferiti',
+      fr: 'Connectez-vous pour sauvegarder des favoris',
+      es: 'Inicia sesión para guardar favoritos',
+      de: 'Anmelden um Favoriten zu speichern'
+    },
+    loginDescription: {
+      en: 'Create an account to start saving your favorite recipes from around the world.',
+      it: 'Crea un account per iniziare a salvare le tue ricette preferite da tutto il mondo.',
+      fr: 'Créez un compte pour commencer à sauvegarder vos recettes préférées du monde entier.',
+      es: 'Crea una cuenta para guardar tus recetas favoritas de todo el mundo.',
+      de: 'Erstellen Sie ein Konto, um Ihre Lieblingsrezepte aus aller Welt zu speichern.'
+    },
+    empty: {
+      en: 'No favorites yet',
+      it: 'Nessun preferito ancora',
+      fr: 'Pas encore de favoris',
+      es: 'Aún no hay favoritos',
+      de: 'Noch keine Favoriten'
+    },
+    emptyDescription: {
+      en: 'Start exploring recipes and tap the heart to save them here.',
+      it: 'Inizia a esplorare le ricette e tocca il cuore per salvarle qui.',
+      fr: 'Commencez à explorer les recettes et appuyez sur le cœur pour les sauvegarder ici.',
+      es: 'Empieza a explorar recetas y toca el corazón para guardarlas aquí.',
+      de: 'Beginnen Sie Rezepte zu entdecken und tippen Sie auf das Herz, um sie hier zu speichern.'
+    },
+    exploreRecipes: {
+      en: 'Explore Recipes',
+      it: 'Esplora Ricette',
+      fr: 'Explorer les Recettes',
+      es: 'Explorar Recetas',
+      de: 'Rezepte Entdecken'
+    }
+  },
+
+  // ============================================
   // HOMEPAGE EDITORIAL
   // ============================================
   homepage: {

@@ -48,6 +48,14 @@ export const authAPI = {
     confirmPasswordReset: (data) => api.post('/auth/reset-password/confirm', data),
 };
 
+// Favorites API
+export const favoritesAPI = {
+    add: (slug) => api.post(`/recipes/${slug}/favorite`),
+    remove: (slug) => api.delete(`/recipes/${slug}/favorite`),
+    status: (slug) => api.get(`/recipes/${slug}/favorite-status`),
+    myFavorites: () => api.get('/users/me/favorites'),
+};
+
 // Translation API - Language-aware recipe content
 export const translationAPI = {
     // Get single recipe with translated content
