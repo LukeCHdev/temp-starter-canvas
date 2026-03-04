@@ -733,7 +733,11 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
     
     AUTHENTICATION REQUIRED.
     One review per user per recipe - if user has existing review, it will be updated.
+    Rate limited: max 5 reviews per hour per user.
     """
+    import html
+    import time
+
     try:
         # Require authentication
         user = await get_session_user(request)
@@ -747,10 +751,22 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
         username = user.get("username", "Anonymous")
         avatar_url = user.get("avatar_url")
         
+        # Rate limit: max 5 reviews per hour per user
+        one_hour_ago = datetime.now(timezone.utc).isoformat()[:-13]  # rough hour cutoff
+        recent_count = await db.recipe_reviews.count_documents({
+            "user_id": user_id,
+            "created_at": {"$gte": one_hour_ago}
+        })
+        if recent_count >= 5:
+            raise HTTPException(status_code=429, detail="Too many reviews. Please wait before posting again.")
+        
         # Verify recipe exists
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"})
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
+        
+        # Sanitize comment (XSS prevention)
+        sanitized_comment = html.escape(review.comment.strip()) if review.comment else None
         
         # Check if user already has a review for this recipe
         existing_review = await db.recipe_reviews.find_one(
@@ -767,7 +783,7 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
                 {
                     "$set": {
                         "rating": review.rating,
-                        "comment": review.comment.strip() if review.comment else None,
+                        "comment": sanitized_comment,
                         "updated_at": now,
                         "username": username,
                         "avatar_url": avatar_url
@@ -781,7 +797,7 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
                 "username": username,
                 "avatar_url": avatar_url,
                 "rating": review.rating,
-                "comment": review.comment.strip() if review.comment else None,
+                "comment": sanitized_comment,
                 "created_at": existing_review["created_at"],
                 "updated_at": now
             }
@@ -795,7 +811,7 @@ async def create_review(slug: str, review: ReviewCreate, request: Request):
                 "username": username,
                 "avatar_url": avatar_url,
                 "rating": review.rating,
-                "comment": review.comment.strip() if review.comment else None,
+                "comment": sanitized_comment,
                 "created_at": now,
                 "updated_at": None
             }
@@ -894,6 +910,7 @@ async def update_review(slug: str, review: ReviewUpdate, request: Request):
     
     AUTHENTICATION REQUIRED.
     """
+    import html
     try:
         # Require authentication
         user = await get_session_user(request)
@@ -916,7 +933,7 @@ async def update_review(slug: str, review: ReviewUpdate, request: Request):
         if review.rating is not None:
             update_fields["rating"] = review.rating
         if review.comment is not None:
-            update_fields["comment"] = review.comment.strip() if review.comment else None
+            update_fields["comment"] = html.escape(review.comment.strip()) if review.comment else None
         
         # Update review
         await db.recipe_reviews.update_one(
@@ -2131,11 +2148,19 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def create_indexes():
-    await db.favorites.create_index(
-        [("user_id", 1), ("recipe_slug", 1)],
-        unique=True,
-        background=True
-    )
+    try:
+        await db.favorites.create_index(
+            [("user_id", 1), ("recipe_slug", 1)],
+            unique=True,
+            background=True
+        )
+        await db.recipe_reviews.create_index(
+            [("user_id", 1), ("recipe_slug", 1)],
+            unique=True,
+            background=True
+        )
+    except Exception as e:
+        logger.warning(f"Index creation warning (may already exist): {e}")
 
 
 @app.on_event("shutdown")

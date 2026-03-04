@@ -217,6 +217,12 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
             toast.error(t('review.selectRating', lang));
             return;
         }
+        
+        const trimmed = userComment.trim();
+        if (trimmed.length > 0 && trimmed.length < 10) {
+            toast.error(t('review.minLength', lang));
+            return;
+        }
 
         setSubmitting(true);
         try {
@@ -264,7 +270,7 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                 loadReviews();
             }
         } catch (error) {
-            toast.error(error.response?.data?.detail || 'Failed to delete review');
+            toast.error(error.response?.data?.detail || t('review.deleteError', lang));
         }
     };
 
@@ -374,15 +380,22 @@ export const ReviewSection = ({ slug, initialRating = 0, initialCount = 0 }) => 
                                 rows={3}
                                 maxLength={2000}
                             />
-                            <p className="text-xs text-gray-400 mt-1 text-right">
+                            <p className={`text-xs mt-1 text-right ${
+                                userComment.trim().length > 0 && userComment.trim().length < 10 
+                                    ? 'text-red-500' 
+                                    : 'text-gray-400'
+                            }`}>
                                 {userComment.length}/2000
+                                {userComment.trim().length > 0 && userComment.trim().length < 10 && (
+                                    <span className="ml-2">{t('review.minLength', lang)}</span>
+                                )}
                             </p>
                         </div>
                         
                         <div className="flex gap-2">
                             <Button 
                                 type="submit" 
-                                disabled={submitting || userRating === 0}
+                                disabled={submitting || userRating === 0 || (userComment.trim().length > 0 && userComment.trim().length < 10)}
                                 className="bg-[#6A1F2E] hover:bg-[#5A1525] text-white"
                             >
                                 {submitting ? (

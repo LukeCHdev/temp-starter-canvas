@@ -1347,6 +1347,27 @@ export const translations = {
       it: 'Aggiornamento...',
       fr: 'Mise à jour...',
       de: 'Wird aktualisiert...'
+    },
+    deleteError: {
+      en: 'Failed to delete review. Please try again.',
+      es: 'Error al eliminar la reseña. Por favor, inténtalo de nuevo.',
+      it: 'Eliminazione della recensione fallita. Per favore riprova.',
+      fr: 'Échec de la suppression de l\'avis. Veuillez réessayer.',
+      de: 'Bewertung konnte nicht gelöscht werden. Bitte versuche es erneut.'
+    },
+    minLength: {
+      en: 'Minimum 10 characters',
+      es: 'Mínimo 10 caracteres',
+      it: 'Minimo 10 caratteri',
+      fr: 'Minimum 10 caractères',
+      de: 'Mindestens 10 Zeichen'
+    },
+    tooManyReviews: {
+      en: 'Too many reviews. Please wait before posting again.',
+      es: 'Demasiadas reseñas. Espera antes de publicar de nuevo.',
+      it: 'Troppe recensioni. Attendi prima di pubblicare di nuovo.',
+      fr: 'Trop d\'avis. Veuillez patienter avant de publier à nouveau.',
+      de: 'Zu viele Bewertungen. Bitte warte, bevor du erneut postest.'
     }
   },
 

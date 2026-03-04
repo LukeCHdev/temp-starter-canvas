@@ -7,12 +7,12 @@ from datetime import datetime
 class ReviewCreate(BaseModel):
     """Model for creating a new review (authenticated users only)."""
     rating: int = Field(..., ge=1, le=5, description="Rating from 1 to 5 stars")
-    comment: Optional[str] = Field(None, max_length=2000, description="Optional review comment")
+    comment: Optional[str] = Field(None, min_length=10, max_length=2000, description="Review comment (10-2000 characters)")
 
 class ReviewUpdate(BaseModel):
     """Model for updating an existing review."""
     rating: Optional[int] = Field(None, ge=1, le=5)
-    comment: Optional[str] = Field(None, max_length=2000)
+    comment: Optional[str] = Field(None, min_length=10, max_length=2000)
 
 class Review(BaseModel):
     """Model for a recipe review."""
