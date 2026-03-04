@@ -11,7 +11,7 @@ import re
 from typing import Dict, Any, List
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://cuisine-babel.preview.emergentagent.com/api"
+BACKEND_URL = "https://recipe-ecosystem.preview.emergentagent.com/api"
 
 class MasterDataMigrationTester:
     def __init__(self):

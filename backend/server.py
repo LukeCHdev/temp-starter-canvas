@@ -2111,7 +2111,7 @@ else:
     cors_origins = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://cuisine-babel.preview.emergentagent.com",
+        "https://recipe-ecosystem.preview.emergentagent.com",
         "https://cuisine-babel.emergent.sh"
     ]
 
