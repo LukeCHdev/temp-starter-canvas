@@ -1,0 +1,59 @@
+{
+  "summary": "AI Image Service testing complete. All 21 backend tests and frontend UI tests passed. AI-generated images using gpt-image-1 are correctly: generated lazily, stored as WebP, served via static route, included in API responses with image_source='ai', and displayed in frontend hero and recipe cards.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_ai_image_service.py",
+    "/app/test_reports/pytest/ai_image_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "AI image service well-implemented with proper concurrency lock (_gen_locks) preventing duplicate generation",
+    "WebP format correctly used for efficient storage (images 100-234KB)",
+    "Static mount properly configured at /api/recipe-images",
+    "Translation API correctly includes image_url, image_alt, image_source in metadata",
+    "No API keys exposed in responses - verified via test",
+    "Frontend RecipePage.jsx correctly uses data-testid='recipe-hero-image' for hero section",
+    "RecipeCard.jsx correctly falls back to ChefHat placeholder when no image"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ai_image_service.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "seed_data_creation": "None - tested with existing AI-generated images",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "AI image generation via OpenAI gpt-image-1 is working. Known recipes WITH AI images: pizza-margherita-italy, risotto-alla-milanese-italy, coq-au-vin-france, spaghetti-alla-carbonara-italy. Images stored in /app/backend/static/recipe-images/ as WebP. Recipes WITHOUT images (tacos-al-pastor-mexico, tonkotsu-ramen-japan, mole-poblano-mexico) will auto-generate on first view but this is SLOW (30-60s) and EXPENSIVE. Image generation triggered via auto_assign_ai_image() in /api/recipes/{slug} endpoint.",
+  "tests_executed": {
+    "backend_api_tests": {
+      "TestAIImageRecipeAPI": "6/6 passed - recipe returns image_url, image_alt, image_source='ai'",
+      "TestStaticImageServing": "6/6 passed - static files return 200 with content-type image/webp",
+      "TestGracefulFallback": "2/2 passed - recipes without images load correctly",
+      "TestImageCaching": "1/1 passed - second request returns same cached image",
+      "TestTranslationAPIIncludesImage": "3/3 passed - translation API includes image data in metadata",
+      "TestAPIKeySecurity": "3/3 passed - no API keys exposed in responses"
+    },
+    "frontend_ui_tests": {
+      "RecipePage_HeroImage": "PASSED - Hero image renders with data-testid='recipe-hero-image' for AI-imaged recipes",
+      "RecipePage_NoImage": "PASSED - Pages without images load gracefully (no hero section, no crash)",
+      "ExplorePage_RecipeCards": "PASSED - Cards show AI images where available, placeholder otherwise",
+      "ImageURL_Format": "PASSED - Images served via /api/recipe-images/{slug}.webp"
+    }
+  },
+  "ai_images_verified": {
+    "pizza-margherita-italy": "234KB WebP - Dish-accurate pizza image",
+    "risotto-alla-milanese-italy": "109KB WebP - Golden saffron risotto",
+    "coq-au-vin-france": "171KB WebP - French braised chicken",
+    "spaghetti-alla-carbonara-italy": "185KB WebP - Roman pasta dish"
+  }
+}

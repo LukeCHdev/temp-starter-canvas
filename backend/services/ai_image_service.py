@@ -1,11 +1,12 @@
 """
 AI Image Generation Service — Dish-Accurate Recipe Images
 
-Uses gpt-image-1 via Emergent integrations library.
+Uses gpt-image-1 via the official OpenAI Python SDK.
 Images generated lazily on first view, saved as WebP, served locally.
 """
 
 import os
+import base64
 import logging
 import time
 from io import BytesIO
@@ -69,28 +70,37 @@ async def generate_recipe_image(recipe: Dict[str, Any]) -> Optional[Dict[str, st
     _gen_locks[slug] = now
 
     try:
-        from emergentintegrations.llm.openai.image_generation import OpenAIImageGeneration
+        from openai import OpenAI
 
-        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
-            logger.warning("EMERGENT_LLM_KEY not set")
+            logger.warning("OPENAI_API_KEY not set")
             return None
 
         prompt = _build_prompt(recipe)
         logger.info(f"Generating AI image for {slug}")
 
-        gen = OpenAIImageGeneration(api_key=api_key)
-        images = await gen.generate_images(
-            prompt=prompt,
+        client = OpenAI(api_key=api_key)
+
+        response = client.images.generate(
             model="gpt-image-1",
-            number_of_images=1,
+            prompt=prompt,
+            n=1,
+            size="1024x1024",
         )
 
-        if not images or len(images) == 0:
-            logger.warning(f"No image returned for {slug}")
-            return None
+        image_data = response.data[0]
 
-        image_bytes = images[0]
+        if hasattr(image_data, "b64_json") and image_data.b64_json:
+            image_bytes = base64.b64decode(image_data.b64_json)
+        elif hasattr(image_data, "url") and image_data.url:
+            import httpx
+            r = httpx.get(image_data.url, timeout=30)
+            r.raise_for_status()
+            image_bytes = r.content
+        else:
+            logger.error(f"No image data returned for {slug}")
+            return None
 
         # Save as WebP
         try:
