@@ -65,7 +65,9 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - `GET /api/auth/social/google`, `GET /api/auth/google/callback`, `GET /api/auth/me`
 - `POST/PUT/DELETE /api/recipes/{slug}/review` (Protected)
 - `POST /api/recipes/scale`
-- `GET /api/recipes/{slug}` (auto-assigns image via Unsplash fallback)
+- `POST /api/admin/images/generate-batch` — starts background batch job (admin-only)
+- `GET /api/admin/images/status` — real-time progress of batch job (admin-only)
+- `GET /api/recipe-images/{slug}.webp` — serves AI-generated images
 
 ## Mocked Flows
 - Email verification and password reset (logged to console)
