@@ -29,6 +29,17 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - All translated in EN/IT/FR/ES/DE
 - 13/13 backend + all frontend tests passed
 
+### Phase 3 Comments/Reviews (DONE - Mar 2026)
+- One review per user per recipe (unique index + upsert behavior)
+- Rate limit: 5 reviews/hour/user
+- Backend validation: rating 1-5, comment min 10 / max 2000 chars
+- XSS prevention via html.escape() on all comment text
+- Auth-gated write (POST/PUT/DELETE return 401 for guests), guests can read
+- Frontend: review form with star selector, character counter, min-length warning
+- Edit/delete buttons for own reviews only
+- Localized date formatting (EN/IT/FR verified)
+- 22/22 backend tests + all frontend flows passed
+
 ## What's Been Implemented
 
 ### Core Features (DONE)
