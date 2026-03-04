@@ -43,10 +43,20 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - Frontend SearchBar updated for new array response format
 - 22/22 backend tests + all frontend flows passed
 
+### Techniques System (DONE - Mar 2026)
+- New `techniques` MongoDB collection with schema: title, slug (unique), category, difficulty (enum), readTime, introduction, sections[], status, timestamps
+- Indexes: slug_1 (unique), status_1, category_1
+- Public endpoints: GET /api/techniques (published, newest first), GET /api/techniques/{slug}
+- Admin endpoint: POST /api/admin/techniques (role=admin required, Pydantic validation)
+- Validation: title 3-120 chars, difficulty enum, readTime > 0, sections min 1, slug URL-safe
+- Slug auto-generation from title, duplicate prevention (409)
+- 27/27 backend tests + all frontend flows passed
+
 ## Key DB Schema
 - **users**: `{ id, username, email, password_hash, provider, provider_id, avatar_url, role, is_verified, created_at, last_login }`
 - **recipe_reviews**: `{ id, user_id, recipe_slug, rating, comment, created_at, updated_at }` - Unique index on (user_id, recipe_slug)
 - **recipes**: `{ ..., image_url, image_alt, image_source, custom_image_prompt }` - Indexes: status+slug, status+recipe_name, status+origin_country, status+avg_rating+ratings_count
+- **techniques**: `{ title, slug (unique), category, difficulty, readTime, introduction, sections[{title, content}], status, created_at, updated_at }` - Indexes: slug_1 (unique), status_1, category_1
 - **favorites**: `{ user_id, recipe_slug, created_at }` - Unique index on (user_id, recipe_slug)
 
 ## Key Endpoints
@@ -56,6 +66,9 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - `POST/PUT/DELETE /api/recipes/{slug}/review` (Protected)
 - `POST/DELETE /api/recipes/{slug}/favorite` (Protected)
 - `GET /api/users/me/favorites` (Protected)
+- `GET /api/techniques` (public, published only)
+- `GET /api/techniques/{slug}` (public, published only)
+- `POST /api/admin/techniques` (admin only, Pydantic validated)
 - `POST /api/admin/images/generate-batch`, `GET /api/admin/images/status`
 
 ## Mocked Flows
