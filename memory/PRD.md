@@ -8,99 +8,75 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - **Backend**: FastAPI + MongoDB (motor) + Pydantic
 - **Auth**: HTTP-only cookie sessions (local + Emergent Google OAuth)
 - **i18n**: Custom `t()` function + central `translations.js`
-- **Images**: Unsplash API (lazy auto-assignment with multi-step fallback)
+- **Images**: OpenAI `gpt-image-1` (lazy auto-assignment, stored as WebP)
+- **Search**: Pure DB-only indexed regex search (no AI generation)
+
+## Completed Phases
 
 ### Phase 1 Auth Finalization (DONE - Mar 2026)
-- Login rate limiting (10 attempts/5min per IP via X-Forwarded-For)
-- ForgotPasswordPage + ResetPasswordPage (DEV MODE: token logged to console)
-- AuthCallbackPage rewritten — no hardcoded English strings
-- ReviewSection "Cancel" button translated via common.cancel
-- Sensitive fields (tokens, hash) excluded from /auth/me response
-- All auth keys translated in EN/IT/FR/ES/DE — no leaks
-- 18/18 backend tests + all frontend translation checks passed
+- Login rate limiting, forgot/reset password (mocked), i18n audit, token leak fix
+- 18/18 backend tests passed
 
 ### Phase 2 Favorites (DONE - Mar 2026)
-- Favorites CRUD: POST/DELETE /api/recipes/{slug}/favorite, GET favorite-status, GET /users/me/favorites
-- Unique index on (user_id, recipe_slug), idempotent operations
-- FavoriteButton component with optimistic update + revert on error
-- Heart toggle on RecipePage (next to title) and all RecipeCard variants
-- FavoritesPage with guest login prompt, empty state, and recipe grid
-- Favorites nav link conditionally shown when logged in
-- All translated in EN/IT/FR/ES/DE
-- 13/13 backend + all frontend tests passed
+- Full CRUD, unique index, FavoriteButton component, FavoritesPage
+- 13/13 backend tests passed
 
 ### Phase 3 Comments/Reviews (DONE - Mar 2026)
-- One review per user per recipe (unique index + upsert behavior)
-- Rate limit: 5 reviews/hour/user
-- Backend validation: rating 1-5, comment min 10 / max 2000 chars
-- XSS prevention via html.escape() on all comment text
-- Auth-gated write (POST/PUT/DELETE return 401 for guests), guests can read
-- Frontend: review form with star selector, character counter, min-length warning
-- Edit/delete buttons for own reviews only
-- Localized date formatting (EN/IT/FR verified)
+- One review per user, rate limit 5/hr, XSS prevention, auth-gated
+- 22/22 backend tests passed
+
+### AI Image System (DONE - Mar 2026)
+- 161 WebP images via gpt-image-1, lazy generation on first view
+- Admin batch generation + single regeneration endpoints
+- 21/21 backend tests passed
+
+### Search Refactor to DB-Only (DONE - Mar 2026)
+- Removed auto_generate/AI generation from search entirely
+- Removed _find_similar_recipe() full memory load
+- Removed thefuzz dependency from search flow
+- New indexed regex search on recipe_name, origin_country, slug
+- Input validation: min 2 chars, max 80 chars
+- Rate limiting: 30 searches per 10 minutes per IP
+- Regex injection fixed in all 3 search pathways
+- Error messages sanitized (no internal leakage)
+- Added 4 MongoDB indexes on recipes collection
+- Frontend SearchBar updated for new array response format
 - 22/22 backend tests + all frontend flows passed
 
-## What's Been Implemented
+## Key DB Schema
+- **users**: `{ id, username, email, password_hash, provider, provider_id, avatar_url, role, is_verified, created_at, last_login }`
+- **recipe_reviews**: `{ id, user_id, recipe_slug, rating, comment, created_at, updated_at }` - Unique index on (user_id, recipe_slug)
+- **recipes**: `{ ..., image_url, image_alt, image_source, custom_image_prompt }` - Indexes: status+slug, status+recipe_name, status+origin_country, status+avg_rating+ratings_count
+- **favorites**: `{ user_id, recipe_slug, created_at }` - Unique index on (user_id, recipe_slug)
 
-### Core Features (DONE)
-- Systemic i18n architecture (EN/IT/FR/ES/DE) with translation key parity
-- Recipe ingredient scaling (frontend + backend)
-- Full authentication system (email/password + Google Social Login)
-- Protected review/comment sections (auth-gated CRUD)
-- CORS configuration for credentials
-- Automatic image assignment via Unsplash with multi-step fallback
+## Key Endpoints
+- `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`
+- `GET /api/auth/social/google`, `GET /api/auth/google/callback`, `GET /api/auth/me`
+- `GET /api/recipes/search?q=&lang=&limit=` (DB-only, indexed, rate-limited)
+- `POST/PUT/DELETE /api/recipes/{slug}/review` (Protected)
+- `POST/DELETE /api/recipes/{slug}/favorite` (Protected)
+- `GET /api/users/me/favorites` (Protected)
+- `POST /api/admin/images/generate-batch`, `GET /api/admin/images/status`
 
-### Full Batch Generation Complete (Mar 2026)
-- 137/137 AI images generated via gpt-image-1, 0 failures, $5.48 total cost
-- 161 total WebP images on disk (24MB), average 154KB, all recipes covered
-- No regeneration loops, non-blocking event loop, graceful error handling confirmed
-- Replaced Unsplash with OpenAI `gpt-image-1` for dish-accurate food photography
-- Lazy generation on first recipe view, stored permanently as WebP on disk
-- Structured prompts using recipe title, country, region, and key ingredients
-- Concurrency lock prevents duplicate generation; graceful failure on errors
-- Static file serving at `/api/recipe-images/{slug}.webp`
-- All old Unsplash images cleared; `image_source='ai'` in DB
-- Tested: 21/21 backend + all frontend UI tests pass
-
-### Unsplash Image Rendering Fix (DONE - Mar 2026)
-- **Root Cause 1**: `RecipeCard.jsx` only checked `photos[0].image_url`, not top-level `image_url` from Unsplash
-- **Root Cause 2**: `RecipePage.jsx` had zero image rendering — no hero image section existed
-- **Root Cause 3**: Translation API (`routes/translation.py`) omitted `image_url`/`image_alt`/`image_source`/`image_metadata` from metadata response
-- **Root Cause 4**: `TranslatedRecipeCard.jsx` had the same photos-only bug as RecipeCard
-- All 4 fixes applied. Tested: 14/14 backend + all frontend UI tests pass
-- **Step 1**: Exact query `"{title} {country} food"`
-- **Step 2**: Simplified title (geographic descriptors stripped) `"{main_dish} {country} food"`
-- **Step 3**: Cuisine fallback `"{country} food"`
-- Deduplicates queries, never crashes, never exposes API key
-- Concurrency lock prevents duplicate fetches
-- Tested: 21/21 tests pass (unit + integration)
+## Mocked Flows
+- Email verification and password reset (logged to console)
 
 ## Prioritized Backlog
+
+### P0 - Blocked
+- Bongo recipe image regeneration (BLOCKED: OpenAI billing limit reached)
 
 ### P1 - Upcoming
 - Full Next.js migration for SEO and performance
 
 ### P2 - Future
-- User profiles, favorites, and collections
+- User profiles and collections
 - Community verification badges
 - Apple/Facebook social logins
 - Real email service integration (SendGrid/Resend)
 - AdSense integration
 - PDF/ODF recipe import
-
-## Key DB Schema
-- **users**: `{ id, username, email, password_hash, provider, provider_id, avatar_url, role, is_verified, created_at, last_login }`
-- **ratings**: `{ id, user_id, recipe_slug, rating, comment, created_at, updated_at }`
-- **recipes**: `{ ..., photos, image_url, image_alt, image_source, image_metadata }`
-
-## Key Endpoints
-- `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`
-- `GET /api/auth/social/google`, `GET /api/auth/google/callback`, `GET /api/auth/me`
-- `POST/PUT/DELETE /api/recipes/{slug}/review` (Protected)
-- `POST /api/recipes/scale`
-- `POST /api/admin/images/generate-batch` — starts background batch job (admin-only)
-- `GET /api/admin/images/status` — real-time progress of batch job (admin-only)
-- `GET /api/recipe-images/{slug}.webp` — serves AI-generated images
-
-## Mocked Flows
-- Email verification and password reset (logged to console)
+- Moderation panel for reviews
+- Reporting system for reviews
+- Remove dead search infrastructure (routes/search.py LanguageSearchService, unused /api/search/* endpoints)
+- Move rate limiters to Redis for multi-process scalability
