@@ -676,10 +676,10 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
     If lang parameter differs from the recipe's content_language,
     the recipe will be translated on-the-fly (not saved to DB).
     
-    AUTO-IMAGE: If recipe has no image, automatically fetches from Unsplash.
+    AUTO-IMAGE: If recipe has no image, generates one via AI (GPT Image 1).
     """
     from services.sous_chef_ai import sous_chef_ai
-    from services.unsplash_service import auto_assign_image
+    from services.ai_image_service import auto_assign_ai_image
     
     try:
         recipe = await db.recipes.find_one({"slug": slug, "status": "published"}, {"_id": 0})
@@ -687,8 +687,8 @@ async def get_recipe(slug: str, lang: Optional[str] = "en"):
         if not recipe:
             raise HTTPException(status_code=404, detail="Recipe not found")
         
-        # AUTO-IMAGE: Assign image if recipe doesn't have one
-        recipe = await auto_assign_image(db, recipe)
+        # AUTO-IMAGE: Assign AI-generated image if recipe doesn't have one
+        recipe = await auto_assign_ai_image(db, recipe)
         
         # Normalize language code
         target_lang = lang.lower()[:2] if lang else "en"
@@ -2089,6 +2089,10 @@ async def root():
         "version": "1.0.0",
         "status": "running"
     }
+
+# Serve AI-generated recipe images as static files
+from fastapi.staticfiles import StaticFiles
+app.mount("/api/recipe-images", StaticFiles(directory="static/recipe-images"), name="recipe-images")
 
 # Include the router in the main app
 app.include_router(api_router)
