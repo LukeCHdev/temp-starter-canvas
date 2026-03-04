@@ -20,7 +20,12 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - CORS configuration for credentials
 - Automatic image assignment via Unsplash with multi-step fallback
 
-### Unsplash Multi-Step Fallback (DONE - Feb 2026)
+### Unsplash Image Rendering Fix (DONE - Mar 2026)
+- **Root Cause 1**: `RecipeCard.jsx` only checked `photos[0].image_url`, not top-level `image_url` from Unsplash
+- **Root Cause 2**: `RecipePage.jsx` had zero image rendering — no hero image section existed
+- **Root Cause 3**: Translation API (`routes/translation.py`) omitted `image_url`/`image_alt`/`image_source`/`image_metadata` from metadata response
+- **Root Cause 4**: `TranslatedRecipeCard.jsx` had the same photos-only bug as RecipeCard
+- All 4 fixes applied. Tested: 14/14 backend + all frontend UI tests pass
 - **Step 1**: Exact query `"{title} {country} food"`
 - **Step 2**: Simplified title (geographic descriptors stripped) `"{main_dish} {country} food"`
 - **Step 3**: Cuisine fallback `"{country} food"`
