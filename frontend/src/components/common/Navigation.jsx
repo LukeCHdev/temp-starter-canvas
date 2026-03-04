@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChefHat, Globe, Menu as MenuIcon, User, LogOut, Heart } from 'lucide-react';
+import { ChefHat, Globe, Menu as MenuIcon, User, LogOut, Heart, Flame } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
@@ -27,6 +27,7 @@ export const Navigation = () => {
     // All navigation links use getLocalizedPath to preserve language
     const navLinks = [
         { path: '/explore', label: i18nT('nav.explore'), icon: Globe },
+        { path: '/techniques', label: i18nT('nav.techniques'), icon: Flame },
         { path: '/menu-builder', label: i18nT('nav.menuBuilder'), icon: MenuIcon },
         { path: '/about', label: i18nT('nav.about'), icon: null },
     ];
