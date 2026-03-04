@@ -20,7 +20,10 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - CORS configuration for credentials
 - Automatic image assignment via Unsplash with multi-step fallback
 
-### AI Image Generation (DONE - Mar 2026)
+### Full Batch Generation Complete (Mar 2026)
+- 137/137 AI images generated via gpt-image-1, 0 failures, $5.48 total cost
+- 161 total WebP images on disk (24MB), average 154KB, all recipes covered
+- No regeneration loops, non-blocking event loop, graceful error handling confirmed
 - Replaced Unsplash with OpenAI `gpt-image-1` for dish-accurate food photography
 - Lazy generation on first recipe view, stored permanently as WebP on disk
 - Structured prompts using recipe title, country, region, and key ingredients
