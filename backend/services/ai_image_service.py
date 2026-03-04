@@ -78,7 +78,8 @@ async def generate_recipe_image(recipe: Dict[str, Any]) -> Optional[Dict[str, st
             logger.warning("OPENAI_API_KEY not set")
             return None
 
-        prompt = _build_prompt(recipe)
+        # Priority: custom_image_prompt > auto-built prompt
+        prompt = recipe.get("custom_image_prompt") or _build_prompt(recipe)
         logger.info(f"Generating AI image for {slug}")
 
         def _sync_generate():

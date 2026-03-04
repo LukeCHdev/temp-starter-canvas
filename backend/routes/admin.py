@@ -2121,3 +2121,72 @@ async def get_image_job_status(
         "finished_at": _image_job["finished_at"],
         "recent_log": _image_job["log"][-20:],
     }
+
+
+@admin_router.post("/images/regenerate")
+async def regenerate_single_image(
+    slug: str = Query(..., description="Recipe slug to regenerate"),
+    custom_prompt: Optional[str] = Query(None, description="Custom image prompt to save and use"),
+    authorized: bool = Depends(verify_admin_token),
+):
+    """
+    Regenerate the AI image for a single recipe.
+
+    - Admin-only
+    - Overwrites existing image file and DB fields
+    - Optionally sets custom_image_prompt on the recipe
+    - Does NOT trigger batch job or affect other recipes
+    - Uses concurrency lock
+    """
+    from services.ai_image_service import generate_recipe_image, STATIC_DIR
+
+    recipe = await db.recipes.find_one(
+        {"slug": slug, "status": "published"}, {"_id": 0}
+    )
+    if not recipe:
+        raise HTTPException(status_code=404, detail=f"Recipe not found: {slug}")
+
+    # Save custom prompt to DB if provided
+    if custom_prompt:
+        await db.recipes.update_one(
+            {"slug": slug},
+            {"$set": {"custom_image_prompt": custom_prompt}},
+        )
+        recipe["custom_image_prompt"] = custom_prompt
+
+    # Delete existing image file so generate_recipe_image creates a fresh one
+    for ext in (".webp", ".png"):
+        path = STATIC_DIR / f"{slug}{ext}"
+        if path.exists():
+            path.unlink()
+
+    # Clear existing DB image fields so the generator runs
+    await db.recipes.update_one(
+        {"slug": slug},
+        {"$unset": {"image_url": "", "image_alt": "", "image_source": "", "image_metadata": ""}},
+    )
+
+    result = await generate_recipe_image(recipe)
+
+    if not result:
+        return {
+            "success": False,
+            "slug": slug,
+            "error": "Image generation failed. Check backend logs.",
+        }
+
+    update = {
+        "image_url": result["url"],
+        "image_alt": result["alt"],
+        "image_source": result["source"],
+        "image_metadata": result["metadata"],
+    }
+    await db.recipes.update_one({"slug": slug}, {"$set": update})
+
+    return {
+        "success": True,
+        "slug": slug,
+        "image_url": result["url"],
+        "prompt_used": result["metadata"]["prompt_used"],
+        "custom_prompt_saved": bool(custom_prompt),
+    }
