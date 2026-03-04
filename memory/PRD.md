@@ -10,6 +10,15 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - **i18n**: Custom `t()` function + central `translations.js`
 - **Images**: Unsplash API (lazy auto-assignment with multi-step fallback)
 
+### Phase 1 Auth Finalization (DONE - Mar 2026)
+- Login rate limiting (10 attempts/5min per IP via X-Forwarded-For)
+- ForgotPasswordPage + ResetPasswordPage (DEV MODE: token logged to console)
+- AuthCallbackPage rewritten — no hardcoded English strings
+- ReviewSection "Cancel" button translated via common.cancel
+- Sensitive fields (tokens, hash) excluded from /auth/me response
+- All auth keys translated in EN/IT/FR/ES/DE — no leaks
+- 18/18 backend tests + all frontend translation checks passed
+
 ## What's Been Implemented
 
 ### Core Features (DONE)
