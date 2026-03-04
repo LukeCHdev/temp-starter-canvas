@@ -20,6 +20,15 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - CORS configuration for credentials
 - Automatic image assignment via Unsplash with multi-step fallback
 
+### AI Image Generation (DONE - Mar 2026)
+- Replaced Unsplash with OpenAI `gpt-image-1` for dish-accurate food photography
+- Lazy generation on first recipe view, stored permanently as WebP on disk
+- Structured prompts using recipe title, country, region, and key ingredients
+- Concurrency lock prevents duplicate generation; graceful failure on errors
+- Static file serving at `/api/recipe-images/{slug}.webp`
+- All old Unsplash images cleared; `image_source='ai'` in DB
+- Tested: 21/21 backend + all frontend UI tests pass
+
 ### Unsplash Image Rendering Fix (DONE - Mar 2026)
 - **Root Cause 1**: `RecipeCard.jsx` only checked `photos[0].image_url`, not top-level `image_url` from Unsplash
 - **Root Cause 2**: `RecipePage.jsx` had zero image rendering — no hero image section existed
