@@ -94,7 +94,7 @@ The `t()` function in `/app/frontend/src/i18n/translations.js` was silently fall
 ## Recipe Scaling Feature Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 5 test scenarios completed
@@ -194,7 +194,7 @@ The recipe scaling feature has been successfully implemented and thoroughly test
 ## i18n Enforcement Testing Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 8 locale pages tested
@@ -289,7 +289,7 @@ The i18n enforcement implementation has been successfully verified. All supporte
 ## Homepage Editorial Redesign Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com/en)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com/en)
 
 ### Test Summary
 - **Total Tests:** 8 test scenarios
@@ -373,7 +373,7 @@ The homepage editorial redesign has been successfully implemented and verified. 
 ## Frontend Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Frontend Test Summary
 - **Total Tests:** 5 test scenarios
@@ -434,7 +434,7 @@ The master data migration has been successfully verified from the frontend persp
 ## Backend Test Results (Testing Agent)
 **Date:** 2024-12-28  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 9
@@ -494,7 +494,7 @@ The master data migration has been successfully verified from the frontend persp
 ## Translation Leaks Fix Test Results (Testing Agent)
 **Date:** 2025-01-03  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 4 locale pages tested
@@ -542,7 +542,7 @@ Based on API response, Italian translations are correctly implemented:
 ## Authentication System Test Results (Testing Agent)
 **Date:** 2025-01-03  
 **Tester:** Testing Agent  
-**Environment:** Preview (https://recipe-ecosystem.preview.emergentagent.com)
+**Environment:** Preview (https://food-finder-test.preview.emergentagent.com)
 
 ### Test Summary
 - **Total Tests:** 10 test scenarios completed
