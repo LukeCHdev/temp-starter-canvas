@@ -14,6 +14,7 @@ import CountryPage from '@/pages/CountryPage';
 import RecipePage from '@/pages/RecipePage';
 import MenuBuilderPage from '@/pages/MenuBuilderPage';
 import TechniquesPage from '@/pages/TechniquesPage';
+import TechniqueDetailPage from '@/pages/TechniqueDetailPage';
 import AboutPage from '@/pages/AboutPage';
 import ContactPage from '@/pages/ContactPage';
 import ForAIPage from '@/pages/ForAIPage';
@@ -132,6 +133,7 @@ const LanguageRoutes = () => (
     <Route path="recipe/:slug" element={<RecipePage />} />
     <Route path="menu-builder" element={<MenuBuilderPage />} />
     <Route path="techniques" element={<TechniquesPage />} />
+    <Route path="techniques/:id" element={<TechniqueDetailPage />} />
     <Route path="favorites" element={<FavoritesPage />} />
     <Route path="about" element={<AboutPage />} />
     <Route path="contact" element={<ContactPage />} />
