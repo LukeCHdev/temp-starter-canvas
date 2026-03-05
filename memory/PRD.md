@@ -80,6 +80,9 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - `POST /api/admin/techniques` (admin only, Pydantic validated)
 - `POST /api/admin/images/generate-batch`, `GET /api/admin/images/status`
 
+### Google Analytics (DONE - Mar 2026)
+- Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
+
 ## Mocked Flows
 - Email verification and password reset (logged to console)
 
