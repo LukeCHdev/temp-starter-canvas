@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
     ChefHat, Globe, MapPin, ChevronRight, Home, Star, 
-    Filter, X, ChevronDown
+    Filter, X, ChevronDown, Search
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLanguage, SUPPORTED_LANGUAGES } from '@/context/LanguageContext';
@@ -36,12 +36,12 @@ const DISH_TYPE_KEYS = [
 
 // Continent options - keys for translation lookup
 const CONTINENT_KEYS = [
-    { value: 'europe', key: 'Europe' },
-    { value: 'asia', key: 'Asia' },
-    { value: 'americas', key: 'Americas' },
-    { value: 'africa', key: 'Africa' },
-    { value: 'middle-east', key: 'Middle East' },
-    { value: 'oceania', key: 'Oceania' },
+    { value: 'Europe', key: 'Europe' },
+    { value: 'Asia', key: 'Asia' },
+    { value: 'Americas', key: 'Americas' },
+    { value: 'Africa', key: 'Africa' },
+    { value: 'Middle East', key: 'Middle East' },
+    { value: 'Oceania', key: 'Oceania' },
 ];
 
 // Breadcrumb component with translations
@@ -117,7 +117,10 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, l
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-[#E8E4DC] bg-white hover:border-[#6A1F2E] transition-colors">
+                <button 
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-[#E8E4DC] bg-white hover:border-[#6A1F2E] transition-colors"
+                    data-testid={`filter-${title.toLowerCase().replace(/\s+/g, '-')}`}
+                >
                     {Icon && <Icon className="h-3 w-3 text-[#6A1F2E]" />}
                     <span className="text-[#2C2C2C]">{title}</span>
                     {selectedCount > 0 && (
@@ -135,6 +138,7 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, l
                             <label 
                                 key={option.value}
                                 className="flex items-center gap-2 cursor-pointer hover:bg-[#F5F2EC] p-1.5 rounded transition-colors"
+                                data-testid={`filter-option-${option.value}`}
                             >
                                 <Checkbox 
                                     checked={selectedValues.includes(option.value)}
@@ -184,15 +188,17 @@ const ExplorePage = () => {
     const [selectedContinent, setSelectedContinent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [pageTitle, setPageTitle] = useState('Explore');
-    const [showMobileFilters, setShowMobileFilters] = useState(false);
     
-    // Filter states - now arrays for multi-select
+    // Search state
+    const [searchText, setSearchText] = useState('');
+    
+    // Filter states - arrays for multi-select
     const [selectedDishTypes, setSelectedDishTypes] = useState(() => {
         const param = searchParams.get('dishType');
         return param ? param.split(',') : [];
     });
     const [selectedContinents, setSelectedContinents] = useState(() => {
-        return continent ? [continent] : [];
+        return continent ? [continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())] : [];
     });
 
     // Get translated dish types
@@ -203,7 +209,7 @@ const ExplorePage = () => {
         })), [lang]
     );
 
-    // Get translated continents
+    // Get translated continents (use actual continent names as values since DB uses names like "Europe")
     const continentOptions = useMemo(() => 
         CONTINENT_KEYS.map(c => ({
             value: c.value,
@@ -235,30 +241,20 @@ const ExplorePage = () => {
         return translated === key ? name : translated;
     }, [t]);
 
-    // Load explore data
+    // Load explore data - load ALL published recipes for client-side filtering
     const loadExploreData = useCallback(async () => {
         setLoading(true);
         const currentLang = language || 'en';
         
         try {
-            // Fetch all data in parallel
             const [topRes, recipesRes, continentsRes] = await Promise.all([
                 recipeAPI.getTopWorldwide(10, currentLang),
-                recipeAPI.getFeatured(50, currentLang),
+                recipeAPI.getFeatured(300, currentLang, 0),
                 continentAPI.getAll()
             ]);
             
             setTopRecipes(topRes.data.recipes || []);
-            
-            // Apply dish type filter if needed
-            let filteredRecipes = recipesRes.data.recipes || [];
-            if (selectedDishTypes.length > 0) {
-                filteredRecipes = filteredRecipes.filter(r => 
-                    selectedDishTypes.includes(r.dish_type)
-                );
-            }
-            setAllRecipes(filteredRecipes);
-            
+            setAllRecipes(recipesRes.data.recipes || []);
             setContinents(continentsRes.data.continents || []);
             setPageTitle(translate('explore.title', currentLang));
         } catch (error) {
@@ -267,7 +263,7 @@ const ExplorePage = () => {
         } finally {
             setLoading(false);
         }
-    }, [language, selectedDishTypes]);
+    }, [language]);
 
     // Load continent data
     const loadContinentData = useCallback(async (continentSlug) => {
@@ -327,11 +323,38 @@ const ExplorePage = () => {
             loadCountryData(country, continent);
         } else if (continent) {
             loadContinentData(continent);
-            setSelectedContinents([continent]);
         } else {
             loadExploreData();
         }
     }, [continent, country, loadCountryData, loadContinentData, loadExploreData]);
+
+    // CLIENT-SIDE COMBINED FILTERING: search + dish type + continent
+    const filteredRecipes = useMemo(() => {
+        let result = allRecipes;
+
+        // Text search filter
+        if (searchText.trim()) {
+            const query = searchText.trim().toLowerCase();
+            result = result.filter(r => {
+                const name = (r.recipe_name || r.title_original || '').toLowerCase();
+                const country = (r.origin_country || '').toLowerCase();
+                const region = (r.origin_region || '').toLowerCase();
+                return name.includes(query) || country.includes(query) || region.includes(query);
+            });
+        }
+
+        // Dish type filter
+        if (selectedDishTypes.length > 0) {
+            result = result.filter(r => selectedDishTypes.includes(r.dish_type));
+        }
+
+        // Continent filter (use continent name from DB, e.g. "Europe", "Asia")
+        if (selectedContinents.length > 0) {
+            result = result.filter(r => selectedContinents.includes(r.continent));
+        }
+
+        return result;
+    }, [allRecipes, searchText, selectedDishTypes, selectedContinents]);
 
     // Handle dish type filter changes
     const handleDishTypeChange = (values) => {
@@ -344,14 +367,9 @@ const ExplorePage = () => {
         setSearchParams(searchParams);
     };
 
-    // Handle continent filter changes
+    // Handle continent filter changes (client-side only, no navigation)
     const handleContinentChange = (values) => {
         setSelectedContinents(values);
-        if (values.length === 1) {
-            navigate(getLocalizedPath(`/explore/${values[0]}`));
-        } else if (values.length === 0) {
-            navigate(getLocalizedPath('/explore'));
-        }
     };
 
     const handleContinentSelect = useCallback((continentSlug) => {
@@ -362,13 +380,16 @@ const ExplorePage = () => {
     const clearAllFilters = () => {
         setSelectedDishTypes([]);
         setSelectedContinents([]);
+        setSearchText('');
         searchParams.delete('dishType');
         setSearchParams(searchParams);
-        navigate(getLocalizedPath('/explore'));
+        if (continent) {
+            navigate(getLocalizedPath('/explore'));
+        }
     };
 
     // Active filters count
-    const activeFiltersCount = selectedDishTypes.length + selectedContinents.length;
+    const activeFiltersCount = selectedDishTypes.length + selectedContinents.length + (searchText.trim() ? 1 : 0);
 
     // Breadcrumb props
     const breadcrumbProps = useMemo(() => ({
@@ -425,84 +446,112 @@ const ExplorePage = () => {
                 </div>
             </section>
 
-            {/* TOP FILTER BAR */}
-            <section className="bg-[#F9F7F3] border-b border-[#E8E4DC] py-3 px-4 sticky top-16 z-40">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex items-center gap-3 flex-wrap">
-                        {/* Filter Label */}
-                        <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">
-                            {translate('explore.filters', lang)}:
-                        </span>
-                        
-                        {/* Dish Type Filter */}
-                        <FilterPopover 
-                            title={translate('explore.dishType', lang)}
-                            options={dishTypeOptions}
-                            selectedValues={selectedDishTypes}
-                            onChange={handleDishTypeChange}
-                            icon={ChefHat}
-                            lang={lang}
-                            clearLabel={translate('explore.clearAll', lang)}
-                        />
-                        
-                        {/* Continent Filter */}
-                        <FilterPopover 
-                            title={translate('explore.continent', lang)}
-                            options={continentOptions}
-                            selectedValues={selectedContinents}
-                            onChange={handleContinentChange}
-                            icon={Globe}
-                            lang={lang}
-                            clearLabel={translate('explore.clearAll', lang)}
-                        />
-                        
-                        {/* Active Filter Tags */}
-                        {activeFiltersCount > 0 && (
-                            <>
-                                <div className="h-4 w-px bg-[#E8E4DC] mx-1 hidden sm:block"></div>
-                                
-                                {selectedDishTypes.map(dt => (
-                                    <Badge 
-                                        key={dt}
-                                        variant="secondary" 
-                                        className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+            {/* TOP FILTER BAR - only show on main explore view (not continent/country sub-views) */}
+            {!continent && !country && (
+                <section className="bg-[#F9F7F3] border-b border-[#E8E4DC] py-3 px-4 sticky top-16 z-40">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            {/* Search Input */}
+                            <div className="relative flex-shrink-0 w-full sm:w-auto sm:min-w-[220px]">
+                                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-[#9C9C9C]" />
+                                <input
+                                    type="text"
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
+                                    placeholder={translate('homepage.hero.searchPlaceholder', lang)}
+                                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-[#E8E4DC] bg-white focus:border-[#6A1F2E] focus:outline-none focus:ring-1 focus:ring-[#6A1F2E]/20 transition-colors"
+                                    data-testid="explore-search-input"
+                                />
+                            </div>
+
+                            {/* Filter Label */}
+                            <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">
+                                {translate('explore.filters', lang)}:
+                            </span>
+                            
+                            {/* Dish Type Filter */}
+                            <FilterPopover 
+                                title={translate('explore.dishType', lang)}
+                                options={dishTypeOptions}
+                                selectedValues={selectedDishTypes}
+                                onChange={handleDishTypeChange}
+                                icon={ChefHat}
+                                lang={lang}
+                                clearLabel={translate('explore.clearAll', lang)}
+                            />
+                            
+                            {/* Continent Filter */}
+                            <FilterPopover 
+                                title={translate('explore.continent', lang)}
+                                options={continentOptions}
+                                selectedValues={selectedContinents}
+                                onChange={handleContinentChange}
+                                icon={Globe}
+                                lang={lang}
+                                clearLabel={translate('explore.clearAll', lang)}
+                            />
+                            
+                            {/* Active Filter Tags */}
+                            {activeFiltersCount > 0 && (
+                                <>
+                                    <div className="h-4 w-px bg-[#E8E4DC] mx-1 hidden sm:block"></div>
+                                    
+                                    {searchText.trim() && (
+                                        <Badge 
+                                            variant="secondary" 
+                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                        >
+                                            "{searchText.trim()}"
+                                            <button onClick={() => setSearchText('')} data-testid="clear-search-tag">
+                                                <X className="h-2.5 w-2.5" />
+                                            </button>
+                                        </Badge>
+                                    )}
+
+                                    {selectedDishTypes.map(dt => (
+                                        <Badge 
+                                            key={dt}
+                                            variant="secondary" 
+                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                        >
+                                            {dishTypeOptions.find(d => d.value === dt)?.label}
+                                            <button onClick={() => handleDishTypeChange(selectedDishTypes.filter(v => v !== dt))}>
+                                                <X className="h-2.5 w-2.5" />
+                                            </button>
+                                        </Badge>
+                                    ))}
+                                    
+                                    {selectedContinents.map(c => (
+                                        <Badge 
+                                            key={c}
+                                            variant="secondary" 
+                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                        >
+                                            {continentOptions.find(cont => cont.value === c)?.label}
+                                            <button onClick={() => handleContinentChange(selectedContinents.filter(v => v !== c))}>
+                                                <X className="h-2.5 w-2.5" />
+                                            </button>
+                                        </Badge>
+                                    ))}
+                                    
+                                    <button 
+                                        onClick={clearAllFilters}
+                                        className="text-[10px] text-[#6A1F2E] hover:underline ml-1"
+                                        data-testid="clear-all-filters"
                                     >
-                                        {dishTypeOptions.find(d => d.value === dt)?.label}
-                                        <button onClick={() => handleDishTypeChange(selectedDishTypes.filter(v => v !== dt))}>
-                                            <X className="h-2.5 w-2.5" />
-                                        </button>
-                                    </Badge>
-                                ))}
-                                
-                                {selectedContinents.map(c => (
-                                    <Badge 
-                                        key={c}
-                                        variant="secondary" 
-                                        className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
-                                    >
-                                        {continentOptions.find(cont => cont.value === c)?.label}
-                                        <button onClick={() => handleContinentChange(selectedContinents.filter(v => v !== c))}>
-                                            <X className="h-2.5 w-2.5" />
-                                        </button>
-                                    </Badge>
-                                ))}
-                                
-                                <button 
-                                    onClick={clearAllFilters}
-                                    className="text-[10px] text-[#6A1F2E] hover:underline ml-1"
-                                >
-                                    {translate('explore.clearAll', lang)}
-                                </button>
-                            </>
-                        )}
-                        
-                        {/* Recipe Count */}
-                        <span className="text-xs text-[#7C7C7C] ml-auto">
-                            {allRecipes.length} {translate('explore.recipes', lang)}
-                        </span>
+                                        {translate('explore.clearAll', lang)}
+                                    </button>
+                                </>
+                            )}
+                            
+                            {/* Recipe Count */}
+                            <span className="text-xs text-[#7C7C7C] ml-auto" data-testid="recipe-count">
+                                {filteredRecipes.length} {translate('explore.recipes', lang)}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -585,17 +634,25 @@ const ExplorePage = () => {
                                 </div>
                             </>
                         ) : (
-                            /* Main Explore View - Recipe Grid */
+                            /* Main Explore View - Filtered Recipe Grid */
                             <>
-                                {allRecipes.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {allRecipes.map((recipe) => (
+                                {filteredRecipes.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="recipe-grid">
+                                        {filteredRecipes.map((recipe) => (
                                             <RecipeCard key={recipe.slug} recipe={recipe} variant="editorial" />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
+                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]" data-testid="no-results">
                                         <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>
+                                        {activeFiltersCount > 0 && (
+                                            <button 
+                                                onClick={clearAllFilters}
+                                                className="mt-3 text-xs text-[#6A1F2E] hover:underline"
+                                            >
+                                                {translate('explore.clearAll', lang)}
+                                            </button>
+                                        )}
                                     </div>
                                 )}
 

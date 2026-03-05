@@ -244,8 +244,9 @@ async def get_best_recipe(lang: str = "en"):
     return {"recipe": recipe, "lang": lang}
 
 @api_router.get("/recipes/featured")
-async def get_featured_recipes(limit: int = 4, lang: str = "en"):
-    """Get top featured recipes (excluding the #1 best)."""
+async def get_featured_recipes(limit: int = 4, lang: str = "en", skip: int = 1):
+    """Get top featured recipes. skip=1 excludes the #1 best (for homepage), skip=0 for explore."""
+    capped_limit = min(limit, 300)
     recipes = await db.recipes.find(
         {"status": "published"},
         {"_id": 0}
@@ -253,7 +254,7 @@ async def get_featured_recipes(limit: int = 4, lang: str = "en"):
         ("average_rating", -1),
         ("ratings_count", -1),
         ("favorites_count", -1)
-    ]).skip(1).limit(limit).to_list(limit)
+    ]).skip(skip).limit(capped_limit).to_list(capped_limit)
     
     # Translations are already embedded in recipe.translations[lang]
     return {"recipes": recipes, "lang": lang}

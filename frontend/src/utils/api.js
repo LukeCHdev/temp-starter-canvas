@@ -25,7 +25,7 @@ export const recipeAPI = {
     }),
     // Homepage & Explore - with language support
     getBest: (lang = 'en') => api.get('/recipes/best', { params: { lang } }),
-    getFeatured: (limit = 4, lang = 'en') => api.get('/recipes/featured', { params: { limit, lang } }),
+    getFeatured: (limit = 4, lang = 'en', skip = 1) => api.get('/recipes/featured', { params: { limit, lang, skip } }),
     getTopWorldwide: (limit = 10, lang = 'en') => api.get('/recipes/top-worldwide', { params: { limit, lang } }),
     getByContinent: (continent, limit = 10, lang = 'en') => api.get(`/recipes/by-continent/${continent}`, { params: { limit, lang } }),
     getByCountryName: (country, limit = 100, lang = 'en') => api.get(`/recipes/by-country/${country}`, { params: { limit, lang } }),
