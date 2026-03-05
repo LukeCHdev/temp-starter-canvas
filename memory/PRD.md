@@ -82,6 +82,19 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 
 ### Google Analytics (DONE - Mar 2026)
 - Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
+- Added AdSense meta tag `google-adsense-account` to `public/index.html`
+
+### Search & Filter Bug Fix (DONE - Mar 2026)
+- Added `dish_type` field to all 194 recipes via classification migration script (`backend/scripts/classify_dish_types.py`)
+- Categories: appetizer (21), aperitif (6), first-course (45), main-course (65), side-dish (18), dessert (24), street-food (12), festive (3)
+- Added search text input to ExplorePage for real-time client-side recipe filtering
+- Fixed dish type filter (previously returned 0 results due to missing field)
+- Fixed continent filter to work as client-side filter instead of navigating away
+- Combined filtering: search + dish type + continent all work together
+- Loads all published recipes (skip=0, limit=300) for complete client-side filtering
+- Mobile: all filters work correctly (search, dish type dropdown, continent dropdown)
+- Backend: added `skip` query parameter to `/api/recipes/featured` endpoint
+- 13/13 frontend tests passed
 
 ## Mocked Flows
 - Email verification and password reset (logged to console)
