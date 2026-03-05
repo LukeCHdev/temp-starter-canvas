@@ -3,19 +3,24 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
+/** Resolve a multilingual field: object → pick lang, string → pass through */
+const loc = (field, lang) => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  return field[lang] || field.en || Object.values(field)[0] || "";
+};
+
 const TechniqueDetailPage = () => {
   const { id } = useParams();
   const [technique, setTechnique] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { getLocalizedPath } = useLanguage();
+  const { language, getLocalizedPath } = useLanguage();
+  const lang = language || "en";
 
   useEffect(() => {
     fetch("/techniques.json")
       .then((r) => r.json())
-      .then((data) => {
-        const found = data.find((t) => t.id === id);
-        setTechnique(found || null);
-      })
+      .then((data) => setTechnique(data.find((t) => t.id === id) || null))
       .catch(() => setTechnique(null))
       .finally(() => setLoading(false));
   }, [id]);
@@ -24,15 +29,15 @@ const TechniqueDetailPage = () => {
   useEffect(() => {
     if (!technique) return;
     const prev = document.title;
-    document.title = `${technique.title} — Cooking Technique | Sous Chef Linguine`;
+    document.title = `${loc(technique.title, lang)} — Cooking Technique | Sous Chef Linguine`;
     const setMeta = (name, content) => {
       let el = document.querySelector(`meta[name="${name}"]`);
       if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
       el.setAttribute("content", content);
     };
-    setMeta("description", technique.description);
+    setMeta("description", loc(technique.description, lang));
     return () => { document.title = prev; };
-  }, [technique]);
+  }, [technique, lang]);
 
   // JSON-LD
   useEffect(() => {
@@ -43,16 +48,16 @@ const TechniqueDetailPage = () => {
     s.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "HowTo",
-      "name": technique.title,
-      "description": technique.description,
+      "name": loc(technique.title, lang),
+      "description": loc(technique.description, lang),
       "step": (technique.sections || []).map((sec) => ({
         "@type": "HowToStep",
-        "name": sec.title,
-        "text": sec.content,
+        "name": loc(sec.title, lang),
+        "text": loc(sec.content, lang),
       })),
     });
     return () => { const el = document.getElementById(sid); if (el) el.remove(); };
-  }, [technique]);
+  }, [technique, lang]);
 
   if (loading) {
     return (
@@ -85,7 +90,7 @@ const TechniqueDetailPage = () => {
         </Link>
 
         <h1 className="text-4xl font-serif text-[#1E1E1E] mb-4" data-testid="technique-title">
-          {technique.title}
+          {loc(technique.title, lang)}
         </h1>
 
         <div className="flex items-center gap-3 mb-6">
@@ -102,17 +107,17 @@ const TechniqueDetailPage = () => {
         </div>
 
         <p className="text-gray-700 text-lg leading-relaxed mb-10" data-testid="technique-description">
-          {technique.description}
+          {loc(technique.description, lang)}
         </p>
 
         <div className="space-y-8">
           {technique.sections?.map((section, i) => (
             <section key={i} className="bg-white rounded-lg p-6 shadow-sm" data-testid={`section-${i}`}>
               <h2 className="text-xl font-serif text-[#1E1E1E] mb-3">
-                {section.title}
+                {loc(section.title, lang)}
               </h2>
               <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-                {section.content}
+                {loc(section.content, lang)}
               </p>
             </section>
           ))}

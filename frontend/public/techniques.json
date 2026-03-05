@@ -1,302 +1,1738 @@
 [
-{
-"id":"blanching",
-"title":"Blanching",
-"category":"Moist Heat",
-"level":"Beginner",
-"readTime":"5 min read",
-"description":"Blanching briefly boils vegetables or fruits then shocks them in ice water to preserve color and texture.",
-"sections":[
-{"title":"Step 1","content":"Bring a large pot of salted water to a rolling boil."},
-{"title":"Step 2","content":"Add vegetables or fruits and cook for 1 to 3 minutes."},
-{"title":"Step 3","content":"Transfer immediately to an ice bath."},
-{"title":"Step 4","content":"Drain and dry once cooled."}
-]
-},
-
-{
-"id":"boiling",
-"title":"Boiling",
-"category":"Moist Heat",
-"level":"Beginner",
-"readTime":"6 min read",
-"description":"Boiling cooks food in rapidly bubbling water at high temperature.",
-"sections":[
-{"title":"Step 1","content":"Fill a pot with water and add salt."},
-{"title":"Step 2","content":"Bring water to a full rolling boil."},
-{"title":"Step 3","content":"Add ingredients and maintain vigorous bubbles."},
-{"title":"Step 4","content":"Cook until desired tenderness."}
-]
-},
-
-{
-"id":"braising",
-"title":"Braising",
-"category":"Combination",
-"level":"Intermediate",
-"readTime":"10 min read",
-"description":"Braising combines searing and slow cooking in liquid to tenderize tough cuts.",
-"sections":[
-{"title":"Step 1","content":"Season and sear meat until browned."},
-{"title":"Step 2","content":"Add aromatics and liquid."},
-{"title":"Step 3","content":"Cover and cook slowly at low heat."},
-{"title":"Step 4","content":"Cook until fork tender."}
-]
-},
-
-{
-"id":"sauteing",
-"title":"Sautéing",
-"category":"Dry Heat",
-"level":"Beginner",
-"readTime":"7 min read",
-"description":"Sautéing quickly cooks food in a small amount of fat over high heat.",
-"sections":[
-{"title":"Step 1","content":"Heat skillet with oil or butter."},
-{"title":"Step 2","content":"Add food in a single layer."},
-{"title":"Step 3","content":"Toss or stir frequently."},
-{"title":"Step 4","content":"Cook until lightly browned."}
-]
-},
-
-{
-"id":"roasting",
-"title":"Roasting",
-"category":"Dry Heat",
-"level":"Beginner",
-"readTime":"8 min read",
-"description":"Roasting cooks food using hot dry air in an oven.",
-"sections":[
-{"title":"Step 1","content":"Preheat oven to high temperature."},
-{"title":"Step 2","content":"Season ingredients with oil and spices."},
-{"title":"Step 3","content":"Spread food on a roasting pan."},
-{"title":"Step 4","content":"Roast until golden and tender."}
-]
-},
-
-{
-"id":"searing",
-"title":"Searing",
-"category":"Dry Heat",
-"level":"Beginner",
-"readTime":"6 min read",
-"description":"Searing uses intense heat to create a browned crust on food.",
-"sections":[
-{"title":"Step 1","content":"Heat pan until very hot."},
-{"title":"Step 2","content":"Add oil with high smoke point."},
-{"title":"Step 3","content":"Place meat or vegetables in pan."},
-{"title":"Step 4","content":"Cook without moving until crust forms."}
-]
-},
-
-{
-"id":"grilling",
-"title":"Grilling",
-"category":"Dry Heat",
-"level":"Beginner",
-"readTime":"7 min read",
-"description":"Grilling cooks food over direct radiant heat.",
-"sections":[
-{"title":"Step 1","content":"Preheat grill."},
-{"title":"Step 2","content":"Oil grill grates lightly."},
-{"title":"Step 3","content":"Place food directly over heat."},
-{"title":"Step 4","content":"Turn once halfway through cooking."}
-]
-},
-
-{
-"id":"steaming",
-"title":"Steaming",
-"category":"Moist Heat",
-"level":"Beginner",
-"readTime":"6 min read",
-"description":"Steaming cooks food using hot vapor from boiling water.",
-"sections":[
-{"title":"Step 1","content":"Bring water to a boil."},
-{"title":"Step 2","content":"Place food in steamer basket."},
-{"title":"Step 3","content":"Cover and allow steam to cook food."},
-{"title":"Step 4","content":"Cook until tender."}
-]
-},
-
-{
-"id":"simmering",
-"title":"Simmering",
-"category":"Moist Heat",
-"level":"Beginner",
-"readTime":"5 min read",
-"description":"Simmering cooks food in liquid just below boiling temperature.",
-"sections":[
-{"title":"Step 1","content":"Bring liquid close to boiling."},
-{"title":"Step 2","content":"Reduce heat until gentle bubbles appear."},
-{"title":"Step 3","content":"Add ingredients."},
-{"title":"Step 4","content":"Cook slowly for even flavor development."}
-]
-},
-
-{
-"id":"frying",
-"title":"Frying",
-"category":"Dry Heat",
-"level":"Beginner",
-"readTime":"7 min read",
-"description":"Frying cooks food in hot oil to create a crispy surface.",
-"sections":[
-{"title":"Step 1","content":"Heat oil in pan or fryer."},
-{"title":"Step 2","content":"Add food carefully."},
-{"title":"Step 3","content":"Cook until golden brown."},
-{"title":"Step 4","content":"Drain excess oil on paper towel."}
-]
-},
-
-{
-"id":"deglazing",
-"title":"Deglazing",
-"category":"Sauce Technique",
-"level":"Beginner",
-"readTime":"4 min read",
-"description":"Deglazing dissolves caramelized bits left in a pan to create sauce.",
-"sections":[
-{"title":"Step 1","content":"Cook food and leave browned bits in pan."},
-{"title":"Step 2","content":"Add liquid such as wine or stock."},
-{"title":"Step 3","content":"Scrape pan to dissolve fond."},
-{"title":"Step 4","content":"Reduce liquid into sauce."}
-]
-},
-
-{
-"id":"reduction",
-"title":"Reduction",
-"category":"Sauce Technique",
-"level":"Beginner",
-"readTime":"5 min read",
-"description":"Reduction thickens sauces by evaporating liquid through simmering.",
-"sections":[
-{"title":"Step 1","content":"Bring sauce to simmer."},
-{"title":"Step 2","content":"Allow liquid to evaporate slowly."},
-{"title":"Step 3","content":"Stir occasionally."},
-{"title":"Step 4","content":"Stop when sauce reaches desired thickness."}
-]
-},
-
-{
-"id":"emulsification",
-"title":"Emulsification",
-"category":"Sauce Technique",
-"level":"Intermediate",
-"readTime":"6 min read",
-"description":"Emulsification combines liquids that normally do not mix such as oil and vinegar.",
-"sections":[
-{"title":"Step 1","content":"Start with base ingredient like egg yolk or mustard."},
-{"title":"Step 2","content":"Slowly add oil while whisking."},
-{"title":"Step 3","content":"Maintain constant mixing."},
-{"title":"Step 4","content":"Stop once mixture thickens."}
-]
-},
-
-{
-"id":"julienne",
-"title":"Julienne Cut",
-"category":"Knife Skills",
-"level":"Beginner",
-"readTime":"4 min read",
-"description":"Julienne produces thin matchstick shaped vegetable strips.",
-"sections":[
-{"title":"Step 1","content":"Trim vegetable into rectangular shape."},
-{"title":"Step 2","content":"Slice thin planks."},
-{"title":"Step 3","content":"Stack planks."},
-{"title":"Step 4","content":"Cut into thin strips."}
-]
-},
-
-{
-"id":"brunoise",
-"title":"Brunoise Cut",
-"category":"Knife Skills",
-"level":"Intermediate",
-"readTime":"4 min read",
-"description":"Brunoise creates very small cubes from julienne strips.",
-"sections":[
-{"title":"Step 1","content":"Prepare julienne strips."},
-{"title":"Step 2","content":"Align strips together."},
-{"title":"Step 3","content":"Cut across strips."},
-{"title":"Step 4","content":"Create tiny cubes."}
-]
-},
-
-{
-"id":"marinating",
-"title":"Marinating",
-"category":"Preparation",
-"level":"Beginner",
-"readTime":"5 min read",
-"description":"Marinating soaks food in seasoned liquid to add flavor and tenderize.",
-"sections":[
-{"title":"Step 1","content":"Combine oil, acid and seasoning."},
-{"title":"Step 2","content":"Add food to marinade."},
-{"title":"Step 3","content":"Refrigerate for several hours."},
-{"title":"Step 4","content":"Remove and cook."}
-]
-},
-
-{
-"id":"fermentation",
-"title":"Fermentation",
-"category":"Preservation",
-"level":"Advanced",
-"readTime":"10 min read",
-"description":"Fermentation transforms food through beneficial microorganisms.",
-"sections":[
-{"title":"Step 1","content":"Prepare ingredients and salt."},
-{"title":"Step 2","content":"Allow natural bacteria to develop."},
-{"title":"Step 3","content":"Maintain controlled temperature."},
-{"title":"Step 4","content":"Store once fermentation is complete."}
-]
-},
-
-{
-"id":"pickling",
-"title":"Pickling",
-"category":"Preservation",
-"level":"Beginner",
-"readTime":"6 min read",
-"description":"Pickling preserves foods in acidic liquid such as vinegar.",
-"sections":[
-{"title":"Step 1","content":"Prepare vinegar brine."},
-{"title":"Step 2","content":"Add vegetables or fruits."},
-{"title":"Step 3","content":"Seal in jar."},
-{"title":"Step 4","content":"Allow flavors to develop."}
-]
-},
-
-{
-"id":"clarified-butter",
-"title":"Clarified Butter",
-"category":"Preparation",
-"level":"Beginner",
-"readTime":"6 min read",
-"description":"Clarified butter is butter that has been gently heated to remove water and milk solids, leaving pure butterfat with a higher smoke point and smooth consistency.",
-"sections":[
-{"title":"Purpose","content":"Clarifying butter improves consistency and increases the smoke point."},
-{"title":"Step 1","content":"Melt unsalted butter slowly in a saucepan."},
-{"title":"Step 2","content":"Allow butter to separate."},
-{"title":"Step 3","content":"Skim foam."},
-{"title":"Step 4","content":"Pour clear butterfat into container."}
-]
-},
-
-{
-"id":"caramelization",
-"title":"Caramelization",
-"category":"Flavor Development",
-"level":"Beginner",
-"readTime":"5 min read",
-"description":"Caramelization occurs when sugars break down under heat creating deep flavor and golden color.",
-"sections":[
-{"title":"Step 1","content":"Heat sugar or foods containing natural sugars."},
-{"title":"Step 2","content":"Allow sugars to melt and darken."},
-{"title":"Step 3","content":"Control heat carefully."},
-{"title":"Step 4","content":"Use caramelized food for deeper flavor."}
-]
-}
+  {
+    "id": "blanching",
+    "title": {
+      "en": "Blanching",
+      "it": "Sbollentare",
+      "fr": "Blanchir",
+      "es": "Escaldar",
+      "de": "Blanchieren"
+    },
+    "category": "Moist Heat",
+    "level": "Beginner",
+    "readTime": "5 min read",
+    "description": {
+      "en": "Blanching briefly boils vegetables or fruits then shocks them in ice water to preserve color and texture.",
+      "it": "Lo sbollentare cuoce brevemente verdure o frutta in acqua bollente e poi le raffredda in acqua ghiacciata per preservare colore e consistenza.",
+      "fr": "Le blanchiment plonge brièvement les légumes ou fruits dans l'eau bouillante puis les refroidit dans l'eau glacée pour préserver couleur et texture.",
+      "es": "El escaldado hierve brevemente verduras o frutas y luego las enfría en agua helada para preservar el color y la textura.",
+      "de": "Blanchieren kocht Gemüse oder Obst kurz in kochendem Wasser und schreckt es dann in Eiswasser ab, um Farbe und Textur zu erhalten."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Bring a large pot of salted water to a rolling boil.",
+          "it": "Portare a ebollizione una grande pentola d'acqua salata.",
+          "fr": "Porter une grande casserole d'eau salée à ébullition.",
+          "es": "Llevar a ebullición una olla grande de agua con sal.",
+          "de": "Einen großen Topf Salzwasser zum Kochen bringen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Add vegetables or fruits and cook for 1 to 3 minutes.",
+          "it": "Aggiungere verdure o frutta e cuocere per 1-3 minuti.",
+          "fr": "Ajouter les légumes ou fruits et cuire pendant 1 à 3 minutes.",
+          "es": "Añadir verduras o frutas y cocinar de 1 a 3 minutos.",
+          "de": "Gemüse oder Obst hinzufügen und 1 bis 3 Minuten kochen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Transfer immediately to an ice bath.",
+          "it": "Trasferire immediatamente in un bagno di ghiaccio.",
+          "fr": "Transférer immédiatement dans un bain de glace.",
+          "es": "Transferir inmediatamente a un baño de hielo.",
+          "de": "Sofort in ein Eisbad geben."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Drain and dry once cooled.",
+          "it": "Scolare e asciugare una volta raffreddato.",
+          "fr": "Égoutter et sécher une fois refroidi.",
+          "es": "Escurrir y secar una vez enfriado.",
+          "de": "Abtropfen lassen und trocknen, sobald es abgekühlt ist."
+        }
+      }
+    ]
+  },
+  {
+    "id": "boiling",
+    "title": {
+      "en": "Boiling",
+      "it": "Bollitura",
+      "fr": "Ébullition",
+      "es": "Hervir",
+      "de": "Kochen"
+    },
+    "category": "Moist Heat",
+    "level": "Beginner",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Boiling cooks food in rapidly bubbling water at high temperature.",
+      "it": "La bollitura cuoce il cibo in acqua a temperatura elevata con bolle rapide.",
+      "fr": "L'ébullition cuit les aliments dans une eau à gros bouillons à haute température.",
+      "es": "Hervir cocina los alimentos en agua hirviendo a alta temperatura.",
+      "de": "Kochen gart Lebensmittel in sprudelnd kochendem Wasser bei hoher Temperatur."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Fill a pot with water and add salt.",
+          "it": "Riempire una pentola d'acqua e aggiungere sale.",
+          "fr": "Remplir une casserole d'eau et ajouter du sel.",
+          "es": "Llenar una olla con agua y añadir sal.",
+          "de": "Einen Topf mit Wasser füllen und Salz hinzufügen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Bring water to a full rolling boil.",
+          "it": "Portare l'acqua a piena ebollizione.",
+          "fr": "Porter l'eau à pleine ébullition.",
+          "es": "Llevar el agua a ebullición completa.",
+          "de": "Das Wasser zum vollen Kochen bringen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Add ingredients and maintain vigorous bubbles.",
+          "it": "Aggiungere gli ingredienti e mantenere un'ebollizione vigorosa.",
+          "fr": "Ajouter les ingrédients et maintenir une ébullition vigoureuse.",
+          "es": "Añadir los ingredientes y mantener un hervor vigoroso.",
+          "de": "Zutaten hinzufügen und kräftiges Sprudeln beibehalten."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Cook until desired tenderness.",
+          "it": "Cuocere fino alla morbidezza desiderata.",
+          "fr": "Cuire jusqu'à la tendreté désirée.",
+          "es": "Cocinar hasta alcanzar la ternura deseada.",
+          "de": "Kochen, bis die gewünschte Zartheit erreicht ist."
+        }
+      }
+    ]
+  },
+  {
+    "id": "braising",
+    "title": {
+      "en": "Braising",
+      "it": "Brasatura",
+      "fr": "Braiser",
+      "es": "Estofar",
+      "de": "Schmoren"
+    },
+    "category": "Combination",
+    "level": "Intermediate",
+    "readTime": "10 min read",
+    "description": {
+      "en": "Braising combines searing and slow cooking in liquid to tenderize tough cuts.",
+      "it": "La brasatura combina la rosolatura con la cottura lenta in liquido per intenerire tagli duri.",
+      "fr": "Le braisage combine la saisie et la cuisson lente dans un liquide pour attendrir les morceaux durs.",
+      "es": "El estofado combina el sellado y la cocción lenta en líquido para ablandar cortes duros.",
+      "de": "Schmoren kombiniert Anbraten und langsames Garen in Flüssigkeit, um zähes Fleisch zart zu machen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Season and sear meat until browned.",
+          "it": "Condire e rosolare la carne fino a doratura.",
+          "fr": "Assaisonner et saisir la viande jusqu'à ce qu'elle soit dorée.",
+          "es": "Sazonar y sellar la carne hasta dorarla.",
+          "de": "Fleisch würzen und anbraten, bis es gebräunt ist."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Add aromatics and deglaze with liquid.",
+          "it": "Aggiungere gli aromi e sfumare con il liquido.",
+          "fr": "Ajouter les aromates et déglacer avec le liquide.",
+          "es": "Añadir aromáticos y desglasear con líquido.",
+          "de": "Aromen hinzufügen und mit Flüssigkeit ablöschen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Cover and cook slowly at low temperature.",
+          "it": "Coprire e cuocere lentamente a bassa temperatura.",
+          "fr": "Couvrir et cuire lentement à basse température.",
+          "es": "Tapar y cocinar lentamente a baja temperatura.",
+          "de": "Zudecken und langsam bei niedriger Temperatur garen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Cook until meat is fork-tender.",
+          "it": "Cuocere fino a quando la carne è tenera alla forchetta.",
+          "fr": "Cuire jusqu'à ce que la viande soit tendre à la fourchette.",
+          "es": "Cocinar hasta que la carne esté tierna al tenedor.",
+          "de": "Garen, bis das Fleisch butterzart ist."
+        }
+      }
+    ]
+  },
+  {
+    "id": "sauteing",
+    "title": {
+      "en": "Sautéing",
+      "it": "Saltare in padella",
+      "fr": "Sauter",
+      "es": "Saltear",
+      "de": "Sautieren"
+    },
+    "category": "Dry Heat",
+    "level": "Beginner",
+    "readTime": "7 min read",
+    "description": {
+      "en": "Sautéing quickly cooks food in a small amount of fat over high heat.",
+      "it": "Il saltare in padella cuoce rapidamente il cibo con poco grasso su fiamma alta.",
+      "fr": "Sauter cuit rapidement les aliments dans une petite quantité de matière grasse à feu vif.",
+      "es": "Saltear cocina rápidamente los alimentos con poca grasa a fuego alto.",
+      "de": "Sautieren gart Lebensmittel schnell in wenig Fett bei hoher Hitze."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Heat oil or butter in a wide pan over medium-high heat.",
+          "it": "Scaldare olio o burro in una padella larga a fuoco medio-alto.",
+          "fr": "Chauffer de l'huile ou du beurre dans une large poêle à feu moyen-vif.",
+          "es": "Calentar aceite o mantequilla en una sartén amplia a fuego medio-alto.",
+          "de": "Öl oder Butter in einer breiten Pfanne bei mittlerer bis hoher Hitze erhitzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Add ingredients in a single layer without crowding.",
+          "it": "Aggiungere gli ingredienti in un unico strato senza sovraffollare.",
+          "fr": "Ajouter les ingrédients en une seule couche sans encombrer.",
+          "es": "Añadir los ingredientes en una sola capa sin amontonar.",
+          "de": "Zutaten in einer einzigen Schicht hinzufügen, ohne zu überfüllen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Toss or stir frequently for even cooking.",
+          "it": "Mescolare o girare frequentemente per una cottura uniforme.",
+          "fr": "Remuer ou retourner fréquemment pour une cuisson uniforme.",
+          "es": "Remover o agitar frecuentemente para una cocción uniforme.",
+          "de": "Häufig wenden oder rühren für gleichmäßiges Garen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Cook until golden and just done.",
+          "it": "Cuocere fino a doratura e appena cotto.",
+          "fr": "Cuire jusqu'à ce que ce soit doré et juste cuit.",
+          "es": "Cocinar hasta que esté dorado y justo hecho.",
+          "de": "Garen, bis es goldbraun und gerade durch ist."
+        }
+      }
+    ]
+  },
+  {
+    "id": "roasting",
+    "title": {
+      "en": "Roasting",
+      "it": "Arrosto",
+      "fr": "Rôtir",
+      "es": "Asar al horno",
+      "de": "Braten im Ofen"
+    },
+    "category": "Dry Heat",
+    "level": "Beginner",
+    "readTime": "8 min read",
+    "description": {
+      "en": "Roasting cooks food using hot dry air in an oven.",
+      "it": "L'arrosto cuoce il cibo usando aria calda e secca nel forno.",
+      "fr": "Le rôtissage cuit les aliments à l'air chaud sec dans un four.",
+      "es": "Asar al horno cocina los alimentos usando aire caliente seco en un horno.",
+      "de": "Braten im Ofen gart Lebensmittel mit heißer, trockener Luft."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Preheat oven to the recommended temperature.",
+          "it": "Preriscaldare il forno alla temperatura raccomandata.",
+          "fr": "Préchauffer le four à la température recommandée.",
+          "es": "Precalentar el horno a la temperatura recomendada.",
+          "de": "Den Ofen auf die empfohlene Temperatur vorheizen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Season the food and place it on a roasting rack or tray.",
+          "it": "Condire il cibo e posizionarlo su una griglia o teglia.",
+          "fr": "Assaisonner l'aliment et le placer sur une grille ou un plateau.",
+          "es": "Sazonar el alimento y colocarlo en una rejilla o bandeja.",
+          "de": "Das Essen würzen und auf ein Rost oder Blech legen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Cook uncovered, basting occasionally.",
+          "it": "Cuocere scoperto, irrorando occasionalmente.",
+          "fr": "Cuire à découvert, en arrosant de temps en temps.",
+          "es": "Cocinar descubierto, rociando ocasionalmente.",
+          "de": "Offen garen und gelegentlich mit Bratensaft begießen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Let the food rest before carving or serving.",
+          "it": "Lasciar riposare il cibo prima di tagliare o servire.",
+          "fr": "Laisser reposer avant de découper ou servir.",
+          "es": "Dejar reposar antes de cortar o servir.",
+          "de": "Das Essen vor dem Anschneiden oder Servieren ruhen lassen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "searing",
+    "title": {
+      "en": "Searing",
+      "it": "Rosolatura",
+      "fr": "Saisir",
+      "es": "Sellar",
+      "de": "Scharf Anbraten"
+    },
+    "category": "Dry Heat",
+    "level": "Beginner",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Searing uses intense heat to create a browned crust on food.",
+      "it": "La rosolatura usa calore intenso per creare una crosta dorata sul cibo.",
+      "fr": "Saisir utilise une chaleur intense pour créer une croûte dorée sur l'aliment.",
+      "es": "Sellar usa calor intenso para crear una costra dorada en el alimento.",
+      "de": "Scharfes Anbraten nutzt intensive Hitze, um eine gebräunte Kruste zu erzeugen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Pat food dry and season well.",
+          "it": "Asciugare bene il cibo e condire abbondantemente.",
+          "fr": "Sécher l'aliment et bien assaisonner.",
+          "es": "Secar bien el alimento y sazonar.",
+          "de": "Das Essen trocken tupfen und gut würzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Heat a heavy skillet until smoking hot.",
+          "it": "Scaldare una padella pesante fino a quando fuma.",
+          "fr": "Chauffer une poêle lourde jusqu'à ce qu'elle fume.",
+          "es": "Calentar una sartén pesada hasta que humee.",
+          "de": "Eine schwere Pfanne erhitzen, bis sie raucht."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Place food and do not move it for 2 to 3 minutes.",
+          "it": "Posizionare il cibo e non muoverlo per 2-3 minuti.",
+          "fr": "Placer l'aliment et ne pas le bouger pendant 2 à 3 minutes.",
+          "es": "Colocar el alimento y no moverlo durante 2 a 3 minutos.",
+          "de": "Das Essen hineinlegen und 2 bis 3 Minuten nicht bewegen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Flip and repeat on the other side.",
+          "it": "Girare e ripetere sull'altro lato.",
+          "fr": "Retourner et répéter de l'autre côté.",
+          "es": "Voltear y repetir por el otro lado.",
+          "de": "Wenden und auf der anderen Seite wiederholen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "grilling",
+    "title": {
+      "en": "Grilling",
+      "it": "Grigliata",
+      "fr": "Griller",
+      "es": "Asar a la parrilla",
+      "de": "Grillen"
+    },
+    "category": "Dry Heat",
+    "level": "Beginner",
+    "readTime": "7 min read",
+    "description": {
+      "en": "Grilling cooks food over direct radiant heat.",
+      "it": "La grigliata cuoce il cibo su calore radiante diretto.",
+      "fr": "Griller cuit les aliments à la chaleur rayonnante directe.",
+      "es": "Asar a la parrilla cocina los alimentos sobre calor radiante directo.",
+      "de": "Grillen gart Lebensmittel über direkter Strahlungshitze."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Preheat grill to high and clean grates.",
+          "it": "Preriscaldare la griglia ad alta temperatura e pulire le griglie.",
+          "fr": "Préchauffer le gril à feu vif et nettoyer les grilles.",
+          "es": "Precalentar la parrilla a fuego alto y limpiar las rejillas.",
+          "de": "Grill auf hohe Hitze vorheizen und Rost reinigen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Oil and season the food.",
+          "it": "Oliare e condire il cibo.",
+          "fr": "Huiler et assaisonner l'aliment.",
+          "es": "Aceitar y sazonar el alimento.",
+          "de": "Das Essen ölen und würzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Place food directly over the heat source.",
+          "it": "Posizionare il cibo direttamente sopra la fonte di calore.",
+          "fr": "Placer l'aliment directement au-dessus de la source de chaleur.",
+          "es": "Colocar el alimento directamente sobre la fuente de calor.",
+          "de": "Das Essen direkt über die Hitzequelle legen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Flip once and cook to desired doneness.",
+          "it": "Girare una volta e cuocere al grado di cottura desiderato.",
+          "fr": "Retourner une fois et cuire au degré souhaité.",
+          "es": "Voltear una vez y cocinar al punto deseado.",
+          "de": "Einmal wenden und bis zum gewünschten Gargrad grillen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "steaming",
+    "title": {
+      "en": "Steaming",
+      "it": "Cottura a vapore",
+      "fr": "Cuire à la vapeur",
+      "es": "Cocinar al vapor",
+      "de": "Dämpfen"
+    },
+    "category": "Moist Heat",
+    "level": "Beginner",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Steaming cooks food using the vapor from boiling water without direct contact.",
+      "it": "La cottura a vapore cuoce il cibo usando il vapore dell'acqua bollente senza contatto diretto.",
+      "fr": "La cuisson à la vapeur cuit les aliments grâce à la vapeur d'eau bouillante sans contact direct.",
+      "es": "Cocinar al vapor cuece los alimentos usando el vapor del agua hirviendo sin contacto directo.",
+      "de": "Dämpfen gart Lebensmittel mit dem Dampf von kochendem Wasser ohne direkten Kontakt."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Bring water to a boil in the base of a steamer.",
+          "it": "Portare l'acqua a ebollizione nella base della vaporiera.",
+          "fr": "Porter l'eau à ébullition dans la base du cuiseur vapeur.",
+          "es": "Llevar el agua a ebullición en la base de la vaporera.",
+          "de": "Wasser im unteren Teil des Dampfgarers zum Kochen bringen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Place food in the steamer basket above the water.",
+          "it": "Posizionare il cibo nel cestello del vapore sopra l'acqua.",
+          "fr": "Placer les aliments dans le panier au-dessus de l'eau.",
+          "es": "Colocar los alimentos en la canasta de la vaporera sobre el agua.",
+          "de": "Lebensmittel in den Dampfkorb über dem Wasser legen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Cover tightly and cook until tender.",
+          "it": "Coprire ermeticamente e cuocere fino a morbidezza.",
+          "fr": "Couvrir hermétiquement et cuire jusqu'à tendreté.",
+          "es": "Tapar herméticamente y cocinar hasta que esté tierno.",
+          "de": "Fest abdecken und garen, bis es zart ist."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Remove carefully to avoid steam burns.",
+          "it": "Rimuovere con attenzione per evitare scottature dal vapore.",
+          "fr": "Retirer avec précaution pour éviter les brûlures de vapeur.",
+          "es": "Retirar con cuidado para evitar quemaduras por vapor.",
+          "de": "Vorsichtig herausnehmen, um Dampfverbrennungen zu vermeiden."
+        }
+      }
+    ]
+  },
+  {
+    "id": "simmering",
+    "title": {
+      "en": "Simmering",
+      "it": "Sobbollire",
+      "fr": "Mijoter",
+      "es": "Hervir a fuego lento",
+      "de": "Simmern"
+    },
+    "category": "Moist Heat",
+    "level": "Beginner",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Simmering cooks food gently in liquid just below the boiling point.",
+      "it": "Il sobbollire cuoce il cibo delicatamente in un liquido appena sotto il punto di ebollizione.",
+      "fr": "Mijoter cuit les aliments doucement dans un liquide juste en dessous du point d'ébullition.",
+      "es": "Hervir a fuego lento cuece los alimentos suavemente en líquido justo por debajo del punto de ebullición.",
+      "de": "Simmern gart Lebensmittel sanft in Flüssigkeit knapp unter dem Siedepunkt."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Bring liquid to a boil over medium-high heat.",
+          "it": "Portare il liquido a ebollizione a fuoco medio-alto.",
+          "fr": "Porter le liquide à ébullition à feu moyen-vif.",
+          "es": "Llevar el líquido a ebullición a fuego medio-alto.",
+          "de": "Flüssigkeit bei mittlerer bis hoher Hitze zum Kochen bringen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Reduce heat until small bubbles gently break the surface.",
+          "it": "Ridurre il fuoco fino a quando piccole bolle rompono delicatamente la superficie.",
+          "fr": "Réduire le feu jusqu'à ce que de petites bulles brisent doucement la surface.",
+          "es": "Reducir el fuego hasta que pequeñas burbujas rompan suavemente la superficie.",
+          "de": "Hitze reduzieren, bis kleine Blasen sanft an die Oberfläche steigen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Add ingredients and maintain the gentle simmer.",
+          "it": "Aggiungere gli ingredienti e mantenere il leggero sobbollire.",
+          "fr": "Ajouter les ingrédients et maintenir le léger frémissement.",
+          "es": "Añadir los ingredientes y mantener el hervor suave.",
+          "de": "Zutaten hinzufügen und das sanfte Simmern beibehalten."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Cook low and slow until flavors develop.",
+          "it": "Cuocere a fuoco basso e lento fino a quando i sapori si sviluppano.",
+          "fr": "Cuire à feu doux et lentement jusqu'à développement des saveurs.",
+          "es": "Cocinar a fuego bajo y lento hasta que se desarrollen los sabores.",
+          "de": "Langsam und bei niedriger Hitze garen, bis sich die Aromen entfalten."
+        }
+      }
+    ]
+  },
+  {
+    "id": "frying",
+    "title": {
+      "en": "Frying",
+      "it": "Frittura",
+      "fr": "Frire",
+      "es": "Freír",
+      "de": "Frittieren"
+    },
+    "category": "Dry Heat",
+    "level": "Beginner",
+    "readTime": "7 min read",
+    "description": {
+      "en": "Frying cooks food in hot oil to create a crispy surface.",
+      "it": "La frittura cuoce il cibo in olio caldo per creare una superficie croccante.",
+      "fr": "La friture cuit les aliments dans de l'huile chaude pour créer une surface croustillante.",
+      "es": "Freír cocina los alimentos en aceite caliente para crear una superficie crujiente.",
+      "de": "Frittieren gart Lebensmittel in heißem Öl, um eine knusprige Oberfläche zu erzeugen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Heat oil to the correct temperature using a thermometer.",
+          "it": "Scaldare l'olio alla temperatura corretta usando un termometro.",
+          "fr": "Chauffer l'huile à la bonne température avec un thermomètre.",
+          "es": "Calentar el aceite a la temperatura correcta usando un termómetro.",
+          "de": "Öl mit einem Thermometer auf die richtige Temperatur erhitzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Carefully lower food into the hot oil.",
+          "it": "Abbassare con cautela il cibo nell'olio caldo.",
+          "fr": "Plonger délicatement les aliments dans l'huile chaude.",
+          "es": "Introducir cuidadosamente los alimentos en el aceite caliente.",
+          "de": "Das Essen vorsichtig in das heiße Öl geben."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Do not overcrowd the pan to maintain oil temperature.",
+          "it": "Non sovraffollare la padella per mantenere la temperatura dell'olio.",
+          "fr": "Ne pas surcharger la poêle pour maintenir la température de l'huile.",
+          "es": "No sobrecargar la sartén para mantener la temperatura del aceite.",
+          "de": "Die Pfanne nicht überfüllen, um die Öltemperatur zu halten."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Remove when golden and drain on paper towels.",
+          "it": "Rimuovere quando dorato e scolare su carta assorbente.",
+          "fr": "Retirer quand c'est doré et égoutter sur du papier absorbant.",
+          "es": "Retirar cuando esté dorado y escurrir sobre papel absorbente.",
+          "de": "Herausnehmen, wenn es goldbraun ist, und auf Küchenpapier abtropfen lassen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "deglazing",
+    "title": {
+      "en": "Deglazing",
+      "it": "Sfumare",
+      "fr": "Déglacer",
+      "es": "Desglasear",
+      "de": "Ablöschen"
+    },
+    "category": "Sauce Technique",
+    "level": "Intermediate",
+    "readTime": "5 min read",
+    "description": {
+      "en": "Deglazing dissolves browned bits from a pan using liquid to create a flavorful sauce base.",
+      "it": "Lo sfumare scioglie i residui di cottura dalla padella usando liquido per creare una base saporita per salse.",
+      "fr": "Déglacer dissout les sucs de cuisson de la poêle avec un liquide pour créer une base de sauce savoureuse.",
+      "es": "Desglasear disuelve los trozos dorados de la sartén usando líquido para crear una base de salsa sabrosa.",
+      "de": "Ablöschen löst die gebräunten Rückstände mit Flüssigkeit aus der Pfanne, um eine geschmackvolle Saucenbasis zu schaffen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Remove the cooked food and excess fat from the hot pan.",
+          "it": "Rimuovere il cibo cotto e il grasso in eccesso dalla padella calda.",
+          "fr": "Retirer les aliments cuits et l'excès de graisse de la poêle chaude.",
+          "es": "Retirar la comida cocida y el exceso de grasa de la sartén caliente.",
+          "de": "Das gegarte Essen und überschüssiges Fett aus der heißen Pfanne entfernen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Add wine, stock, or another liquid while the pan is still hot.",
+          "it": "Aggiungere vino, brodo o altro liquido mentre la padella è ancora calda.",
+          "fr": "Ajouter du vin, du bouillon ou un autre liquide tant que la poêle est chaude.",
+          "es": "Añadir vino, caldo u otro líquido mientras la sartén aún está caliente.",
+          "de": "Wein, Brühe oder eine andere Flüssigkeit hinzufügen, solange die Pfanne noch heiß ist."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Scrape browned bits with a wooden spoon.",
+          "it": "Raschiare i residui dorati con un cucchiaio di legno.",
+          "fr": "Gratter les sucs avec une cuillère en bois.",
+          "es": "Raspar los trozos dorados con una cuchara de madera.",
+          "de": "Gebräunte Rückstände mit einem Holzlöffel lösen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Reduce slightly to intensify flavor.",
+          "it": "Ridurre leggermente per intensificare il sapore.",
+          "fr": "Réduire légèrement pour intensifier la saveur.",
+          "es": "Reducir ligeramente para intensificar el sabor.",
+          "de": "Leicht einreduzieren, um den Geschmack zu intensivieren."
+        }
+      }
+    ]
+  },
+  {
+    "id": "reduction",
+    "title": {
+      "en": "Reduction",
+      "it": "Riduzione",
+      "fr": "Réduction",
+      "es": "Reducción",
+      "de": "Reduktion"
+    },
+    "category": "Sauce Technique",
+    "level": "Intermediate",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Reduction thickens and intensifies a liquid by simmering to evaporate water.",
+      "it": "La riduzione addensa e intensifica un liquido facendolo sobbollire per far evaporare l'acqua.",
+      "fr": "La réduction épaissit et intensifie un liquide en le faisant mijoter pour évaporer l'eau.",
+      "es": "La reducción espesa e intensifica un líquido hirviéndolo a fuego lento para evaporar el agua.",
+      "de": "Reduktion verdickt und intensiviert eine Flüssigkeit durch Simmern, um Wasser zu verdampfen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Pour the liquid into a wide saucepan.",
+          "it": "Versare il liquido in un tegame largo.",
+          "fr": "Verser le liquide dans une casserole large.",
+          "es": "Verter el líquido en una cacerola ancha.",
+          "de": "Die Flüssigkeit in einen breiten Topf gießen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Bring to a gentle boil over medium heat.",
+          "it": "Portare a leggera ebollizione a fuoco medio.",
+          "fr": "Porter à légère ébullition à feu moyen.",
+          "es": "Llevar a ebullición suave a fuego medio.",
+          "de": "Bei mittlerer Hitze zum leichten Kochen bringen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Simmer uncovered, stirring occasionally.",
+          "it": "Sobbollire scoperto, mescolando occasionalmente.",
+          "fr": "Laisser mijoter à découvert, en remuant de temps en temps.",
+          "es": "Hervir a fuego lento sin tapar, removiendo ocasionalmente.",
+          "de": "Offen simmern lassen und gelegentlich umrühren."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Cook until volume is reduced by about half.",
+          "it": "Cuocere fino a ridurre il volume di circa la metà.",
+          "fr": "Cuire jusqu'à ce que le volume soit réduit d'environ moitié.",
+          "es": "Cocinar hasta reducir el volumen aproximadamente a la mitad.",
+          "de": "Kochen, bis das Volumen etwa um die Hälfte reduziert ist."
+        }
+      }
+    ]
+  },
+  {
+    "id": "emulsification",
+    "title": {
+      "en": "Emulsification",
+      "it": "Emulsione",
+      "fr": "Émulsion",
+      "es": "Emulsificación",
+      "de": "Emulgieren"
+    },
+    "category": "Sauce Technique",
+    "level": "Advanced",
+    "readTime": "8 min read",
+    "description": {
+      "en": "Emulsification blends two immiscible liquids like oil and water into a stable, creamy mixture.",
+      "it": "L'emulsione mescola due liquidi immiscibili come olio e acqua in una miscela stabile e cremosa.",
+      "fr": "L'émulsion mélange deux liquides non miscibles comme l'huile et l'eau en un mélange stable et crémeux.",
+      "es": "La emulsificación mezcla dos líquidos inmiscibles como aceite y agua en una mezcla estable y cremosa.",
+      "de": "Emulgieren verbindet zwei nicht mischbare Flüssigkeiten wie Öl und Wasser zu einer stabilen, cremigen Mischung."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Start with the base liquid like egg yolks or mustard.",
+          "it": "Iniziare con il liquido base come tuorli d'uovo o senape.",
+          "fr": "Commencer par le liquide de base comme les jaunes d'œufs ou la moutarde.",
+          "es": "Comenzar con el líquido base como yemas de huevo o mostaza.",
+          "de": "Mit der Basisflüssigkeit wie Eigelb oder Senf beginnen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Add oil very slowly in a thin stream while whisking continuously.",
+          "it": "Aggiungere l'olio molto lentamente a filo sottile mescolando continuamente.",
+          "fr": "Ajouter l'huile très lentement en filet fin tout en fouettant continuellement.",
+          "es": "Añadir el aceite muy lentamente en un hilo fino batiendo continuamente.",
+          "de": "Öl sehr langsam in einem dünnen Strahl hinzufügen, dabei ständig schlagen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Watch for the mixture to thicken and become creamy.",
+          "it": "Osservare la miscela che si addensa e diventa cremosa.",
+          "fr": "Observer le mélange qui épaissit et devient crémeux.",
+          "es": "Observar cómo la mezcla espesa y se vuelve cremosa.",
+          "de": "Beobachten, wie die Mischung eindickt und cremig wird."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Season and adjust consistency with water or lemon juice.",
+          "it": "Condire e regolare la consistenza con acqua o succo di limone.",
+          "fr": "Assaisonner et ajuster la consistance avec de l'eau ou du jus de citron.",
+          "es": "Sazonar y ajustar la consistencia con agua o jugo de limón.",
+          "de": "Würzen und die Konsistenz mit Wasser oder Zitronensaft anpassen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "julienne",
+    "title": {
+      "en": "Julienne Cut",
+      "it": "Taglio alla julienne",
+      "fr": "Coupe en julienne",
+      "es": "Corte juliana",
+      "de": "Julienne-Schnitt"
+    },
+    "category": "Knife Skills",
+    "level": "Intermediate",
+    "readTime": "5 min read",
+    "description": {
+      "en": "Julienne produces thin, matchstick-shaped strips for even cooking and elegant presentation.",
+      "it": "La julienne produce strisce sottili a forma di fiammifero per una cottura uniforme e una presentazione elegante.",
+      "fr": "La julienne produit de fines lanières en forme d'allumettes pour une cuisson uniforme et une présentation élégante.",
+      "es": "La juliana produce tiras finas en forma de cerilla para una cocción uniforme y una presentación elegante.",
+      "de": "Der Julienne-Schnitt erzeugt dünne, streichholzförmige Streifen für gleichmäßiges Garen und elegante Präsentation."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Trim and peel the vegetable, then cut into even lengths.",
+          "it": "Rifilare e sbucciare la verdura, poi tagliare in lunghezze uguali.",
+          "fr": "Parer et éplucher le légume, puis couper en longueurs égales.",
+          "es": "Recortar y pelar la verdura, luego cortar en longitudes iguales.",
+          "de": "Das Gemüse putzen und schälen, dann in gleiche Längen schneiden."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Slice each piece into thin planks about 3mm thick.",
+          "it": "Affettare ogni pezzo in fette sottili di circa 3mm di spessore.",
+          "fr": "Couper chaque morceau en fines tranches d'environ 3mm.",
+          "es": "Cortar cada pieza en láminas finas de unos 3mm de grosor.",
+          "de": "Jedes Stück in dünne Scheiben von etwa 3mm Dicke schneiden."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Stack the planks and cut into thin matchstick strips.",
+          "it": "Impilare le fette e tagliare in strisce sottili a fiammifero.",
+          "fr": "Empiler les tranches et couper en fines allumettes.",
+          "es": "Apilar las láminas y cortar en tiras finas como cerillas.",
+          "de": "Die Scheiben stapeln und in dünne Streichholzstreifen schneiden."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Keep strips uniform for consistent cooking.",
+          "it": "Mantenere le strisce uniformi per una cottura costante.",
+          "fr": "Garder les allumettes uniformes pour une cuisson constante.",
+          "es": "Mantener las tiras uniformes para una cocción consistente.",
+          "de": "Streifen gleichmäßig halten für konsistentes Garen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "brunoise",
+    "title": {
+      "en": "Brunoise Cut",
+      "it": "Taglio brunoise",
+      "fr": "Coupe en brunoise",
+      "es": "Corte brunoise",
+      "de": "Brunoise-Schnitt"
+    },
+    "category": "Knife Skills",
+    "level": "Advanced",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Brunoise is a fine dice achieved by cutting julienne strips into tiny uniform cubes.",
+      "it": "La brunoise è un taglio a dadini fini ottenuto tagliando strisce julienne in piccoli cubetti uniformi.",
+      "fr": "La brunoise est un petit dé obtenu en coupant des allumettes en minuscules cubes uniformes.",
+      "es": "La brunoise es un dado fino logrado cortando tiras juliana en cubitos diminutos y uniformes.",
+      "de": "Der Brunoise-Schnitt ist ein feiner Würfelschnitt, bei dem Julienne-Streifen in winzige gleichmäßige Würfel geschnitten werden."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "First cut the vegetable into julienne strips.",
+          "it": "Per prima cosa tagliare la verdura in strisce alla julienne.",
+          "fr": "D'abord couper le légume en allumettes.",
+          "es": "Primero cortar la verdura en tiras juliana.",
+          "de": "Zuerst das Gemüse in Julienne-Streifen schneiden."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Gather the strips together in a neat pile.",
+          "it": "Raccogliere le strisce insieme in un mucchio ordinato.",
+          "fr": "Rassembler les allumettes en un tas net.",
+          "es": "Reunir las tiras juntas en un montón ordenado.",
+          "de": "Die Streifen ordentlich zusammenlegen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Turn 90 degrees and cut across into 3mm cubes.",
+          "it": "Girare di 90 gradi e tagliare trasversalmente in cubetti da 3mm.",
+          "fr": "Tourner à 90 degrés et couper en cubes de 3mm.",
+          "es": "Girar 90 grados y cortar transversalmente en cubos de 3mm.",
+          "de": "Um 90 Grad drehen und quer in 3mm Würfel schneiden."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Use for garnishes, sauces, and fine preparations.",
+          "it": "Usare per guarnizioni, salse e preparazioni fini.",
+          "fr": "Utiliser pour les garnitures, sauces et préparations fines.",
+          "es": "Usar para guarniciones, salsas y preparaciones finas.",
+          "de": "Für Garnituren, Saucen und feine Zubereitungen verwenden."
+        }
+      }
+    ]
+  },
+  {
+    "id": "marinating",
+    "title": {
+      "en": "Marinating",
+      "it": "Marinatura",
+      "fr": "Mariner",
+      "es": "Marinar",
+      "de": "Marinieren"
+    },
+    "category": "Preparation",
+    "level": "Beginner",
+    "readTime": "6 min read",
+    "description": {
+      "en": "Marinating soaks food in a seasoned liquid to add flavor and tenderize.",
+      "it": "La marinatura immerge il cibo in un liquido condito per aggiungere sapore e intenerire.",
+      "fr": "La marinade trempe les aliments dans un liquide assaisonné pour ajouter de la saveur et attendrir.",
+      "es": "Marinar remoja los alimentos en un líquido sazonado para añadir sabor y ablandar.",
+      "de": "Marinieren legt Lebensmittel in eine gewürzte Flüssigkeit ein, um Geschmack zu verleihen und zart zu machen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Combine acid, oil, and aromatics in a bowl.",
+          "it": "Combinare acido, olio e aromi in una ciotola.",
+          "fr": "Mélanger l'acide, l'huile et les aromates dans un bol.",
+          "es": "Combinar ácido, aceite y aromáticos en un recipiente.",
+          "de": "Säure, Öl und Aromen in einer Schüssel mischen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Submerge the food completely in the marinade.",
+          "it": "Immergere completamente il cibo nella marinata.",
+          "fr": "Submerger complètement les aliments dans la marinade.",
+          "es": "Sumergir completamente los alimentos en el adobo.",
+          "de": "Das Essen vollständig in die Marinade eintauchen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Refrigerate for the recommended time.",
+          "it": "Refrigerare per il tempo raccomandato.",
+          "fr": "Réfrigérer pendant le temps recommandé.",
+          "es": "Refrigerar durante el tiempo recomendado.",
+          "de": "Für die empfohlene Zeit im Kühlschrank aufbewahren."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Remove and pat dry before cooking.",
+          "it": "Rimuovere e asciugare prima di cuocere.",
+          "fr": "Retirer et sécher avant la cuisson.",
+          "es": "Retirar y secar antes de cocinar.",
+          "de": "Herausnehmen und vor dem Kochen trocken tupfen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "fermentation",
+    "title": {
+      "en": "Fermentation",
+      "it": "Fermentazione",
+      "fr": "Fermentation",
+      "es": "Fermentación",
+      "de": "Fermentation"
+    },
+    "category": "Preservation",
+    "level": "Intermediate",
+    "readTime": "9 min read",
+    "description": {
+      "en": "Fermentation uses beneficial microorganisms to transform and preserve food while developing complex flavors.",
+      "it": "La fermentazione usa microrganismi benefici per trasformare e conservare il cibo sviluppando sapori complessi.",
+      "fr": "La fermentation utilise des micro-organismes bénéfiques pour transformer et conserver les aliments tout en développant des saveurs complexes.",
+      "es": "La fermentación usa microorganismos beneficiosos para transformar y conservar alimentos desarrollando sabores complejos.",
+      "de": "Fermentation nutzt nützliche Mikroorganismen, um Lebensmittel umzuwandeln und zu konservieren und dabei komplexe Aromen zu entwickeln."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Prepare a salt brine or starter culture.",
+          "it": "Preparare una salamoia o una coltura starter.",
+          "fr": "Préparer une saumure ou un ferment.",
+          "es": "Preparar una salmuera o un cultivo iniciador.",
+          "de": "Eine Salzlake oder Starterkultur vorbereiten."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Pack ingredients into a clean jar, submerged in brine.",
+          "it": "Mettere gli ingredienti in un barattolo pulito, immersi nella salamoia.",
+          "fr": "Tasser les ingrédients dans un bocal propre, immergés dans la saumure.",
+          "es": "Colocar los ingredientes en un frasco limpio, sumergidos en salmuera.",
+          "de": "Zutaten in ein sauberes Glas füllen, in Lake eingetaucht."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Seal and store at the correct temperature.",
+          "it": "Sigillare e conservare alla temperatura corretta.",
+          "fr": "Sceller et conserver à la bonne température.",
+          "es": "Sellar y almacenar a la temperatura correcta.",
+          "de": "Versiegeln und bei der richtigen Temperatur lagern."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Wait days to weeks, tasting periodically.",
+          "it": "Attendere da giorni a settimane, assaggiando periodicamente.",
+          "fr": "Attendre de quelques jours à quelques semaines, en goûtant régulièrement.",
+          "es": "Esperar de días a semanas, probando periódicamente.",
+          "de": "Tage bis Wochen warten und regelmäßig probieren."
+        }
+      }
+    ]
+  },
+  {
+    "id": "pickling",
+    "title": {
+      "en": "Pickling",
+      "it": "Sottaceto",
+      "fr": "Saumurer",
+      "es": "Encurtir",
+      "de": "Einlegen"
+    },
+    "category": "Preservation",
+    "level": "Beginner",
+    "readTime": "7 min read",
+    "description": {
+      "en": "Pickling preserves food in an acidic solution, usually vinegar, creating tangy flavors.",
+      "it": "Il sottaceto conserva il cibo in una soluzione acida, solitamente aceto, creando sapori aciduli.",
+      "fr": "Le saumurage conserve les aliments dans une solution acide, généralement du vinaigre, créant des saveurs acidulées.",
+      "es": "Encurtir conserva los alimentos en una solución ácida, usualmente vinagre, creando sabores ácidos.",
+      "de": "Einlegen konserviert Lebensmittel in einer sauren Lösung, meist Essig, und erzeugt würzig-saure Aromen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Prepare vinegar brine with salt, sugar, and spices.",
+          "it": "Preparare la salamoia di aceto con sale, zucchero e spezie.",
+          "fr": "Préparer une saumure de vinaigre avec sel, sucre et épices.",
+          "es": "Preparar una salmuera de vinagre con sal, azúcar y especias.",
+          "de": "Essiglake mit Salz, Zucker und Gewürzen vorbereiten."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Bring the brine to a boil to dissolve solids.",
+          "it": "Portare la salamoia a ebollizione per sciogliere i solidi.",
+          "fr": "Porter la saumure à ébullition pour dissoudre les solides.",
+          "es": "Llevar la salmuera a ebullición para disolver los sólidos.",
+          "de": "Die Lake zum Kochen bringen, um die Feststoffe aufzulösen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Pack vegetables into sterilized jars.",
+          "it": "Mettere le verdure in barattoli sterilizzati.",
+          "fr": "Tasser les légumes dans des bocaux stérilisés.",
+          "es": "Colocar las verduras en frascos esterilizados.",
+          "de": "Gemüse in sterilisierte Gläser füllen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Pour hot brine over vegetables and seal.",
+          "it": "Versare la salamoia calda sulle verdure e sigillare.",
+          "fr": "Verser la saumure chaude sur les légumes et sceller.",
+          "es": "Verter la salmuera caliente sobre las verduras y sellar.",
+          "de": "Heiße Lake über das Gemüse gießen und verschließen."
+        }
+      }
+    ]
+  },
+  {
+    "id": "clarified-butter",
+    "title": {
+      "en": "Clarified Butter",
+      "it": "Burro chiarificato",
+      "fr": "Beurre clarifié",
+      "es": "Mantequilla clarificada",
+      "de": "Geklärte Butter"
+    },
+    "category": "Preparation",
+    "level": "Intermediate",
+    "readTime": "8 min read",
+    "description": {
+      "en": "Clarified butter removes milk solids from butter for a higher smoke point and pure flavor.",
+      "it": "Il burro chiarificato rimuove i solidi del latte dal burro per un punto di fumo più alto e un sapore puro.",
+      "fr": "Le beurre clarifié élimine les solides du lait du beurre pour un point de fumée plus élevé et un goût pur.",
+      "es": "La mantequilla clarificada elimina los sólidos de la leche de la mantequilla para un mayor punto de humo y sabor puro.",
+      "de": "Geklärte Butter entfernt Milchfeststoffe aus der Butter für einen höheren Rauchpunkt und reinen Geschmack."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Melt butter slowly over low heat.",
+          "it": "Sciogliere il burro lentamente a fuoco basso.",
+          "fr": "Faire fondre le beurre lentement à feu doux.",
+          "es": "Derretir la mantequilla lentamente a fuego bajo.",
+          "de": "Butter langsam bei niedriger Hitze schmelzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Skim white foam from the surface.",
+          "it": "Schiumare la schiuma bianca dalla superficie.",
+          "fr": "Écumer la mousse blanche de la surface.",
+          "es": "Espumar la espuma blanca de la superficie.",
+          "de": "Weißen Schaum von der Oberfläche abschöpfen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Let solids settle to the bottom.",
+          "it": "Lasciare che i solidi si depositino sul fondo.",
+          "fr": "Laisser les solides se déposer au fond.",
+          "es": "Dejar que los sólidos se asienten en el fondo.",
+          "de": "Die Feststoffe auf den Boden sinken lassen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Carefully pour clear golden liquid through cheesecloth.",
+          "it": "Versare con cautela il liquido dorato e limpido attraverso una garza.",
+          "fr": "Verser délicatement le liquide doré et clair à travers une étamine.",
+          "es": "Verter cuidadosamente el líquido dorado y claro a través de una gasa.",
+          "de": "Die klare goldene Flüssigkeit vorsichtig durch ein Käsetuch gießen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 5",
+          "it": "Fase 5",
+          "fr": "Étape 5",
+          "es": "Paso 5",
+          "de": "Schritt 5"
+        },
+        "content": {
+          "en": "Store in a sealed container in the refrigerator.",
+          "it": "Conservare in un contenitore sigillato in frigorifero.",
+          "fr": "Conserver dans un récipient hermétique au réfrigérateur.",
+          "es": "Almacenar en un recipiente sellado en el refrigerador.",
+          "de": "In einem verschlossenen Behälter im Kühlschrank aufbewahren."
+        }
+      }
+    ]
+  },
+  {
+    "id": "caramelization",
+    "title": {
+      "en": "Caramelization",
+      "it": "Caramellizzazione",
+      "fr": "Caramélisation",
+      "es": "Caramelización",
+      "de": "Karamellisieren"
+    },
+    "category": "Flavor Development",
+    "level": "Intermediate",
+    "readTime": "7 min read",
+    "description": {
+      "en": "Caramelization browns natural sugars in food through controlled high heat, creating deep, complex flavors.",
+      "it": "La caramellizzazione rosola gli zuccheri naturali nel cibo attraverso un calore elevato controllato, creando sapori profondi e complessi.",
+      "fr": "La caramélisation brunit les sucres naturels des aliments par une chaleur élevée contrôlée, créant des saveurs profondes et complexes.",
+      "es": "La caramelización dora los azúcares naturales de los alimentos mediante calor alto controlado, creando sabores profundos y complejos.",
+      "de": "Karamellisieren bräunt natürliche Zucker in Lebensmitteln durch kontrollierte hohe Hitze und erzeugt tiefe, komplexe Aromen."
+    },
+    "sections": [
+      {
+        "title": {
+          "en": "Step 1",
+          "it": "Fase 1",
+          "fr": "Étape 1",
+          "es": "Paso 1",
+          "de": "Schritt 1"
+        },
+        "content": {
+          "en": "Heat sugar or sugar-rich food over medium-high heat.",
+          "it": "Scaldare lo zucchero o il cibo ricco di zucchero a fuoco medio-alto.",
+          "fr": "Chauffer le sucre ou un aliment riche en sucre à feu moyen-vif.",
+          "es": "Calentar azúcar o alimento rico en azúcar a fuego medio-alto.",
+          "de": "Zucker oder zuckerreiche Lebensmittel bei mittlerer bis hoher Hitze erhitzen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 2",
+          "it": "Fase 2",
+          "fr": "Étape 2",
+          "es": "Paso 2",
+          "de": "Schritt 2"
+        },
+        "content": {
+          "en": "Do not stir. Let the sugar melt and color naturally.",
+          "it": "Non mescolare. Lasciare che lo zucchero si sciolga e colori naturalmente.",
+          "fr": "Ne pas remuer. Laisser le sucre fondre et colorer naturellement.",
+          "es": "No remover. Dejar que el azúcar se derrita y coloree naturalmente.",
+          "de": "Nicht rühren. Den Zucker natürlich schmelzen und bräunen lassen."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 3",
+          "it": "Fase 3",
+          "fr": "Étape 3",
+          "es": "Paso 3",
+          "de": "Schritt 3"
+        },
+        "content": {
+          "en": "Watch carefully as color changes from golden to amber.",
+          "it": "Osservare attentamente mentre il colore cambia da dorato ad ambrato.",
+          "fr": "Surveiller attentivement le changement de couleur du doré à l'ambre.",
+          "es": "Observar cuidadosamente cómo el color cambia de dorado a ámbar.",
+          "de": "Aufmerksam beobachten, wie sich die Farbe von goldgelb zu bernsteinfarben ändert."
+        }
+      },
+      {
+        "title": {
+          "en": "Step 4",
+          "it": "Fase 4",
+          "fr": "Étape 4",
+          "es": "Paso 4",
+          "de": "Schritt 4"
+        },
+        "content": {
+          "en": "Remove from heat immediately at the desired color to prevent burning.",
+          "it": "Rimuovere immediatamente dal fuoco al colore desiderato per evitare di bruciare.",
+          "fr": "Retirer du feu immédiatement à la couleur désirée pour éviter de brûler.",
+          "es": "Retirar del fuego inmediatamente al color deseado para evitar que se queme.",
+          "de": "Sofort vom Herd nehmen, wenn die gewünschte Farbe erreicht ist, um Verbrennen zu vermeiden."
+        }
+      }
+    ]
+  }
 ]

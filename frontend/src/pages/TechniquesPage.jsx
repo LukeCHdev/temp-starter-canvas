@@ -3,16 +3,23 @@ import { Link } from "react-router-dom";
 import { Clock, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-function buildHowToSchema(techniques) {
+/** Resolve a multilingual field: object → pick lang, string → pass through */
+const loc = (field, lang) => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  return field[lang] || field.en || Object.values(field)[0] || "";
+};
+
+function buildHowToSchema(techniques, lang) {
   return {
     "@context": "https://schema.org",
     "@graph": techniques.map((t) => ({
       "@type": "HowTo",
-      "name": t.title,
-      "description": t.description,
+      "name": loc(t.title, lang),
+      "description": loc(t.description, lang),
       "step": (t.sections || []).map((s) => ({
         "@type": "HowToStep",
-        "text": s.content,
+        "text": loc(s.content, lang),
       })),
     })),
   };
@@ -37,7 +44,8 @@ const TechniquesPage = () => {
   const [techniques, setTechniques] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { getLocalizedPath } = useLanguage();
+  const { language, getLocalizedPath } = useLanguage();
+  const lang = language || "en";
 
   useEffect(() => {
     fetch("/techniques.json")
@@ -72,9 +80,9 @@ const TechniquesPage = () => {
     const id = "techniques-jsonld";
     let s = document.getElementById(id);
     if (!s) { s = document.createElement("script"); s.id = id; s.type = "application/ld+json"; document.head.appendChild(s); }
-    s.textContent = JSON.stringify(buildHowToSchema(techniques));
+    s.textContent = JSON.stringify(buildHowToSchema(techniques, lang));
     return () => { const el = document.getElementById(id); if (el) el.remove(); };
-  }, [techniques]);
+  }, [techniques, lang]);
 
   const grouped = useMemo(() => {
     const map = {};
@@ -145,7 +153,7 @@ const TechniquesPage = () => {
                   >
                     <article>
                       <h3 className="text-lg font-serif text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors flex items-center justify-between">
-                        {tech.title}
+                        {loc(tech.title, lang)}
                         <ChevronRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#6A1F2E]" />
                       </h3>
                       <div className="flex items-center gap-2 mt-2 mb-3">
@@ -158,7 +166,7 @@ const TechniquesPage = () => {
                         </span>
                       </div>
                       <p className="text-sm text-gray-600 line-clamp-2">
-                        {tech.description}
+                        {loc(tech.description, lang)}
                       </p>
                     </article>
                   </Link>
