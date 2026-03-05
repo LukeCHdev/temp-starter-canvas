@@ -59,6 +59,15 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - **techniques**: `{ title, slug (unique), category, difficulty, readTime, introduction, sections[{title, content}], status, created_at, updated_at }` - Indexes: slug_1 (unique), status_1, category_1
 - **favorites**: `{ user_id, recipe_slug, created_at }` - Unique index on (user_id, recipe_slug)
 
+### Techniques SEO & Production Readiness (DONE - Mar 2026)
+- Techniques page fetches from static `/techniques.json` (20 techniques)
+- JSON-LD HowTo @graph schema injected (20 items with steps)
+- SEO meta tags: title, description, canonical all override correctly
+- Sitemap includes `/techniques` for all 5 languages with hreflang
+- robots.txt allows `/techniques`, no noindex meta
+- Page is fully indexable
+- All 6 SEO checks pass (title, description, canonical, JSON-LD, robots, content)
+
 ## Key Endpoints
 - `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`
 - `GET /api/auth/social/google`, `GET /api/auth/google/callback`, `GET /api/auth/me`

@@ -1,0 +1,302 @@
+[
+{
+"id":"blanching",
+"title":"Blanching",
+"category":"Moist Heat",
+"level":"Beginner",
+"readTime":"5 min read",
+"description":"Blanching briefly boils vegetables or fruits then shocks them in ice water to preserve color and texture.",
+"sections":[
+{"title":"Step 1","content":"Bring a large pot of salted water to a rolling boil."},
+{"title":"Step 2","content":"Add vegetables or fruits and cook for 1 to 3 minutes."},
+{"title":"Step 3","content":"Transfer immediately to an ice bath."},
+{"title":"Step 4","content":"Drain and dry once cooled."}
+]
+},
+
+{
+"id":"boiling",
+"title":"Boiling",
+"category":"Moist Heat",
+"level":"Beginner",
+"readTime":"6 min read",
+"description":"Boiling cooks food in rapidly bubbling water at high temperature.",
+"sections":[
+{"title":"Step 1","content":"Fill a pot with water and add salt."},
+{"title":"Step 2","content":"Bring water to a full rolling boil."},
+{"title":"Step 3","content":"Add ingredients and maintain vigorous bubbles."},
+{"title":"Step 4","content":"Cook until desired tenderness."}
+]
+},
+
+{
+"id":"braising",
+"title":"Braising",
+"category":"Combination",
+"level":"Intermediate",
+"readTime":"10 min read",
+"description":"Braising combines searing and slow cooking in liquid to tenderize tough cuts.",
+"sections":[
+{"title":"Step 1","content":"Season and sear meat until browned."},
+{"title":"Step 2","content":"Add aromatics and liquid."},
+{"title":"Step 3","content":"Cover and cook slowly at low heat."},
+{"title":"Step 4","content":"Cook until fork tender."}
+]
+},
+
+{
+"id":"sauteing",
+"title":"Sautéing",
+"category":"Dry Heat",
+"level":"Beginner",
+"readTime":"7 min read",
+"description":"Sautéing quickly cooks food in a small amount of fat over high heat.",
+"sections":[
+{"title":"Step 1","content":"Heat skillet with oil or butter."},
+{"title":"Step 2","content":"Add food in a single layer."},
+{"title":"Step 3","content":"Toss or stir frequently."},
+{"title":"Step 4","content":"Cook until lightly browned."}
+]
+},
+
+{
+"id":"roasting",
+"title":"Roasting",
+"category":"Dry Heat",
+"level":"Beginner",
+"readTime":"8 min read",
+"description":"Roasting cooks food using hot dry air in an oven.",
+"sections":[
+{"title":"Step 1","content":"Preheat oven to high temperature."},
+{"title":"Step 2","content":"Season ingredients with oil and spices."},
+{"title":"Step 3","content":"Spread food on a roasting pan."},
+{"title":"Step 4","content":"Roast until golden and tender."}
+]
+},
+
+{
+"id":"searing",
+"title":"Searing",
+"category":"Dry Heat",
+"level":"Beginner",
+"readTime":"6 min read",
+"description":"Searing uses intense heat to create a browned crust on food.",
+"sections":[
+{"title":"Step 1","content":"Heat pan until very hot."},
+{"title":"Step 2","content":"Add oil with high smoke point."},
+{"title":"Step 3","content":"Place meat or vegetables in pan."},
+{"title":"Step 4","content":"Cook without moving until crust forms."}
+]
+},
+
+{
+"id":"grilling",
+"title":"Grilling",
+"category":"Dry Heat",
+"level":"Beginner",
+"readTime":"7 min read",
+"description":"Grilling cooks food over direct radiant heat.",
+"sections":[
+{"title":"Step 1","content":"Preheat grill."},
+{"title":"Step 2","content":"Oil grill grates lightly."},
+{"title":"Step 3","content":"Place food directly over heat."},
+{"title":"Step 4","content":"Turn once halfway through cooking."}
+]
+},
+
+{
+"id":"steaming",
+"title":"Steaming",
+"category":"Moist Heat",
+"level":"Beginner",
+"readTime":"6 min read",
+"description":"Steaming cooks food using hot vapor from boiling water.",
+"sections":[
+{"title":"Step 1","content":"Bring water to a boil."},
+{"title":"Step 2","content":"Place food in steamer basket."},
+{"title":"Step 3","content":"Cover and allow steam to cook food."},
+{"title":"Step 4","content":"Cook until tender."}
+]
+},
+
+{
+"id":"simmering",
+"title":"Simmering",
+"category":"Moist Heat",
+"level":"Beginner",
+"readTime":"5 min read",
+"description":"Simmering cooks food in liquid just below boiling temperature.",
+"sections":[
+{"title":"Step 1","content":"Bring liquid close to boiling."},
+{"title":"Step 2","content":"Reduce heat until gentle bubbles appear."},
+{"title":"Step 3","content":"Add ingredients."},
+{"title":"Step 4","content":"Cook slowly for even flavor development."}
+]
+},
+
+{
+"id":"frying",
+"title":"Frying",
+"category":"Dry Heat",
+"level":"Beginner",
+"readTime":"7 min read",
+"description":"Frying cooks food in hot oil to create a crispy surface.",
+"sections":[
+{"title":"Step 1","content":"Heat oil in pan or fryer."},
+{"title":"Step 2","content":"Add food carefully."},
+{"title":"Step 3","content":"Cook until golden brown."},
+{"title":"Step 4","content":"Drain excess oil on paper towel."}
+]
+},
+
+{
+"id":"deglazing",
+"title":"Deglazing",
+"category":"Sauce Technique",
+"level":"Beginner",
+"readTime":"4 min read",
+"description":"Deglazing dissolves caramelized bits left in a pan to create sauce.",
+"sections":[
+{"title":"Step 1","content":"Cook food and leave browned bits in pan."},
+{"title":"Step 2","content":"Add liquid such as wine or stock."},
+{"title":"Step 3","content":"Scrape pan to dissolve fond."},
+{"title":"Step 4","content":"Reduce liquid into sauce."}
+]
+},
+
+{
+"id":"reduction",
+"title":"Reduction",
+"category":"Sauce Technique",
+"level":"Beginner",
+"readTime":"5 min read",
+"description":"Reduction thickens sauces by evaporating liquid through simmering.",
+"sections":[
+{"title":"Step 1","content":"Bring sauce to simmer."},
+{"title":"Step 2","content":"Allow liquid to evaporate slowly."},
+{"title":"Step 3","content":"Stir occasionally."},
+{"title":"Step 4","content":"Stop when sauce reaches desired thickness."}
+]
+},
+
+{
+"id":"emulsification",
+"title":"Emulsification",
+"category":"Sauce Technique",
+"level":"Intermediate",
+"readTime":"6 min read",
+"description":"Emulsification combines liquids that normally do not mix such as oil and vinegar.",
+"sections":[
+{"title":"Step 1","content":"Start with base ingredient like egg yolk or mustard."},
+{"title":"Step 2","content":"Slowly add oil while whisking."},
+{"title":"Step 3","content":"Maintain constant mixing."},
+{"title":"Step 4","content":"Stop once mixture thickens."}
+]
+},
+
+{
+"id":"julienne",
+"title":"Julienne Cut",
+"category":"Knife Skills",
+"level":"Beginner",
+"readTime":"4 min read",
+"description":"Julienne produces thin matchstick shaped vegetable strips.",
+"sections":[
+{"title":"Step 1","content":"Trim vegetable into rectangular shape."},
+{"title":"Step 2","content":"Slice thin planks."},
+{"title":"Step 3","content":"Stack planks."},
+{"title":"Step 4","content":"Cut into thin strips."}
+]
+},
+
+{
+"id":"brunoise",
+"title":"Brunoise Cut",
+"category":"Knife Skills",
+"level":"Intermediate",
+"readTime":"4 min read",
+"description":"Brunoise creates very small cubes from julienne strips.",
+"sections":[
+{"title":"Step 1","content":"Prepare julienne strips."},
+{"title":"Step 2","content":"Align strips together."},
+{"title":"Step 3","content":"Cut across strips."},
+{"title":"Step 4","content":"Create tiny cubes."}
+]
+},
+
+{
+"id":"marinating",
+"title":"Marinating",
+"category":"Preparation",
+"level":"Beginner",
+"readTime":"5 min read",
+"description":"Marinating soaks food in seasoned liquid to add flavor and tenderize.",
+"sections":[
+{"title":"Step 1","content":"Combine oil, acid and seasoning."},
+{"title":"Step 2","content":"Add food to marinade."},
+{"title":"Step 3","content":"Refrigerate for several hours."},
+{"title":"Step 4","content":"Remove and cook."}
+]
+},
+
+{
+"id":"fermentation",
+"title":"Fermentation",
+"category":"Preservation",
+"level":"Advanced",
+"readTime":"10 min read",
+"description":"Fermentation transforms food through beneficial microorganisms.",
+"sections":[
+{"title":"Step 1","content":"Prepare ingredients and salt."},
+{"title":"Step 2","content":"Allow natural bacteria to develop."},
+{"title":"Step 3","content":"Maintain controlled temperature."},
+{"title":"Step 4","content":"Store once fermentation is complete."}
+]
+},
+
+{
+"id":"pickling",
+"title":"Pickling",
+"category":"Preservation",
+"level":"Beginner",
+"readTime":"6 min read",
+"description":"Pickling preserves foods in acidic liquid such as vinegar.",
+"sections":[
+{"title":"Step 1","content":"Prepare vinegar brine."},
+{"title":"Step 2","content":"Add vegetables or fruits."},
+{"title":"Step 3","content":"Seal in jar."},
+{"title":"Step 4","content":"Allow flavors to develop."}
+]
+},
+
+{
+"id":"clarified-butter",
+"title":"Clarified Butter",
+"category":"Preparation",
+"level":"Beginner",
+"readTime":"6 min read",
+"description":"Clarified butter is butter that has been gently heated to remove water and milk solids, leaving pure butterfat with a higher smoke point and smooth consistency.",
+"sections":[
+{"title":"Purpose","content":"Clarifying butter improves consistency and increases the smoke point."},
+{"title":"Step 1","content":"Melt unsalted butter slowly in a saucepan."},
+{"title":"Step 2","content":"Allow butter to separate."},
+{"title":"Step 3","content":"Skim foam."},
+{"title":"Step 4","content":"Pour clear butterfat into container."}
+]
+},
+
+{
+"id":"caramelization",
+"title":"Caramelization",
+"category":"Flavor Development",
+"level":"Beginner",
+"readTime":"5 min read",
+"description":"Caramelization occurs when sugars break down under heat creating deep flavor and golden color.",
+"sections":[
+{"title":"Step 1","content":"Heat sugar or foods containing natural sugars."},
+{"title":"Step 2","content":"Allow sugars to melt and darken."},
+{"title":"Step 3","content":"Control heat carefully."},
+{"title":"Step 4","content":"Use caramelized food for deeper flavor."}
+]
+}
+]
