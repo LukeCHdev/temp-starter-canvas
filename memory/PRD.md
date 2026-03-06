@@ -84,7 +84,16 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
 - Added AdSense meta tag `google-adsense-account` to `public/index.html`
 
-### Search & Filter Bug Fix (DONE - Mar 2026)
+### Search & Filter Deep Bug Fix (DONE - Mar 2026)
+- **Root cause A**: FavoriteButton fired 161 concurrent API calls on explore page mount → Fixed: added `deferStatusCheck` prop, defers API call until user clicks
+- **Root cause B**: `searchParams` mutation passed same object reference to `setSearchParams` → Fixed: cloned with `new URLSearchParams()`
+- **Root cause C**: Sync effect only set dishTypes when URL param existed, didn't clear when param removed (browser back) → Fixed: unconditional state sync
+- **Root cause D**: 161 recipe cards rendered simultaneously, choking mobile → Fixed: pagination with 24 cards + "Load More" button
+- **Root cause E**: Search didn't include `dish_type` field → Fixed: added `dish_type` to text search
+- **Secondary**: Added missing `search.failed`, `explore.loadMore`, `explore.remaining` translation keys
+- 19/19 frontend tests passed (iteration_11)
+
+### Search & Filter Bug Fix - Initial (DONE - Mar 2026)
 - Added `dish_type` field to all 194 recipes via classification migration script (`backend/scripts/classify_dish_types.py`)
 - Categories: appetizer (21), aperitif (6), first-course (45), main-course (65), side-dish (18), dessert (24), street-food (12), festive (3)
 - Added search text input to ExplorePage for real-time client-side recipe filtering
