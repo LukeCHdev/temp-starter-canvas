@@ -6,21 +6,27 @@ import { favoritesAPI } from '@/utils/api';
 import { Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const FavoriteButton = ({ slug, className, size = 'md' }) => {
+const FavoriteButton = ({ slug, className, size = 'md', deferStatusCheck = false }) => {
     const { user } = useAuth();
     const { getLocalizedPath } = useLanguage();
     const navigate = useNavigate();
     const [favorited, setFavorited] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [statusChecked, setStatusChecked] = useState(false);
 
+    // Only check favorite status when visible (not in bulk list views)
     useEffect(() => {
-        if (!user || !slug) return;
+        if (!user || !slug || statusChecked) return;
+        if (deferStatusCheck) return; // Skip on list pages — check on interaction
         let cancelled = false;
         favoritesAPI.status(slug).then(res => {
-            if (!cancelled) setFavorited(res.data.favorited);
+            if (!cancelled) {
+                setFavorited(res.data.favorited);
+                setStatusChecked(true);
+            }
         }).catch(() => {});
         return () => { cancelled = true; };
-    }, [user, slug]);
+    }, [user, slug, deferStatusCheck, statusChecked]);
 
     const toggle = useCallback(async (e) => {
         e.preventDefault();
@@ -34,6 +40,28 @@ const FavoriteButton = ({ slug, className, size = 'md' }) => {
 
         if (loading) return;
         setLoading(true);
+
+        // If status wasn't checked yet (deferred), check now before toggling
+        if (!statusChecked) {
+            try {
+                const res = await favoritesAPI.status(slug);
+                setFavorited(res.data.favorited);
+                setStatusChecked(true);
+                // Now toggle based on actual status
+                const current = res.data.favorited;
+                setFavorited(!current);
+                if (current) {
+                    await favoritesAPI.remove(slug);
+                } else {
+                    await favoritesAPI.add(slug);
+                }
+            } catch {
+                // revert is not needed since we had no optimistic update
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
 
         const prev = favorited;
         setFavorited(!prev); // optimistic
@@ -49,7 +77,7 @@ const FavoriteButton = ({ slug, className, size = 'md' }) => {
         } finally {
             setLoading(false);
         }
-    }, [user, slug, favorited, loading, navigate, getLocalizedPath]);
+    }, [user, slug, favorited, loading, navigate, getLocalizedPath, statusChecked]);
 
     const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
     const btnSize = size === 'sm' ? 'w-8 h-8' : 'w-10 h-10';

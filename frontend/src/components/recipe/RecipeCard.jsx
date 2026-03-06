@@ -18,7 +18,7 @@ import FavoriteButton from '@/components/common/FavoriteButton';
  * 
  * Note: Strict gating (hiding untranslated recipes) is handled at the API/data layer
  */
-export const RecipeCard = ({ recipe, variant = 'default' }) => {
+export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = false }) => {
     const { t: i18nT } = useTranslation();
     const { language, getLocalizedPath } = useLanguage();
     const lang = language || 'en';
@@ -99,7 +99,7 @@ export const RecipeCard = ({ recipe, variant = 'default' }) => {
                         )}
                         {/* Favorite Button */}
                         <div className="absolute top-3 left-3 z-10">
-                            <FavoriteButton slug={slug} size="sm" />
+                            <FavoriteButton slug={slug} size="sm" deferStatusCheck={deferFavoriteCheck} />
                         </div>
                     </div>
                     

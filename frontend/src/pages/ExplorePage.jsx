@@ -217,12 +217,10 @@ const ExplorePage = () => {
         })), [lang]
     );
     
-    // Sync URL params with filter state
+    // Sync URL params with filter state (handles browser back/forward)
     useEffect(() => {
         const dishType = searchParams.get('dishType');
-        if (dishType) {
-            setSelectedDishTypes(dishType.split(','));
-        }
+        setSelectedDishTypes(dishType ? dishType.split(',') : []);
     }, [searchParams]);
     
     // Language sync
@@ -339,7 +337,8 @@ const ExplorePage = () => {
                 const name = (r.recipe_name || r.title_original || '').toLowerCase();
                 const country = (r.origin_country || '').toLowerCase();
                 const region = (r.origin_region || '').toLowerCase();
-                return name.includes(query) || country.includes(query) || region.includes(query);
+                const dishType = (r.dish_type || '').toLowerCase();
+                return name.includes(query) || country.includes(query) || region.includes(query) || dishType.includes(query);
             });
         }
 
@@ -359,12 +358,13 @@ const ExplorePage = () => {
     // Handle dish type filter changes
     const handleDishTypeChange = (values) => {
         setSelectedDishTypes(values);
+        const newParams = new URLSearchParams(searchParams);
         if (values.length === 0) {
-            searchParams.delete('dishType');
+            newParams.delete('dishType');
         } else {
-            searchParams.set('dishType', values.join(','));
+            newParams.set('dishType', values.join(','));
         }
-        setSearchParams(searchParams);
+        setSearchParams(newParams);
     };
 
     // Handle continent filter changes (client-side only, no navigation)
@@ -381,8 +381,9 @@ const ExplorePage = () => {
         setSelectedDishTypes([]);
         setSelectedContinents([]);
         setSearchText('');
-        searchParams.delete('dishType');
-        setSearchParams(searchParams);
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('dishType');
+        setSearchParams(newParams);
         if (continent) {
             navigate(getLocalizedPath('/explore'));
         }
@@ -390,6 +391,21 @@ const ExplorePage = () => {
 
     // Active filters count
     const activeFiltersCount = selectedDishTypes.length + selectedContinents.length + (searchText.trim() ? 1 : 0);
+
+    // Pagination: show 24 initially, load more in increments
+    const RECIPES_PER_PAGE = 24;
+    const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
+
+    // Reset visible count when filters change
+    useEffect(() => {
+        setVisibleCount(RECIPES_PER_PAGE);
+    }, [searchText, selectedDishTypes, selectedContinents]);
+
+    const visibleRecipes = useMemo(() => 
+        filteredRecipes.slice(0, visibleCount), 
+        [filteredRecipes, visibleCount]
+    );
+    const hasMore = visibleCount < filteredRecipes.length;
 
     // Breadcrumb props
     const breadcrumbProps = useMemo(() => ({
@@ -636,12 +652,25 @@ const ExplorePage = () => {
                         ) : (
                             /* Main Explore View - Filtered Recipe Grid */
                             <>
-                                {filteredRecipes.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="recipe-grid">
-                                        {filteredRecipes.map((recipe) => (
-                                            <RecipeCard key={recipe.slug} recipe={recipe} variant="editorial" />
-                                        ))}
-                                    </div>
+                                {visibleRecipes.length > 0 ? (
+                                    <>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="recipe-grid">
+                                            {visibleRecipes.map((recipe) => (
+                                                <RecipeCard key={recipe.slug} recipe={recipe} variant="editorial" deferFavoriteCheck />
+                                            ))}
+                                        </div>
+                                        {hasMore && (
+                                            <div className="text-center mt-6">
+                                                <button
+                                                    onClick={() => setVisibleCount(prev => prev + RECIPES_PER_PAGE)}
+                                                    className="px-6 py-2 text-xs uppercase tracking-wider border border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white transition-colors"
+                                                    data-testid="load-more-btn"
+                                                >
+                                                    {translate('explore.loadMore', lang)} ({filteredRecipes.length - visibleCount} {translate('explore.remaining', lang)})
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className="text-center py-12 bg-white border border-[#E8E4DC]" data-testid="no-results">
                                         <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>

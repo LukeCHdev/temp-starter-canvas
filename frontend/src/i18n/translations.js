@@ -815,6 +815,19 @@ export const translations = {
   },
 
   // ============================================
+  // SEARCH
+  // ============================================
+  search: {
+    failed: {
+      en: 'Failed to load data. Please try again.',
+      it: 'Caricamento dati fallito. Riprova.',
+      fr: 'Échec du chargement. Veuillez réessayer.',
+      es: 'Error al cargar datos. Inténtelo de nuevo.',
+      de: 'Laden fehlgeschlagen. Bitte versuchen Sie es erneut.'
+    }
+  },
+
+  // ============================================
   // EXPLORE PAGE
   // ============================================
   explore: {
@@ -943,6 +956,20 @@ export const translations = {
       fr: 'Tout effacer',
       es: 'Borrar todo',
       de: 'Alle löschen'
+    },
+    loadMore: {
+      en: 'Load more',
+      it: 'Carica altri',
+      fr: 'Charger plus',
+      es: 'Cargar más',
+      de: 'Mehr laden'
+    },
+    remaining: {
+      en: 'remaining',
+      it: 'rimanenti',
+      fr: 'restants',
+      es: 'restantes',
+      de: 'verbleibend'
     },
     highestRated: {
       en: 'Highest Rated for Tradition',
