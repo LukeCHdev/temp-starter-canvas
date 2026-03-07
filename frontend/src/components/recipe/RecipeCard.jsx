@@ -82,9 +82,9 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
     if (variant === 'editorial') {
         return (
             <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
-                <article className="group h-full bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors">
+                <article className="group h-full bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors overflow-hidden">
                     {/* Image */}
-                    <div className="relative overflow-hidden h-56 bg-[#F5F2EC]">
+                    <div className="relative overflow-hidden h-40 sm:h-56 bg-[#F5F2EC]">
                         {photoUrl ? (
                             <img 
                                 src={photoUrl} 
@@ -98,31 +98,31 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                             </div>
                         )}
                         {/* Favorite Button */}
-                        <div className="absolute top-3 left-3 z-10">
+                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
                             <FavoriteButton slug={slug} size="sm" deferStatusCheck={deferFavoriteCheck} />
                         </div>
                     </div>
                     
                     {/* Content */}
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                         {/* Authenticity Badge */}
-                        <span className="inline-block text-xs uppercase tracking-widest text-[#6A1F2E] mb-3">
+                        <span className="inline-block text-[10px] sm:text-xs uppercase tracking-widest text-[#6A1F2E] mb-2 sm:mb-3">
                             {levelLabel}
                         </span>
                         
                         {/* Origin */}
-                        <p className="text-xs text-[#7C7C7C] mb-2 tracking-wide">
+                        <p className="text-[10px] sm:text-xs text-[#7C7C7C] mb-1.5 sm:mb-2 tracking-wide">
                             {countryName}{region ? ` · ${region}` : ''}
                         </p>
                         
                         {/* Title */}
-                        <h3 className="text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h3 className="text-base sm:text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 mb-2 sm:mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             {title}
                         </h3>
                         
                         {/* Rating/Authenticity Score */}
                         {recipe.average_rating && (
-                            <div className="flex items-center gap-2 text-xs text-[#7C7C7C]">
+                            <div className="flex items-center gap-2 text-[10px] sm:text-xs text-[#7C7C7C]">
                                 <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
                                 <span>{recipe.average_rating.toFixed(1)} {t('explore.authenticityScore', lang)}</span>
                             </div>

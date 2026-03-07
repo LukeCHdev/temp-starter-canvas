@@ -50,9 +50,9 @@ export const Navigation = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo - also preserves language */}
-                    <Link to={getLocalizedPath('/')} className="flex items-center space-x-2" data-testid="logo-link">
-                        <ChefHat className="h-8 w-8 text-[#6A1F2E]" />
-                        <span className="text-2xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <Link to={getLocalizedPath('/')} className="flex items-center gap-2 min-w-0 shrink" data-testid="logo-link">
+                        <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-[#6A1F2E] flex-shrink-0" />
+                        <span className="text-lg sm:text-2xl font-bold text-[#1E1E1E] truncate" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             Sous Chef Linguine
                         </span>
                     </Link>

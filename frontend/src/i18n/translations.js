@@ -1061,6 +1061,20 @@ export const translations = {
       fr: 'Recette originale',
       de: 'Originalrezept'
     },
+    scalingError: {
+      en: 'Could not update servings',
+      es: 'No se pudieron actualizar las porciones',
+      it: 'Impossibile aggiornare le porzioni',
+      fr: 'Impossible de mettre à jour les portions',
+      de: 'Portionen konnten nicht aktualisiert werden'
+    },
+    loadError: {
+      en: 'Failed to load recipe',
+      es: 'Error al cargar la receta',
+      it: 'Impossibile caricare la ricetta',
+      fr: 'Échec du chargement de la recette',
+      de: 'Rezept konnte nicht geladen werden'
+    },
     instructions: {
       en: 'Instructions',
       es: 'Instrucciones',

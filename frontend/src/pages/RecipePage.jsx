@@ -12,6 +12,7 @@ import { ReviewSection } from '@/components/recipe/ReviewSection';
 import { FallbackBanner, TranslationPendingBanner, TranslationFailedBanner } from '@/components/common/FallbackBanner';
 import { Skeleton } from '@/components/ui/skeleton';
 import FavoriteButton from '@/components/common/FavoriteButton';
+import { useRecipe } from '@/hooks/useRecipe';
 import { 
     ChefHat, 
     Globe, 
@@ -106,124 +107,34 @@ const RecipeSkeleton = ({ language }) => {
 const RecipePage = () => {
     const { slug } = useParams();
     const location = useLocation();
-    const [recipe, setRecipe] = useState(null);
-    const [translationStatus, setTranslationStatus] = useState(null);
-    const [contentLanguage, setContentLanguage] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [isTranslating, setIsTranslating] = useState(false);
     const { language, getLocalizedPath } = useLanguage();
     const { t, i18n } = useTranslation();
     
+    // CRITICAL: Sync i18n with route language on every route change
+    useEffect(() => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const urlLang = pathSegments[0];
+        if (SUPPORTED_LANGUAGES[urlLang] && urlLang !== i18n.language) {
+            i18n.changeLanguage(urlLang);
+        }
+    }, [location.pathname, i18n]);
+
+    const currentLang = useMemo(() => language || 'en', [language]);
+
+    // React Query: cached recipe fetch
+    const { data: queryData, isLoading: loading, isError, error: queryError } = useRecipe(slug, currentLang);
+    const recipe = queryData?.recipe || null;
+    const translationStatus = queryData?.translationStatus || null;
+    const contentLanguage = queryData?.contentLanguage || null;
+
     // Scaling state
     const DEFAULT_SERVINGS = 4;
     const [servings, setServings] = useState(DEFAULT_SERVINGS);
     const [baseServings, setBaseServings] = useState(DEFAULT_SERVINGS);
     const [scaledIngredients, setScaledIngredients] = useState(null);
     const [isScaling, setIsScaling] = useState(false);
+    const [scalingError, setScalingError] = useState(null);
     const [originalIngredients, setOriginalIngredients] = useState(null);
-
-    // CRITICAL: Sync i18n with route language on every route change
-    useEffect(() => {
-        const pathSegments = location.pathname.split('/').filter(Boolean);
-        const urlLang = pathSegments[0];
-        
-        if (SUPPORTED_LANGUAGES[urlLang] && urlLang !== i18n.language) {
-            i18n.changeLanguage(urlLang);
-        }
-    }, [location.pathname, i18n]);
-
-    // Use language from context - derived from URL
-    const currentLang = useMemo(() => language || 'en', [language]);
-
-    useEffect(() => {
-        let isMounted = true;
-        
-        const loadRecipe = async () => {
-            setLoading(true);
-            setTranslationStatus(null);
-            setContentLanguage(null);
-            setRecipe(null); // CRITICAL: Clear recipe to prevent English flash
-            setIsTranslating(false);
-            
-            try {
-                // Step 1: Try the translation API first (fast, pre-translated content)
-                const translationRes = await translationAPI.getRecipe(slug, currentLang);
-                const translationData = translationRes.data;
-                
-                if (!isMounted) return;
-                
-                if (translationData.status === 'ready' && translationData.content) {
-                    // Translation is ready - use it immediately
-                    setRecipe({
-                        ...translationData.content,
-                        ...translationData.metadata,
-                        slug: translationData.slug
-                    });
-                    setContentLanguage(translationData.lang);
-                    setTranslationStatus('ready');
-                    setLoading(false);
-                    return;
-                }
-                
-                // Step 2: Translation not ready - show skeleton and fetch with on-the-fly translation
-                setIsTranslating(true);
-                setTranslationStatus(translationData.status || 'pending');
-                
-                // Fetch with lang parameter - this will do on-the-fly translation
-                const translatedRes = await recipeAPI.getBySlug(slug, currentLang);
-                
-                if (!isMounted) return;
-                
-                const recipeData = translatedRes.data;
-                
-                // CRITICAL: Only show recipe if content matches requested language
-                const displayLang = recipeData._display_lang || recipeData.content_language || 'en';
-                const actualLang = displayLang.slice(0, 2).toLowerCase();
-                
-                if (actualLang === currentLang || recipeData._translated) {
-                    // Content is in the requested language
-                    setRecipe(recipeData);
-                    setContentLanguage(actualLang);
-                    setTranslationStatus('ready');
-                } else {
-                    // Content is NOT in the requested language - show fallback banner
-                    setRecipe(recipeData);
-                    setContentLanguage(actualLang);
-                    setTranslationStatus('fallback');
-                }
-                
-            } catch (error) {
-                console.error('Recipe fetch error:', error);
-                
-                if (!isMounted) return;
-                
-                // Final fallback - try to get any recipe content
-                try {
-                    const fallbackRes = await recipeAPI.getBySlug(slug, 'en');
-                    if (isMounted) {
-                        setRecipe(fallbackRes.data);
-                        setContentLanguage('en');
-                        setTranslationStatus('failed');
-                    }
-                } catch (finalError) {
-                    if (isMounted) {
-                        toast.error(t('recipe.notFound'));
-                    }
-                }
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
-                    setIsTranslating(false);
-                }
-            }
-        };
-
-        loadRecipe();
-        
-        return () => {
-            isMounted = false;
-        };
-    }, [slug, currentLang, t]);
 
     // Reset scaling when recipe changes
     useEffect(() => {
@@ -233,6 +144,7 @@ const RecipePage = () => {
             setServings(recipeBaseServings);
             setScaledIngredients(null);
             setOriginalIngredients(null);
+            setScalingError(null);
         }
     }, [recipe?.slug]);
 
@@ -244,11 +156,13 @@ const RecipePage = () => {
         if (targetServings === baseServings && originalIngredients) {
             setServings(baseServings);
             setScaledIngredients(null);
+            setScalingError(null);
             return;
         }
         
         setIsScaling(true);
         setServings(targetServings);
+        setScalingError(null);
         
         try {
             const response = await aiAPI.scale(recipe.slug, targetServings);
@@ -269,7 +183,8 @@ const RecipePage = () => {
             }
         } catch (error) {
             console.error('Scaling error:', error);
-            toast.error(t('recipe.scalingError') || 'Failed to scale recipe');
+            setScalingError(t('recipe.scalingError') || 'Could not update servings');
+            toast.error(t('recipe.scalingError') || 'Could not update servings');
             // Revert servings on error
             setServings(baseServings);
         } finally {
@@ -292,6 +207,7 @@ const RecipePage = () => {
     const resetServings = useCallback(() => {
         setServings(baseServings);
         setScaledIngredients(null);
+        setScalingError(null);
     }, [baseServings]);
 
     // Authenticity helpers
@@ -333,17 +249,32 @@ const RecipePage = () => {
         return <FallbackBanner contentLang={contentLanguage} requestedLang={currentLang} />;
     };
 
-    // CRITICAL: Show skeleton while loading OR while translating
-    // This prevents showing English content before translated content is ready
-    if (loading || (isTranslating && !recipe)) {
+    // Show skeleton while loading
+    if (loading) {
         return <RecipeSkeleton language={currentLang} />;
+    }
+
+    // Error state
+    if (isError) {
+        return (
+            <div className="min-h-screen flex items-center justify-center px-4" data-testid="error-state">
+                <div className="text-center max-w-sm">
+                    <AlertTriangle className="h-10 w-10 mx-auto text-red-500 mb-4" />
+                    <p className="text-lg text-[#1E1E1E]/70 mb-2">{t('recipe.loadError') || 'Failed to load recipe'}</p>
+                    <p className="text-sm text-[#1E1E1E]/50 mb-4">{queryError?.message || ''}</p>
+                    <Link to={getLocalizedPath('/')} className="text-[#6A1F2E] hover:underline text-sm">
+                        {t('recipe.returnHome')}
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     if (!recipe) {
         return (
-            <div className="min-h-screen flex items-center justify-center" data-testid="not-found-state">
+            <div className="min-h-screen flex items-center justify-center px-4" data-testid="not-found-state">
                 <div className="text-center">
-                    <p className="text-xl text-[#1E1E1E]/70 mb-4">{t('recipe.notFound')}</p>
+                    <p className="text-lg sm:text-xl text-[#1E1E1E]/70 mb-4">{t('recipe.notFound')}</p>
                     <Link to={getLocalizedPath('/')} className="text-[#6A1F2E] hover:underline">
                         {t('recipe.returnHome')}
                     </Link>
@@ -396,38 +327,40 @@ const RecipePage = () => {
             <RecipeSEO recipe={recipe} slug={slug} />
             
             {/* Hero Section */}
-            <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-12 px-4">
+            <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-6 sm:py-12 px-4">
                 <div className="max-w-4xl mx-auto">
                     {/* Language Fallback Banner */}
                     {renderLanguageBanner()}
                     
-                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <Badge className={getAuthenticityBadgeColor(authenticityLevel)}>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <Badge className={`text-[10px] sm:text-xs ${getAuthenticityBadgeColor(authenticityLevel)}`}>
                             <Star className="h-3 w-3 mr-1" />
                             {t('recipe.level')} {authenticityLevel}: {getAuthenticityLabel(authenticityLevel)}
                         </Badge>
                         {recipe.gpt_used && (
-                            <Badge variant="outline" className="border-[#CBA55B] text-[#CBA55B]">
+                            <Badge variant="outline" className="border-[#CBA55B] text-[#CBA55B] text-[10px] sm:text-xs">
                                 <ChefHat className="h-3 w-3 mr-1" />
                                 {recipe.gpt_used}
                             </Badge>
                         )}
                     </div>
                     
-                    <div className="flex items-start justify-between gap-4">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-[#1E1E1E]" 
+                    <div className="flex items-start justify-between gap-3">
+                        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-[#1E1E1E] break-words min-w-0" 
                             style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             {recipeName}
                         </h1>
-                        <FavoriteButton slug={recipe.slug} />
+                        <div className="flex-shrink-0 pt-1">
+                            <FavoriteButton slug={recipe.slug} />
+                        </div>
                     </div>
                     
-                    <div className="flex flex-wrap items-center gap-4 text-[#1E1E1E]/70">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-[#1E1E1E]/70">
                         <span className="flex items-center gap-1">
-                            <Globe className="h-4 w-4" />
+                            <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             {t(`countries.${country}`, { defaultValue: country })}
                         </span>
-                        <span>•</span>
+                        <span className="hidden sm:inline">·</span>
                         <span>{region}</span>
                     </div>
                 </div>
@@ -435,8 +368,8 @@ const RecipePage = () => {
 
             {/* Recipe Hero Image */}
             {recipe.image_url && (
-                <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 mb-4" data-testid="recipe-hero-image">
-                    <div className="relative overflow-hidden rounded-lg shadow-md aspect-video bg-[#F5F2E8]">
+                <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-1 sm:-mt-2 mb-4" data-testid="recipe-hero-image">
+                    <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/3] sm:aspect-video bg-[#F5F2E8]">
                         <img
                             src={recipe.image_url}
                             alt={recipe.image_alt || recipeName}
@@ -444,7 +377,7 @@ const RecipePage = () => {
                             loading="eager"
                         />
                         {recipe.image_metadata?.photographer && (
-                            <div className="absolute bottom-0 right-0 bg-black/50 text-white text-xs px-2 py-1 rounded-tl">
+                            <div className="absolute bottom-0 right-0 bg-black/50 text-white text-[10px] sm:text-xs px-2 py-1 rounded-tl">
                                 {recipe.image_metadata.photographer_url ? (
                                     <a
                                         href={recipe.image_metadata.photographer_url}
@@ -465,19 +398,19 @@ const RecipePage = () => {
             )}
 
             {/* Main Content */}
-            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-6 sm:space-y-8">
                 
                 {/* History & Character */}
                 {(historyContent.content || recipe.origin_story) && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <BookOpen className="h-5 w-5 text-[#6A1F2E]" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-[#6A1F2E]" />
                                 {t('recipe.history')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="narrative-text leading-relaxed">
+                            <p className="narrative-text leading-relaxed text-sm sm:text-base break-words">
                                 {historyContent.content || recipe.origin_story}
                             </p>
                         </CardContent>
@@ -487,13 +420,13 @@ const RecipePage = () => {
                 {profileContent.content && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <ChefHat className="h-5 w-5 text-[#3F4A3C]" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-[#3F4A3C]" />
                                 {t('recipe.profile')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="narrative-text leading-relaxed">
+                            <p className="narrative-text leading-relaxed text-sm sm:text-base break-words">
                                 {profileContent.content}
                             </p>
                         </CardContent>
@@ -504,17 +437,17 @@ const RecipePage = () => {
                 {noNoRulesContent.content && noNoRulesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-red-500">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-red-700" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <AlertTriangle className="h-5 w-5" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-red-700" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
                                 {t('recipe.noNoRules')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-2">
                                 {noNoRulesContent.content.map((rule, index) => (
-                                    <li key={index} className="flex items-start gap-2 text-red-800">
-                                        <span className="text-red-500 font-bold">✗</span>
-                                        <span>{rule}</span>
+                                    <li key={index} className="flex items-start gap-2 text-red-800 text-sm sm:text-base">
+                                        <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                                        <span className="break-words min-w-0">{rule}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -526,17 +459,17 @@ const RecipePage = () => {
                 {techniquesContent.content && techniquesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-[#CBA55B]">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <Lightbulb className="h-5 w-5 text-[#CBA55B]" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <Lightbulb className="h-4 w-4 sm:h-5 sm:w-5 text-[#CBA55B]" />
                                 {t('recipe.techniques')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-2">
                                 {techniquesContent.content.map((technique, index) => (
-                                    <li key={index} className="flex items-start gap-2">
-                                        <span className="text-[#CBA55B] font-bold">★</span>
-                                        <span className="italic">{technique}</span>
+                                    <li key={index} className="flex items-start gap-2 text-sm sm:text-base">
+                                        <span className="text-[#CBA55B] font-bold flex-shrink-0">★</span>
+                                        <span className="italic break-words min-w-0">{technique}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -548,25 +481,25 @@ const RecipePage = () => {
                 {recipe.technique_links && recipe.technique_links.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-[#3F4A3C]">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <BookOpen className="h-5 w-5 text-[#3F4A3C]" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-[#3F4A3C]" />
                                 {t('recipe.techniqueGuides')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-4">
+                            <div className="space-y-3 sm:space-y-4">
                                 {recipe.technique_links.map((link, index) => (
-                                    <div key={index} className="bg-[#F5F2E8] rounded-lg p-4">
-                                        <h4 className="font-semibold text-[#1E1E1E] mb-1">{link.technique}</h4>
+                                    <div key={index} className="bg-[#F5F2E8] rounded-lg p-3 sm:p-4">
+                                        <h4 className="font-semibold text-[#1E1E1E] mb-1 text-sm sm:text-base break-words">{link.technique}</h4>
                                         {link.description && (
-                                            <p className="text-sm text-[#1E1E1E]/70 mb-2">{link.description}</p>
+                                            <p className="text-xs sm:text-sm text-[#1E1E1E]/70 mb-2 break-words">{link.description}</p>
                                         )}
                                         {link.url && (
                                             <a 
                                                 href={link.url} 
                                                 target="_blank" 
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-1 text-sm text-[#6A1F2E] hover:underline"
+                                                className="inline-flex items-center gap-1 text-xs sm:text-sm text-[#6A1F2E] hover:underline touch-manipulation"
                                             >
                                                 <ExternalLink className="h-3 w-3" />
                                                 {t('recipe.watchTutorial')}
@@ -582,30 +515,31 @@ const RecipePage = () => {
                 {/* Ingredients with Serving Selector */}
                 {ingredientsContent.content && ingredientsContent.content.length > 0 && (
                     <Card className="card-elegant">
-                        <CardHeader>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <CardHeader className="pb-2 sm:pb-4">
+                            <div className="flex flex-col gap-3">
+                                <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                     <span>🧺</span> {t('recipe.ingredients')}
                                 </CardTitle>
                                 
-                                {/* Serving Selector */}
-                                <div className="flex items-center gap-3 bg-[#F5F2E8] rounded-lg px-3 py-2">
-                                    <span className="text-sm text-[#5C5C5C] font-medium">
+                                {/* Serving Selector — touch-friendly, stacks on mobile */}
+                                <div className="flex items-center gap-2 sm:gap-3 bg-[#F5F2E8] rounded-lg px-3 py-2 self-start" data-testid="serving-selector">
+                                    <span className="text-xs sm:text-sm text-[#5C5C5C] font-medium whitespace-nowrap">
                                         {t('recipe.servings')}:
                                     </span>
                                     <div className="flex items-center gap-1">
                                         <Button
                                             variant="outline"
                                             size="icon"
-                                            className="h-8 w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50"
+                                            className="h-9 w-9 sm:h-8 sm:w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50 touch-manipulation"
                                             onClick={decrementServings}
                                             disabled={servings <= 1 || isScaling}
                                             aria-label="Decrease servings"
+                                            data-testid="serving-decrease"
                                         >
                                             <Minus className="h-4 w-4" />
                                         </Button>
                                         
-                                        <span className="w-10 text-center font-semibold text-[#2C2C2C] text-lg">
+                                        <span className="w-10 text-center font-semibold text-[#2C2C2C] text-lg tabular-nums" data-testid="serving-count">
                                             {isScaling ? (
                                                 <Loader2 className="h-5 w-5 animate-spin mx-auto text-[#6A1F2E]" />
                                             ) : (
@@ -616,10 +550,11 @@ const RecipePage = () => {
                                         <Button
                                             variant="outline"
                                             size="icon"
-                                            className="h-8 w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50"
+                                            className="h-9 w-9 sm:h-8 sm:w-8 rounded-full border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white disabled:opacity-50 touch-manipulation"
                                             onClick={incrementServings}
                                             disabled={servings >= 50 || isScaling}
                                             aria-label="Increase servings"
+                                            data-testid="serving-increase"
                                         >
                                             <Plus className="h-4 w-4" />
                                         </Button>
@@ -630,10 +565,11 @@ const RecipePage = () => {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-[#6A1F2E] hover:bg-[#6A1F2E]/10"
+                                            className="h-9 w-9 sm:h-8 sm:w-8 p-0 text-[#6A1F2E] hover:bg-[#6A1F2E]/10 touch-manipulation"
                                             onClick={resetServings}
                                             disabled={isScaling}
                                             aria-label="Reset to original"
+                                            data-testid="serving-reset"
                                         >
                                             <RotateCcw className="h-4 w-4" />
                                         </Button>
@@ -647,21 +583,30 @@ const RecipePage = () => {
                                     {t('recipe.scaledFrom')} {baseServings} → {servings} {t('recipe.servings').toLowerCase()}
                                 </p>
                             )}
+
+                            {/* Scaling error */}
+                            {scalingError && (
+                                <p className="text-xs text-red-600 mt-2 flex items-center gap-1" data-testid="scaling-error">
+                                    <AlertTriangle className="h-3 w-3" />
+                                    {scalingError}
+                                </p>
+                            )}
                         </CardHeader>
                         <CardContent>
-                            <div className="grid gap-3">
+                            <div className="grid gap-0">
                                 {/* Use scaled ingredients if available, otherwise original */}
                                 {(scaledIngredients || ingredientsContent.content).map((ing, index) => (
                                     <div 
                                         key={index} 
-                                        className={`flex items-center justify-between py-2 border-b border-dashed border-[#CBA55B]/30 last:border-0 transition-all duration-200 ${
+                                        className={`flex flex-col sm:flex-row sm:items-center sm:justify-between py-2.5 sm:py-2 border-b border-dashed border-[#CBA55B]/30 last:border-0 transition-all duration-200 ${
                                             ing._scaled ? 'bg-[#6A1F2E]/5 -mx-2 px-2 rounded' : ''
                                         }`}
+                                        data-testid={`ingredient-${index}`}
                                     >
-                                        <span className="font-medium">{ing.item}</span>
-                                        <span className={`text-[#1E1E1E]/70 ${ing._scaled ? 'font-semibold text-[#6A1F2E]' : ''}`}>
+                                        <span className="font-medium text-sm sm:text-base text-[#1E1E1E] break-words min-w-0">{ing.item}</span>
+                                        <span className={`text-sm sm:text-base tabular-nums flex-shrink-0 ${ing._scaled ? 'font-semibold text-[#6A1F2E]' : 'text-[#1E1E1E]/70'}`}>
                                             {ing.amount} {ing.unit}
-                                            {ing.notes && <span className="italic text-sm ml-2">({ing.notes})</span>}
+                                            {ing.notes && <span className="italic text-xs sm:text-sm ml-1 sm:ml-2 text-[#1E1E1E]/50">({ing.notes})</span>}
                                         </span>
                                     </div>
                                 ))}
@@ -674,18 +619,18 @@ const RecipePage = () => {
                 {instructionsContent.content && instructionsContent.content.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                                 <span>👨‍🍳</span> {t('recipe.instructions')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ol className="space-y-4">
                                 {instructionsContent.content.map((step, index) => (
-                                    <li key={index} className="flex gap-4">
-                                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-bold text-sm">
+                                    <li key={index} className="flex gap-3 sm:gap-4">
+                                        <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#6A1F2E] text-white flex items-center justify-center font-bold text-xs sm:text-sm">
                                             {index + 1}
                                         </span>
-                                        <p className="pt-1 narrative-text">{typeof step === 'string' ? step : step.instruction}</p>
+                                        <p className="pt-0.5 sm:pt-1 text-sm sm:text-base narrative-text break-words min-w-0">{typeof step === 'string' ? step : step.instruction}</p>
                                     </li>
                                 ))}
                             </ol>
@@ -703,12 +648,12 @@ const RecipePage = () => {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 {winePairingContent.content.recommended_wines.map((wine, index) => (
-                                    <div key={index} className="bg-white/80 rounded-lg p-4 shadow-sm">
-                                        <h4 className="font-semibold text-[#6A1F2E]">{wine.name}</h4>
-                                        <p className="text-sm text-[#1E1E1E]/60 mb-2">{wine.region}</p>
-                                        <p className="text-sm italic">{wine.reason}</p>
+                                    <div key={index} className="bg-white/80 rounded-lg p-3 sm:p-4 shadow-sm">
+                                        <h4 className="font-semibold text-[#6A1F2E] text-sm sm:text-base">{wine.name}</h4>
+                                        <p className="text-xs sm:text-sm text-[#1E1E1E]/60 mb-1.5 sm:mb-2">{wine.region}</p>
+                                        <p className="text-xs sm:text-sm italic">{wine.reason}</p>
                                     </div>
                                 ))}
                             </div>
@@ -725,28 +670,28 @@ const RecipePage = () => {
                 {recipe.original_source_urls && recipe.original_source_urls.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-sm" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <ExternalLink className="h-4 w-4" />
+                            <CardTitle className="flex items-center gap-2 text-sm sm:text-base" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 {t('recipe.originalSources')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-2">
                                 {recipe.original_source_urls.map((source, index) => (
-                                    <li key={index} className="flex items-center gap-2 text-sm">
-                                        <Badge variant="outline" className="text-xs">
+                                    <li key={index} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm">
+                                        <Badge variant="outline" className="text-[10px] sm:text-xs w-fit flex-shrink-0">
                                             {source.type || t('recipe.source')}
                                         </Badge>
                                         {source.url && source.url !== 'unknown' ? (
                                             <a href={source.url} target="_blank" rel="noopener noreferrer" 
-                                               className="text-[#6A1F2E] hover:underline truncate">
+                                               className="text-[#6A1F2E] hover:underline truncate min-w-0 touch-manipulation">
                                                 {source.url}
                                             </a>
                                         ) : (
                                             <span className="text-[#1E1E1E]/50">{t('recipe.source')}</span>
                                         )}
                                         {source.language && (
-                                            <span className="text-xs text-[#1E1E1E]/50 uppercase">({source.language})</span>
+                                            <span className="text-[10px] sm:text-xs text-[#1E1E1E]/50 uppercase">({source.language})</span>
                                         )}
                                     </li>
                                 ))}
@@ -759,8 +704,8 @@ const RecipePage = () => {
                 {recipe.youtube_links && recipe.youtube_links.length > 0 && recipe.youtube_links[0].url && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                                <Youtube className="h-5 w-5 text-red-600" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <Youtube className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                                 {t('recipe.videoTutorials')}
                             </CardTitle>
                         </CardHeader>
@@ -769,9 +714,9 @@ const RecipePage = () => {
                                 {recipe.youtube_links.filter(link => link.url).map((link, index) => (
                                     <li key={index}>
                                         <a href={link.url} target="_blank" rel="noopener noreferrer"
-                                           className="text-[#6A1F2E] hover:underline flex items-center gap-2">
-                                            <Youtube className="h-4 w-4" />
-                                            {link.title || t('recipe.watchVideo')}
+                                           className="text-[#6A1F2E] hover:underline flex items-center gap-2 text-sm sm:text-base py-1 touch-manipulation">
+                                            <Youtube className="h-4 w-4 flex-shrink-0" />
+                                            <span className="break-words min-w-0">{link.title || t('recipe.watchVideo')}</span>
                                         </a>
                                     </li>
                                 ))}
@@ -788,7 +733,7 @@ const RecipePage = () => {
                 />
 
                 {/* Metadata */}
-                <div className="text-center text-sm text-[#1E1E1E]/50 pt-8 border-t">
+                <div className="text-center text-xs sm:text-sm text-[#1E1E1E]/50 pt-6 sm:pt-8 border-t">
                     {recipe.date_fetched && (
                         <p>{t('recipe.recipeAdded')}: {new Date(recipe.date_fetched).toLocaleDateString()}</p>
                     )}
