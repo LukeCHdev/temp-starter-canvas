@@ -84,6 +84,31 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
 - Added AdSense meta tag `google-adsense-account` to `public/index.html`
 
+### Mobile Layout Fix + elegant-sona Patterns + Scaling + React Query (DONE - Mar 2026)
+
+**Files created:**
+- `/app/frontend/src/hooks/useRecipe.js` — React Query hook for cached recipe fetching
+- `/app/frontend/src/utils/ingredientScaler.js` — Safe ingredient amount parser (handles "380", "1/2", "1 1/2", "2-3", "to taste", "½")
+- `/app/frontend/src/lib/queryClient.js` — React Query config (staleTime=10min)
+
+**Files modified:**
+- `frontend/src/index.js` — Added QueryClientProvider wrapper
+- `frontend/src/pages/RecipePage.jsx` — Major mobile-first rewrite:
+  - React Query integration (useRecipe hook, cached per [slug, lang])
+  - Serving selector (+/- stepper, connected to POST /api/ai/scale)
+  - Scaling error state with visual feedback
+  - Mobile-first responsive: flex-col sm:flex-row for ingredients, touch-friendly buttons (h-9 w-9)
+  - All text sizes responsive (text-sm sm:text-base, text-base sm:text-lg)
+  - Hero title: text-2xl sm:text-4xl lg:text-5xl (was text-4xl sm:text-5xl lg:text-6xl)
+  - Image aspect ratio: aspect-[4/3] sm:aspect-video
+  - Error state with AlertTriangle icon for failed loads
+  - break-words + min-w-0 on all text containers
+- `frontend/src/components/recipe/RecipeCard.jsx` — Responsive image (h-40 sm:h-56), padding (p-4 sm:p-6), text sizes
+- `frontend/src/components/common/Navigation.jsx` — Logo truncation fix (min-w-0 shrink), responsive icon sizes
+- `frontend/src/components/common/FavoriteButton.jsx` — deferStatusCheck prop (prevents N+1 API calls on list pages)
+- `frontend/src/i18n/translations.js` — Added scalingError, loadError, search.failed, explore.loadMore, explore.remaining keys
+- 16/16 frontend tests passed (iteration_12)
+
 ### Search & Filter Deep Bug Fix (DONE - Mar 2026)
 - **Root cause A**: FavoriteButton fired 161 concurrent API calls on explore page mount → Fixed: added `deferStatusCheck` prop, defers API call until user clicks
 - **Root cause B**: `searchParams` mutation passed same object reference to `setSearchParams` → Fixed: cloned with `new URLSearchParams()`
