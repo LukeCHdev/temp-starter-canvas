@@ -84,6 +84,17 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
 - Added AdSense meta tag `google-adsense-account` to `public/index.html`
 
+### Related Recipes Feature (DONE - Mar 2026)
+
+**Files created:**
+- `/app/frontend/src/hooks/useRelatedRecipes.js` — React Query hook: fetches recipes via getFeatured(200) and filters by dish_type > country > continent priority, returns 4-8 results excluding current recipe
+- `/app/frontend/src/components/recipe/RelatedRecipes.jsx` — Responsive component: 4-col grid on desktop (lg:), horizontal scroll on mobile
+
+**Files modified:**
+- `frontend/src/pages/RecipePage.jsx` — Added RelatedRecipes import and placement before ReviewSection
+- `frontend/src/components/recipe/RecipeCard.jsx` — Fixed 0 rating bug: `recipe.average_rating &&` → `recipe.average_rating > 0 &&`
+- 9/9 frontend tests passed (iteration_14)
+
 ### Elegant-Sona UI/UX Overhaul (DONE - Mar 2026)
 
 **CSS Utilities Added (`index.css`):**
