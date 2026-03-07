@@ -96,13 +96,14 @@ const TechniquesPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF7F0]" data-testid="techniques-page">
-      <section className="max-w-5xl mx-auto px-6 pt-16 pb-24">
-        <h1 className="text-4xl sm:text-5xl font-serif text-[#1E1E1E] mb-3 text-center">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-16 sm:pb-24">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-[#1E1E1E] mb-3 text-center tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
           Cooking Techniques
         </h1>
-        <p className="text-center text-gray-500 mb-10 max-w-xl mx-auto">
+        <p className="text-center text-sm sm:text-base text-gray-500 mb-4 max-w-xl mx-auto font-light">
           A categorized library of essential culinary methods — from dry heat basics to advanced preservation.
         </p>
+        <div className="section-divider mb-10 sm:mb-14"></div>
 
         {/* Anchor navigation */}
         {grouped.length > 0 && (
@@ -139,7 +140,7 @@ const TechniquesPage = () => {
               className="scroll-mt-24"
               data-testid={`section-${slugifyCategory(group.name)}`}
             >
-              <h2 className="text-2xl font-serif text-[#1E1E1E] mb-6 border-b border-[#E8E4DC] pb-3">
+              <h2 className="text-xl sm:text-2xl font-light text-[#1E1E1E] mb-6 border-b border-[#E8E4DC] pb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                 {group.name}
               </h2>
 
@@ -148,11 +149,11 @@ const TechniquesPage = () => {
                   <Link
                     key={tech.id}
                     to={getLocalizedPath(`/techniques/${tech.id}`)}
-                    className="group bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-transparent hover:border-[#6A1F2E]/10"
+                    className="group bg-white p-5 sm:p-6 shadow-sm border border-[#E8E4DC] hover:border-[#6A1F2E]/30 transition-all duration-300 recipe-card-hover"
                     data-testid={`technique-card-${tech.id}`}
                   >
                     <article>
-                      <h3 className="text-lg font-serif text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors flex items-center justify-between">
+                      <h3 className="text-base sm:text-lg font-light text-[#1E1E1E] group-hover:text-[#6A1F2E] transition-colors flex items-center justify-between" style={{ fontFamily: 'var(--font-heading)' }}>
                         {loc(tech.title, lang)}
                         <ChevronRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#6A1F2E]" />
                       </h3>

@@ -240,7 +240,7 @@ const CookiesPage = () => {
                         <ChevronRight className="h-4 w-4" />
                         <span className="text-[#6A1F2E] font-medium">{t('cookies.title', language)}</span>
                     </nav>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('cookies.title', language)}
                     </h1>
                     <p className="text-[#1E1E1E]/70 mt-4">{t('cookies.lastUpdated', language)}</p>
@@ -252,7 +252,7 @@ const CookiesPage = () => {
                     
                     {/* What Are Cookies */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {content.whatAreCookies.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -262,7 +262,7 @@ const CookiesPage = () => {
 
                     {/* How We Use Cookies */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {content.howWeUse.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
@@ -289,7 +289,7 @@ const CookiesPage = () => {
 
                     {/* Cookies We Use */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {content.cookiesWeUse.title[language]}
                         </h2>
                         <div className="overflow-x-auto">
@@ -316,7 +316,7 @@ const CookiesPage = () => {
 
                     {/* Managing Cookies */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {content.managing.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
@@ -334,7 +334,7 @@ const CookiesPage = () => {
 
                     {/* Contact Us */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {content.contact.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">

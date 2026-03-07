@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
                     <div className="mx-auto mb-4 w-12 h-12 bg-[#6A1F2E] rounded-full flex items-center justify-center">
                         <Mail className="text-white w-5 h-5" />
                     </div>
-                    <CardTitle className="text-2xl" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <CardTitle className="text-2xl" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('auth.resetPassword', lang)}
                     </CardTitle>
                     <CardDescription>

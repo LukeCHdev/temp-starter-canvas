@@ -51,7 +51,7 @@ const ContactPage = () => {
                         <span className="text-[#6A1F2E] font-medium">{t('nav.contact', language)}</span>
                     </nav>
                     
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('contact.title', language)}
                     </h1>
                     <p className="text-lg text-[#1E1E1E]/70">
@@ -70,7 +70,7 @@ const ContactPage = () => {
                                     <section.icon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="flex-1">
-                                    <h2 className="text-xl font-semibold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                    <h2 className="text-xl font-semibold text-[#1E1E1E] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                                         {t(section.titleKey, language)}
                                     </h2>
                                     <p className="text-[#1E1E1E]/70 text-sm mb-4">
@@ -99,7 +99,7 @@ const ContactPage = () => {
 
                 {/* Address / Additional Info */}
                 <div className="mt-10 bg-white rounded-xl p-8 shadow-sm">
-                    <h3 className="text-xl font-semibold text-[#1E1E1E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h3 className="text-xl font-semibold text-[#1E1E1E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                         Sous Chef Linguine
                     </h3>
                     <p className="text-[#1E1E1E]/70 mb-6">

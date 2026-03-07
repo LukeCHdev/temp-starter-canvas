@@ -10,7 +10,7 @@ import uuid
 import time
 
 # Use the public URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://culinary-hub-165.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://recipe-redesign.preview.emergentagent.com')
 BASE_URL = BASE_URL.rstrip('/')
 
 # Test user credentials - unique per run to avoid conflicts

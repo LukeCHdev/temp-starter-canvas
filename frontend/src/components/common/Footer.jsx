@@ -15,7 +15,7 @@ export const Footer = () => {
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center space-x-2 mb-4">
                             <ChefHat className="h-6 w-6 text-[#CBA55B]" />
-                            <span className="text-xl font-bold" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <span className="text-xl font-light tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                                 Sous Chef Linguine
                             </span>
                         </div>
@@ -26,7 +26,7 @@ export const Footer = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="font-semibold mb-4 text-[#CBA55B]">{t('footer.explore', language)}</h3>
+                        <h3 className="font-medium mb-4 text-[#CBA55B] text-sm uppercase tracking-wider">{t('footer.explore', language)}</h3>
                         <ul className="space-y-2 text-sm">
                             <li><Link to={getLocalizedPath('/')} className="hover:text-[#CBA55B] transition-colors">{t('common.home', language)}</Link></li>
                             <li><Link to={getLocalizedPath('/explore')} className="hover:text-[#CBA55B] transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
@@ -39,7 +39,7 @@ export const Footer = () => {
 
                     {/* Legal */}
                     <div>
-                        <h3 className="font-semibold mb-4 text-[#CBA55B]">{t('footer.legal', language)}</h3>
+                        <h3 className="font-medium mb-4 text-[#CBA55B] text-sm uppercase tracking-wider">{t('footer.legal', language)}</h3>
                         <ul className="space-y-2 text-sm">
                             <li><Link to={getLocalizedPath('/editorial-policy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.editorial', language)}</Link></li>
                             <li><Link to={getLocalizedPath('/privacy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.privacy', language)}</Link></li>

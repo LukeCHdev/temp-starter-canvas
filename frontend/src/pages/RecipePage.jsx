@@ -346,8 +346,8 @@ const RecipePage = () => {
                     </div>
                     
                     <div className="flex items-start justify-between gap-3">
-                        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-[#1E1E1E] break-words min-w-0" 
-                            style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-light mb-3 sm:mb-4 text-[#1E1E1E] break-words min-w-0 tracking-tight" 
+                            style={{ fontFamily: 'var(--font-heading)' }}>
                             {recipeName}
                         </h1>
                         <div className="flex-shrink-0 pt-1">
@@ -404,7 +404,7 @@ const RecipePage = () => {
                 {(historyContent.content || recipe.origin_story) && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-[#6A1F2E]" />
                                 {t('recipe.history')}
                             </CardTitle>
@@ -420,7 +420,7 @@ const RecipePage = () => {
                 {profileContent.content && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-[#3F4A3C]" />
                                 {t('recipe.profile')}
                             </CardTitle>
@@ -437,7 +437,7 @@ const RecipePage = () => {
                 {noNoRulesContent.content && noNoRulesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-red-500">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-red-700" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-red-700" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
                                 {t('recipe.noNoRules')}
                             </CardTitle>
@@ -459,7 +459,7 @@ const RecipePage = () => {
                 {techniquesContent.content && techniquesContent.content.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-[#CBA55B]">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <Lightbulb className="h-4 w-4 sm:h-5 sm:w-5 text-[#CBA55B]" />
                                 {t('recipe.techniques')}
                             </CardTitle>
@@ -481,7 +481,7 @@ const RecipePage = () => {
                 {recipe.technique_links && recipe.technique_links.length > 0 && (
                     <Card className="card-elegant border-l-4 border-l-[#3F4A3C]">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-[#3F4A3C]" />
                                 {t('recipe.techniqueGuides')}
                             </CardTitle>
@@ -517,7 +517,7 @@ const RecipePage = () => {
                     <Card className="card-elegant">
                         <CardHeader className="pb-2 sm:pb-4">
                             <div className="flex flex-col gap-3">
-                                <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                     <span>🧺</span> {t('recipe.ingredients')}
                                 </CardTitle>
                                 
@@ -619,7 +619,7 @@ const RecipePage = () => {
                 {instructionsContent.content && instructionsContent.content.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <span>👨‍🍳</span> {t('recipe.instructions')}
                             </CardTitle>
                         </CardHeader>
@@ -642,7 +642,7 @@ const RecipePage = () => {
                 {winePairingContent.content?.recommended_wines?.length > 0 && (
                     <Card className="card-elegant bg-gradient-to-br from-[#6A1F2E]/5 to-[#6A1F2E]/10">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <Wine className="h-5 w-5" />
                                 {t('recipe.winePairing')}
                             </CardTitle>
@@ -670,7 +670,7 @@ const RecipePage = () => {
                 {recipe.original_source_urls && recipe.original_source_urls.length > 0 && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-sm sm:text-base" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-sm sm:text-base" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 {t('recipe.originalSources')}
                             </CardTitle>
@@ -704,7 +704,7 @@ const RecipePage = () => {
                 {recipe.youtube_links && recipe.youtube_links.length > 0 && recipe.youtube_links[0].url && (
                     <Card className="card-elegant">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
                                 <Youtube className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                                 {t('recipe.videoTutorials')}
                             </CardTitle>

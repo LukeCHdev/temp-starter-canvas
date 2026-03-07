@@ -21,54 +21,54 @@ const AboutPage = () => {
                     </nav>
                     
                     <div className="text-center">
-                        <ChefHat className="h-16 w-16 mx-auto text-[#6A1F2E] mb-6" />
-                        <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <ChefHat className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-[#6A1F2E] mb-6" />
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-[#1E1E1E] mb-4 tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('about.title', language)}
                         </h1>
-                        <p className="text-lg text-[#1E1E1E]/70">
+                        <p className="text-base sm:text-lg text-[#1E1E1E]/70 font-light">
                             {t('about.subtitle', language)}
                         </p>
-                        <div className="w-24 h-1 bg-[#CBA55B] mx-auto mt-6"></div>
+                        <div className="section-divider-gold mt-6"></div>
                     </div>
                 </div>
             </section>
 
             <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Our Mission */}
-                <div className="bg-white rounded-xl p-8 shadow-sm mb-8">
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm mb-8 fade-in-up">
                     <div className="flex items-center gap-3 mb-4">
-                        <Archive className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <Archive className="h-5 w-5 sm:h-6 sm:w-6 text-[#6A1F2E]" />
+                        <h2 className="text-xl sm:text-2xl font-light text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('about.mission.title', language)}
                         </h2>
                     </div>
-                    <p className="text-[#1E1E1E]/80 leading-relaxed">
+                    <p className="text-sm sm:text-base text-[#1E1E1E]/80 leading-relaxed font-light">
                         {t('about.mission.text', language)}
                     </p>
                 </div>
 
                 {/* What We Are */}
-                <div className="bg-white rounded-xl p-8 shadow-sm mb-8">
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm mb-8 fade-in-up fade-in-up-delay-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <BookOpen className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-[#6A1F2E]" />
+                        <h2 className="text-xl sm:text-2xl font-light text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('about.whatWeAre.title', language)}
                         </h2>
                     </div>
-                    <p className="text-[#1E1E1E]/80 leading-relaxed">
+                    <p className="text-sm sm:text-base text-[#1E1E1E]/80 leading-relaxed font-light">
                         {t('about.whatWeAre.text', language)}
                     </p>
                 </div>
 
                 {/* The Authenticity Framework */}
-                <div className="bg-white rounded-xl p-8 shadow-sm mb-8">
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm mb-8 fade-in-up fade-in-up-delay-2">
                     <div className="flex items-center gap-3 mb-4">
-                        <Shield className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-[#6A1F2E]" />
+                        <h2 className="text-xl sm:text-2xl font-light text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('about.authenticity.title', language)}
                         </h2>
                     </div>
-                    <p className="text-[#1E1E1E]/80 leading-relaxed mb-6">
+                    <p className="text-sm sm:text-base text-[#1E1E1E]/80 leading-relaxed mb-6 font-light">
                         {t('about.authenticity.intro', language)}
                     </p>
 
@@ -115,14 +115,14 @@ const AboutPage = () => {
                 </div>
 
                 {/* Who is Sous Chef Linguine */}
-                <div className="bg-white rounded-xl p-8 shadow-sm">
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm fade-in-up fade-in-up-delay-3">
                     <div className="flex items-center gap-3 mb-4">
-                        <ChefHat className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-semibold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 text-[#6A1F2E]" />
+                        <h2 className="text-xl sm:text-2xl font-light text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('about.whoIs.title', language)}
                         </h2>
                     </div>
-                    <p className="text-[#1E1E1E]/80 leading-relaxed">
+                    <p className="text-sm sm:text-base text-[#1E1E1E]/80 leading-relaxed font-light">
                         {t('about.whoIs.text', language)}
                     </p>
                 </div>

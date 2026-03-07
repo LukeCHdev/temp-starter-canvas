@@ -78,25 +78,27 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
         ? photos[0].image_url 
         : (recipe.image_url || null);
 
-    // Editorial variant - cleaner, more refined design
+    // Editorial variant - cleaner, more refined design (elegant-sona inspired)
     if (variant === 'editorial') {
         return (
             <Link to={getLocalizedPath(`/recipe/${slug}`)} data-testid={`recipe-card-${slug}`}>
-                <article className="group h-full bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] transition-colors overflow-hidden">
-                    {/* Image */}
+                <article className="recipe-card-hover group h-full bg-white border border-[#E8E4DC] hover:border-[#6A1F2E] overflow-hidden">
+                    {/* Image with gradient overlay on hover */}
                     <div className="relative overflow-hidden h-40 sm:h-56 bg-[#F5F2EC]">
                         {photoUrl ? (
                             <img 
                                 src={photoUrl} 
                                 alt={title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 loading="lazy"
                             />
                         ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-[#BFBFBF] text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>SCL</span>
+                                <span className="text-[#BFBFBF] text-4xl font-light" style={{ fontFamily: 'var(--font-heading)' }}>SCL</span>
                             </div>
                         )}
+                        {/* Gradient overlay on hover (elegant-sona pattern) */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E1E]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         {/* Favorite Button */}
                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
                             <FavoriteButton slug={slug} size="sm" deferStatusCheck={deferFavoriteCheck} />
@@ -116,7 +118,7 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                         </p>
                         
                         {/* Title */}
-                        <h3 className="text-base sm:text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 mb-2 sm:mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h3 className="text-base sm:text-lg font-light text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 mb-2 sm:mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                             {title}
                         </h3>
                         

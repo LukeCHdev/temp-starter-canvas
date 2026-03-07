@@ -114,11 +114,11 @@ const SignupPage = () => {
             <Card className="w-full max-w-md border-[#E8E4DC]">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4 w-12 h-12 bg-[#6A1F2E] rounded-full flex items-center justify-center">
-                        <span className="text-white text-xl font-bold" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <span className="text-white text-xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>
                             SCL
                         </span>
                     </div>
-                    <CardTitle className="text-2xl" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <CardTitle className="text-2xl" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('auth.createAccount', lang)}
                     </CardTitle>
                     <CardDescription>

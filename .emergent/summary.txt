@@ -1,50 +1,76 @@
 <analysis>**original_problem_statement:**
-The user's initial goal was to audit and refactor the application's search functionality. This evolved into a multi-phase project to build out a complete, production-ready Techniques section for the recipe application.
-
-**PRODUCT REQUIREMENTS:**
-1.  **Search Audit & Refactor:** Audit the existing search system for security, performance, and correctness. Then, refactor it to be a fast, scalable, and safe database-only search, removing all expensive in-memory fuzzy matching and AI-generation-on-search capabilities.
-2.  **Create Techniques System (Backend):** Implement a new, from-scratch module for cooking techniques. This includes a new MongoDB collection (), Pydantic validation models, and a full set of REST APIs for admin creation () and public consumption (, ).
-3.  **Integrate Techniques into Frontend:** Add a link to the new Techniques page in the main navigation bar.
-4.  **SEO Readiness for Techniques Page:** Ensure the  page is fully SEO-optimized. This involved switching the data source from the backend API to a static  file, injecting JSON-LD  structured data, ensuring correct meta tags and title, and including the page in the sitemap.
-5.  **Improve Techniques Page Architecture:** Transform the flat list of techniques into a categorized library, grouped by category, with anchor navigation at the top and links to individual detail pages ().
-6.  **Enable Multilingual Support:** Update the Techniques list and detail pages to render content in the user's selected language (EN, FR, IT), sourcing translations from an updated multilingual  file.
+The user's primary goals in this session were to resolve critical bugs and improve the frontend UI/UX. This included:
+1.  **Fix Google Analytics & AdSense:** Add the necessary tracking scripts and meta tags to the main HTML file.
+2.  **Fix Search & Filtering:** Resolve bugs where the recipe search returned no results and filters were not being applied correctly, especially on mobile.
+3.  **Fix Mobile Rendering & Performance:** Address critical bugs causing the recipe list to be blank on mobile and performance issues due to excessive API calls and rendering a large number of components at once.
+4.  **Recipe Data Curation:** Investigate why some recipes were unpublished, remove duplicates, and publish the remaining valid recipes.
+5.  **Mobile Layout Overhaul & UI Improvement:** Fix widespread mobile layout issues (overflow, spacing, broken components) and refactor the frontend by applying design patterns from a reference repository () to improve responsiveness, component structure, and visual appeal. This also included adding a serving size selector with backend integration and implementing frontend caching with React Query.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack recipe platform (React, FastAPI, MongoDB) with robust features. Core functionalities include:
--   User authentication (local and Google Social Login), favorites, and a secure review system.
--   An AI-powered image system for recipes (currently blocked by billing).
--   A completely refactored, fast, and secure database-driven search functionality.
--   A brand-new, comprehensive Techniques section featuring:
-    -   A categorized library page ().
-    -   Individual detail pages for each technique ().
-    -   Full multilingual support (English, French, Italian).
-    -   Data served from a static, SEO-optimized  file.
-    -   Admin-only endpoint for creating new techniques.
+The application is a full-stack recipe platform (React, FastAPI, MongoDB). Key functionalities include:
+-   User authentication (local and Google Social Login).
+-   A completely refactored, performant, and stable search and filtering system on the Explore page.
+-   A comprehensive Techniques section with multilingual support.
+-   A fully responsive  with a serving size selector that dynamically scales ingredients via a backend API call.
+-   Frontend caching for recipe data implemented with **React Query**.
+-   Admin endpoints for managing recipes, including a newly investigated issue where editing does not automatically publish a recipe.
+-   All 188 legitimate recipes are now published and viewable.
 
 **Last working item**:
--   Last item agent was working: Implementing multilingual support for the  and . The agent updated the components to detect the current language from the i18n context, read data from a newly translated  file, and render the correct language, with a fallback to English.
--   Status: USER VERIFICATION PENDING
--   Agent Testing Done: Y
--   Which testing method agent to use? frontend testing agent
+-   Last item agent was working: Applying UI/UX improvements to the frontend, inspired by the  GitHub repository. The agent had just started this task, adding utility classes to  and modifying  to include a hover effect and gradient overlay.
+-   Status: IN PROGRESS
+-   Agent Testing Done: N
+-   Which testing method agent to use? screenshot tool followed by the frontend testing agent
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Regenerate incorrect Bongo recipe image (P0)
+-   Issue 1: Complete the UI/UX overhaul based on  patterns. (P0)
+-   Issue 2: Regenerate incorrect Bongo recipe image. (P1)
+-   Issue 3: Admin recipe edits do not automatically publish the recipe. (P2)
 
   Issues Detail:
   -   Issue 1:
-     -   Attempted fixes: The backend endpoint () to fix this is already implemented. The regeneration attempt failed in the previous session.
-     -   Next debug checklist: The failure was due to the user's **OpenAI API key reaching its billing hard limit**. The next agent must first inform the user of this blocker. After the user confirms they have added funds to their OpenAI account, the agent can retry calling the regeneration endpoint for the  recipe slug.
+     -   Attempted fixes: The agent started by modifying  and .
+     -   Next debug checklist:
+        -   Continue applying planned improvements from the  reference:
+            -   Implement a horizontal scroll container for mobile recipe sections ().
+            -   Add section dividers for better visual separation.
+            -   Adjust heading weights to be lighter ().
+            -   Ensure font smoothing and tracking are applied to headings.
+        -   Review all pages for responsiveness and visual consistency after changes.
+     -   Why fix this issue and what will be achieved with the fix? To meet the user's request for a more polished, modern, and visually appealing frontend, improving the user experience, especially on mobile devices.
+     -   Status: IN PROGRESS
+     -   Is recurring issue? N
+     -   Should Test frontend/backend/both after fix? Frontend
+     -   Blocked on other issue: None
+
+  -   Issue 2:
+     -   Attempted fixes: None in this session. The backend endpoint () exists but was not called.
+     -   Next debug checklist: The issue is blocked by the user's **OpenAI API key reaching its billing hard limit**. The agent must first inform the user of this blocker. Once the user confirms funds have been added, the agent can call the regeneration endpoint for the  recipe slug.
      -   Why fix this issue and what will be achieved with the fix? It will validate the manual image override system and improve the visual accuracy of the platform.
      -   Status: BLOCKED
      -   Is recurring issue? N
-     -   Should Test frontend/backend/both after fix? Both. Backend to confirm the API call succeeds, and Frontend (screenshot) to verify the new image is displayed on the recipe page.
+     -   Should Test frontend/backend/both after fix? Both
      -   Blocked on other issue: User action required (add funds to OpenAI account).
 
+  -   Issue 3:
+     -   Attempted fixes: The agent diagnosed the issue in . The  endpoint only sets fields present in the payload, so saving an edit without sending  leaves the recipe unpublished.
+     -   Next debug checklist: The agent asked the user for their preferred solution (auto-publish on save vs. an explicit Publish button) but the conversation shifted. The next agent should re-confirm the desired behavior with the user before implementing a fix.
+     -   Why fix this issue and what will be achieved with the fix? To improve the admin workflow and make publishing recipes more intuitive.
+     -   Status: NOT STARTED
+     -   Is recurring issue? N
+     -   Should Test frontend/backend/both after fix? Backend
+     -   Blocked on other issue: User decision required.
+
 **In progress Task List**:
-None.
+-   Task 1: Apply  Frontend Patterns
+     -   Where to resume: The agent has modified  and . The next step is to continue applying the identified patterns (horizontal scroll containers, section dividers, typography changes) to other components like  and .
+     -   What will be achieved with this? A cleaner, more responsive, and visually appealing UI that aligns with the user's reference design.
+     -   Status: IN PROGRESS
+     -   Should Test frontend/backend/both after fix? Frontend
+     -   Blocked on something: None
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
@@ -55,38 +81,33 @@ None.
     -   Implement community verification badges.
     -   Add support for Apple and Facebook social logins.
     -   Integrate a real email service (e.g., SendGrid, Resend) to replace the mock password reset flow.
-    -   Integrate AdSense.
-    -   Add PDF/ODF recipe import functionality.
     -   Implement a moderation panel for reviews.
     -   Implement a reporting system for reviews.
+    -   Add PDF/ODF recipe import functionality.
 
 **Completed work in this session**
--   **Search System Overhaul (DONE):**
-    -   Performed a comprehensive audit of the search system, identifying vulnerabilities and performance bottlenecks.
-    -   Refactored the main search endpoint () in  to be a pure, DB-only regex search.
-    -   Removed all in-memory fuzzy matching ( library) and expensive AI recipe generation logic from the search path.
-    -   Fixed critical Regex Injection (ReDoS) vulnerabilities in  and .
-    -   Added essential MongoDB indexes to the  collection at startup in  to eliminate full collection scans.
--   **Techniques Module - Full Implementation (DONE):**
-    -   **Backend:**
-        -   Created new Pydantic model in .
-        -   Created new router in  with endpoints for public fetching (, ) and admin creation ().
-        -   Integrated the new router and DB indexes into .
-    -   **Frontend:**
-        -   Added Techniques link with an icon to the main navigation in .
-        -   Created  to display a categorized library of techniques.
-        -   Created  to display full details for a single technique.
-        -   Added the new route  to .
-    -   **SEO & Data:**
-        -   Switched the data source to .
-        -   Injected JSON-LD structured data ( schema) and managed meta tags directly via the DOM in  for optimal SEO.
-        -   Updated  to include the  page.
-    -   **Internationalization (i18n):**
-        -   Updated  to a multilingual format.
-        -   Modified  and  to render content dynamically based on the site's selected language (EN, FR, IT), with a fallback to English.
+-   **Google Analytics & AdSense Integration (DONE):**
+    -   Added GA and AdSense scripts and meta tags to .
+    -   Verified  was correctly in place.
+-   **Search, Filter & Performance Bug Fixes (DONE):**
+    -   Fixed critical client-side filtering logic in .
+    -   Ran a database migration () to add the  field to 194 recipes, enabling the dish type filter.
+    -   Fixed an N+1 API call issue in  that was causing severe performance degradation on mobile.
+    -   Added pagination to  to prevent rendering all 188 recipe cards at once.
+-   **Recipe Data Curation (DONE):**
+    -   Investigated and explained why recipes were .
+    -   Deleted 6 duplicate/test recipes from the database.
+    -   Published 27 valid but previously unpublished recipes. The total recipe count is now 188.
+-   **Mobile Layout Overhaul & Feature Implementation (DONE):**
+    -   Rewrote large parts of  to be fully mobile-responsive, fixing layout, spacing, and overflow issues.
+    -   Integrated **React Query** for recipe data fetching and caching in  and .
+    -   Added a serving size selector to .
+    -   Connected the selector to the backend scaling API ().
+    -   Implemented a robust ingredient amount parser to handle string values like 1/2 and to taste.
+    -   Added loading and error states using  toasts for data fetching and scaling operations.
 
 **Earlier issues found/mentioned but not fixed**
-None. The only outstanding issue is the blocked Bongo image regeneration.
+-   Issue 1: The admin edit recipe endpoint in  is not intuitive; it requires the status to be explicitly sent to publish a recipe. The user needs to decide on the desired fix.
 
 **Known issue recurrence from previous fork**
 None.
@@ -95,78 +116,84 @@ None.
 
 
 **Key Technical Concepts**
--   **Backend:** FastAPI, MongoDB (), Pydantic models for validation, role-based access control (admin routes).
--   **Search:** Secure, performant search using MongoDB's  with  to prevent ReDoS attacks.
--   **Database:** Strategic MongoDB indexing on startup to optimize query performance.
--   **Frontend:** React, React Router,  for language context.
--   **SEO:** Serving page data from static JSON, dynamic injection of JSON-LD structured data, and direct DOM manipulation for meta tags to ensure search engine crawlability and rich results.
+-   **Backend:** FastAPI, MongoDB (), Pydantic.
+-   **Frontend:** React, React Router, Tailwind CSS, , Shadcn/UI.
+-   **State Management/Data Fetching:** **React Query** for server-state caching, reducing API calls and managing loading/error states.
+-   **Performance Optimization:** Diagnosed and fixed N+1 API call patterns. Implemented pagination () to reduce initial render load.
+-   **Database Migration:** Wrote and executed a one-off Python script to update all documents in a MongoDB collection.
 
 **key DB schema**
--   **techniques**:  - New collection with indexes on , , and .
+-   **recipes**: No schema change, but documents were updated to include a  field and have their  changed from  to .
 
 **changes in tech stack**
--   : Removed from the project to eliminate inefficient in-memory fuzzy searching.
+-   : Added as a new dependency for frontend data fetching and caching.
 
 **All files of reference**
--   **New Files:**
-    -   : Pydantic model for the  collection.
-    -   : All API endpoints related to techniques.
-    -   : Static data source for the techniques pages (now multilingual).
-    -   : The main categorized library page for techniques.
-    -   : The detail view for a single technique.
--   **Heavily Modified Files:**
-    -   : Major refactoring of search logic, removal of old functions, and addition of new indexes and the techniques router.
-    -   : Added the Techniques link.
-    -   : Added the route for the technique detail page.
+-   **New/Created:**
+    -   
+-   **Heavily Modified:**
+    -   : Rewritten to fix all filtering, search, and performance issues.
+    -   : Rewritten to fix mobile layout, add a serving selector, and integrate React Query.
+-   **Modified:**
+    -   : To add .
+    -   : To add analytics/AdSense tags.
+    -   : For mobile responsiveness and new hover effects.
+    -   : To prevent N+1 API calls.
+    -   : For mobile responsiveness.
+    -   : To add new keys for UI text.
+    -   : To add new utility classes.
+    -   : To add .
 
 **Areas that need refactoring**:
--   The in-memory rate limiter is not suitable for a multi-process or multi-server production environment. This state should eventually be moved to a shared data store like Redis for true scalability.
+-   The in-memory rate limiter mentioned in the initial handoff is still not suitable for production.
+-   The  endpoint should be updated for a more intuitive publishing workflow.
 
 **key api endpoints**
--   : The new, fast, DB-only recipe search endpoint.
--   : (Admin only) Creates a new technique document.
--   : Returns all published techniques.
--   : Returns a single published technique by its slug.
+-   : Utilized for pagination on the Explore page.
+-   : Successfully integrated with the new serving size selector on the Recipe page.
+-   : Identified as needing a design change for the publishing workflow.
 
 **Critical Info for New Agent**
--   **OpenAI Billing is Blocked:** The user's OpenAI account has hit its billing limit. No AI images can be generated. This is blocking the fix for the incorrect Bongo recipe image. You must inform the user before attempting any image-related tasks.
--   **Search is DB-Only:** The search functionality no longer uses AI or in-memory fuzzy matching. It is a pure, indexed MongoDB regex query for performance and cost-efficiency.
--   **Techniques Page is Static:** The entire Techniques section is driven by the  file, not the database API. This was an intentional choice for SEO and performance. Do not change this without explicit user instruction.
+-   **OpenAI Billing is Blocked:** The user's OpenAI account has hit its billing limit. Do not attempt any AI image generation tasks until the user confirms they have resolved this.
+-   **Use  as a Reference Only:** The current task is to apply design patterns from the  repo to the *existing* frontend codebase. Do not replace files or clone the repo. The task is currently in progress.
+-   **React Query is Integrated:** All recipe data fetching should now be done through React Query hooks to leverage caching and standardized state handling.  contains the primary implementation example.
 
 **documents and test reports created in this job**
+-   
+-   
+-   
 -    (updated)
--   Multiple test reports under  confirming the search refactor and new techniques module.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Requested to create a full Techniques system from scratch (backend + frontend). (Completed)
-2.  **Agent:** Implemented the full backend and initial frontend pages for Techniques. (Completed)
-3.  **User:** Requested to show the Techniques link on the homepage. (Completed)
-4.  **Agent:** Added the link to the main navigation bar. (Completed)
-5.  **User:** Requested to deploy the Techniques page and ensure it's SEO-ready. (Completed)
-6.  **Agent:** Switched to a static  data source, implemented JSON-LD structured data, and fixed meta tags. (Completed)
-7.  **User:** Requested to improve the Techniques page architecture with categories and detail pages. (Completed)
-8.  **Agent:** Refactored the page to be a categorized library with links to a new detail page component. (Completed)
-9.  **User:** Requested to enable multilingual rendering for the Techniques pages. (In Progress)
-10. **Agent:** Updated the data file and frontend components to support EN, FR, and IT, and verified with screenshots. (Awaiting User Verification)
+1.  **User:** Requested fix for broken mobile layout and to apply  frontend patterns. (In Progress)
+2.  **User:** Asked why some recipes were unpublished. (Resolved)
+3.  **User:** Requested to remove duplicates and publish the remaining unpublished recipes. (Completed)
+4.  **User:** Provided the  source code and asked for a deep, code-level diagnosis of search/mobile bugs, with a specific output format. (Completed)
+5.  **User:** Instructed the agent to stop summarizing limitations and wait for the files to analyze. (Acknowledged)
+6.  **User:** Confirmed the agent already has full source code access and should not ask for files to be pasted. (Acknowledged)
+7.  **User:** Reported a bug where search and filtering were not working on desktop and mobile. (Completed)
+8.  **User:** Provided the  content and  meta tag to be added. (Completed)
+9.  **User:** Provided the Google Analytics  script to be added to the site. (Completed)
+10. **Agent:** Responded that it would create a plan. (Completed)
 
 **Project Health Check:**
--   **Stable:** All core features are functional, tested, and stable. The new search and techniques modules have passed extensive testing.
--   **Broken:** Nothing is functionally broken.
--   **Blocked:** **AI Image Generation is BLOCKED** due to the OpenAI billing limit.
+-   **Stable/Improved:** The application is significantly more stable and performant than at the start of the session. Critical search, filtering, and mobile rendering bugs have been fixed.
+-   **Broken:** No core functionality is broken.
+-   **Blocked:** **AI Image Generation** is blocked due to the user's OpenAI billing limit.
 
 **3rd Party Integrations**
 -   **OpenAI GPT-Image-1**: Used for AI image generation. Requires a user-provided . **CURRENTLY BLOCKED DUE TO BILLING LIMIT.**
 -   **Emergent-managed Google Auth**: Used for social login.
 
 **Testing status**
--   Testing agent used after significant changes: YES. The testing agent was used successfully after the search refactor and after the initial implementation of the techniques module, achieving 100% pass rates and applying minor corrective fixes.
+-   Testing agent used after significant changes: YES. The testing agent was used successfully multiple times, achieving 100% pass rates after major bug fixes and feature implementations.
 -   Troubleshoot agent used after agent stuck in loop: NO.
 -   Test files created: None.
 -   Known regressions: None.
 
 **Credentials to test flow:**
 -   Register a new user at .
--   An admin user was created during the session for testing the admin endpoints. The credentials are not stored, but the agent can re-create an admin user if needed for testing .
+-   Admin credentials are not stored, but an admin user can be created to test admin endpoints if necessary.
 
 **What agent forgot to execute**
--   Nothing was forgotten. The agent correctly identified the OpenAI billing issue as an external blocker and deferred the Bongo image fix, which was the correct action. All other user requests in the session were completed.</analysis>
+-   The agent did not forget any tasks. The primary ongoing task of applying  patterns is unfinished, which is the immediate next step. The agent correctly deferred the admin publishing fix pending user feedback.</analysis>

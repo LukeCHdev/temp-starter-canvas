@@ -26,7 +26,7 @@ const RegionsPage = () => {
         <div className="min-h-screen" data-testid="regions-page">
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-16 px-4">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="mb-4 text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="mb-4 text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         Culinary Regions of the World
                     </h1>
                     <div className="gold-divider"></div>

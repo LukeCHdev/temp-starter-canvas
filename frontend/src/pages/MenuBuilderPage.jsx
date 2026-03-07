@@ -126,7 +126,7 @@ const MenuBuilderPage = () => {
         <div className="min-h-screen" data-testid="menu-builder-page">
             <section className="bg-gradient-to-b from-[#F5F2E8] to-[#FAF7F0] py-16 px-4">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="mb-4 text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="mb-4 text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {txt.title}
                     </h1>
                     <div className="gold-divider"></div>
@@ -169,7 +169,7 @@ const MenuBuilderPage = () => {
 
                 {menu && (
                     <div className="card-elegant" data-testid="generated-menu">
-                        <h2 className="text-2xl font-semibold mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-semibold mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             {menu.menu_title}
                         </h2>
                         <p className="narrative-text mb-6">{menu.cultural_context}</p>

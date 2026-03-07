@@ -189,7 +189,7 @@ const TermsPage = () => {
                         <ChevronRight className="h-4 w-4" />
                         <span className="text-[#6A1F2E] font-medium">{t('terms.title', language)}</span>
                     </nav>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('terms.title', language)}
                     </h1>
                     <p className="text-[#1E1E1E]/70 mt-4">{t('terms.lastUpdated', language)}</p>
@@ -201,7 +201,7 @@ const TermsPage = () => {
                     
                     {/* Section 1: Acceptance */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             1. {content.sections.acceptance.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -211,7 +211,7 @@ const TermsPage = () => {
 
                     {/* Section 2: Description */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             2. {content.sections.description.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -221,7 +221,7 @@ const TermsPage = () => {
 
                     {/* Section 3: AI Disclaimer */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             3. {content.sections.aiDisclaimer.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
@@ -236,7 +236,7 @@ const TermsPage = () => {
 
                     {/* Section 4: User Accounts */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             4. {content.sections.userAccounts.title[language]}
                         </h2>
                         <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
@@ -248,7 +248,7 @@ const TermsPage = () => {
 
                     {/* Section 5: User Content */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             5. {content.sections.userContent.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
@@ -263,7 +263,7 @@ const TermsPage = () => {
 
                     {/* Section 6: IP */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             6. {content.sections.ip.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -273,7 +273,7 @@ const TermsPage = () => {
 
                     {/* Section 7: Liability */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             7. {content.sections.liability.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -283,7 +283,7 @@ const TermsPage = () => {
 
                     {/* Section 8: Changes */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             8. {content.sections.changes.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -293,7 +293,7 @@ const TermsPage = () => {
 
                     {/* Section 9: Contact */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             9. {content.sections.contact.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">

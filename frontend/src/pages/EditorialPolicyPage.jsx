@@ -51,7 +51,7 @@ const EditorialPolicyPage = () => {
                         <span className="text-[#6A1F2E] font-medium">{t('editorial.title', language)}</span>
                     </nav>
                     
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('editorial.title', language)}
                     </h1>
                     <p className="text-lg text-[#1E1E1E]/70">
@@ -64,7 +64,7 @@ const EditorialPolicyPage = () => {
             <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Core Editorial Principles */}
                 <div className="bg-white rounded-xl p-8 shadow-sm mb-8">
-                    <h2 className="text-2xl font-bold text-[#6A1F2E] mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h2 className="text-2xl font-bold text-[#6A1F2E] mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('editorial.principles.title', language)}
                     </h2>
 
@@ -89,7 +89,7 @@ const EditorialPolicyPage = () => {
                 <div className="bg-white rounded-xl p-8 shadow-sm mb-8">
                     <div className="flex items-center gap-3 mb-4">
                         <Languages className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('editorial.translation.title', language)}
                         </h2>
                     </div>
@@ -102,7 +102,7 @@ const EditorialPolicyPage = () => {
                 <div className="bg-white rounded-xl p-8 shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
                         <Edit3 className="h-6 w-6 text-[#6A1F2E]" />
-                        <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('editorial.corrections.title', language)}
                         </h2>
                     </div>

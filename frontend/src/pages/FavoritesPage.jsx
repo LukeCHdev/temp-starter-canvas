@@ -36,7 +36,7 @@ const FavoritesPage = () => {
             <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center px-4">
                 <div className="text-center max-w-md" data-testid="favorites-login-prompt">
                     <Heart className="w-12 h-12 text-[#6A1F2E] mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('favorites.loginRequired', lang)}
                     </h2>
                     <p className="text-[#7C7C7C] mb-6">{t('favorites.loginDescription', lang)}</p>
@@ -63,7 +63,7 @@ const FavoritesPage = () => {
             <div className="max-w-6xl mx-auto px-4 py-12">
                 <div className="flex items-center gap-3 mb-8">
                     <Heart className="w-7 h-7 text-[#6A1F2E]" />
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('favorites.title', lang)}
                     </h1>
                     {recipes.length > 0 && (
@@ -76,7 +76,7 @@ const FavoritesPage = () => {
                 {recipes.length === 0 ? (
                     <div className="text-center py-20" data-testid="favorites-empty">
                         <ChefHat className="w-16 h-16 text-[#D4CFC4] mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-[#1E1E1E] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-xl font-semibold text-[#1E1E1E] mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                             {t('favorites.empty', lang)}
                         </h2>
                         <p className="text-[#7C7C7C] mb-6">{t('favorites.emptyDescription', lang)}</p>

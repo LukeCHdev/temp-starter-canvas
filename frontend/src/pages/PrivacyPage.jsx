@@ -176,7 +176,7 @@ const PrivacyPage = () => {
                         <ChevronRight className="h-4 w-4" />
                         <span className="text-[#6A1F2E] font-medium">{t('privacy.title', language)}</span>
                     </nav>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {t('privacy.title', language)}
                     </h1>
                     <p className="text-[#1E1E1E]/70 mt-4">{t('privacy.lastUpdated', language)}</p>
@@ -188,7 +188,7 @@ const PrivacyPage = () => {
                     
                     {/* Introduction */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             1. {language === 'en' ? 'Introduction' : language === 'it' ? 'Introduzione' : language === 'fr' ? 'Introduction' : language === 'es' ? 'Introducción' : 'Einführung'}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -198,7 +198,7 @@ const PrivacyPage = () => {
 
                     {/* Information We Collect */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             2. {content.sections.infoCollect.title[language]}
                         </h2>
                         <h3 className="text-lg font-semibold mt-4 mb-2">{content.sections.infoCollect.personal.title[language]}</h3>
@@ -218,7 +218,7 @@ const PrivacyPage = () => {
 
                     {/* How We Use */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             3. {content.sections.howWeUse.title[language]}
                         </h2>
                         <ul className="list-disc pl-6 space-y-2 text-[#1E1E1E]/80">
@@ -230,7 +230,7 @@ const PrivacyPage = () => {
 
                     {/* AI-Generated Content */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             4. {content.sections.ai.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -240,7 +240,7 @@ const PrivacyPage = () => {
 
                     {/* Data Sharing */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             5. {content.sections.sharing.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -250,7 +250,7 @@ const PrivacyPage = () => {
 
                     {/* GDPR Rights */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             6. {content.sections.gdpr.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed mb-4">
@@ -267,7 +267,7 @@ const PrivacyPage = () => {
 
                     {/* Data Security */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             7. {content.sections.security.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">
@@ -277,7 +277,7 @@ const PrivacyPage = () => {
 
                     {/* Contact Us */}
                     <section>
-                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h2 className="text-2xl font-bold text-[#6A1F2E] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
                             8. {content.sections.contact.title[language]}
                         </h2>
                         <p className="text-[#1E1E1E]/80 leading-relaxed">

@@ -80,7 +80,7 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
 // Ranking Sidebar Component with translations
 const RankingSidebar = ({ recipes, getLocalizedPath, lang }) => (
     <div className="bg-white border border-[#E8E4DC] p-4 sticky top-20">
-        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
             {translate('explore.highestRated', lang)}
         </h3>
         <div className="space-y-2">
@@ -454,7 +454,7 @@ const ExplorePage = () => {
             <section className="bg-white border-b border-[#E8E4DC] py-6 px-4">
                 <div className="max-w-6xl mx-auto">
                     <Breadcrumb {...breadcrumbProps} />
-                    <h1 className="text-2xl sm:text-3xl font-light text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-2xl sm:text-3xl font-light text-[#2C2C2C]" style={{ fontFamily: 'var(--font-heading)' }}>
                         {country ? translateName(pageTitle, 'countries') : 
                          continent ? translateName(pageTitle, 'continents') : 
                          translate('explore.title', lang)}
@@ -603,7 +603,7 @@ const ExplorePage = () => {
                         ) : continent ? (
                             /* Continent Countries View */
                             <>
-                                <h2 className="text-lg font-light mb-4 text-[#2C2C2C]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                <h2 className="text-lg font-light mb-4 text-[#2C2C2C]" style={{ fontFamily: 'var(--font-heading)' }}>
                                     {translate('explore.countriesIn', lang)} {translateName(selectedContinent, 'continents')}
                                 </h2>
 
@@ -687,7 +687,7 @@ const ExplorePage = () => {
 
                                 {/* Continent Quick Links */}
                                 <div className="mt-10 pt-6 border-t border-[#E8E4DC]">
-                                    <h3 className="text-base font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                                    <h3 className="text-base font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                                         {translate('explore.byContinent', lang)}
                                     </h3>
                                     <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
@@ -720,7 +720,7 @@ const ExplorePage = () => {
                 {/* Mobile Rankings (below content) */}
                 <div className="lg:hidden mt-8">
                     <div className="bg-white border border-[#E8E4DC] p-4">
-                        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                             {translate('explore.highestRated', lang)}
                         </h3>
                         <div className="grid grid-cols-2 gap-2">

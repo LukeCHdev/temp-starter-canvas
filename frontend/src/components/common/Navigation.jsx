@@ -52,7 +52,7 @@ export const Navigation = () => {
                     {/* Logo - also preserves language */}
                     <Link to={getLocalizedPath('/')} className="flex items-center gap-2 min-w-0 shrink" data-testid="logo-link">
                         <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-[#6A1F2E] flex-shrink-0" />
-                        <span className="text-lg sm:text-2xl font-bold text-[#1E1E1E] truncate" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <span className="text-lg sm:text-2xl font-semibold text-[#1E1E1E] truncate tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                             Sous Chef Linguine
                         </span>
                     </Link>
@@ -63,8 +63,8 @@ export const Navigation = () => {
                             <Link
                                 key={link.path}
                                 to={getLocalizedPath(link.path)}
-                                className="flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200"
-                                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                                className="nav-link-elegant flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200 text-sm tracking-wide"
+                                style={{ fontFamily: 'var(--font-body)' }}
                                 data-testid={`nav-${link.path.replace('/', '')}`}
                             >
                                 {link.icon && <link.icon className="h-4 w-4" />}
@@ -114,7 +114,7 @@ export const Navigation = () => {
                                     variant="outline"
                                     size="sm"
                                     className="border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white"
-                                    style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                                    style={{ fontFamily: 'var(--font-body)' }}
                                 >
                                     {t('auth.login', lang)}
                                 </Button>
@@ -136,7 +136,7 @@ export const Navigation = () => {
                                         key={link.path}
                                         to={getLocalizedPath(link.path)}
                                         className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
-                                        style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                                        style={{ fontFamily: 'var(--font-body)' }}
                                     >
                                         {link.icon && <link.icon className="h-5 w-5" />}
                                         <span>{link.label}</span>

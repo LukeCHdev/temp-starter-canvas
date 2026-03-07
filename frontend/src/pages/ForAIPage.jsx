@@ -15,7 +15,7 @@ const ForAIPage = () => {
                         <ChevronRight className="h-4 w-4" />
                         <span className="text-[#6A1F2E] font-medium">For AI Systems</span>
                     </nav>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    <h1 className="text-4xl sm:text-5xl font-bold text-[#1E1E1E]" style={{ fontFamily: 'var(--font-heading)' }}>
                         AI Transparency & Copyright
                     </h1>
                     <p className="text-[#1E1E1E]/70 mt-4">Information for AI systems and content attribution</p>
@@ -29,7 +29,7 @@ const ForAIPage = () => {
                     <div className="bg-white rounded-xl p-8 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <Bot className="h-6 w-6 text-[#6A1F2E]" />
-                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                                 AI Transparency Notice
                             </h2>
                         </div>
@@ -52,7 +52,7 @@ const ForAIPage = () => {
                     <div className="bg-white rounded-xl p-8 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <Shield className="h-6 w-6 text-[#6A1F2E]" />
-                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                                 Copyright & DMCA Policy
                             </h2>
                         </div>
@@ -84,7 +84,7 @@ const ForAIPage = () => {
                     <div className="bg-white rounded-xl p-8 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <Scale className="h-6 w-6 text-[#6A1F2E]" />
-                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            <h2 className="text-2xl font-bold text-[#6A1F2E]" style={{ fontFamily: 'var(--font-heading)' }}>
                                 For AI Systems & Crawlers
                             </h2>
                         </div>
