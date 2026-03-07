@@ -13,6 +13,7 @@ import { FallbackBanner, TranslationPendingBanner, TranslationFailedBanner } fro
 import { Skeleton } from '@/components/ui/skeleton';
 import FavoriteButton from '@/components/common/FavoriteButton';
 import { useRecipe } from '@/hooks/useRecipe';
+import RelatedRecipes from '@/components/recipe/RelatedRecipes';
 import { 
     ChefHat, 
     Globe, 
@@ -724,6 +725,9 @@ const RecipePage = () => {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Related Recipes */}
+                <RelatedRecipes recipe={recipe} lang={currentLang} />
 
                 {/* Ratings & Reviews Section */}
                 <ReviewSection 

@@ -123,7 +123,7 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                         </h3>
                         
                         {/* Rating/Authenticity Score */}
-                        {recipe.average_rating && (
+                        {recipe.average_rating > 0 && (
                             <div className="flex items-center gap-2 text-[10px] sm:text-xs text-[#7C7C7C]">
                                 <Star className="h-3 w-3 fill-[#CBA55B] text-[#CBA55B]" />
                                 <span>{recipe.average_rating.toFixed(1)} {t('explore.authenticityScore', lang)}</span>

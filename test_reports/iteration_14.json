@@ -1,0 +1,83 @@
+{
+  "summary": "Frontend testing completed for Related Recipes feature. All 9 test cases passed. RelatedRecipes component works correctly with 4-col grid on desktop, horizontal scroll on mobile, proper recipe filtering by dish_type/country/continent priority, and 0 rating bug fix verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_14.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "RelatedRecipes.jsx correctly implements responsive design: hidden lg:grid for desktop 4-col, lg:hidden scroll-container for mobile",
+    "useRelatedRecipes.js properly filters by dish_type > country > continent priority and limits to 4-8 recipes",
+    "RecipeCard.jsx 0 rating bug fixed: changed 'recipe.average_rating &&' to 'recipe.average_rating > 0 &&' on line 126",
+    "All data-testid attributes present: related-recipes-section, related-recipes-grid, related-recipes-scroll"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - frontend only testing",
+    "frontend": "100% - All 9 test cases passed"
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Related Recipes feature fully implemented. Uses useRelatedRecipes hook to fetch recipes via getFeatured(200) and filter client-side. Desktop shows 4-col grid, mobile shows horizontal scroll. Cards with 0 or null average_rating don't show rating text (bug fixed in RecipeCard.jsx line 126).",
+  "verified_features": [
+    {
+      "feature": "Related Recipes section appears on recipe pages (data-testid='related-recipes-section')",
+      "status": "PASS",
+      "details": "Section with title 'Related Recipes' and divider found on Pizza Margherita and Mole Poblano pages"
+    },
+    {
+      "feature": "Current recipe is excluded from related recipes list",
+      "status": "PASS",
+      "details": "pizza-margherita-italy NOT in related recipes on Pizza page; mole-poblano-mexico NOT in related on Mole page"
+    },
+    {
+      "feature": "Related recipes show correct priority: same dish_type or same country recipes for Italian recipe",
+      "status": "PASS",
+      "details": "Pizza Margherita shows Italian recipes (Carbonara, Risotto, Arancini, Babà, Baccalà, Bagna càuda, Bombette, Bongo)"
+    },
+    {
+      "feature": "Desktop (1920px): Related recipes show in 4-column grid (data-testid='related-recipes-grid')",
+      "status": "PASS",
+      "details": "Desktop grid visible with CSS grid-template-columns showing 4 columns (193px each)"
+    },
+    {
+      "feature": "Mobile (375px): Related recipes show in horizontal scroll container (data-testid='related-recipes-scroll')",
+      "status": "PASS",
+      "details": "Mobile scroll visible with CSS overflow-x: auto, display: flex, flex-wrap: nowrap"
+    },
+    {
+      "feature": "Recipe cards in related section navigate correctly when clicked",
+      "status": "PASS",
+      "details": "Clicking Spaghetti alla Carbonara card navigated to /en/recipe/spaghetti-alla-carbonara-italy"
+    },
+    {
+      "feature": "Between 4 and 8 related recipe cards are displayed",
+      "status": "PASS",
+      "details": "8 cards displayed on both Pizza Margherita and Mole Poblano pages"
+    },
+    {
+      "feature": "Section title 'Related Recipes' with divider appears",
+      "status": "PASS",
+      "details": "h2 with 'Related Recipes' text and section-divider class present"
+    },
+    {
+      "feature": "RecipeCard 0 rating bug fixed - cards with average_rating=0 should NOT show '0' text",
+      "status": "PASS",
+      "details": "On Explore page: 24 cards, 16 showing ratings (all >0), 8 not showing ratings, 0 showing '0' or '0.0'"
+    }
+  ],
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  },
+  "notes": "Console shows 401 errors for /api/favorites/status which is expected for non-authenticated users. UNSAFE_componentWillMount warning from SideEffect component is a known React Helmet issue, not blocking."
+}
