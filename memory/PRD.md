@@ -84,6 +84,31 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 - Added Google Analytics gtag.js (G-8PR5RJL21H) to `public/index.html`
 - Added AdSense meta tag `google-adsense-account` to `public/index.html`
 
+### Elegant-Sona UI/UX Overhaul (DONE - Mar 2026)
+
+**CSS Utilities Added (`index.css`):**
+- `fade-in-up` + delay variants (1-5): staggered entrance animations with keyframe
+- `nav-link-elegant`: animated underline on hover for nav links
+- `section-divider` / `section-divider-gold`: refined section separators (removed my-8 for flexibility)
+
+**Files Modified:**
+- `frontend/src/pages/HomePage.jsx` — Full rewrite:
+  - Mobile horizontal scroll containers (continents, dish types, curated recipes)
+  - Staggered fade-in-up entrance animations
+  - Responsive text sizing (text-4xl sm:text-5xl lg:text-6xl hero, text-xl sm:text-2xl section headings)
+  - `recipe-card-hover` on featured hero card
+  - CSS var(--font-heading) replacing hardcoded font-family
+- `frontend/src/pages/RecipePage.jsx` — Lighter title weight (font-light), var(--font-heading)
+- `frontend/src/pages/ExplorePage.jsx` — var(--font-heading) consistency
+- `frontend/src/pages/TechniquesPage.jsx` — Section divider, lighter headings, recipe-card-hover on technique cards
+- `frontend/src/pages/AboutPage.jsx` — Entrance animations, lighter headings, gold section divider
+- `frontend/src/pages/LoginPage.jsx` — var(--font-heading) consistency
+- `frontend/src/components/common/Navigation.jsx` — nav-link-elegant underline animation, lighter logo weight
+- `frontend/src/components/common/Footer.jsx` — Lighter heading weights, uppercase tracking-wider section titles
+- `frontend/src/components/recipe/RecipeCard.jsx` — var(--font-heading) consistency
+- All remaining pages (Favorites, MenuBuilder, Signup, Privacy, Terms, etc.) — var(--font-heading) batch update
+- 45/45 frontend tests passed (iteration_13)
+
 ### Mobile Layout Fix + elegant-sona Patterns + Scaling + React Query (DONE - Mar 2026)
 
 **Files created:**
@@ -140,6 +165,7 @@ Build a production-ready, community-driven recipe ecosystem with internationaliz
 
 ### P1 - Upcoming
 - Full Next.js migration for SEO and performance
+- Admin recipe edit auto-publish workflow (user decision pending: auto-publish on save vs explicit publish button)
 
 ### P2 - Future
 - User profiles and collections

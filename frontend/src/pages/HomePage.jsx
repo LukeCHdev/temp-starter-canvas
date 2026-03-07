@@ -107,7 +107,7 @@ const HomePage = () => {
                     
                     <div className="relative max-w-2xl mx-auto fade-in-up fade-in-up-delay-2">
                         <SearchBar className="w-full" />
-                        <p className="text-xs text-[#9C9C9C] mt-3 font-light">
+                        <p className="text-xs text-[#7C7C7C] mt-3 font-light">
                             {t('homepage.hero.searchHelper', lang)}
                         </p>
                     </div>
