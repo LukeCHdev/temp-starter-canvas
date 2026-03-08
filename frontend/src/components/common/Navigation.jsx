@@ -46,13 +46,13 @@ export const Navigation = () => {
     const currentPath = location.pathname;
 
     return (
-        <nav className="bg-white border-b border-[#E5DCC3] sticky top-0 z-50" data-testid="main-navigation">
+        <nav className="bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50" data-testid="main-navigation">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    {/* Logo - also preserves language */}
+                    {/* Logo */}
                     <Link to={getLocalizedPath('/')} className="flex items-center gap-2 min-w-0 shrink" data-testid="logo-link">
-                        <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-[#6A1F2E] flex-shrink-0" />
-                        <span className="text-lg sm:text-2xl font-semibold text-[#1E1E1E] truncate tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+                        <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+                        <span className="text-lg sm:text-2xl font-semibold text-foreground truncate tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                             Sous Chef Linguine
                         </span>
                     </Link>
@@ -63,7 +63,7 @@ export const Navigation = () => {
                             <Link
                                 key={link.path}
                                 to={getLocalizedPath(link.path)}
-                                className="nav-link-elegant flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200 text-sm tracking-wide"
+                                className="nav-link-elegant flex items-center space-x-1 text-foreground hover:text-primary transition-colors duration-200 text-sm tracking-wide"
                                 style={{ fontFamily: 'var(--font-body)' }}
                                 data-testid={`nav-${link.path.replace('/', '')}`}
                             >
@@ -87,8 +87,8 @@ export const Navigation = () => {
                                                 className="w-7 h-7 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-7 h-7 rounded-full bg-[#6A1F2E] flex items-center justify-center">
-                                                <span className="text-white text-xs font-medium">
+                                            <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+                                                <span className="text-primary-foreground text-xs font-medium">
                                                     {user.username?.[0]?.toUpperCase() || 'U'}
                                                 </span>
                                             </div>
@@ -113,7 +113,7 @@ export const Navigation = () => {
                                 <Button 
                                     variant="outline"
                                     size="sm"
-                                    className="border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white"
+                                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                                     style={{ fontFamily: 'var(--font-body)' }}
                                 >
                                     {t('auth.login', lang)}
@@ -135,7 +135,7 @@ export const Navigation = () => {
                                     <Link
                                         key={link.path}
                                         to={getLocalizedPath(link.path)}
-                                        className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
+                                        className="flex items-center space-x-2 text-lg text-foreground hover:text-primary transition-colors"
                                         style={{ fontFamily: 'var(--font-body)' }}
                                     >
                                         {link.icon && <link.icon className="h-5 w-5" />}
@@ -145,7 +145,7 @@ export const Navigation = () => {
                                 
                                 {/* Mobile Auth */}
                                 {isAuthenticated && user ? (
-                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                     <div className="pt-4 border-t border-border">
                                         <div className="flex items-center gap-3 mb-4">
                                             {user.avatar_url ? (
                                                 <img 
@@ -154,8 +154,8 @@ export const Navigation = () => {
                                                     className="w-10 h-10 rounded-full object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-10 h-10 rounded-full bg-[#6A1F2E] flex items-center justify-center">
-                                                    <span className="text-white font-medium">
+                                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                                                    <span className="text-primary-foreground font-medium">
                                                         {user.username?.[0]?.toUpperCase() || 'U'}
                                                     </span>
                                                 </div>
@@ -175,9 +175,9 @@ export const Navigation = () => {
                                         </Button>
                                     </div>
                                 ) : (
-                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                     <div className="pt-4 border-t border-border">
                                         <Link to={getLocalizedPath(`/login?redirect=${encodeURIComponent(currentPath)}`)}>
-                                            <Button className="w-full bg-[#6A1F2E] hover:bg-[#8B2840]">
+                                            <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                                                 {t('auth.login', lang)}
                                             </Button>
                                         </Link>
@@ -185,7 +185,7 @@ export const Navigation = () => {
                                 )}
                                 
                                 {/* Mobile Language Selector */}
-                                <div className="pt-4 border-t border-[#E5DCC3]">
+                                <div className="pt-4 border-t border-border">
                                     <LanguageSelector />
                                 </div>
                             </div>

@@ -50,7 +50,7 @@ const AppLayout = ({ children }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
   
   return (
-    <div className={`min-h-screen flex flex-col ${isAdminRoute ? 'bg-gray-50' : 'bg-[#FAF7F0]'}`} data-testid="app-container">
+    <div className={`min-h-screen flex flex-col ${isAdminRoute ? 'bg-gray-50' : 'bg-background'}`} data-testid="app-container">
       {!isAdminRoute && <Navigation />}
       <main className="flex-1">
         {children}
