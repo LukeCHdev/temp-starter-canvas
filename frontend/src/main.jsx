@@ -1,3 +1,4 @@
+// Entry point for Sous Chef Linguine
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
