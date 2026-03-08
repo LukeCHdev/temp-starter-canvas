@@ -145,7 +145,7 @@ export const Navigation = () => {
                                 
                                 {/* Mobile Auth */}
                                 {isAuthenticated && user ? (
-                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                     <div className="pt-4 border-t border-border">
                                         <div className="flex items-center gap-3 mb-4">
                                             {user.avatar_url ? (
                                                 <img 
