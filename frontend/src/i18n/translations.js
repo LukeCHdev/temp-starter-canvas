@@ -2116,7 +2116,7 @@ export const translations = {
         de: 'Unsere Redaktionellen Standards'
       }
     }
-  }
+  },
   // ============================================
   // HOMEPAGE (new Sona design keys)
   // ============================================
