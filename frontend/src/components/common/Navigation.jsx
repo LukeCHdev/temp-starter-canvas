@@ -46,13 +46,13 @@ export const Navigation = () => {
     const currentPath = location.pathname;
 
     return (
-        <nav className="bg-white border-b border-[#E5DCC3] sticky top-0 z-50" data-testid="main-navigation">
+        <nav className="bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50" data-testid="main-navigation">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    {/* Logo - also preserves language */}
+                    {/* Logo */}
                     <Link to={getLocalizedPath('/')} className="flex items-center gap-2 min-w-0 shrink" data-testid="logo-link">
-                        <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-[#6A1F2E] flex-shrink-0" />
-                        <span className="text-lg sm:text-2xl font-semibold text-[#1E1E1E] truncate tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+                        <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+                        <span className="text-lg sm:text-2xl font-semibold text-foreground truncate tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                             Sous Chef Linguine
                         </span>
                     </Link>
