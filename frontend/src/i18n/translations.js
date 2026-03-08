@@ -2143,6 +2143,13 @@ export const translations = {
         es: 'El Motor de Recetas Auténticas del Mundo',
         de: 'Die Authentische Globale Rezept-Suchmaschine'
       },
+      searchPlaceholder: {
+        en: 'Search by recipe, ingredient, region, or dish type...',
+        it: 'Cerca per ricetta, ingrediente, regione o tipo di piatto...',
+        fr: 'Rechercher par recette, ingrédient, région ou type de plat...',
+        es: 'Buscar por receta, ingrediente, región o tipo de plato...',
+        de: 'Suche nach Rezept, Zutat, Region oder Gerichtart...'
+      },
       searchHelper: {
         en: 'Try "paella valenciana", "carbonara", "pad thai"…',
         it: 'Prova "paella valenciana", "carbonara", "pad thai"…',
