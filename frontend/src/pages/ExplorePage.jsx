@@ -46,13 +46,13 @@ const CONTINENT_KEYS = [
 
 // Breadcrumb component with translations
 const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, lang }) => (
-    <nav className="flex items-center gap-2 text-xs text-[#5C5C5C] mb-3" aria-label="Breadcrumb">
-        <Link to={getLocalizedPath('/')} className="hover:text-[#6A1F2E] flex items-center gap-1">
+    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-3" aria-label="Breadcrumb">
+        <Link to={getLocalizedPath('/')} className="hover:text-primary flex items-center gap-1">
             <Home className="h-3 w-3" />
             {translate('common.home', lang)}
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to={getLocalizedPath('/explore')} className={`hover:text-[#6A1F2E] ${!continent ? 'text-[#6A1F2E] font-medium' : ''}`}>
+        <Link to={getLocalizedPath('/explore')} className={`hover:text-primary ${!continent ? 'text-primary font-medium' : ''}`}>
             {translate('nav.explore', lang)}
         </Link>
         {continent && (
@@ -60,7 +60,7 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
                 <ChevronRight className="h-3 w-3" />
                 <Link 
                     to={getLocalizedPath(`/explore/${continent}`)} 
-                    className={`hover:text-[#6A1F2E] ${!country ? 'text-[#6A1F2E] font-medium' : ''}`}
+                    className={`hover:text-primary ${!country ? 'text-primary font-medium' : ''}`}
                 >
                     {translateName(selectedContinent || continent.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), 'continents')}
                 </Link>
@@ -69,7 +69,7 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
         {country && (
             <>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#6A1F2E] font-medium">
+                <span className="text-primary font-medium">
                     {translateName(pageTitle, 'countries')}
                 </span>
             </>
@@ -79,8 +79,8 @@ const Breadcrumb = ({ continent, country, selectedContinent, pageTitle, getLocal
 
 // Ranking Sidebar Component with translations
 const RankingSidebar = ({ recipes, getLocalizedPath, lang }) => (
-    <div className="bg-white border border-[#E8E4DC] p-4 sticky top-20">
-        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
+    <div className="bg-card border border-border p-4 sticky top-20">
+        <h3 className="text-sm font-medium text-foreground mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
             {translate('explore.highestRated', lang)}
         </h3>
         <div className="space-y-2">
@@ -90,16 +90,16 @@ const RankingSidebar = ({ recipes, getLocalizedPath, lang }) => (
                     to={getLocalizedPath(`/recipe/${recipe.slug}`)}
                     className="flex items-start gap-2 group py-1"
                 >
-                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#6A1F2E] text-white text-[10px] flex items-center justify-center font-medium">
+                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-medium">
                         {index + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                        <p className="text-xs text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors line-clamp-2 leading-tight">
+                        <p className="text-xs text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                             {recipe.recipe_name || recipe.title_original}
                         </p>
                         <div className="flex items-center gap-1 mt-0.5">
-                            <Star className="h-2.5 w-2.5 fill-[#CBA55B] text-[#CBA55B]" />
-                            <span className="text-[10px] text-[#7C7C7C]">
+                            <Star className="h-2.5 w-2.5 fill-accent text-accent" />
+                            <span className="text-[10px] text-muted-foreground">
                                 {recipe.average_rating?.toFixed(1) || '4.5'}
                             </span>
                         </div>
@@ -118,17 +118,17 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, l
         <Popover>
             <PopoverTrigger asChild>
                 <button 
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-[#E8E4DC] bg-white hover:border-[#6A1F2E] transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-border bg-card hover:border-primary transition-colors"
                     data-testid={`filter-${title.toLowerCase().replace(/\s+/g, '-')}`}
                 >
-                    {Icon && <Icon className="h-3 w-3 text-[#6A1F2E]" />}
-                    <span className="text-[#2C2C2C]">{title}</span>
+                    {Icon && <Icon className="h-3 w-3 text-primary" />}
+                    <span className="text-foreground">{title}</span>
                     {selectedCount > 0 && (
-                        <Badge className="bg-[#6A1F2E] text-white text-[10px] px-1.5 py-0 h-4 min-w-4">
+                        <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0 h-4 min-w-4">
                             {selectedCount}
                         </Badge>
                     )}
-                    <ChevronDown className="h-3 w-3 text-[#7C7C7C]" />
+                    <ChevronDown className="h-3 w-3 text-muted-foreground" />
                 </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-0" align="start">
@@ -137,7 +137,7 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, l
                         {options.map((option) => (
                             <label 
                                 key={option.value}
-                                className="flex items-center gap-2 cursor-pointer hover:bg-[#F5F2EC] p-1.5 rounded transition-colors"
+                                className="flex items-center gap-2 cursor-pointer hover:bg-muted p-1.5 rounded transition-colors"
                                 data-testid={`filter-option-${option.value}`}
                             >
                                 <Checkbox 
@@ -149,18 +149,18 @@ const FilterPopover = ({ title, options, selectedValues, onChange, icon: Icon, l
                                             onChange(selectedValues.filter(v => v !== option.value));
                                         }
                                     }}
-                                    className="h-4 w-4 border-[#E8E4DC] data-[state=checked]:bg-[#6A1F2E] data-[state=checked]:border-[#6A1F2E]"
+                                    className="h-4 w-4 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                 />
-                                <span className="text-xs text-[#2C2C2C]">{option.label}</span>
+                                <span className="text-xs text-foreground">{option.label}</span>
                             </label>
                         ))}
                     </div>
                 </ScrollArea>
                 {selectedCount > 0 && (
-                    <div className="border-t border-[#E8E4DC] p-2">
+                    <div className="border-t border-border p-2">
                         <button 
                             onClick={() => onChange([])}
-                            className="text-xs text-[#6A1F2E] hover:underline w-full text-left"
+                            className="text-xs text-primary hover:underline w-full text-left"
                         >
                             {clearLabel}
                         </button>
@@ -209,7 +209,7 @@ const ExplorePage = () => {
         })), [lang]
     );
 
-    // Get translated continents (use actual continent names as values since DB uses names like "Europe")
+    // Get translated continents
     const continentOptions = useMemo(() => 
         CONTINENT_KEYS.map(c => ({
             value: c.value,
@@ -217,7 +217,7 @@ const ExplorePage = () => {
         })), [lang]
     );
     
-    // Sync URL params with filter state (handles browser back/forward)
+    // Sync URL params with filter state
     useEffect(() => {
         const dishType = searchParams.get('dishType');
         setSelectedDishTypes(dishType ? dishType.split(',') : []);
@@ -239,7 +239,7 @@ const ExplorePage = () => {
         return translated === key ? name : translated;
     }, [t]);
 
-    // Load explore data - load ALL published recipes for client-side filtering
+    // Load explore data
     const loadExploreData = useCallback(async () => {
         setLoading(true);
         const currentLang = language || 'en';
@@ -326,11 +326,10 @@ const ExplorePage = () => {
         }
     }, [continent, country, loadCountryData, loadContinentData, loadExploreData]);
 
-    // CLIENT-SIDE COMBINED FILTERING: search + dish type + continent
+    // CLIENT-SIDE COMBINED FILTERING
     const filteredRecipes = useMemo(() => {
         let result = allRecipes;
 
-        // Text search filter
         if (searchText.trim()) {
             const query = searchText.trim().toLowerCase();
             result = result.filter(r => {
@@ -342,12 +341,10 @@ const ExplorePage = () => {
             });
         }
 
-        // Dish type filter
         if (selectedDishTypes.length > 0) {
             result = result.filter(r => selectedDishTypes.includes(r.dish_type));
         }
 
-        // Continent filter (use continent name from DB, e.g. "Europe", "Asia")
         if (selectedContinents.length > 0) {
             result = result.filter(r => selectedContinents.includes(r.continent));
         }
@@ -367,7 +364,6 @@ const ExplorePage = () => {
         setSearchParams(newParams);
     };
 
-    // Handle continent filter changes (client-side only, no navigation)
     const handleContinentChange = (values) => {
         setSelectedContinents(values);
     };
@@ -376,7 +372,6 @@ const ExplorePage = () => {
         navigate(getLocalizedPath(`/explore/${continentSlug}`));
     }, [navigate, getLocalizedPath]);
 
-    // Clear all filters
     const clearAllFilters = () => {
         setSelectedDishTypes([]);
         setSelectedContinents([]);
@@ -389,14 +384,11 @@ const ExplorePage = () => {
         }
     };
 
-    // Active filters count
     const activeFiltersCount = selectedDishTypes.length + selectedContinents.length + (searchText.trim() ? 1 : 0);
 
-    // Pagination: show 24 initially, load more in increments
     const RECIPES_PER_PAGE = 24;
     const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
 
-    // Reset visible count when filters change
     useEffect(() => {
         setVisibleCount(RECIPES_PER_PAGE);
     }, [searchText, selectedDishTypes, selectedContinents]);
@@ -407,25 +399,16 @@ const ExplorePage = () => {
     );
     const hasMore = visibleCount < filteredRecipes.length;
 
-    // Breadcrumb props
     const breadcrumbProps = useMemo(() => ({
-        continent,
-        country,
-        selectedContinent,
-        pageTitle,
-        getLocalizedPath,
-        translateName,
-        lang
+        continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, lang
     }), [continent, country, selectedContinent, pageTitle, getLocalizedPath, translateName, lang]);
 
-    // SEO path
     const seoPath = useMemo(() => {
         if (country) return `/explore/${continent}/${country}`;
         if (continent) return `/explore/${continent}`;
         return '/explore';
     }, [continent, country]);
 
-    // SEO breadcrumbs
     const seoBreadcrumbs = useMemo(() => {
         const crumbs = [
             { name: translate('common.home', lang), path: '/' },
@@ -441,8 +424,7 @@ const ExplorePage = () => {
     }, [continent, country, selectedContinent, pageTitle, lang]);
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7]" data-testid="explore-page">
-            {/* SEO Metadata */}
+        <div className="min-h-screen bg-background" data-testid="explore-page">
             <ExploreSEO 
                 continent={selectedContinent}
                 country={pageTitle}
@@ -451,10 +433,10 @@ const ExplorePage = () => {
             />
             
             {/* Header */}
-            <section className="bg-white border-b border-[#E8E4DC] py-6 px-4">
+            <section className="bg-card border-b border-border py-6 px-4">
                 <div className="max-w-6xl mx-auto">
                     <Breadcrumb {...breadcrumbProps} />
-                    <h1 className="text-2xl sm:text-3xl font-light text-[#2C2C2C]" style={{ fontFamily: 'var(--font-heading)' }}>
+                    <h1 className="text-2xl sm:text-3xl font-light text-foreground" style={{ fontFamily: 'var(--font-heading)' }}>
                         {country ? translateName(pageTitle, 'countries') : 
                          continent ? translateName(pageTitle, 'continents') : 
                          translate('explore.title', lang)}
@@ -462,30 +444,28 @@ const ExplorePage = () => {
                 </div>
             </section>
 
-            {/* TOP FILTER BAR - only show on main explore view (not continent/country sub-views) */}
+            {/* TOP FILTER BAR */}
             {!continent && !country && (
-                <section className="bg-[#F9F7F3] border-b border-[#E8E4DC] py-3 px-4 sticky top-16 z-40">
+                <section className="bg-muted border-b border-border py-3 px-4 sticky top-16 z-40">
                     <div className="max-w-6xl mx-auto">
                         <div className="flex items-center gap-3 flex-wrap">
                             {/* Search Input */}
                             <div className="relative flex-shrink-0 w-full sm:w-auto sm:min-w-[220px]">
-                                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-[#9C9C9C]" />
+                                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                                 <input
                                     type="text"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    placeholder={translate('homepage.hero.searchPlaceholder', lang)}
-                                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-[#E8E4DC] bg-white focus:border-[#6A1F2E] focus:outline-none focus:ring-1 focus:ring-[#6A1F2E]/20 transition-colors"
+                                    placeholder={translate('homepage.hero.searchHelper', lang)}
+                                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-border bg-card focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors"
                                     data-testid="explore-search-input"
                                 />
                             </div>
 
-                            {/* Filter Label */}
-                            <span className="text-xs text-[#7C7C7C] uppercase tracking-wide hidden sm:inline">
+                            <span className="text-xs text-muted-foreground uppercase tracking-wide hidden sm:inline">
                                 {translate('explore.filters', lang)}:
                             </span>
                             
-                            {/* Dish Type Filter */}
                             <FilterPopover 
                                 title={translate('explore.dishType', lang)}
                                 options={dishTypeOptions}
@@ -496,7 +476,6 @@ const ExplorePage = () => {
                                 clearLabel={translate('explore.clearAll', lang)}
                             />
                             
-                            {/* Continent Filter */}
                             <FilterPopover 
                                 title={translate('explore.continent', lang)}
                                 options={continentOptions}
@@ -510,12 +489,12 @@ const ExplorePage = () => {
                             {/* Active Filter Tags */}
                             {activeFiltersCount > 0 && (
                                 <>
-                                    <div className="h-4 w-px bg-[#E8E4DC] mx-1 hidden sm:block"></div>
+                                    <div className="h-4 w-px bg-border mx-1 hidden sm:block"></div>
                                     
                                     {searchText.trim() && (
                                         <Badge 
                                             variant="secondary" 
-                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                            className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 gap-1"
                                         >
                                             "{searchText.trim()}"
                                             <button onClick={() => setSearchText('')} data-testid="clear-search-tag">
@@ -528,7 +507,7 @@ const ExplorePage = () => {
                                         <Badge 
                                             key={dt}
                                             variant="secondary" 
-                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                            className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 gap-1"
                                         >
                                             {dishTypeOptions.find(d => d.value === dt)?.label}
                                             <button onClick={() => handleDishTypeChange(selectedDishTypes.filter(v => v !== dt))}>
@@ -541,7 +520,7 @@ const ExplorePage = () => {
                                         <Badge 
                                             key={c}
                                             variant="secondary" 
-                                            className="bg-[#6A1F2E]/10 text-[#6A1F2E] text-[10px] px-2 py-0.5 gap-1"
+                                            className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 gap-1"
                                         >
                                             {continentOptions.find(cont => cont.value === c)?.label}
                                             <button onClick={() => handleContinentChange(selectedContinents.filter(v => v !== c))}>
@@ -552,7 +531,7 @@ const ExplorePage = () => {
                                     
                                     <button 
                                         onClick={clearAllFilters}
-                                        className="text-[10px] text-[#6A1F2E] hover:underline ml-1"
+                                        className="text-[10px] text-primary hover:underline ml-1"
                                         data-testid="clear-all-filters"
                                     >
                                         {translate('explore.clearAll', lang)}
@@ -560,8 +539,7 @@ const ExplorePage = () => {
                                 </>
                             )}
                             
-                            {/* Recipe Count */}
-                            <span className="text-xs text-[#7C7C7C] ml-auto" data-testid="recipe-count">
+                            <span className="text-xs text-muted-foreground ml-auto" data-testid="recipe-count">
                                 {filteredRecipes.length} {translate('explore.recipes', lang)}
                             </span>
                         </div>
@@ -573,18 +551,16 @@ const ExplorePage = () => {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="flex gap-6">
                     
-                    {/* CENTER: Main Content */}
                     <main className="flex-1 min-w-0">
                         {loading ? (
                             <div className="text-center py-12">
-                                <ChefHat className="h-8 w-8 mx-auto text-[#6A1F2E] animate-pulse mb-3" />
-                                <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.loadingRecipes', lang)}</p>
+                                <ChefHat className="h-8 w-8 mx-auto text-primary animate-pulse mb-3" />
+                                <p className="text-sm text-muted-foreground font-light">{translate('explore.loadingRecipes', lang)}</p>
                             </div>
                         ) : country ? (
-                            /* Country Recipes View */
                             <>
-                                <div className="flex items-center gap-2 mb-4 text-xs text-[#5C5C5C]">
-                                    <MapPin className="h-3 w-3 text-[#6A1F2E]" />
+                                <div className="flex items-center gap-2 mb-4 text-xs text-muted-foreground">
+                                    <MapPin className="h-3 w-3 text-primary" />
                                     <span>{countryRecipes.length} {translate('explore.recipesFrom', lang)} {translateName(pageTitle, 'countries')}</span>
                                 </div>
 
@@ -595,15 +571,14 @@ const ExplorePage = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
-                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>
+                                    <div className="text-center py-12 bg-card border border-border">
+                                        <p className="text-sm text-muted-foreground font-light">{translate('explore.noRecipesFound', lang)}</p>
                                     </div>
                                 )}
                             </>
                         ) : continent ? (
-                            /* Continent Countries View */
                             <>
-                                <h2 className="text-lg font-light mb-4 text-[#2C2C2C]" style={{ fontFamily: 'var(--font-heading)' }}>
+                                <h2 className="text-lg font-light mb-4 text-foreground" style={{ fontFamily: 'var(--font-heading)' }}>
                                     {translate('explore.countriesIn', lang)} {translateName(selectedContinent, 'continents')}
                                 </h2>
 
@@ -613,25 +588,25 @@ const ExplorePage = () => {
                                             <Link
                                                 key={c.slug}
                                                 to={getLocalizedPath(`/explore/${continent}/${c.slug}`)}
-                                                className="bg-white border border-[#E8E4DC] p-3 hover:border-[#6A1F2E] transition-colors flex items-center gap-2"
+                                                className="bg-card border border-border p-3 hover:border-primary transition-colors flex items-center gap-2"
                                             >
-                                                <Globe className="h-4 w-4 text-[#6A1F2E]" />
+                                                <Globe className="h-4 w-4 text-primary" />
                                                 <div>
-                                                    <h3 className="font-medium text-[#2C2C2C] text-sm">{translateName(c.name, 'countries')}</h3>
-                                                    <p className="text-[10px] text-[#7C7C7C]">{c.recipe_count} {translate('explore.recipes', lang)}</p>
+                                                    <h3 className="font-medium text-foreground text-sm">{translateName(c.name, 'countries')}</h3>
+                                                    <p className="text-[10px] text-muted-foreground">{c.recipe_count} {translate('explore.recipes', lang)}</p>
                                                 </div>
                                             </Link>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]">
-                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noCountriesFound', lang)}</p>
+                                    <div className="text-center py-12 bg-card border border-border">
+                                        <p className="text-sm text-muted-foreground font-light">{translate('explore.noCountriesFound', lang)}</p>
                                     </div>
                                 )}
 
                                 {/* Other Continents */}
-                                <div className="pt-6 border-t border-[#E8E4DC]">
-                                    <h3 className="text-xs font-medium text-[#5C5C5C] mb-2 uppercase tracking-wide">
+                                <div className="pt-6 border-t border-border">
+                                    <h3 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
                                         {translate('explore.otherContinents', lang)}
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
@@ -641,7 +616,7 @@ const ExplorePage = () => {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => handleContinentSelect(c.slug)}
-                                                className="border-[#E8E4DC] text-[#2C2C2C] hover:border-[#6A1F2E] hover:text-[#6A1F2E] text-xs h-7 px-3"
+                                                className="border-border text-foreground hover:border-primary hover:text-primary text-xs h-7 px-3"
                                             >
                                                 {translateName(c.name, 'continents')}
                                             </Button>
@@ -650,7 +625,6 @@ const ExplorePage = () => {
                                 </div>
                             </>
                         ) : (
-                            /* Main Explore View - Filtered Recipe Grid */
                             <>
                                 {visibleRecipes.length > 0 ? (
                                     <>
@@ -663,7 +637,7 @@ const ExplorePage = () => {
                                             <div className="text-center mt-6">
                                                 <button
                                                     onClick={() => setVisibleCount(prev => prev + RECIPES_PER_PAGE)}
-                                                    className="px-6 py-2 text-xs uppercase tracking-wider border border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white transition-colors"
+                                                    className="px-6 py-2 text-xs uppercase tracking-wider border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                                                     data-testid="load-more-btn"
                                                 >
                                                     {translate('explore.loadMore', lang)} ({filteredRecipes.length - visibleCount} {translate('explore.remaining', lang)})
@@ -672,12 +646,12 @@ const ExplorePage = () => {
                                         )}
                                     </>
                                 ) : (
-                                    <div className="text-center py-12 bg-white border border-[#E8E4DC]" data-testid="no-results">
-                                        <p className="text-sm text-[#7C7C7C] font-light">{translate('explore.noRecipesFound', lang)}</p>
+                                    <div className="text-center py-12 bg-card border border-border" data-testid="no-results">
+                                        <p className="text-sm text-muted-foreground font-light">{translate('explore.noRecipesFound', lang)}</p>
                                         {activeFiltersCount > 0 && (
                                             <button 
                                                 onClick={clearAllFilters}
-                                                className="mt-3 text-xs text-[#6A1F2E] hover:underline"
+                                                className="mt-3 text-xs text-primary hover:underline"
                                             >
                                                 {translate('explore.clearAll', lang)}
                                             </button>
@@ -686,8 +660,8 @@ const ExplorePage = () => {
                                 )}
 
                                 {/* Continent Quick Links */}
-                                <div className="mt-10 pt-6 border-t border-[#E8E4DC]">
-                                    <h3 className="text-base font-light text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
+                                <div className="mt-10 pt-6 border-t border-border">
+                                    <h3 className="text-base font-light text-foreground mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                                         {translate('explore.byContinent', lang)}
                                     </h3>
                                     <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
@@ -695,12 +669,12 @@ const ExplorePage = () => {
                                             <button
                                                 key={c.slug}
                                                 onClick={() => handleContinentSelect(c.slug)}
-                                                className="bg-white border border-[#E8E4DC] p-3 hover:border-[#6A1F2E] transition-colors text-center group"
+                                                className="bg-card border border-border p-3 hover:border-primary transition-colors text-center group"
                                             >
-                                                <h4 className="font-medium text-[#2C2C2C] group-hover:text-[#6A1F2E] transition-colors text-xs">
+                                                <h4 className="font-medium text-foreground group-hover:text-primary transition-colors text-xs">
                                                     {translateName(c.name, 'continents')}
                                                 </h4>
-                                                <p className="text-[10px] text-[#7C7C7C] mt-0.5">
+                                                <p className="text-[10px] text-muted-foreground mt-0.5">
                                                     {c.recipe_count}
                                                 </p>
                                             </button>
@@ -717,10 +691,10 @@ const ExplorePage = () => {
                     </aside>
                 </div>
 
-                {/* Mobile Rankings (below content) */}
+                {/* Mobile Rankings */}
                 <div className="lg:hidden mt-8">
-                    <div className="bg-white border border-[#E8E4DC] p-4">
-                        <h3 className="text-sm font-medium text-[#2C2C2C] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
+                    <div className="bg-card border border-border p-4">
+                        <h3 className="text-sm font-medium text-foreground mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
                             {translate('explore.highestRated', lang)}
                         </h3>
                         <div className="grid grid-cols-2 gap-2">
@@ -728,18 +702,18 @@ const ExplorePage = () => {
                                 <Link 
                                     key={recipe.slug}
                                     to={getLocalizedPath(`/recipe/${recipe.slug}`)}
-                                    className="flex items-start gap-2 p-2 bg-[#FDFBF7] hover:bg-[#F5F2EC] transition-colors"
+                                    className="flex items-start gap-2 p-2 bg-background hover:bg-muted transition-colors"
                                 >
-                                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#6A1F2E] text-white text-[10px] flex items-center justify-center font-medium">
+                                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-medium">
                                         {index + 1}
                                     </span>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-[#2C2C2C] line-clamp-2">
+                                        <p className="text-xs text-foreground line-clamp-2">
                                             {recipe.recipe_name || recipe.title_original}
                                         </p>
                                         <div className="flex items-center gap-1 mt-0.5">
-                                            <Star className="h-2.5 w-2.5 fill-[#CBA55B] text-[#CBA55B]" />
-                                            <span className="text-[10px] text-[#7C7C7C]">
+                                            <Star className="h-2.5 w-2.5 fill-accent text-accent" />
+                                            <span className="text-[10px] text-muted-foreground">
                                                 {recipe.average_rating?.toFixed(1) || '4.5'}
                                             </span>
                                         </div>

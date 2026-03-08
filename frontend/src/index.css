@@ -54,7 +54,7 @@
     }
     
     body {
-        @apply bg-[#FAF7F0] text-[#1E1E1E];
+        @apply bg-background text-foreground;
         font-family: var(--font-body);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -72,15 +72,15 @@
     }
     .recipe-card-hover:hover {
         transform: translateY(-4px);
-        box-shadow: 0 20px 40px -15px hsl(349 53% 28% / 0.12);
+        box-shadow: var(--shadow-elegant);
     }
 
     /* ── elegant-sona: section divider ── */
     .section-divider {
-        @apply w-16 h-px bg-[#6A1F2E] mx-auto;
+        @apply w-16 h-px bg-primary mx-auto;
     }
     .section-divider-gold {
-        @apply w-16 h-px bg-[#CBA55B] mx-auto;
+        @apply w-16 h-px bg-accent mx-auto;
     }
 
     /* ── elegant-sona: horizontal scroll container ── */
@@ -98,24 +98,24 @@
 
     /* ── Gold divider (legacy) ── */
     .gold-divider {
-        @apply h-px bg-[#CBA55B] w-24 mx-auto my-8;
+        @apply h-px bg-accent w-24 mx-auto my-8;
     }
     
     /* ── Sous Chef narrative text ── */
     .narrative-text {
-        @apply text-base leading-relaxed text-[#1E1E1E]/90;
+        @apply text-base leading-relaxed text-foreground/90;
         font-family: var(--font-body);
     }
     
     /* ── Elegant button ── */
     .btn-elegant {
-        @apply px-8 py-3 bg-[#6A1F2E] text-[#FAF7F0] rounded-none uppercase tracking-wider text-sm font-medium;
-        @apply hover:bg-[#8B2840] transition-colors duration-300;
+        @apply px-8 py-3 bg-primary text-primary-foreground rounded-none uppercase tracking-wider text-sm font-medium;
+        @apply hover:bg-primary/80 transition-colors duration-300;
     }
     
     /* ── Card elegant ── */
     .card-elegant {
-        @apply bg-white rounded-sm shadow-sm border border-[#E5DCC3] p-6;
+        @apply bg-card rounded-sm shadow-sm border border-border p-6;
         @apply hover:shadow-md transition-shadow duration-300;
     }
 
@@ -140,7 +140,7 @@
         left: 0;
         width: 0;
         height: 1px;
-        background: #6A1F2E;
+        background: hsl(var(--primary));
         transition: width 0.3s ease;
     }
     .nav-link-elegant:hover::after {
