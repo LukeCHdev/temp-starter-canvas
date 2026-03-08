@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChefHat } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { t } from '@/i18n';
 
@@ -8,50 +7,75 @@ export const Footer = () => {
     const { language, getLocalizedPath } = useLanguage();
 
     return (
-        <footer className="bg-foreground text-primary-foregroundforeground mt-20" data-testid="main-footer">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <footer className="border-t border-border py-16 px-6" data-testid="main-footer">
+            <div className="container mx-auto">
+                <div className="grid md:grid-cols-3 gap-12">
                     {/* Brand */}
-                    <div className="col-span-1 md:col-span-2">
-                        <div className="flex items-center space-x-2 mb-4">
-                            <ChefHat className="h-6accent-[#CBA55B]" />
-                            <span className="text-xl font-light tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-                                Sous Chef Linguine
-                            </span>
-                        </div>
-                        <p className="text-primary-foreground/70 text-sm max-w-md mb-4">
+                    <div>
+                        <h3 className="text-2xl font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+                            SOUS CHEF <span className="text-primary">LINGUINE</span>
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
                             {t('footer.tagline', language)}
                         </p>
                     </div>
 
-                    {/* Quick Links */}
+                    {/* Explore */}
                     <div>
-                        <h3 className="font-medium mb-4 text-accent text-sm uppercase tracking-wider">{t('footer.explore', language)}</h3>
-                        <ul className="space-y-2 text-sm text-primary-foreground/70">
-                            <li><Link to={getLocalizedPath('/')} className="hover:text-accent transition-colors">{t('common.home', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/explore')} className="hover:text-accent transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/menu-builder')} className="hover:text-accent transition-colors">{t('nav.menuBuilder', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/techniques')} className="hover:text-accent transition-colors">{t('nav.techniques', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/about')} className="hover:text-accent transition-colors">{t('nav.about', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/contact')} className="hover:text-accent transition-colors">{t('nav.contact', language)}</Link></li>
-                        </ul>
+                        <h4 className="text-lg text-foreground mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+                            {t('footer.explore', language)}
+                        </h4>
+                        <div className="space-y-2">
+                            {[
+                                { path: '/', label: t('common.home', language) },
+                                { path: '/explore', label: t('footer.exploreRecipes', language) },
+                                { path: '/menu-builder', label: t('nav.menuBuilder', language) },
+                                { path: '/techniques', label: t('nav.techniques', language) },
+                                { path: '/about', label: t('nav.about', language) },
+                                { path: '/contact', label: t('nav.contact', language) },
+                            ].map((item) => (
+                                <Link 
+                                    key={item.path} 
+                                    to={getLocalizedPath(item.path)} 
+                                    className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                                    style={{ fontFamily: 'var(--font-body)' }}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Legal */}
                     <div>
-                        <h3 className="font-medium mb-4 text-accent text-sm uppercase tracking-wider">{t('footer.legal', language)}</h3>
-                        <ul className="space-y-2 text-sm text-primary-foreground/70">
-                            <li><Link to={getLocalizedPath('/editorial-policy')} className="hover:text-accent transition-colors">{t('footer.editorial', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/privacy')} className="hover:text-accent transition-colors">{t('footer.privacy', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/terms')} className="hover:text-accent transition-colors">{t('footer.terms', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/cookies')} className="hover:text-accent transition-colors">{t('footer.cookies', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/for-ai')} className="hover:text-accent transition-colors">{t('footer.forAI', language)}</Link></li>
-                        </ul>
+                        <h4 className="text-lg text-foreground mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+                            {t('footer.legal', language)}
+                        </h4>
+                        <div className="space-y-2">
+                            {[
+                                { path: '/editorial-policy', label: t('footer.editorial', language) },
+                                { path: '/privacy', label: t('footer.privacy', language) },
+                                { path: '/terms', label: t('footer.terms', language) },
+                                { path: '/cookies', label: t('footer.cookies', language) },
+                                { path: '/for-ai', label: t('footer.forAI', language) },
+                            ].map((item) => (
+                                <Link 
+                                    key={item.path} 
+                                    to={getLocalizedPath(item.path)} 
+                                    className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                                    style={{ fontFamily: 'var(--font-body)' }}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
-                    <p>© {new Date().getFullYear()} {t('footer.copyright', language)}</p>
+                <div className="border-t border-border mt-12 pt-8 text-center">
+                    <p className="text-xs text-muted-foreground" style={{ fontFamily: 'var(--font-body)' }}>
+                        © {new Date().getFullYear()} {t('footer.copyright', language)}
+                    </p>
                 </div>
             </div>
         </footer>

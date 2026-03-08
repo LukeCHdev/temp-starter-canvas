@@ -9,7 +9,7 @@ import { t } from '@/i18n/translations';
 import FavoriteButton from '@/components/common/FavoriteButton';
 
 /**
- * RecipeCard - Language-aware recipe card with semantic design tokens
+ * RecipeCard - Elegant Sona style with tall 2:3 cards + horizontal scroll variant
  */
 export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = false }) => {
     const { t: i18nT } = useTranslation();
@@ -30,14 +30,6 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
         ? (langTranslation.history_summary || langTranslation.characteristic_profile || langTranslation.description || '')
         : (recipe.history_summary || recipe.characteristic_profile || recipe.origin_story || '');
     
-    const levelColors = {
-        1: 'bg-primary text-primary-foreground',
-        2: 'bg-secondary text-secondary-foreground',
-        3: 'bg-accent text-accent-foreground',
-        4: 'bg-gray-500 text-white',
-        5: 'bg-gray-400 text-white',
-    };
-    
     const metadata = recipe.metadata || recipe;
     const country = metadata.origin_country || recipe.origin_country || recipe.country || 'Unknown';
     const region = metadata.origin_region || recipe.origin_region || recipe.region || '';
@@ -52,6 +44,35 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
     const photoUrl = (photos && photos.length > 0 && photos[0].image_url)
         ? photos[0].image_url 
         : (recipe.image_url || null);
+
+    // Scroll variant — tall 2:3 cards for horizontal scroll sections (like Elegant Sona reference)
+    if (variant === 'scroll') {
+        return (
+            <Link to={getLocalizedPath(`/recipe/${slug}`)} className="recipe-card-hover group flex-shrink-0 w-64 block" data-testid={`recipe-card-${slug}`}>
+                <div className="relative overflow-hidden rounded-sm aspect-[2/3]">
+                    {photoUrl ? (
+                        <img
+                            src={photoUrl}
+                            alt={title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <ChefHat className="h-12 w-12 text-muted-foreground/30" />
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute top-2 left-2 z-10">
+                        <FavoriteButton slug={slug} size="sm" deferStatusCheck={deferFavoriteCheck} />
+                    </div>
+                </div>
+                <h3 className="text-xl font-medium mt-4 text-foreground group-hover:text-primary transition-colors duration-300" style={{ fontFamily: 'var(--font-heading)' }}>
+                    {title}
+                </h3>
+            </Link>
+        );
+    }
 
     // Editorial variant
     if (variant === 'editorial') {
@@ -71,7 +92,7 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                                 <span className="text-muted-foreground/40 text-4xl font-light" style={{ fontFamily: 'var(--font-heading)' }}>SCL</span>
                             </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
                             <FavoriteButton slug={slug} size="sm" deferStatusCheck={deferFavoriteCheck} />
                         </div>
@@ -116,11 +137,11 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                         />
                     ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <ChefHat className="h-16 w-16 text-accent/30" />
+                            <ChefHat className="h-16 w-16 text-muted-foreground/30" />
                         </div>
                     )}
                     
-                    <Badge className={`absolute top-3 right-3 ${levelColors[authenticityLevel] || levelColors[3]}`}>
+                    <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">
                         <Star className="h-3 w-3 mr-1" />
                         {levelLabel}
                     </Badge>
@@ -131,7 +152,7 @@ export const RecipeCard = ({ recipe, variant = 'default', deferFavoriteCheck = f
                 </div>
                 
                 <div className="flex-1 flex flex-col">
-                    <h3 className="text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 className="text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors line-clamp-2" style={{ fontFamily: 'var(--font-heading)' }}>
                         {title}
                     </h3>
                     
