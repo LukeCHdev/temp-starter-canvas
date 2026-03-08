@@ -331,11 +331,11 @@ const HomePage = () => {
                         <div className="text-center py-16" data-testid="no-recipes-state">
                             <Utensils className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
                             <p className="text-muted-foreground font-light mb-6 text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
-                                Explore our growing archive of authentic recipes
+                                {t('homepage.curatedRecipes.emptyTitle', lang)}
                             </p>
                             <Link to={getLocalizedPath('/explore')}>
                                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none px-8 font-light tracking-wide text-sm">
-                                    Browse Collection
+                                    {t('homepage.curatedRecipes.browseCollection', lang)}
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </Link>
