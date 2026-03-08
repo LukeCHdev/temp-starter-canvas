@@ -63,7 +63,7 @@ export const Navigation = () => {
                             <Link
                                 key={link.path}
                                 to={getLocalizedPath(link.path)}
-                                className="nav-link-elegant flex items-center space-x-1 text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors duration-200 text-sm tracking-wide"
+                                className="nav-link-elegant flex items-center space-x-1 text-foreground hover:text-primary transition-colors duration-200 text-sm tracking-wide"
                                 style={{ fontFamily: 'var(--font-body)' }}
                                 data-testid={`nav-${link.path.replace('/', '')}`}
                             >
