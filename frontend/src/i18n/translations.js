@@ -626,6 +626,13 @@ export const translations = {
       fr: 'Nous répondons généralement dans les 2-3 jours ouvrables.',
       es: 'Normalmente respondemos dentro de 2-3 días hábiles.',
       de: 'Wir antworten normalerweise innerhalb von 2-3 Werktagen.'
+    },
+    description: {
+      en: 'Sous Chef Linguine is an online editorial platform dedicated to the preservation and documentation of authentic traditional recipes from around the world.',
+      it: 'Sous Chef Linguine è una piattaforma editoriale online dedicata alla conservazione e documentazione di ricette tradizionali autentiche da tutto il mondo.',
+      fr: 'Sous Chef Linguine est une plateforme éditoriale en ligne dédiée à la préservation et à la documentation de recettes traditionnelles authentiques du monde entier.',
+      es: 'Sous Chef Linguine es una plataforma editorial en línea dedicada a la preservación y documentación de recetas tradicionales auténticas de todo el mundo.',
+      de: 'Sous Chef Linguine ist eine redaktionelle Online-Plattform, die der Bewahrung und Dokumentation authentischer traditioneller Rezepte aus aller Welt gewidmet ist.'
     }
   },
 
