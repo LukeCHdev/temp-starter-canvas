@@ -39,13 +39,13 @@ export const Footer = () => {
 
                     {/* Legal */}
                     <div>
-                        <h3 className="font-medium mb-4 text-[#CBA55B] text-sm uppercase tracking-wider">{t('footer.legal', language)}</h3>
+                        <h3 className="font-medium mb-4 text-accent text-sm uppercase tracking-wider">{t('footer.legal', language)}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to={getLocalizedPath('/editorial-policy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.editorial', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/privacy')} className="hover:text-[#CBA55B] transition-colors">{t('footer.privacy', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/terms')} className="hover:text-[#CBA55B] transition-colors">{t('footer.terms', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/cookies')} className="hover:text-[#CBA55B] transition-colors">{t('footer.cookies', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/for-ai')} className="hover:text-[#CBA55B] transition-colors">{t('footer.forAI', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/editorial-policy')} className="hover:text-accent transition-colors">{t('footer.editorial', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/privacy')} className="hover:text-accent transition-colors">{t('footer.privacy', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/terms')} className="hover:text-accent transition-colors">{t('footer.terms', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/cookies')} className="hover:text-accent transition-colors">{t('footer.cookies', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/for-ai')} className="hover:text-accent transition-colors">{t('footer.forAI', language)}</Link></li>
                         </ul>
                     </div>
                 </div>
