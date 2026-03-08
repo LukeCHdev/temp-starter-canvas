@@ -28,12 +28,12 @@ export const Footer = () => {
                     <div>
                         <h3 className="font-medium mb-4 text-accent text-sm uppercase tracking-wider">{t('footer.explore', language)}</h3>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to={getLocalizedPath('/')} className="hover:text-[#CBA55B] transition-colors">{t('common.home', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/explore')} className="hover:text-[#CBA55B] transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/menu-builder')} className="hover:text-[#CBA55B] transition-colors">{t('nav.menuBuilder', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/techniques')} className="hover:text-[#CBA55B] transition-colors">{t('nav.techniques', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/about')} className="hover:text-[#CBA55B] transition-colors">{t('nav.about', language)}</Link></li>
-                            <li><Link to={getLocalizedPath('/contact')} className="hover:text-[#CBA55B] transition-colors">{t('nav.contact', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/')} className="hover:text-accent transition-colors">{t('common.home', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/explore')} className="hover:text-accent transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/menu-builder')} className="hover:text-accent transition-colors">{t('nav.menuBuilder', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/techniques')} className="hover:text-accent transition-colors">{t('nav.techniques', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/about')} className="hover:text-accent transition-colors">{t('nav.about', language)}</Link></li>
+                            <li><Link to={getLocalizedPath('/contact')} className="hover:text-accent transition-colors">{t('nav.contact', language)}</Link></li>
                         </ul>
                     </div>
 
