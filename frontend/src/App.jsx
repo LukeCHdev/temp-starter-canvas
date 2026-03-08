@@ -43,6 +43,12 @@ import {
   AdminDocumentImportPage,
   AdminReviewPage
 } from '@/pages/admin';
+import AdminTechniquesPage from '@/pages/admin/AdminTechniquesPage';
+import AdminNewTechniquePage from '@/pages/admin/AdminNewTechniquePage';
+import AdminEditTechniquePage from '@/pages/admin/AdminEditTechniquePage';
+
+// Feature flags
+const ENABLE_MENU_BUILDER = process.env.REACT_APP_ENABLE_MENU_BUILDER === 'true';
 
 // Layout wrapper that conditionally shows Navigation and Footer
 const AppLayout = ({ children }) => {
@@ -79,6 +85,9 @@ function App() {
               <Route path="/admin/import-json" element={<AdminImportJSONPage />} />
               <Route path="/admin/import-scrape" element={<AdminScrapePage />} />
               <Route path="/admin/import-document" element={<AdminDocumentImportPage />} />
+              <Route path="/admin/techniques" element={<AdminTechniquesPage />} />
+              <Route path="/admin/techniques/new" element={<AdminNewTechniquePage />} />
+              <Route path="/admin/techniques/:slug/edit" element={<AdminEditTechniquePage />} />
               
               {/* Auth Callback Route (no language prefix) */}
               <Route path="/auth/callback" element={<AuthCallbackPage />} />
@@ -131,7 +140,8 @@ const LanguageRoutes = () => (
     <Route path="regions" element={<RegionsPage />} />
     <Route path="country/:slug" element={<CountryPage />} />
     <Route path="recipe/:slug" element={<RecipePage />} />
-    <Route path="menu-builder" element={<MenuBuilderPage />} />
+    {/* Menu Builder - conditionally rendered based on feature flag */}
+    {ENABLE_MENU_BUILDER && <Route path="menu-builder" element={<MenuBuilderPage />} />}
     <Route path="techniques" element={<TechniquesPage />} />
     <Route path="techniques/:id" element={<TechniqueDetailPage />} />
     <Route path="favorites" element={<FavoritesPage />} />

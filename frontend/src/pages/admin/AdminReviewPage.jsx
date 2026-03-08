@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL;
+const API_URL = process.env.REACT_APP_BACKEND_URL || import.meta?.env?.VITE_BACKEND_URL || '';
 
 // Flag colors
 const FLAG_COLORS = {

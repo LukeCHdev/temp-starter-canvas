@@ -24,10 +24,14 @@ export const Navigation = () => {
     const location = useLocation();
     const lang = language || 'en';
 
+    // Feature flag for Menu Builder
+    const enableMenuBuilder = process.env.REACT_APP_ENABLE_MENU_BUILDER === 'true';
+
     const navLinks = [
         { path: '/explore', label: i18nT('nav.explore') },
         { path: '/techniques', label: i18nT('nav.techniques') },
-        { path: '/menu-builder', label: i18nT('nav.menuBuilder') },
+        // Menu Builder is conditionally included based on feature flag
+        ...(enableMenuBuilder ? [{ path: '/menu-builder', label: i18nT('nav.menuBuilder') }] : []),
         { path: '/about', label: i18nT('nav.about') },
     ];
 

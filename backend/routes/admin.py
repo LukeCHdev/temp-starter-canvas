@@ -201,6 +201,201 @@ async def delete_recipe(slug: str, authorized: bool = Depends(verify_admin_token
         "message": f"Recipe '{slug}' deleted successfully"
     }
 
+# ============== IMAGE UPLOAD ROUTES ==============
+
+import uuid
+from PIL import Image as PILImage
+import io
+
+STATIC_IMAGE_DIR = ROOT_DIR / "static" / "recipe-images"
+STATIC_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+@admin_router.post("/recipes/upload-image")
+async def upload_recipe_image(
+    image: UploadFile = File(...),
+    slug: Optional[str] = None,
+    authorized: bool = Depends(verify_admin_token)
+):
+    """Upload an image for a recipe.
+    
+    Saves image to static/recipe-images directory.
+    If slug is provided, updates the recipe's image_url.
+    Returns the image URL for use in recipe data.
+    """
+    try:
+        # Validate file type
+        allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        if image.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid image type. Allowed: JPEG, PNG, WebP, GIF")
+        
+        # Read image data
+        contents = await image.read()
+        
+        # Validate file size (max 10MB)
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="Image too large. Max 10MB.")
+        
+        # Generate filename
+        ext = '.jpg'  # Default to jpg
+        if image.content_type == 'image/png':
+            ext = '.png'
+        elif image.content_type == 'image/webp':
+            ext = '.webp'
+        elif image.content_type == 'image/gif':
+            ext = '.gif'
+        
+        # Use slug as filename if provided, otherwise generate UUID
+        if slug:
+            filename = f"{slug}{ext}"
+        else:
+            filename = f"{uuid.uuid4()}{ext}"
+        
+        filepath = STATIC_IMAGE_DIR / filename
+        
+        # Optimize image if it's JPEG or PNG
+        try:
+            img = PILImage.open(io.BytesIO(contents))
+            
+            # Resize if too large (max 1920px width)
+            if img.width > 1920:
+                ratio = 1920 / img.width
+                new_height = int(img.height * ratio)
+                img = img.resize((1920, new_height), PILImage.LANCZOS)
+            
+            # Save optimized
+            if ext in ['.jpg', '.jpeg']:
+                img = img.convert('RGB')
+                img.save(filepath, 'JPEG', quality=85, optimize=True)
+            elif ext == '.png':
+                img.save(filepath, 'PNG', optimize=True)
+            elif ext == '.webp':
+                img.save(filepath, 'WebP', quality=85)
+            else:
+                # For GIF, save as-is
+                with open(filepath, 'wb') as f:
+                    f.write(contents)
+        except Exception as e:
+            logger.warning(f"Image optimization failed, saving raw: {e}")
+            with open(filepath, 'wb') as f:
+                f.write(contents)
+        
+        # Generate URL
+        image_url = f"/api/recipe-images/{filename}"
+        
+        # Update recipe if slug provided
+        if slug:
+            result = await db.recipes.update_one(
+                {"slug": slug},
+                {"$set": {
+                    "image_url": image_url,
+                    "image_source": "upload",
+                    "image_uploaded_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            if result.matched_count > 0:
+                logger.info(f"Updated recipe {slug} with uploaded image")
+        
+        return {
+            "success": True,
+            "image_url": image_url,
+            "filename": filename
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Image upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@admin_router.post("/techniques/upload-image")
+async def upload_technique_image(
+    image: UploadFile = File(...),
+    slug: Optional[str] = None,
+    authorized: bool = Depends(verify_admin_token)
+):
+    """Upload an image for a technique.
+    
+    Saves image to static/recipe-images directory (shared storage).
+    If slug is provided, updates the technique's image_url.
+    """
+    try:
+        # Validate file type
+        allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        if image.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid image type. Allowed: JPEG, PNG, WebP, GIF")
+        
+        contents = await image.read()
+        
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="Image too large. Max 10MB.")
+        
+        ext = '.jpg'
+        if image.content_type == 'image/png':
+            ext = '.png'
+        elif image.content_type == 'image/webp':
+            ext = '.webp'
+        elif image.content_type == 'image/gif':
+            ext = '.gif'
+        
+        # Prefix technique images
+        if slug:
+            filename = f"technique-{slug}{ext}"
+        else:
+            filename = f"technique-{uuid.uuid4()}{ext}"
+        
+        filepath = STATIC_IMAGE_DIR / filename
+        
+        # Optimize image
+        try:
+            img = PILImage.open(io.BytesIO(contents))
+            if img.width > 1920:
+                ratio = 1920 / img.width
+                new_height = int(img.height * ratio)
+                img = img.resize((1920, new_height), PILImage.LANCZOS)
+            
+            if ext in ['.jpg', '.jpeg']:
+                img = img.convert('RGB')
+                img.save(filepath, 'JPEG', quality=85, optimize=True)
+            elif ext == '.png':
+                img.save(filepath, 'PNG', optimize=True)
+            elif ext == '.webp':
+                img.save(filepath, 'WebP', quality=85)
+            else:
+                with open(filepath, 'wb') as f:
+                    f.write(contents)
+        except Exception as e:
+            logger.warning(f"Image optimization failed: {e}")
+            with open(filepath, 'wb') as f:
+                f.write(contents)
+        
+        image_url = f"/api/recipe-images/{filename}"
+        
+        # Update technique if slug provided
+        if slug:
+            result = await db.techniques.update_one(
+                {"slug": slug},
+                {"$set": {
+                    "image_url": image_url,
+                    "image_source": "upload",
+                    "image_uploaded_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            if result.matched_count > 0:
+                logger.info(f"Updated technique {slug} with uploaded image")
+        
+        return {
+            "success": True,
+            "image_url": image_url,
+            "filename": filename
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Technique image upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ============== IMPORT ROUTES ==============
 
 def generate_slug(recipe_name: str, country: str = "") -> str:

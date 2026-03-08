@@ -91,3 +91,89 @@ async def create_technique(body: TechniqueCreate, request: Request):
 
     logger.info(f"Technique created: {slug} (status={doc['status']})")
     return doc
+
+
+@techniques_router.get("/admin/techniques")
+async def admin_get_all_techniques(request: Request):
+    """Get all techniques for admin (including drafts)."""
+    from routes.auth import get_session_user
+
+    user = await get_session_user(request)
+    if not user or user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    docs = await _db.techniques.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(500)
+    
+    return {"techniques": docs, "total": len(docs)}
+
+
+@techniques_router.get("/admin/techniques/{slug}")
+async def admin_get_technique(slug: str, request: Request):
+    """Get a single technique for editing (admin)."""
+    from routes.auth import get_session_user
+
+    user = await get_session_user(request)
+    if not user or user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    doc = await _db.techniques.find_one({"slug": slug}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Technique not found")
+    
+    return {"technique": doc}
+
+
+@techniques_router.put("/admin/techniques/{slug}")
+async def admin_update_technique(slug: str, request: Request):
+    """Update an existing technique (admin)."""
+    from routes.auth import get_session_user
+
+    user = await get_session_user(request)
+    if not user or user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    body = await request.json()
+    technique_data = body.get("technique_data", {})
+    
+    # Add updated timestamp
+    technique_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Update the technique
+    result = await _db.techniques.update_one(
+        {"slug": slug},
+        {"$set": technique_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Technique not found")
+    
+    new_slug = technique_data.get("slug", slug)
+    logger.info(f"Technique updated: {slug}")
+    
+    return {
+        "success": True,
+        "slug": new_slug,
+        "message": "Technique updated successfully"
+    }
+
+
+@techniques_router.delete("/admin/techniques/{slug}")
+async def admin_delete_technique(slug: str, request: Request):
+    """Delete a technique (admin)."""
+    from routes.auth import get_session_user
+
+    user = await get_session_user(request)
+    if not user or user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    result = await _db.techniques.delete_one({"slug": slug})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Technique not found")
+    
+    logger.info(f"Technique deleted: {slug}")
+    return {"success": True, "message": f"Technique '{slug}' deleted"}
+

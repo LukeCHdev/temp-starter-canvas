@@ -29,7 +29,10 @@ export const Footer = () => {
                             {[
                                 { path: '/', label: t('common.home', language) },
                                 { path: '/explore', label: t('footer.exploreRecipes', language) },
-                                { path: '/menu-builder', label: t('nav.menuBuilder', language) },
+                                // Menu Builder conditionally included based on feature flag
+                                ...(process.env.REACT_APP_ENABLE_MENU_BUILDER === 'true' 
+                                    ? [{ path: '/menu-builder', label: t('nav.menuBuilder', language) }] 
+                                    : []),
                                 { path: '/techniques', label: t('nav.techniques', language) },
                                 { path: '/about', label: t('nav.about', language) },
                                 { path: '/contact', label: t('nav.contact', language) },

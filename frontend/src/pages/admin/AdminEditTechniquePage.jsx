@@ -11,11 +11,11 @@ import { ImageManager } from '@/components/admin/ImageManager';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || import.meta?.env?.VITE_BACKEND_URL || '';
 
-export const AdminEditRecipePage = () => {
+export const AdminEditTechniquePage = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [jsonInput, setJsonInput] = useState('');
-    const [originalRecipe, setOriginalRecipe] = useState(null);
+    const [originalTechnique, setOriginalTechnique] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -26,24 +26,24 @@ export const AdminEditRecipePage = () => {
         return { Authorization: `Bearer ${token}` };
     };
 
-    const fetchRecipe = async () => {
+    const fetchTechnique = async () => {
         try {
             const response = await axios.get(
-                `${API_URL}/api/admin/recipes/${slug}`,
+                `${API_URL}/api/admin/techniques/${slug}`,
                 { headers: getAuthHeaders() }
             );
-            setOriginalRecipe(response.data.recipe);
-            setJsonInput(JSON.stringify(response.data.recipe, null, 2));
-            setCurrentImageUrl(response.data.recipe?.image_url || null);
+            setOriginalTechnique(response.data.technique);
+            setJsonInput(JSON.stringify(response.data.technique, null, 2));
+            setCurrentImageUrl(response.data.technique?.image_url || null);
             setError(null);
         } catch (error) {
             if (error.response?.status === 401) {
                 toast.error('Session expired. Please login again.');
                 navigate('/admin/login');
             } else if (error.response?.status === 404) {
-                setError('Recipe not found');
+                setError('Technique not found');
             } else {
-                setError('Failed to fetch recipe');
+                setError('Failed to fetch technique');
             }
         } finally {
             setLoading(false);
@@ -51,7 +51,7 @@ export const AdminEditRecipePage = () => {
     };
 
     useEffect(() => {
-        fetchRecipe();
+        fetchTechnique();
     }, [slug]);
 
     const handleSave = async () => {
@@ -60,19 +60,18 @@ export const AdminEditRecipePage = () => {
             
             setSaving(true);
             const response = await axios.put(
-                `${API_URL}/api/admin/recipes/${slug}`,
-                { recipe_data: parsed },
+                `${API_URL}/api/admin/techniques/${slug}`,
+                { technique_data: parsed },
                 { headers: getAuthHeaders() }
             );
 
             if (response.data.success) {
-                toast.success('Recipe updated successfully!');
+                toast.success('Technique updated successfully!');
                 
-                // If slug changed, navigate to new URL
                 if (response.data.slug !== slug) {
-                    navigate(`/admin/recipes/${response.data.slug}/edit`);
+                    navigate(`/admin/techniques/${response.data.slug}/edit`);
                 } else {
-                    fetchRecipe(); // Refresh data
+                    fetchTechnique();
                 }
             }
         } catch (error) {
@@ -82,7 +81,7 @@ export const AdminEditRecipePage = () => {
                 toast.error('Session expired. Please login again.');
                 navigate('/admin/login');
             } else {
-                toast.error(error.response?.data?.detail || 'Failed to save recipe');
+                toast.error(error.response?.data?.detail || 'Failed to save technique');
             }
         } finally {
             setSaving(false);
@@ -91,7 +90,7 @@ export const AdminEditRecipePage = () => {
 
     const handleReset = () => {
         if (window.confirm('Reset to original? All changes will be lost.')) {
-            setJsonInput(JSON.stringify(originalRecipe, null, 2));
+            setJsonInput(JSON.stringify(originalTechnique, null, 2));
             toast.info('Reset to original');
         }
     };
@@ -106,18 +105,16 @@ export const AdminEditRecipePage = () => {
         }
     };
 
-    // Handle image change from ImageManager
     const handleImageChange = (newImageUrl) => {
         setCurrentImageUrl(newImageUrl);
-        // Update the JSON as well
         try {
             const parsed = JSON.parse(jsonInput);
             parsed.image_url = newImageUrl;
             parsed.image_source = 'upload';
             setJsonInput(JSON.stringify(parsed, null, 2));
-            toast.success('Image updated in recipe data');
+            toast.success('Image updated');
         } catch (e) {
-            // JSON might be invalid, just update the image state
+            // JSON might be invalid
         }
     };
 
@@ -127,7 +124,6 @@ export const AdminEditRecipePage = () => {
             const parsed = JSON.parse(jsonInput);
             delete parsed.image_url;
             delete parsed.image_source;
-            delete parsed.image_alt;
             setJsonInput(JSON.stringify(parsed, null, 2));
         } catch (e) {
             // JSON might be invalid
@@ -149,8 +145,8 @@ export const AdminEditRecipePage = () => {
                     <Alert variant="destructive">
                         <AlertDescription>{error}</AlertDescription>
                     </Alert>
-                    <Link to="/admin/recipes" className="mt-4 inline-block">
-                        <Button variant="outline">Back to Recipes</Button>
+                    <Link to="/admin/techniques" className="mt-4 inline-block">
+                        <Button variant="outline">Back to Techniques</Button>
                     </Link>
                 </div>
             </div>
@@ -163,18 +159,18 @@ export const AdminEditRecipePage = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
-                        <Link to="/admin/recipes">
+                        <Link to="/admin/techniques">
                             <Button variant="outline" size="sm">
                                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-2xl font-bold">Edit Recipe</h1>
+                            <h1 className="text-2xl font-bold">Edit Technique</h1>
                             <p className="text-sm text-gray-500">Slug: {slug}</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <Link to={`/recipe/${slug}`} target="_blank">
+                        <Link to={`/techniques/${slug}`} target="_blank">
                             <Button variant="outline" size="sm">
                                 <Eye className="w-4 h-4 mr-2" /> Preview
                             </Button>
@@ -183,24 +179,24 @@ export const AdminEditRecipePage = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-6">
-                    {/* Image Manager - Left Column */}
+                    {/* Image Manager */}
                     <div className="lg:col-span-1">
                         <ImageManager
                             currentImageUrl={currentImageUrl}
                             onImageChange={handleImageChange}
                             onImageRemove={handleImageRemove}
-                            entityType="recipe"
+                            entityType="technique"
                             entitySlug={slug}
                             authHeaders={getAuthHeaders()}
                         />
                     </div>
 
-                    {/* JSON Editor - Right Column */}
+                    {/* JSON Editor */}
                     <div className="lg:col-span-2">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center justify-between">
-                                    <span>{originalRecipe?.recipe_name || 'Recipe'}</span>
+                                    <span>{originalTechnique?.title || 'Technique'}</span>
                                     <div className="flex gap-2">
                                         <Button onClick={formatJSON} variant="outline" size="sm">
                                             Format JSON
@@ -236,4 +232,4 @@ export const AdminEditRecipePage = () => {
     );
 };
 
-export default AdminEditRecipePage;
+export default AdminEditTechniquePage;
