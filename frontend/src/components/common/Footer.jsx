@@ -8,7 +8,7 @@ export const Footer = () => {
     const { language, getLocalizedPath } = useLanguage();
 
     return (
-        <footer className="bg-[#1E1E1E] text-[#FAF7F0] mt-20" data-testid="main-footer">
+        <footer className="bg-foreground text-primary-foreground mt-20" data-testid="main-footer">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
