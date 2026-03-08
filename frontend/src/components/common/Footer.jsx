@@ -19,7 +19,7 @@ export const Footer = () => {
                                 Sous Chef Linguine
                             </span>
                         </div>
-                        <p className="text-[#FAF7F0]/70 text-sm max-w-md mb-4">
+                        <p className="text-primary-foreground/70 text-sm max-w-md mb-4">
                             {t('footer.tagline', language)}
                         </p>
                     </div>
