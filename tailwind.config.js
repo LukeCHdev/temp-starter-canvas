@@ -48,6 +48,14 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        // Sona custom palette
+        ivory: 'hsl(var(--ivory))',
+        charcoal: 'hsl(var(--charcoal))',
+        gold: 'hsl(var(--gold))',
+        burgundy: 'hsl(var(--burgundy))',
+        olive: 'hsl(var(--olive))',
+        cream: 'hsl(var(--cream))',
+        'warm-gray': 'hsl(var(--warm-gray))',
       },
       keyframes: {
         'accordion-down': {
