@@ -27,7 +27,7 @@ export const Footer = () => {
                     {/* Quick Links */}
                     <div>
                         <h3 className="font-medium mb-4 text-accent text-sm uppercase tracking-wider">{t('footer.explore', language)}</h3>
-                        <ul className="space-y-2 text-sm">
+                        <ul className="space-y-2 text-sm text-primary-foreground/70">
                             <li><Link to={getLocalizedPath('/')} className="hover:text-accent transition-colors">{t('common.home', language)}</Link></li>
                             <li><Link to={getLocalizedPath('/explore')} className="hover:text-accent transition-colors">{t('footer.exploreRecipes', language)}</Link></li>
                             <li><Link to={getLocalizedPath('/menu-builder')} className="hover:text-accent transition-colors">{t('nav.menuBuilder', language)}</Link></li>
