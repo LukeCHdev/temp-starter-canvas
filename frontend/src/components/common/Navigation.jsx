@@ -175,9 +175,9 @@ export const Navigation = () => {
                                         </Button>
                                     </div>
                                 ) : (
-                                    <div className="pt-4 border-t border-[#E5DCC3]">
+                                     <div className="pt-4 border-t border-border">
                                         <Link to={getLocalizedPath(`/login?redirect=${encodeURIComponent(currentPath)}`)}>
-                                            <Button className="w-full bg-[#6A1F2E] hover:bg-[#8B2840]">
+                                            <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                                                 {t('auth.login', lang)}
                                             </Button>
                                         </Link>
