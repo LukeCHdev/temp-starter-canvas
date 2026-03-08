@@ -87,8 +87,8 @@ export const Navigation = () => {
                                                 className="w-7 h-7 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-7 h-7 rounded-full bg-[#6A1F2E] flex items-center justify-center">
-                                                <span className="text-white text-xs font-medium">
+                                            <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+                                                <span className="text-primary-foreground text-xs font-medium">
                                                     {user.username?.[0]?.toUpperCase() || 'U'}
                                                 </span>
                                             </div>
