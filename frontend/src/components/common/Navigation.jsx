@@ -113,7 +113,7 @@ export const Navigation = () => {
                                 <Button 
                                     variant="outline"
                                     size="sm"
-                                    className="border-[#6A1F2E] text-[#6A1F2E] hover:bg-[#6A1F2E] hover:text-white"
+                                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                                     style={{ fontFamily: 'var(--font-body)' }}
                                 >
                                     {t('auth.login', lang)}
