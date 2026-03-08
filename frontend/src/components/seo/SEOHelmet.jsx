@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '@/context/LanguageContext';
 
 // Base domain for all canonical URLs

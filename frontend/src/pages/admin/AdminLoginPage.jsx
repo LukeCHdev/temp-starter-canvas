@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const AdminLoginPage = () => {
     const [password, setPassword] = useState('');
