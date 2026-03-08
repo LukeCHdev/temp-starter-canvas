@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+// Support both CRA (REACT_APP_) and Vite (VITE_) environment variables
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta?.env?.VITE_BACKEND_URL || '';
 const API_BASE = `${BACKEND_URL}/api`;
 
 export const api = axios.create({
