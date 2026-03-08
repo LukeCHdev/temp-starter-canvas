@@ -8,13 +8,13 @@ export const Footer = () => {
     const { language, getLocalizedPath } = useLanguage();
 
     return (
-        <footer className="bg-foreground text-primary-foreground mt-20" data-testid="main-footer">
+        <footer className="bg-foreground text-primary-foregroundforeground mt-20" data-testid="main-footer">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center space-x-2 mb-4">
-                            <ChefHat className="h-6 w-6 text-[#CBA55B]" />
+                            <ChefHat className="h-6accent-[#CBA55B]" />
                             <span className="text-xl font-light tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                                 Sous Chef Linguine
                             </span>
