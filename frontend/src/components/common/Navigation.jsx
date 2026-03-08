@@ -135,7 +135,7 @@ export const Navigation = () => {
                                     <Link
                                         key={link.path}
                                         to={getLocalizedPath(link.path)}
-                                        className="flex items-center space-x-2 text-lg text-[#1E1E1E] hover:text-[#6A1F2E] transition-colors"
+                                        className="flex items-center space-x-2 text-lg text-foreground hover:text-primary transition-colors"
                                         style={{ fontFamily: 'var(--font-body)' }}
                                     >
                                         {link.icon && <link.icon className="h-5 w-5" />}
