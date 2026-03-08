@@ -185,7 +185,7 @@ export const Navigation = () => {
                                 )}
                                 
                                 {/* Mobile Language Selector */}
-                                <div className="pt-4 border-t border-[#E5DCC3]">
+                                <div className="pt-4 border-t border-border">
                                     <LanguageSelector />
                                 </div>
                             </div>
